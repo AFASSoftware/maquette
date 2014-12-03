@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Virtual DOM test page</title>
+  <style>
+    .item {
+      background-color: red;
+      width: 300px;
+      padding: 10px;
+      border: solid 1px black;
+    }
+    .removed {
+      opacity: 0.5;
+    }
+  </style>
+  <script src="vdom.js"></script>
+  <script>
+    var h = vdom.h;
+    document.addEventListener('DOMContentLoaded', function() {
+
+      var items = [];
+      for (var i=0;i<20;i++) {
+        items.push({title: "Item "+i, visible: i%2===0, id: i})
+      }
+      var render = function() {
+        return h("div", {}, items.filter(function(item){return item.visible;}).map(function(item){
+          return h("div.item", {key: "item-"+item.id}, [item.title])
+        }));
+      }
+
+	  var mount = vdom.mount(document.body, render());
+
+      setTimeout(function(){
+        items[16].visible = false;
+        mount.update(render());
+      }, 1000);
+	  
+    });
+  </script>
+</head>
+<body>
+  
+</body>
+</html>

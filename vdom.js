@@ -10,6 +10,8 @@
     }
   };
 
+  var emptyArray = [];
+
   var flattenInto = function(insertions, main, mainIndex) {
     for (var i=0;i<insertions.length;i++) {
       var item = insertions[i];
@@ -58,9 +60,12 @@
   };
 
   var setProperties = function(domNode, properties) {
+    if (!properties) {
+      return;
+    }
     for (var propName in properties) {
-      var propValue = properties[propName]
-      if (propName === "class" || propName === "className") {
+      var propValue = properties[propName];
+      if (propName === "class" || propName === "className" || propName === "classList") {
         throw new Error("Not supported, use 'classes' instead.");
       } else if (propName === "classes") {
         // object with string keys and boolean values
@@ -75,11 +80,115 @@
     }
   };
 
+  var updateProperties = function(domNode, previousProperties, properties) {
+    if (!properties) {
+      return;
+    }
+    for (var propName in properties) {
+      // assuming that properties will be nullified instead of missing is by design
+      var propValue = properties[propName];
+      var previousValue = previousProperties[propName];
+      if (propValue === previousValue) {
+        continue;
+      }
+      if (propName === "classes") {
+        for (var className in propValue) {
+          var on = !!propValue[className]; 
+          var previousOn = !!previousValue[className];
+          if (on === previousOn) {
+            continue;
+          }
+          if (on) {
+            domNode.classList.add(className);
+          } else {
+            domNode.classList.remove(className);
+          }
+        }
+      } else {
+        if (!propValue && typeof prevousValue === "string") {
+          propValue = "";
+        }
+        domNode[propName] = propValue;
+      }
+    }
+  }
+
   var addChildren = function(domNode, children, options) {
+    if (!children) {
+      return;
+    }
     children.forEach(function(child){
       createDom(child, options);
       domNode.appendChild(child.domNode);
     });
+  };
+
+  var same = function(vnode1, vnode2) {
+    if (vnode1.vnodeSelector !== vnode2.vnodeSelector) {
+      return false;
+    }
+    if (vnode1.properties && vnode2.properties) {
+      return vnode1.properties.key === vnode2.properties.key;
+    }
+    return !vnode1.propertoes && !vnode2.properties;
+  };
+
+  var indexOfChild = function(children, sameAs, start) {
+    for (var i = start; i < children.length; i++) {
+      if (same(children[i], sameAs)) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
+
+  var updateChildren = function(domNode, oldChildren, newChildren, options) {
+    if (oldChildren === newChildren) {
+      return;
+    }
+    oldChildren = oldChildren || emptyArray;
+    newChildren = newChildren || emptyArray;
+    var diff = options.diff;
+
+    var oldIndex = 0;
+    var newIndex = 0;
+    var i;
+    while (newIndex < newChildren.length) {
+      var oldChild = (oldIndex < oldChildren.length) ? oldChildren[oldIndex] : null;
+      var newChild = newChildren[newIndex];
+      if (same (oldChild, newChild)) {
+        updateDom(oldChild, newChild, options);
+        oldIndex++;
+      } else {
+        var findOldIndex = indexOfChild(oldChildren, newChild, oldIndex + 1);
+        if (findOldIndex >= 0) {
+          // Remove preceding missing children
+          for (i = oldIndex; i < findOldIndex; i++) {
+            diff.nodeToRemove(oldChildren[i].domNode);
+          }
+          updateDom(oldChildren[findOldIndex], newChild, diff);
+          oldIndex = findOldIndex + 1;
+        } else {
+          // New child
+          createDom(newChild, options);
+          if (oldIndex<oldChildren.length) {
+            var nextChild = oldChildren[oldIndex];
+            nextChild.domNode.parentNode.insertBefore(newChild.domNode, nextChild.domNode);
+          } else {
+            domNode.appendChild(newChild.domNode);
+          }
+          diff.nodeAdded(newChild.domNode);
+        }
+      }
+      newIndex++;
+    }
+    if (oldChildren.length > oldIndex) {
+      // Remove child fragments
+      for (i = oldIndex; i < children.length; i++) {
+        diff.nodeToRemove(oldChildren[i]);
+      }
+    }
   };
 
   var classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
@@ -117,6 +226,19 @@
     }
   };
 
+  var updateDom = function(previous, vnode, options) {
+    var domNode = previous.domNode;
+    if (!domNode) {
+      throw new Error("previous node was not mounted");
+    }
+    if (previous === vnode) {
+      return; // nothing changed
+    }
+    updateProperties(domNode, previous.properties, vnode.properties);
+    updateChildren(domNode, previous.children, vnode.children, options);
+    vnode.domNode = previous.domNode;
+  }
+
   window.vdom = {
     h: function(tagName, properties, children) {
       if (!children && (typeof properties === "string" || Array.isArray(properties) || properties.hasOwnProperty("vnodeSelector"))) {
@@ -137,8 +259,10 @@
       createDom(vnode, {});
       element.appendChild(vnode.domNode);
       return {
-        update: function(vnode, diff) {
+        update: function(updatedVnode, diff) {
           diff = diff || immediateDiff;
+          updateDom(vnode, updatedVnode, {diff: diff});
+          vnode = updatedVnode;
         }
       }
     }

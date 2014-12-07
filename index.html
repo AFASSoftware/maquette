@@ -12,10 +12,34 @@
     .removed {
       opacity: 0.5;
     }
+    .added {
+      background-color: darkRed;
+    }
   </style>
   <script src="vdom.js"></script>
   <script>
     var h = vdom.h;
+
+    var simplisticDiff = {
+      nodeToRemove: function(node) {
+      	node.classList.add("removed");
+      	setTimeout(function(){
+      	  node.parentNode.removeChild(node);
+      	}, 500);
+      },
+      nodeAdded: function(node) {
+      	node.classList.add("added");
+      	setTimeout(function(){
+      	  node.classList.remove("added");
+      	}, 500);
+      },
+      nodeUpdated: function(node) {
+      	node.classList.add("updated");
+      	setTimeout(function(){
+      	  node.classList.remove("updated");
+      	}, 500);
+      }
+    }
     document.addEventListener('DOMContentLoaded', function() {
 
       var items = [];
@@ -32,8 +56,13 @@
 
       setTimeout(function(){
         items[16].visible = false;
-        mount.update(render());
-      }, 1000);
+        mount.update(render(), simplisticDiff);
+        setTimeout(function(){
+		  items[1].visible = true;
+		  items[16].visible = true;
+		  mount.update(render(), simplisticDiff);
+		}, 700);
+      }, 300);
 	  
     });
   </script>

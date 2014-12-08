@@ -121,7 +121,10 @@
         if(!propValue && typeof previousValue === "string") {
           propValue = "";
         }
-        domNode[propName] = propValue;
+		if (previousValue !== propValue && typeof previousValue !== "function") {
+		  // Not updating functions is by design
+          domNode[propName] = propValue;
+		}
       }
     }
   };
@@ -143,7 +146,7 @@
     if(vnode1.properties && vnode2.properties) {
       return vnode1.properties.key === vnode2.properties.key;
     }
-	if (vnode1.hasOwnProperty("text") {
+	if (vnode1.hasOwnProperty("text")) {
 	  return vnode1.text === vnode2.text;
 	}
     return !vnode1.properties && !vnode2.properties;
@@ -250,7 +253,7 @@
       throw new Error("previous node was not mounted");
     }
     if(previous === vnode) {
-      return; // nothing changed
+      return; // we assume that nothing has changed
     }
     if (vnode.vnodeSelector === "") {
       if(vnode.text !== previous.text) {
@@ -258,7 +261,7 @@
         return;
       }
     } else {
-      pdateProperties(domNode, previous.properties, vnode.properties);
+      updateProperties(domNode, previous.properties, vnode.properties);
       updateChildren(domNode, previous.children, vnode.children, options);
     }
     vnode.domNode = previous.domNode;
@@ -266,7 +269,8 @@
 
   var domsetter = {
     h: function (tagName, properties, children) {
-      if(!children && (typeof properties === "string" || Array.isArray(properties) || properties.hasOwnProperty("vnodeSelector"))) {
+      if(!children && (typeof properties === "string" || Array.isArray(properties) 
+	      || (properties && properties.hasOwnProperty("vnodeSelector")))) {
         children = properties;
         properties = null;
       }
@@ -295,13 +299,17 @@
       };
     },
 
-    renderLoop: function (mount, renderFunction, options) {
+    renderLoop: function (element, renderFunction, options) {
       var scheduled = null;
+	  var vnode = domsetter.h("placeholder", {}, []);
+	  vnode.domNode = element;
       var doUpdate = function () {
         scheduled = null;
-        mount.update(renderFunction(), options);
+		var updatedVnode = renderFunction();
+        updateDom(vnode, updatedVnode, options);
+        vnode = updatedVnode;
       };
-      return {
+      var result = {
         update: function () {
           if(!scheduled) {
             scheduled = requestAnimationFrame(doUpdate);
@@ -313,6 +321,8 @@
           }
         }
       };
+	  result.update();
+	  return result;
     }
   };
 
@@ -325,10 +335,10 @@
     };
   };
 
-  if (module !== undefined && module.exports) {
+  if (global.module !== undefined && global.module.exports) {
     // Node and other CommonJS-like environments that support module.exports
     module.exports = domsetter;
-  } else if (typeof define == 'function' && define.amd) {
+  } else if (typeof global.define == 'function' && global.define.amd) {
     // AMD / RequireJS
     define(function () {
       return domsetter;

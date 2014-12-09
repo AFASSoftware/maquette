@@ -2,15 +2,10 @@
 
   "use strict";
 
-  var immediateDiff = {
-    nodeToRemove: function (node) {
-      node.parentNode.removeChild(node);
-    },
-    nodeAdded: function (node) {
-    },
-    nodeUpdated: function (node) {
-    }
-  };
+  // Utilities
+
+  var noop = function () { };
+  var emptyArray = [];
 
   var extend = function (base, overrides) {
     var result = {};
@@ -23,14 +18,15 @@
     return result;
   };
 
-  var emptyArray = [];
+  // Hyperscript helper functions
 
-  var flattenInto = function (insertions, main, mainIndex) {
-    for(var i = 0; i < insertions.length; i++) {
+  var flattenInto = function (parentSelector, insertions, main, mainIndex) {
+    for (var i = 0; i < insertions.length; i++) {
       var item = insertions[i];
-      if(Array.isArray(item)) {
+      if (Array.isArray(item)) {
         mainIndex = flattenInto(item, main, mainIndex);
       } else {
+        checkForDuplicates(parentSelector, main, item, mainIndex);
         main.splice(mainIndex, 0, item);
         mainIndex++;
       }
@@ -38,23 +34,38 @@
     return mainIndex;
   };
 
+  var checkForDuplicates = function (parentSelector, children, sameAs, endAt) {
+    if (sameAs.hasOwnProperty("text")) {
+      return; // textnodes can be safely ignored.
+    }
+    for (var i = 0; i < endAt; i++) {
+      if (same(children[0], sameAs)) {
+        if (!sameAs.properties || !sameAs.properties.key) {
+          throw new Error("[" + parentSelector + "] contains undistinguishable child nodes [" + sameAs.vnodeSelector + "], please add a key property.");
+        } else {
+          throw new Error("[" + parentSelector + "] contains two children with the same key:" + sameAs.properties.key);
+        }
+      }
+    }
+  };
+
   // removes nulls, flattens embedded arrays
-  var flatten = function (children) {
-    if(children === null || children === undefined) {
+  var flatten = function (parentSelector, children) {
+    if (children === null || children === undefined) {
       return null;
     }
-    if(!Array.isArray(children)) {
+    if (!Array.isArray(children)) {
       return [children];
     }
     var index = 0;
-    while(index < children.length) {
+    while (index < children.length) {
       var child = children[index];
-      if(!child) {
+      if (!child) {
         children.splice(index, 1);
-      } else if(Array.isArray(child)) {
+      } else if (Array.isArray(child)) {
         children.splice(index, 1);
-        index = flattenInto(child, children, index);
-      } else if(typeof child === "string") {
+        index = flattenInto(parentSelector, child, children, index);
+      } else if (typeof child === "string") {
         children[index] = {
           vnodeSelector: "",
           text: child,
@@ -62,7 +73,8 @@
         };
         index++;
       } else {
-        if(child.hasOwnProperty("vnodeSelector")) {
+        if (child.hasOwnProperty("vnodeSelector")) {
+          checkForDuplicates(parentSelector, children, child, index);
           index++;
         } else {
           throw new Error("Not a valid vnode: " + child);
@@ -72,18 +84,39 @@
     return children;
   };
 
+  // Render helper functions
+
+  var classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
+
+  var immediateDiff = {
+    nodeToRemove: function (node) {
+      node.parentNode.removeChild(node);
+    },
+    nodeAdded: noop,
+    nodeUpdated: noop
+  };
+
+  var defaultOptions = {
+    namespace: null,
+    diff: immediateDiff
+  };
+
+  var applyDefaultOptions = function (options) {
+    return extend(defaultOptions, options);
+  };
+
   var setProperties = function (domNode, properties) {
-    if(!properties) {
+    if (!properties) {
       return;
     }
-    for(var propName in properties) {
+    for (var propName in properties) {
       var propValue = properties[propName];
-      if(propName === "class" || propName === "className" || propName === "classList") {
+      if (propName === "class" || propName === "className" || propName === "classList") {
         throw new Error("Not supported, use 'classes' instead.");
-      } else if(propName === "classes") {
+      } else if (propName === "classes") {
         // object with string keys and boolean values
-        for(var className in propValue) {
-          if(propValue[className]) {
+        for (var className in propValue) {
+          if (propValue[className]) {
             domNode.classList.add(className);
           }
         }
@@ -94,75 +127,80 @@
   };
 
   var updateProperties = function (domNode, previousProperties, properties) {
-    if(!properties) {
+    if (!properties) {
       return;
     }
-    for(var propName in properties) {
+    for (var propName in properties) {
       // assuming that properties will be nullified instead of missing is by design
       var propValue = properties[propName];
       var previousValue = previousProperties[propName];
-      if(propValue === previousValue) {
-        continue;
-      }
-      if(propName === "classes") {
-        for(var className in propValue) {
+      if (propName === "classes") {
+        if (propValue === previousValue) {
+          continue;
+        }
+        for (var className in propValue) {
           var on = !!propValue[className];
           var previousOn = !!previousValue[className];
-          if(on === previousOn) {
+          if (on === previousOn) {
             continue;
           }
-          if(on) {
+          if (on) {
             domNode.classList.add(className);
           } else {
             domNode.classList.remove(className);
           }
         }
       } else {
-        if(!propValue && typeof previousValue === "string") {
+        if (!propValue && typeof previousValue === "string") {
           propValue = "";
         }
-		if (previousValue !== propValue && typeof previousValue !== "function") {
-		  // Not updating functions is by design
-          domNode[propName] = propValue;
-		}
+        if (typeof propValue === "function") {
+          // Not updating functions is by design
+          continue;
+        }
+        if (propName === "value" && domNode["value"] === propValue) {
+          continue; // Otherwise the cursor position would get updated
+        }
+        domNode[propName] = propValue;
       }
     }
   };
 
   var addChildren = function (domNode, children, options) {
-    if(!children) {
+    if (!children) {
       return;
     }
     children.forEach(function (child) {
-      createDom(child, options);
-      domNode.appendChild(child.domNode);
+      createDom(child, function (childDomNode) {
+        domNode.appendChild(childDomNode);
+      }, options);
     });
   };
 
   var same = function (vnode1, vnode2) {
-    if(vnode1.vnodeSelector !== vnode2.vnodeSelector) {
+    if (vnode1.vnodeSelector !== vnode2.vnodeSelector) {
       return false;
     }
-    if(vnode1.properties && vnode2.properties) {
+    if (vnode1.properties && vnode2.properties) {
       return vnode1.properties.key === vnode2.properties.key;
     }
-	if (vnode1.hasOwnProperty("text")) {
-	  return vnode1.text === vnode2.text;
-	}
     return !vnode1.properties && !vnode2.properties;
   };
 
-  var indexOfChild = function (children, sameAs, start) {
-    for(var i = start; i < children.length; i++) {
-      if(same(children[i], sameAs)) {
-        return i;
+  var findIndexOfChild = function (children, sameAs, start) {
+    if (sameAs.vnodeSelector !== "") {
+      // Never scan for text-nodes
+      for (var i = start; i < children.length; i++) {
+        if (same(children[i], sameAs)) {
+          return i;
+        }
       }
     }
     return -1;
   };
 
   var updateChildren = function (domNode, oldChildren, newChildren, options) {
-    if(oldChildren === newChildren) {
+    if (oldChildren === newChildren) {
       return;
     }
     oldChildren = oldChildren || emptyArray;
@@ -172,93 +210,97 @@
     var oldIndex = 0;
     var newIndex = 0;
     var i;
-    while(newIndex < newChildren.length) {
+    while (newIndex < newChildren.length) {
       var oldChild = (oldIndex < oldChildren.length) ? oldChildren[oldIndex] : null;
       var newChild = newChildren[newIndex];
-      if(oldChild && same(oldChild, newChild)) {
+      if (oldChild && same(oldChild, newChild)) {
         updateDom(oldChild, newChild, options);
         oldIndex++;
       } else {
-        var findOldIndex = indexOfChild(oldChildren, newChild, oldIndex + 1);
-        if(findOldIndex >= 0) {
+        var findOldIndex = findIndexOfChild(oldChildren, newChild, oldIndex + 1);
+        if (findOldIndex >= 0) {
           // Remove preceding missing children
-          for(i = oldIndex; i < findOldIndex; i++) {
+          for (i = oldIndex; i < findOldIndex; i++) {
             diff.nodeToRemove(oldChildren[i].domNode);
           }
           updateDom(oldChildren[findOldIndex], newChild, options);
           oldIndex = findOldIndex + 1;
         } else {
           // New child
-          createDom(newChild, options);
-          if(oldIndex < oldChildren.length) {
-            var nextChild = oldChildren[oldIndex];
-            nextChild.domNode.parentNode.insertBefore(newChild.domNode, nextChild.domNode);
-          } else {
-            domNode.appendChild(newChild.domNode);
-          }
+          createDom(newChild, function (childDomNode) {
+            if (oldIndex < oldChildren.length) {
+              var nextChild = oldChildren[oldIndex];
+              nextChild.domNode.parentNode.insertBefore(childDomNode, nextChild.domNode);
+            } else {
+              domNode.appendChild(childDomNode);
+            }
+          }, options);
           diff.nodeAdded(newChild.domNode);
         }
       }
       newIndex++;
     }
-    if(oldChildren.length > oldIndex) {
+    if (oldChildren.length > oldIndex) {
       // Remove child fragments
-      for(i = oldIndex; i < oldChildren.length; i++) {
+      for (i = oldIndex; i < oldChildren.length; i++) {
         diff.nodeToRemove(oldChildren[i].domNode);
       }
     }
   };
 
-  var classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
-
-  var createDom = function (vnode, options) {
-    if(vnode.vnodeSelector === "") {
+  var createDom = function (vnode, afterCreate, options) {
+    if (vnode.vnodeSelector === "") {
       vnode.domNode = document.createTextNode(vnode.text);
+      afterCreate(vnode.domNode);
     } else {
       var domNode, part, i, type;
       var tagParts = vnode.vnodeSelector.split(classIdSplit);
-      for(i = 0; i < tagParts.length; i++) {
+      for (i = 0; i < tagParts.length; i++) {
         part = tagParts[i];
-        if(!part) {
+        if (!part) {
           continue;
         }
         type = part.charAt(0);
-        if(!domNode) {
+        if (!domNode) {
           // create domNode from the first part
-          if(part === "svg") {
-            options = extend(options, { namespace: "http://www.w3.org/2000/svg" }); // extension not yet needed
+          if (part === "svg") {
+            options = extend(options, { namespace: "http://www.w3.org/2000/svg" });
           }
-          if(options.namespace) {
+          if (options.namespace) {
             domNode = vnode.domNode = document.createElementNS(options.namespace, part);
           } else {
             domNode = vnode.domNode = document.createElement(part);
           }
-        } else if(type === ".") {
+          afterCreate(domNode);
+        } else if (type === ".") {
           domNode.classList.add(part.substring(1));
-        } else if(type === "#") {
+        } else if (type === "#") {
           domNode.id = part.substr(1);
         }
       }
-      setProperties(domNode, vnode.properties);
-      addChildren(domNode, vnode.children, options);
-      if(vnode.properties && vnode.properties.afterCreate) {
-        vnode.properties.afterCreate(domNode, vnode.vnodeSelector, vnode.properties, vnode.children);
-      }
+      initPropertiesAndChildren(domNode, vnode, options);
+    }
+  };
+
+  var initPropertiesAndChildren = function (domNode, vnode, options) {
+    setProperties(domNode, vnode.properties);
+    addChildren(domNode, vnode.children, options);
+    if (vnode.properties && vnode.properties.afterCreate) {
+      vnode.properties.afterCreate(domNode, vnode.vnodeSelector, vnode.properties, vnode.children);
     }
   };
 
   var updateDom = function (previous, vnode, options) {
     var domNode = previous.domNode;
-    if(!domNode) {
+    if (!domNode) {
       throw new Error("previous node was not mounted");
     }
-    if(previous === vnode) {
+    if (previous === vnode) {
       return; // we assume that nothing has changed
     }
     if (vnode.vnodeSelector === "") {
-      if(vnode.text !== previous.text) {
-        vnode.domNode = document.createTextNode(vnode.text);
-        return;
+      if (vnode.text !== previous.text) {
+        domNode.nodeValue = vnode.text;
       }
     } else {
       updateProperties(domNode, previous.properties, vnode.properties);
@@ -268,76 +310,103 @@
   };
 
   var domsetter = {
-    h: function (tagName, properties, children) {
-      if(!children && (typeof properties === "string" || Array.isArray(properties) 
+    h: function (selector, properties, children) {
+      if (!children && (typeof properties === "string" || Array.isArray(properties)
 	      || (properties && properties.hasOwnProperty("vnodeSelector")))) {
         children = properties;
         properties = null;
       }
-
-      children = flatten(children);
+      children = flatten(selector, children);
       return {
-        vnodeSelector: tagName,
+        vnodeSelector: selector,
         properties: properties,
         children: children,
         domNode: null
       };
     },
 
-    mount: function (element, vnode) {
-      createDom(vnode, {});
-      element.appendChild(vnode.domNode);
+    createDom: function (vnode, options) {
+      options = applyDefaultOptions(options);
+      createDom(vnode, noop, {});
       return {
-        update: function (updatedVnode, options) {
-          options = options || {};
-          if(!options.diff) {
-            options.diff = immediateDiff;
-          }
+        update: function (updatedVnode) {
           updateDom(vnode, updatedVnode, options);
           vnode = updatedVnode;
-        }
+        },
+        domNode: vnode.domNode
+      };
+    },
+
+    mergeDom: function (element, vnode, options) {
+      options = applyDefaultOptions(options);
+      vnode.domNode = element;
+      initPropertiesAndChildren(element, vnode, options);
+      return {
+        update: function (updatedVnode) {
+          updateDom(vnode, updatedVnode, options);
+          vnode = updatedVnode;
+        },
+        domNode: element
       };
     },
 
     renderLoop: function (element, renderFunction, options) {
-      var scheduled = null;
-	  var vnode = domsetter.h("placeholder", {}, []);
-	  vnode.domNode = element;
-      var doUpdate = function () {
+      var mount = null;
+      var scheduled;
+      var doRender = function () {
         scheduled = null;
-		var updatedVnode = renderFunction();
-        updateDom(vnode, updatedVnode, options);
-        vnode = updatedVnode;
+        if (!mount) {
+          mount = domsetter.mergeDom(element, renderFunction(), options);
+        } else {
+          mount.update(renderFunction());
+        }
       };
-      var result = {
-        update: function () {
-          if(!scheduled) {
-            scheduled = requestAnimationFrame(doUpdate);
+      scheduled = requestAnimationFrame(doRender);
+      return {
+        renderNeeded: function () {
+          if (!scheduled) {
+            scheduled = requestAnimationFrame(doRender);
           }
         },
         destroy: function () {
-          if(scheduled) {
+          if (scheduled) {
             cancelAnimationFrame(scheduled);
+            scheduled = null;
           }
         }
       };
-	  result.update();
-	  return result;
-    }
-  };
+    },
 
-  domsetter.h.text = function (key, text) {
-    return {
-      vnodeSelector: "",
-      properties: { key: key },
-      text: text,
-      domNode: null
-    };
+    createCache: function () {
+      var cachedValue = null;
+      var cachedKeys = null;
+      var result = {
+        invalidate: function () {
+          cachedValue = null;
+          cachedKeys = null;
+        },
+        use: function (keys, renderFunction) {
+          if (cachedKeys) {
+            for (var i = 0; i < keys.length; i++) {
+              if (cachedKeys[i] !== keys[i]) {
+                cachedValue = null;
+              }
+            }
+          }
+          if (!cachedValue) {
+            cachedValue = renderFunction();
+            cachedKeys = keys;
+          }
+          return cachedValue;
+        }
+      };
+      return result;
+    }
   };
 
   if (global.module !== undefined && global.module.exports) {
     // Node and other CommonJS-like environments that support module.exports
-    module.exports = domsetter;
+    global.module.exports = domsetter;
   } else if (typeof global.define == 'function' && global.define.amd) {
     // AMD / RequireJS
     define(function () {

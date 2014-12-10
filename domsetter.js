@@ -12,9 +12,11 @@
     Object.keys(base).forEach(function (key) {
       result[key] = base[key];
     });
-    Object.keys(overrides).forEach(function (key) {
-      result[key] = overrides[key];
-    });
+    if (overrides) {
+      Object.keys(overrides).forEach(function (key) {
+        result[key] = overrides[key];
+      });
+    }
     return result;
   };
 
@@ -35,6 +37,9 @@
   };
 
   var checkForDuplicates = function (parentSelector, children, sameAs, endAt) {
+    if (!domsetter.safetyEnabled) {
+      return;
+    }
     if (sameAs.hasOwnProperty("text")) {
       return; // textnodes can be safely ignored.
     }
@@ -49,13 +54,25 @@
     }
   };
 
+  var toTextVNode = function (data) {
+    return {
+      vnodeSelector: "",
+      text: (data == null) ? "" : ("" + data),
+      domNode: null
+    };
+  };
+
   // removes nulls, flattens embedded arrays
   var flatten = function (parentSelector, children) {
     if (children === null || children === undefined) {
       return null;
     }
     if (!Array.isArray(children)) {
-      return [children];
+      if (children.hasOwnProperty("vnodeSelector")) {
+        return [children];
+      } else {
+        return [toTextVNode(children)];
+      }
     }
     var index = 0;
     while (index < children.length) {
@@ -65,20 +82,12 @@
       } else if (Array.isArray(child)) {
         children.splice(index, 1);
         index = flattenInto(parentSelector, child, children, index);
-      } else if (typeof child === "string") {
-        children[index] = {
-          vnodeSelector: "",
-          text: child,
-          domNode: null
-        };
+      } else if (child.hasOwnProperty("vnodeSelector")) {
+        checkForDuplicates(parentSelector, children, child, index);
         index++;
       } else {
-        if (child.hasOwnProperty("vnodeSelector")) {
-          checkForDuplicates(parentSelector, children, child, index);
-          index++;
-        } else {
-          throw new Error("Not a valid vnode: " + child);
-        }
+        children[index] = toTextVNode(child);
+        index++;
       }
     }
     return children;
@@ -309,6 +318,32 @@
     vnode.domNode = previous.domNode;
   };
 
+  // polyfill for window.performance
+  window.performance = (window.performance || {
+    offset: new Date(),
+    now: function now() {
+      return new Date() - this.offset;
+    }
+  });
+
+  var stats = {
+    lastCreateVDom: null,
+    lastCreateDom: null,
+    lastUpdateVDom: null,
+    lastUpdateDom: null,
+    lastRenderLoop: null,
+    createExecuted: function (timing1, timing2, timing3, renderLoop) {
+      stats.lastRenderLoop = renderLoop;
+      stats.lastCreateVDom = timing2 - timing1;
+      stats.lastCreateDom = timing3 - timing2;
+    },
+    updateExecuted: function (timing1, timing2, timing3, renderLoop) {
+      stats.lastRenderLoop = renderLoop;
+      stats.lastUpdateVDom = timing2 - timing1;
+      stats.lastUpdateDom = timing3 - timing2;
+    }
+  };
+
   var domsetter = {
     h: function (selector, properties, children) {
       if (!children && (typeof properties === "string" || Array.isArray(properties)
@@ -356,13 +391,21 @@
       var doRender = function () {
         scheduled = null;
         if (!mount) {
-          mount = domsetter.mergeDom(element, renderFunction(), options);
+          var timing1 = window.performance.now();
+          var vnode = renderFunction();
+          var timing2 = window.performance.now();
+          mount = domsetter.mergeDom(element, vnode, options);
+          stats.createExecuted(timing1, timing2, window.performance.now(), api);
         } else {
-          mount.update(renderFunction());
+          var updateTiming1 = window.performance.now();
+          var updatedVnode = renderFunction();
+          var updateTiming2 = window.performance.now();
+          mount.update(updatedVnode);
+          stats.updateExecuted(updateTiming1, updateTiming2, window.performance.now(), api);
         }
       };
       scheduled = requestAnimationFrame(doRender);
-      return {
+      var api = {
         renderNeeded: function () {
           if (!scheduled) {
             scheduled = requestAnimationFrame(doRender);
@@ -375,6 +418,7 @@
           }
         }
       };
+      return api;
     },
 
     createCache: function () {
@@ -401,7 +445,10 @@
         }
       };
       return result;
-    }
+    },
+
+    stats: stats,
+    safetyEnabled: true
   };
 
   if (global.module !== undefined && global.module.exports) {
@@ -409,7 +456,7 @@
     global.module.exports = domsetter;
   } else if (typeof global.define == 'function' && global.define.amd) {
     // AMD / RequireJS
-    define(function () {
+    global.define(function () {
       return domsetter;
     });
   } else {

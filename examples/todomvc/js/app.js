@@ -25,10 +25,12 @@
     if (evt.keyCode === 13 /* Enter */) {
       addTodo();
       newTodoTitle = "";
-      main.scheduleRender();
-    } else if (evt.keyCode === 27 /* Esc */) {
+      evt.preventDefault();
+    } else if(evt.keyCode === 27 /* Esc */) {
       newTodoTitle = "";
-      main.scheduleRender();
+      evt.preventDefault();
+    } else {
+      newTodoTitle = evt.target.value;
     }
   };
   
@@ -37,14 +39,14 @@
     return h("section#todoapp", [
       h("header#header", [
         h("h1", ["todos"]),
-        h("input#new-todo", { autofocus: true, placeholder: "What needs to be done?", onkeyup: newTodoKeyup })
+        h("input#new-todo", { autofocus: true, placeholder: "What needs to be done?", onkeyup: newTodoKeyup, value: newTodoTitle })
       ]),
       h("section#main", [
         h("input#toggle-all", { type: "checkbox" }),
         h("label", {htmlFor:"toggle-all"}, ["Mark all as complete"]),
         h("ul#todo-list", [
           todos.map(function (todo) {
-            return h("li", {key: todo.id, classes: {completed: todo.completed} } [
+            return h("li", {key: todo.id, classes: {completed: todo.completed} }, [
               h("div.view", [
                 h("input.toggle", { type: "checkbox" }),
                 h("label", [todo.title]),

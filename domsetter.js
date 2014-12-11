@@ -114,10 +114,11 @@
     return extend(defaultOptions, options);
   };
 
-  var setProperties = function (domNode, properties) {
+  var setProperties = function (domNode, properties, options) {
     if (!properties) {
       return;
     }
+    var eventHandlerInterceptor = options.eventHandlerInterceptor;
     for (var propName in properties) {
       var propValue = properties[propName];
       if (propName === "class" || propName === "className" || propName === "classList") {
@@ -130,12 +131,15 @@
           }
         }
       } else {
+        if(eventHandlerInterceptor && typeof propValue === "function") {
+          propValue = eventHandlerInterceptor(propName, propValue); // intercept eventhandlers
+        }
         domNode[propName] = propValue;
       }
     }
   };
 
-  var updateProperties = function (domNode, previousProperties, properties) {
+  var updateProperties = function (domNode, previousProperties, properties, options) {
     if (!properties) {
       return;
     }
@@ -292,7 +296,7 @@
   };
 
   var initPropertiesAndChildren = function (domNode, vnode, options) {
-    setProperties(domNode, vnode.properties);
+    setProperties(domNode, vnode.properties, options);
     addChildren(domNode, vnode.children, options);
     if (vnode.properties && vnode.properties.afterCreate) {
       vnode.properties.afterCreate(domNode, vnode.vnodeSelector, vnode.properties, vnode.children);
@@ -312,7 +316,7 @@
         domNode.nodeValue = vnode.text;
       }
     } else {
-      updateProperties(domNode, previous.properties, vnode.properties);
+      updateProperties(domNode, previous.properties, vnode.properties, options);
       updateChildren(domNode, previous.children, vnode.children, options);
     }
     vnode.domNode = previous.domNode;
@@ -386,6 +390,14 @@
     },
 
     renderLoop: function (element, renderFunction, options) {
+      options = applyDefaultOptions(options);
+      options.eventHandlerInterceptor = function (propertyName, functionPropertyArgument) {
+        return function () {
+          // intercept function calls (event handlers) to do a render afterwards.
+          api.scheduleRender();
+          return functionPropertyArgument.apply(this, arguments);
+        };
+      };
       var mount = null;
       var scheduled;
       var doRender = function () {
@@ -406,7 +418,7 @@
       };
       scheduled = requestAnimationFrame(doRender);
       var api = {
-        renderNeeded: function () {
+        scheduleRender: function () {
           if (!scheduled) {
             scheduled = requestAnimationFrame(doRender);
           }

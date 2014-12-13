@@ -2,6 +2,12 @@
 
   "use strict";
 
+  // constant flags
+  var delayInsertDom = false;
+  var skipUniqueSelectorCheck = false;
+  var clearOldProperties = false; // only for nodes without a key
+  var checkEqualsBeforeAssigningProperty = false;
+
   // Utilities
 
   var noop = function () { };
@@ -37,7 +43,7 @@
   };
 
   var checkForDuplicates = function (parentSelector, children, sameAs, endAt) {
-    if (!domsetter.safetyEnabled) {
+    if (skipUniqueSelectorCheck) {
       return;
     }
     if (sameAs.hasOwnProperty("text")) {
@@ -152,6 +158,9 @@
           continue;
         }
         for (var className in propValue) {
+          if(clearOldProperties) {
+            previousValue = previousValue || {};
+          }
           var on = !!propValue[className];
           var previousOn = !!previousValue[className];
           if (on === previousOn) {
@@ -167,14 +176,43 @@
         if (!propValue && typeof previousValue === "string") {
           propValue = "";
         }
-        if (typeof propValue === "function") {
+        if(!clearOldProperties && typeof propValue === "function") {
           // Not updating functions is by design
           continue;
+        } else {
+          if (typeof propValue === "function") {
+            if (options.eventHandlerInterceptor && propValue !== previousValue) {
+              propValue = options.eventHandlerInterceptor(propName, propValue); // intercept eventhandlers
+            } else {
+              continue; // do not overwrite with unintercepted function
+            }
+          }
         }
-        if (propName === "value" && domNode["value"] === propValue) {
-          continue; // Otherwise the cursor position would get updated
+        if (propName === "value") {
+          if(domNode["value"] === propValue) {
+            continue; // Otherwise the cursor position would get updated
+          }
         }
-        domNode[propName] = propValue;
+        if(!checkEqualsBeforeAssigningProperty || propValue !== previousValue || propName === "value") {
+          domNode[propName] = propValue;
+        }
+      }
+    }
+    if(clearOldProperties) {
+      for(var propName2 in previousProperties) {
+        if (!properties.hasOwnProperty(propName2)) {
+          var previousValue2 = previousProperties[propName2];
+          // nullify the value
+          if(propName2 === "classes") {
+            for(var oldClassName in previousValue2) {
+              domNode.classList.remove(oldClassName);
+            }
+          } else if(typeof previousValue2 === "string") {
+            domNode[propName2] = "";
+          } else {
+            domNode[propName2] = null;
+          }
+        }
       }
     }
   };
@@ -264,7 +302,7 @@
   var createDom = function (vnode, afterCreate, options) {
     if (vnode.vnodeSelector === "") {
       vnode.domNode = document.createTextNode(vnode.text);
-      afterCreate(vnode.domNode);
+      !delayInsertDom && afterCreate(vnode.domNode);
     } else {
       var domNode, part, i, type;
       var tagParts = vnode.vnodeSelector.split(classIdSplit);
@@ -284,7 +322,7 @@
           } else {
             domNode = vnode.domNode = document.createElement(part);
           }
-          afterCreate(domNode);
+          !delayInsertDom && afterCreate(domNode);
         } else if (type === ".") {
           domNode.classList.add(part.substring(1));
         } else if (type === "#") {
@@ -292,6 +330,7 @@
         }
       }
       initPropertiesAndChildren(domNode, vnode, options);
+      delayInsertDom && afterCreate(domNode);
     }
   };
 
@@ -460,7 +499,6 @@
     },
 
     stats: stats,
-    safetyEnabled: true
   };
 
   if (global.module !== undefined && global.module.exports) {

@@ -10,7 +10,13 @@ window.createTodoViewModel = function (todosViewModel, id, title) {
 
     remove: function (evt) {
       evt.preventDefault();
-      todosViewModel.todos.splice(todosViewModel.todos.indexOf(vm), 1);
+      todosViewModel.removeTodo(vm);
+    },
+
+    toggleClicked: function (evt) {
+      evt.preventDefault();
+      vm.completed = !vm.completed;
+      todosViewModel.todoCompletedUpdated(vm, vm.completed);
     }
 
   };

@@ -24,7 +24,8 @@ window.createTodosViewModel = function () {
     newTodoTitle: "",
     todos: [],
 
-    newTodoKeyup: function (evt) {
+    newTodoKeypress: function (evt) {
+      vm.newTodoTitle = evt.target.value;
       if (evt.keyCode === 13 /* Enter */) {
         addTodo();
         vm.newTodoTitle = "";
@@ -32,9 +33,11 @@ window.createTodosViewModel = function () {
       } else if (evt.keyCode === 27 /* Esc */) {
         vm.newTodoTitle = "";
         evt.preventDefault();
-      } else {
-        vm.newTodoTitle = evt.target.value;
       }
+    },
+
+    newTodoInput: function (evt) {
+      vm.newTodoTitle = evt.target.value;
     },
 
     checkedAllClicked: function (evt) {

@@ -11,7 +11,7 @@
     return h("section#todoapp", [
       h("header#header", [
         h("h1", ["todos"]),
-        h("input#new-todo", { autofocus: true, placeholder: "What needs to be done?", onkeyup: vm.newTodoKeyup, value: vm.newTodoTitle })
+        h("input#new-todo", { autofocus: true, placeholder: "What needs to be done?", onkeypress: vm.newTodoKeypress, oninput: vm.newTodoInput, value: vm.newTodoTitle })
       ]),
       anyTodos ? [
         h("section#main", [

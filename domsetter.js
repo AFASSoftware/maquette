@@ -3,10 +3,10 @@
   "use strict";
 
   // constant flags
-  var delayInsertDom = false;
+  var delayInsertDom = false; // To be verified which is fastest
   var skipUniqueSelectorCheck = false;
   var clearOldProperties = false; // only for nodes without a key
-  var checkEqualsBeforeAssigningProperty = false;
+  var checkEqualsBeforeAssigningProperty = true; // true is fastest!
 
   // Utilities
 
@@ -191,6 +191,9 @@
         if (propName === "value") {
           if(domNode["value"] === propValue) {
             continue; // Otherwise the cursor position would get updated
+          } else {
+            domNode["value"] = propValue;
+            continue;
           }
         }
         if(!checkEqualsBeforeAssigningProperty || propValue !== previousValue || propName === "value") {

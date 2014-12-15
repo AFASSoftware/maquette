@@ -1,0 +1,76 @@
+﻿<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Template • TodoMVC</title>
+		<link rel="stylesheet" href="bower_components/todomvc-common/base.css">
+	</head>
+<body>
+  <section id="todoapp"></section>
+  
+  <footer id="info">
+    <p>Double-click to edit a todo</p>
+    <p>Template by <a href="http://github.com/sindresorhus">Sindre Sorhus</a></p>
+    <p>Created by <a href="http://github.com/johan-gorter">Johan Gorter</a></p>
+    <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+  </footer>
+
+  <script src="bower_components/todomvc-common/base.js"></script>
+
+  <script src="../../domsetter.js"></script>
+  <script src="../../domsetter-extras.js"></script>
+
+  <script src="js/todo/todoView.js"></script>
+  <script src="js/todo/todoViewModel.js"></script>
+  <script src="js/todos/todosView.js"></script>
+  <script src="js/todos/todosViewModel.js"></script>
+
+  <script>
+    
+    var domsetter = window.domsetter;
+    var domsetterExtras = window.domsetterExtras;
+
+    var viewModel = window.createTodosViewModel();
+
+    document.addEventListener('DOMContentLoaded', function () {
+      domsetterExtras.syncRenderLoop(document.getElementById("todoapp"), function () {
+        return window.renderTodosView(viewModel);
+      }, { /* No render options */ });
+
+      var i;
+      var newTodo = document.querySelector("#new-todo");
+      newTodo.focus();
+
+      var start = window.performance.now();
+      console.log("Adding todos");
+      for (i = 0; i < 50; i++) {
+        var inputEvent = document.createEvent('Event');
+        inputEvent.initEvent('input', true, true);
+        newTodo.value = 'Domsetter ------- Something to do ' + i;
+        newTodo.dispatchEvent(inputEvent);
+
+        var keydownEvent = document.createEvent('Event');
+        keydownEvent.initEvent('keypress', true, true);
+        keydownEvent.keyCode = 13; // VK_ENTER
+        newTodo.dispatchEvent(keydownEvent);
+      }
+
+      console.log("Clicking checkboxes");
+      var checkboxes = document.querySelectorAll('.toggle');
+      for(i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].click();
+      }
+
+      console.log("Deleting items");
+      var deleteButtons = document.querySelectorAll('.destroy');
+      for(i = deleteButtons.length - 1; i > -1; i--) {
+        deleteButtons[i].click();
+      }
+      console.log("Deleting done");
+      console.log("Running time: "+(window.performance.now() - start));
+    });
+
+  </script>
+
+</body>
+</html>

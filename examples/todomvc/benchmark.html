@@ -37,38 +37,53 @@
         return window.renderTodosView(viewModel);
       }, { /* No render options */ });
 
-      var i;
       var newTodo = document.querySelector("#new-todo");
       newTodo.focus();
 
-      var start = window.performance.now();
-      console.log("Adding todos");
-      for (i = 0; i < 50; i++) {
-        var inputEvent = document.createEvent('Event');
-        inputEvent.initEvent('input', true, true);
-        newTodo.value = 'Domsetter ------- Something to do ' + i;
-        newTodo.dispatchEvent(inputEvent);
+      var run = function () {
+        var i;
+        var start = window.performance.now();
+        console.log("Adding todos");
+        for(i = 0; i < 50; i++) {
+          var inputEvent = document.createEvent('Event');
+          inputEvent.initEvent('input', true, true);
+          newTodo.value = 'Domsetter ------- Something to do ' + i;
+          newTodo.dispatchEvent(inputEvent);
 
-        var keydownEvent = document.createEvent('Event');
-        keydownEvent.initEvent('keypress', true, true);
-        keydownEvent.keyCode = 13; // VK_ENTER
-        newTodo.dispatchEvent(keydownEvent);
-      }
+          var keydownEvent = document.createEvent('Event');
+          keydownEvent.initEvent('keypress', true, true);
+          keydownEvent.keyCode = 13; // VK_ENTER
+          newTodo.dispatchEvent(keydownEvent);
+        }
 
-      console.log("Clicking checkboxes");
-      var checkboxes = document.querySelectorAll('.toggle');
-      for(i = 0; i < checkboxes.length; i++) {
-        checkboxes[i].click();
-      }
+        console.log("Clicking checkboxes");
+        var checkboxes = document.querySelectorAll('.toggle');
+        for(i = 0; i < checkboxes.length; i++) {
+          checkboxes[i].click();
+        }
 
-      console.log("Deleting items");
-      var deleteButtons = document.querySelectorAll('.destroy');
-      for(i = deleteButtons.length - 1; i > -1; i--) {
-        deleteButtons[i].click();
-      }
-      console.log("Deleting done");
-      console.log("Running time: "+(window.performance.now() - start));
+        console.log("Deleting items");
+        var deleteButtons = document.querySelectorAll('.destroy');
+        for(i = deleteButtons.length - 1; i > -1; i--) {
+          deleteButtons[i].click();
+        }
+        console.log("Deleting done");
+        var result = (window.performance.now() - start);
+        console.log("Running time: " + result);
+        return result;
+      };
+
+      run();
+      run();
+      run();
+      var result = 0;
+      for (var i = 0; i < 10; i++) {
+        result = result * i + run();
+        result = result / (i + 1);
+      };
+      console.log("FINAL RESULT: " + result);
     });
+
 
   </script>
 

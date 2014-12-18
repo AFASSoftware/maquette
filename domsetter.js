@@ -3,7 +3,7 @@
   "use strict";
 
   // constant flags
-  var delayInsertDom = false; // To be verified which is fastest
+  var delayInsertDom = false; // don't care
   var skipUniqueSelectorCheck = false;
   var clearOldProperties = false; // only for nodes without a key
   var checkEqualsBeforeAssigningProperty = true; // true is fastest!
@@ -28,13 +28,13 @@
 
   // Hyperscript helper functions
 
-  var flattenInto = function (parentSelector, insertions, main, mainIndex) {
+  var flattenInto = function (parentSelector, insertions, main, mainIndex, selectorsThusFar) {
     for (var i = 0; i < insertions.length; i++) {
       var item = insertions[i];
       if (Array.isArray(item)) {
         mainIndex = flattenInto(item, main, mainIndex);
       } else {
-        checkForDuplicates(parentSelector, main, item, mainIndex);
+        checkForDuplicateSelectors(parentSelector, item, selectorsThusFar);
         main.splice(mainIndex, 0, item);
         mainIndex++;
       }
@@ -42,22 +42,23 @@
     return mainIndex;
   };
 
-  var checkForDuplicates = function (parentSelector, children, sameAs, endAt) {
+  var checkForDuplicateSelectors = function (parentSelector, sameAs, selectorsThusFar) {
     if (skipUniqueSelectorCheck) {
       return;
     }
-    if (sameAs.hasOwnProperty("text")) {
+    var selector = sameAs.vnodeSelector;
+    if (selector === "") {
       return; // textnodes can be safely ignored.
     }
-    for (var i = 0; i < endAt; i++) {
-      if (same(children[0], sameAs)) {
-        if (!sameAs.properties || !sameAs.properties.key) {
-          throw new Error("[" + parentSelector + "] contains undistinguishable child nodes [" + sameAs.vnodeSelector + "], please add a key property.");
-        } else {
-          throw new Error("[" + parentSelector + "] contains two children with the same key:" + sameAs.properties.key);
-        }
+    if(sameAs.properties && sameAs.properties.key) {
+      return; // uniqueness of keys is not checked for performance sake
+    }
+    for (var i = 0; i < selectorsThusFar.length; i++) {
+      if (selector === selectorsThusFar[i]) {
+        throw new Error("[" + parentSelector + "] contains undistinguishable child nodes [" + selector + "], please add unique key properties.");
       }
     }
+    selectorsThusFar.push(selector);
   };
 
   var toTextVNode = function (data) {
@@ -81,15 +82,16 @@
       }
     }
     var index = 0;
+    var selectorsThusFar = [];
     while (index < children.length) {
       var child = children[index];
       if (!child) {
         children.splice(index, 1);
       } else if (Array.isArray(child)) {
         children.splice(index, 1);
-        index = flattenInto(parentSelector, child, children, index);
+        index = flattenInto(parentSelector, child, children, index, selectorsThusFar);
       } else if (child.hasOwnProperty("vnodeSelector")) {
-        checkForDuplicates(parentSelector, children, child, index);
+        checkForDuplicateSelectors(parentSelector, child, selectorsThusFar);
         index++;
       } else {
         children[index] = toTextVNode(child);
@@ -103,7 +105,7 @@
 
   var classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
 
-  var immediateDiff = {
+  var immediateTransitions = {
     nodeToRemove: function (node) {
       node.parentNode.removeChild(node);
     },
@@ -113,7 +115,7 @@
 
   var defaultOptions = {
     namespace: null,
-    diff: immediateDiff
+    transitions: immediateTransitions
   };
 
   var applyDefaultOptions = function (options) {
@@ -259,7 +261,7 @@
     }
     oldChildren = oldChildren || emptyArray;
     newChildren = newChildren || emptyArray;
-    var diff = options.diff;
+    var transitions = options.transitions;
 
     var oldIndex = 0;
     var newIndex = 0;
@@ -275,7 +277,7 @@
         if (findOldIndex >= 0) {
           // Remove preceding missing children
           for (i = oldIndex; i < findOldIndex; i++) {
-            diff.nodeToRemove(oldChildren[i].domNode);
+            transitions.nodeToRemove(oldChildren[i].domNode);
           }
           updateDom(oldChildren[findOldIndex], newChild, options);
           oldIndex = findOldIndex + 1;
@@ -289,7 +291,7 @@
               domNode.appendChild(childDomNode);
             }
           }, options);
-          diff.nodeAdded(newChild.domNode);
+          transitions.nodeAdded(newChild.domNode);
         }
       }
       newIndex++;
@@ -297,7 +299,7 @@
     if (oldChildren.length > oldIndex) {
       // Remove child fragments
       for (i = oldIndex; i < oldChildren.length; i++) {
-        diff.nodeToRemove(oldChildren[i].domNode);
+        transitions.nodeToRemove(oldChildren[i].domNode);
       }
     }
   };
@@ -305,7 +307,7 @@
   var createDom = function (vnode, afterCreate, options) {
     if (vnode.vnodeSelector === "") {
       vnode.domNode = document.createTextNode(vnode.text);
-      !delayInsertDom && afterCreate(vnode.domNode);
+      afterCreate(vnode.domNode);
     } else {
       var domNode, part, i, type;
       var tagParts = vnode.vnodeSelector.split(classIdSplit);

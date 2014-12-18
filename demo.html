@@ -19,30 +19,12 @@
     }
   </style>
   <script src="domsetter.js"></script>
+  <script src="bower_components/velocity/velocity.js"></script>
+  <script src="bower_components/velocity/velocity.ui.js"></script>
+  <script src="velocity-transitions.js"></script>
   <script src="showStats.js"></script>
   <script>
     var h = window.domsetter.h;
-
-    var simplisticDiff = {
-      nodeToRemove: function (node) {
-        node.classList.add("removed");
-        setTimeout(function () {
-          node.parentNode.removeChild(node);
-        }, 500);
-      },
-      nodeAdded: function (node) {
-        node.classList.add("added");
-        setTimeout(function () {
-          node.classList.remove("added");
-        }, 500);
-      },
-      nodeUpdated: function (node) {
-        node.classList.add("updated");
-        setTimeout(function () {
-          node.classList.remove("updated");
-        }, 500);
-      }
-    };
 
     document.addEventListener('DOMContentLoaded', function () {
       var items = [];
@@ -51,20 +33,20 @@
       }
       var render = function () {
         return h("div", {}, items.filter(function (item) { return item.visible; }).map(function (item) {
-          return h("div.item", { key: "item-" + item.id }, [item.title]);
+          return h("div.item", { key: "item-" + item.id, enterAnimation: "slideDown", exitAnimation: "slideUp" }, [item.title]);
         }));
       };
 
-      var mount = window.domsetter.createDom(render());
+      var mount = window.domsetter.createDom(render(), { transitions: window.velocityTransitions });
       document.body.appendChild(mount.domNode);
 
       setTimeout(function () {
         items[16].visible = false;
-        mount.update(render(), simplisticDiff);
+        mount.update(render());
         setTimeout(function () {
           items[1].visible = true;
           items[16].visible = true;
-          mount.update(render(), simplisticDiff);
+          mount.update(render());
         }, 700);
       }, 300);
     });

@@ -29,14 +29,8 @@
   var reRender = function (evt) {
     evt.preventDefault();
     if (domsetter.stats.lastRenderLoop) {
-      domsetter.stats.lastRenderLoop.renderNeeded();
+      domsetter.stats.lastRenderLoop.scheduleRender();
     }
-  };
-
-  var toggleSafe = function (evt) {
-    domsetter.safetyEnabled = !domsetter.safetyEnabled;
-    mount.update(render());
-    reRender(evt);
   };
 
   var render = function () {
@@ -48,7 +42,6 @@
       h("div#2", {}, ["" + stats.lastCreateDom]),
       h("div#3", {}, ["" + stats.lastUpdateVDom]),
       h("div#4", {}, ["" + stats.lastUpdateDom]),
-      h("button", { onclick: toggleSafe }, [domsetter.safetyEnabled ? "Safe" : "Unsafe"]),
       stats.lastRenderLoop ? h("button", { onclick: reRender }, ["Render"]) : null
     ]);
   };
@@ -57,9 +50,10 @@
 
   var tick = function () {
     mount.update(render());
+    interval = setTimeout(tick, 100);
   };
 
-  var interval = window.setInterval(tick, 1000);
+  var interval = window.setTimeout(tick, 100);
 
   window.domsetterShowStats = {
     destroy: function () {

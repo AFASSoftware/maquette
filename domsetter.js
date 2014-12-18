@@ -3,10 +3,7 @@
   "use strict";
 
   // constant flags
-  var delayInsertDom = false; // don't care
   var skipUniqueSelectorCheck = false;
-  var clearOldProperties = false; // only for nodes without a key
-  var checkEqualsBeforeAssigningProperty = true; // true is fastest!
 
   // Utilities
 
@@ -160,9 +157,6 @@
           continue;
         }
         for (var className in propValue) {
-          if(clearOldProperties) {
-            previousValue = previousValue || {};
-          }
           var on = !!propValue[className];
           var previousOn = !!previousValue[className];
           if (on === previousOn) {
@@ -178,18 +172,6 @@
         if (!propValue && typeof previousValue === "string") {
           propValue = "";
         }
-        if(!clearOldProperties && typeof propValue === "function") {
-          // Not updating functions is by design
-          continue;
-        } else {
-          if (typeof propValue === "function") {
-            if (options.eventHandlerInterceptor && propValue !== previousValue) {
-              propValue = options.eventHandlerInterceptor(propName, propValue); // intercept eventhandlers
-            } else {
-              continue; // do not overwrite with unintercepted function
-            }
-          }
-        }
         if (propName === "value") {
           if(domNode["value"] === propValue) {
             continue; // Otherwise the cursor position would get updated
@@ -197,26 +179,11 @@
             domNode["value"] = propValue;
             continue;
           }
-        }
-        if(!checkEqualsBeforeAssigningProperty || propValue !== previousValue || propName === "value") {
-          domNode[propName] = propValue;
-        }
-      }
-    }
-    if(clearOldProperties) {
-      for(var propName2 in previousProperties) {
-        if (!properties.hasOwnProperty(propName2)) {
-          var previousValue2 = previousProperties[propName2];
-          // nullify the value
-          if(propName2 === "classes") {
-            for(var oldClassName in previousValue2) {
-              domNode.classList.remove(oldClassName);
-            }
-          } else if(typeof previousValue2 === "string") {
-            domNode[propName2] = "";
-          } else {
-            domNode[propName2] = null;
+        } else if (propValue !== previousValue) {
+          if (typeof propValue === "function") {
+            throw new Error("Functions may not be updated on subsequent calls (property: "+propName+")");
           }
+          domNode[propName] = propValue;
         }
       }
     }
@@ -327,7 +294,7 @@
           } else {
             domNode = vnode.domNode = document.createElement(part);
           }
-          !delayInsertDom && afterCreate(domNode);
+          afterCreate(domNode);
         } else if (type === ".") {
           domNode.classList.add(part.substring(1));
         } else if (type === "#") {
@@ -335,7 +302,6 @@
         }
       }
       initPropertiesAndChildren(domNode, vnode, options);
-      delayInsertDom && afterCreate(domNode);
     }
   };
 

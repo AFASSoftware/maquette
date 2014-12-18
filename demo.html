@@ -32,27 +32,26 @@
         items.push({ title: "Item " + i, visible: i % 2 === 0, id: i });
       }
       var render = function () {
-        return h("div", {}, items.filter(function (item) { return item.visible; }).map(function (item) {
+        return h("div#target", {}, items.filter(function (item) { return item.visible; }).map(function (item) {
           return h("div.item", { key: "item-" + item.id, enterAnimation: "slideDown", exitAnimation: "slideUp" }, [item.title]);
         }));
       };
 
-      var mount = window.domsetter.createDom(render(), { transitions: window.velocityTransitions });
-      document.body.appendChild(mount.domNode);
+      var renderLoop = window.domsetter.renderLoop(document.querySelector("#target"), render, { transitions: window.velocityTransitions });
 
       setTimeout(function () {
         items[16].visible = false;
-        mount.update(render());
+        renderLoop.scheduleRender();
         setTimeout(function () {
           items[1].visible = true;
           items[16].visible = true;
-          mount.update(render());
+          renderLoop.scheduleRender();
         }, 700);
       }, 300);
     });
   </script>
 </head>
 <body>
-
+  <div id="target"></div>
 </body>
 </html>

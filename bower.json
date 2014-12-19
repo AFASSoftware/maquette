@@ -1,7 +1,7 @@
 {
   "name": "domsetter",
   "main": "domsetter.js",
-  "version": "0.0.0",
+  "version": "1.0.0-beta",
   "homepage": "https://github.com/johan-gorter/domsetter",
   "authors": [
     "Johan Gorter <johan@johangorter.com>"

@@ -1,0 +1,32 @@
+﻿<!doctype html>
+<html>
+<head>
+  <title>Hello world</title>
+  <script src="../../dist/domsetter.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var h = domsetter.h;
+
+      var name = "";
+
+      var nameInput = function (evt) {
+        name = evt.target.value;
+      };
+
+      var render = function () {
+        return h("body", [
+          h("p.input", [
+            h("span", ["What is your name? "]),
+            h("input", { type: "text", autofocus: true, oninput: nameInput })
+          ]),
+          name ? h("p.output", ["Hello " + name + "!"]) : null
+        ]);
+      };
+
+      domsetter.renderLoop(document.body, render, {});
+    });
+  </script>
+</head>
+<body>
+</body>
+</html>

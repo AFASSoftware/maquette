@@ -44,3 +44,5 @@ Temporary Items
 
 bower_components
 Web.config
+node_modules
+bower_components

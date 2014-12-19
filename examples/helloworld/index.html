@@ -7,23 +7,28 @@
     document.addEventListener('DOMContentLoaded', function () {
       var h = domsetter.h;
 
+      // Data
       var name = "";
 
+      // Event handler for the 'input' event on the 'name' input
       var nameInput = function (evt) {
         name = evt.target.value;
       };
 
+      // Renders the virtual DOM
       var render = function () {
         return h("body", [
           h("p.input", [
             h("span", ["What is your name? "]),
-            h("input", { type: "text", autofocus: true, oninput: nameInput })
+            h("input", { type: "text", autofocus: true, value: name, oninput: nameInput })
           ]),
           name ? h("p.output", ["Hello " + name + "!"]) : null
         ]);
       };
 
+      // Starts the renderLoop, which renders the virtual DOM at the right moments
       domsetter.renderLoop(document.body, render, {});
+
     });
   </script>
 </head>

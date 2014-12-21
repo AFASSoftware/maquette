@@ -32,9 +32,9 @@ Nested arrays are flattened and null and undefined values will be skipped.
 
 ### returns
 
-A [VNode](#VNode) object, used to render a real DOM later.
+A [VNode](#vnode) object, used to render a real DOM later.
  
-Because domdirector needs to be able to animate transitions and because it wants to be fast, you need to
+NOTE: Because domdirector needs to be able to animate transitions and because it wants to be fast, you need to
 follow these rules:
 
 * All children should either have a unique selector, or have a unique `key` property. 
@@ -52,22 +52,23 @@ function renderLoop(element, renderFunction, options) // returns a RenderLoop ob
 
 Starts a render loop that re-renders the DOM at the right moments. 
 The renderFunction is always executed on requestAnimationFrame.
-A render is scheduled to be executed on the next animation frame after:
+The renderFunction is scheduled to be executed on the next animation frame after:
 * The renderLoop was first started
-* The renderLoop.scheduleRender() function was called
+* The [`renderLoop.scheduleRender()`](#renderloopschedulerender) function was called
 * A registered event handler (onclick for example) was executed
 
 ### parameters
 
 * `element` *HTMLElement*  
-  The DOM node where the virtual DOM is rendered. See [mergeDom](#Domdirector.mergedom) for details on how this is done.
-* `renderFunction` *function*
+  The DOM node where the virtual DOM is rendered. See [mergeDom](#domdirectormergedom) for details on how this is done.
+* `renderFunction` *function*  
   The render function that takes zero arguments and returns a VNode.
-* `options` Options that influence how the DOM is rendered and updated.
+* `options` *object*  
+ Options that influence how the DOM is rendered and updated.
 
 ### returns
 
-A [RenderLoop](#RenderLoop) object containing a [`scheduleRender()`](#renderloopschedulerender) method.
+A [RenderLoop](#renderloop) object containing a [`scheduleRender()`](#renderloopschedulerender) method.
 
 ## Domdirector.createCache
 
@@ -75,11 +76,11 @@ A [RenderLoop](#RenderLoop) object containing a [`scheduleRender()`](#renderloop
 function createCache() // returns a CalculationCache object
 ```
 
-Creates a [CalculationCache](#CalculationCache) object, useful for caching VNode trees.
+Creates a [CalculationCache](#calculationcache) object, useful for caching VNode trees.
 
 ### returns
 
-A [CalculationCache](#CalculationCache) object.
+A [CalculationCache](#calculationcache) object.
 
 
 
@@ -88,21 +89,22 @@ A [CalculationCache](#CalculationCache) object.
 ```js
 function createDom(vnode, options) // returns a Rendering object
 ```
-The createDom method creates a real DOM tree given a VNode. The Rendering object returned will contain the 
-resulting DOM Node under the Rendering.domNode property.
-This is a low-level method. Users wil typically use Domdirector.renderLoop instead.
+The createDom method creates a real DOM tree given a [VNode](#vnode). The [Rendering](#rendering) object returned 
+will contain the resulting DOM Node under the [`Rendering.domNode`](#renderingdomnode) property.
+This is a low-level method. Users wil typically use [`Domdirector.renderLoop`](#domdirectorrenderloop) instead.
+
 NOTE: VNode objects may only be rendered once.
 
 ### parameters
 
 * `vnode` *VNode*  
-  A virtual DOM tree that was created using the `h()` function.
+  A virtual DOM tree that was created using the [`h()`](domdirectorh) function.
 * `options` *object*  
   Rendering options
 
 ### returns
 
-A [Rendering](#Rendering) object.
+A [Rendering](#rendering) object.
 
 
 
@@ -112,10 +114,12 @@ A [Rendering](#Rendering) object.
 function mergeDom(element, vnode, options) // returns a Rendering object
 ```
 
-The mergeDom method creates a real DOM tree at an already existing DOM element given a VNode. 
-The selector for the root VNode will be ignored, but its properties and children will be applied to the element provided.
+The mergeDom method creates a real DOM tree at an already existing DOM element given a [VNode](#vnode). 
+The selector for the root VNode will be ignored, but its properties and children will be applied to the provided
+element.
 This is a low-level method. Users wil typically use Domdirector.renderLoop instead.
-NOTE: VNode objects may only be rendered once.
+
+NOTE: [VNode](#vnode) objects may only be rendered once.
 
 ### parameters
 
@@ -123,19 +127,20 @@ NOTE: VNode objects may only be rendered once.
   The element that is used as the root of the virtual DOM. It usually matches the selector of vnode, but this
   is not a hard requirement.
 * `vnode` *VNode*  
-  The root of the virtual DOM tree that was created using the `h()` function.
+  The root of the virtual DOM tree that was created using the [`h()`](#domsetterh) function.
 * `options` *object*  
   Rendering options
 
 ### returns
 
-A [Rendering](#Rendering) object.
+A [Rendering](#rendering) object.
 
 
 
 ## RenderLoop
 
 A renderLoop is an object that reschedules the rendering of the virtual DOM at the right moment.
+It has the following properties:
 
 ## RenderLoop.scheduleRender
 
@@ -192,7 +197,7 @@ objects in the inputs array are compared using ===.
 * `inputs` *array*  
   Inputs is an array of objects that are to be compared using === with the previous invocation. They are
   assumed to be immutable primitive values.
-* `calculation` *function*
+* `calculation` *function*  
   Calculation is a function that takes zero arguments and returns an object (A VNode assumably) that can be cached.
 
 ## CalculationCache.invalidate()

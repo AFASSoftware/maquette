@@ -2,9 +2,9 @@
 
   "use strict";
 
-  var domsetter = global.domsetter;
+  var domdirector = global.domdirector;
 
-  var domsetterExtras = {
+  var domdirectorExtras = {
 
     // renderLoop which executes rendering synchronously. Added to be able to run performance tests.
     syncRenderLoop: function (element, renderFunction, options) {
@@ -23,7 +23,7 @@
       var doRender = function () {
         if (!mount) {
           var vnode = renderFunction();
-          mount = domsetter.mergeDom(element, vnode, patchedOptions);
+          mount = domdirector.mergeDom(element, vnode, patchedOptions);
         } else {
           var updatedVnode = renderFunction();
           mount.update(updatedVnode);
@@ -38,15 +38,15 @@
 
   if (global.module !== undefined && global.module.exports) {
     // Node and other CommonJS-like environments that support module.exports
-    global.module.exports = domsetterExtras;
+    global.module.exports = domdirectorExtras;
   } else if (typeof global.define == 'function' && global.define.amd) {
     // AMD / RequireJS
     global.define(function () {
-      return domsetterExtras;
+      return domdirectorExtras;
     });
   } else {
     // Browser
-    global['domsetterExtras'] = domsetterExtras;
+    global['domdirectorExtras'] = domdirectorExtras;
   }
 
 })(this);

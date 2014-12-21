@@ -2,12 +2,12 @@
 
   "use strict";
 
-  var domsetter = global.domsetter;
+  var domdirector = global.domdirector;
   var velocity = (global.jQuery || global.Zepto || global).Velocity;
   var noop = function () { };
 
-  if(!domsetter || !velocity) {
-    throw new Error("domsetter and velocity must be loaded (first)");
+  if(!domdirector || !velocity) {
+    throw new Error("domdirector and velocity must be loaded (first)");
   }
 
   var velocityTransitions = {

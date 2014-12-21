@@ -2,14 +2,14 @@
 
 (function () {
 
-  var domsetter = window.domsetter;
-  var h = domsetter.h;
+  var domdirector = window.domdirector;
+  var h = domdirector.h;
 
-  if (window.domsetterShowStats) {
-    window.domsetterShowStats.destroy();
+  if (window.domdirectorShowStats) {
+    window.domdirectorShowStats.destroy();
   }
 
-  var rootElement = document.createElement("domsetter-stats");
+  var rootElement = document.createElement("domdirector-stats");
   rootElement.style.position = "fixed";
   rootElement.style.top = "100px";
   rootElement.style.zIndex = "19999";
@@ -28,15 +28,15 @@
 
   var reRender = function (evt) {
     evt.preventDefault();
-    if (domsetter.stats.lastRenderLoop) {
-      domsetter.stats.lastRenderLoop.scheduleRender();
+    if (domdirector.stats.lastRenderLoop) {
+      domdirector.stats.lastRenderLoop.scheduleRender();
     }
   };
 
   var render = function () {
-    var stats = domsetter.stats;
+    var stats = domdirector.stats;
 
-    return h("domsetter-stats", [
+    return h("domdirector-stats", [
       h("div", {}, ["Stats"]),
       h("div#1", {}, ["" + stats.lastCreateVDom]),
       h("div#2", {}, ["" + stats.lastCreateDom]),
@@ -46,7 +46,7 @@
     ]);
   };
 
-  var mount = domsetter.mergeDom(rootElement, render());
+  var mount = domdirector.mergeDom(rootElement, render());
 
   var tick = function () {
     mount.update(render());
@@ -55,7 +55,7 @@
 
   var interval = window.setTimeout(tick, 100);
 
-  window.domsetterShowStats = {
+  window.domdirectorShowStats = {
     destroy: function () {
       window.clearInterval(interval);
       document.body.removeChild(rootElement);

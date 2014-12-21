@@ -1,20 +1,22 @@
 API
 ===
 
-## domsetter
+## domdirector
 
-The domsetter object is the main object. It is either bound to window.domsetter or it can be obtained using requirejs.
+The domdirector object is the main object. It is either bound to window.domdirector or it can be obtained using requirejs.
 
-## domsetter.h
+## domdirector.h
 
 ```js
-function h(selector, properties, children) // returns VNode
+function h(selector, properties, children) // returns a VNode object
 ```
 
 The `h` method is used to create a virtual DOM node. 
 This function is largely inspired by the mercuryjs and mithril frameworks.
 The h stands for (virtual) hyperscript.
+
 ### parameters
+
 1. `selector` *string*  
 Contains the tagName, id and fixed css classnames in CSS selector format. 
 It is formatted as follows: `tagname.cssclass1.cssclass2#id`. 
@@ -23,56 +25,135 @@ An object literal containing properties that will be place on the DOM node.
 This object may contain plain attributes like `href`, event handlers like `onclick`, 
 a `key` to make nodes distinguishable and a `classes` object literal containing a className properties with boolean values.  
 Example: `h('div', {classes: {class1: true, class2: false} }, [])`
-3. `children` *Array of VNode*  
+3. `children` *Array of VNode objects*  
 An array of virtual DOM nodes to add as child nodes. 
 This array may contain nested arrays and null or undefined values.
 Nested arrays are flattened and null and undefined values will be skipped.
 
-In order for domsetter to be able to apply transitions and achieve high performance there are a few additional 
-requirements to meet:
+### returns
+
+A [VNode](#VNode) object, used to render a real DOM later.
+ 
+Because domdirector needs to be able to animate transitions and because it wants to be fast, you need to
+follow these rules:
 
 * All children should either have a unique selector, or have a unique `key` property. 
 * The `properties` object must always contain the same set of properties in subsequent renderings. 
 When properties are to be cleared, they must be set to either null or undefined.
 * The `properties.classes` object must also always have the same properties in subsequent renderings.
 
-## Domsetter.renderLoop
+
+
+## Domdirector.renderLoop
 
 ```js
-function (element, renderFunction, options) // returns RenderLoop
+function renderLoop(element, renderFunction, options) // returns a RenderLoop object
 ```
 
-TODO
+Starts a render loop that re-renders the DOM at the right moments. 
+The renderFunction is always executed on requestAnimationFrame.
+A render is scheduled to be executed on the next animation frame after:
+* The renderLoop was first started
+* The renderLoop.scheduleRender() function was called
+* A registered event handler (onclick for example) was executed
 
-## Domsetter.createCache
+### parameters
+
+* `element` *HTMLElement*  
+  The DOM node where the virtual DOM is rendered. See [mergeDom](#Domdirector.mergedom) for details on how this is done.
+* `renderFunction` *function*
+  The render function that takes zero arguments and returns a VNode.
+* `options` Options that influence how the DOM is rendered and updated.
+
+### returns
+
+A [RenderLoop](#RenderLoop) object containing a [`scheduleRender()`](#renderloopschedulerender) method.
+
+## Domdirector.createCache
 
 ```js
-function() // returns Cache
+function createCache() // returns a CalculationCache object
 ```
 
-Creates a Cache object that is able to store a VNode and return it if the parameters remain the same.
+Creates a [CalculationCache](#CalculationCache) object, useful for caching VNode trees.
 
-## Domsetter.createDom
+### returns
+
+A [CalculationCache](#CalculationCache) object.
+
+
+
+## Domdirector.createDom
 
 ```js
-function createDom(vnode, options) // returns Rendering 
+function createDom(vnode, options) // returns a Rendering object
 ```
 The createDom method creates a real DOM tree given a VNode. The Rendering object returned will contain the 
 resulting DOM Node under the Rendering.domNode property.
-This is a low-level method. Users wil typically use Domsetter.renderLoop instead.
+This is a low-level method. Users wil typically use Domdirector.renderLoop instead.
 NOTE: VNode objects may only be rendered once.
 
-## Domsetter.mergeDom
+### parameters
+
+* `vnode` *VNode*  
+  A virtual DOM tree that was created using the `h()` function.
+* `options` *object*  
+  Rendering options
+
+### returns
+
+A [Rendering](#Rendering) object.
+
+
+
+## Domdirector.mergeDom
 
 ```js
-function mergeDom(element, vnode, options) // returns Rendering
+function mergeDom(element, vnode, options) // returns a Rendering object
 ```
 
-The createDom method creates a real DOM tree given a VNode at an already existing DOM element. 
-The selector for the root VNode will be ignored, but its properties and children will be applied.
-The Rendering object returned will contain the resulting DOM Node under the Rendering.domNode property.
-This is a low-level method. Users wil typically use Domsetter.renderLoop instead.
+The mergeDom method creates a real DOM tree at an already existing DOM element given a VNode. 
+The selector for the root VNode will be ignored, but its properties and children will be applied to the element provided.
+This is a low-level method. Users wil typically use Domdirector.renderLoop instead.
 NOTE: VNode objects may only be rendered once.
+
+### parameters
+
+* `element` *HTMLElement*  
+  The element that is used as the root of the virtual DOM. It usually matches the selector of vnode, but this
+  is not a hard requirement.
+* `vnode` *VNode*  
+  The root of the virtual DOM tree that was created using the `h()` function.
+* `options` *object*  
+  Rendering options
+
+### returns
+
+A [Rendering](#Rendering) object.
+
+
+
+## RenderLoop
+
+A renderLoop is an object that reschedules the rendering of the virtual DOM at the right moment.
+
+## RenderLoop.scheduleRender
+
+```js
+function scheduleRender()
+```
+
+Signals the renderLoop that a render needs to take place at the next animation frame.
+
+## RenderLoop.destroy
+
+```js
+function destroy()
+```
+
+Makes sure that no more renderings take place.
+
+
 
 ## Rendering
 
@@ -85,8 +166,40 @@ It provides the following properties:
 function update(updatedVNode)
 ```
 
-This function updates the mounted VNode to another VNode from a subsequent rendering.
+This function updates the rendered VNode to another VNode from a subsequent rendering.
 
 ## Rendering.domNode
 
 This property contains the root DOM Node that has been rendered.
+
+
+
+## CalculationCache
+
+A CalculationCache object remembers the previous outcome of a calculation along with the inputs.
+On subsequent calls the previous outcome is returned if the inputs are identical.
+This object can be used to bypass rendering of a virtual DOM subtree to speed up rendering and diffing of 
+the virtual DOM.
+
+## CalculationCache.calculate(inputs, calculation)
+
+Returns the previous outcome of CalculationCache.calculate if the input array matches the previous input array.
+Otherwise, the calculation function is executed and the outcome is cached and returned.
+objects in the inputs array are compared using ===.
+
+### parameters
+
+* `inputs` *array*  
+  Inputs is an array of objects that are to be compared using === with the previous invocation. They are
+  assumed to be immutable primitive values.
+* `calculation` *function*
+  Calculation is a function that takes zero arguments and returns an object (A VNode assumably) that can be cached.
+
+## CalculationCache.invalidate()
+
+Manually invalidates the cached outcome.
+
+## VNode
+
+A virtual representation of a DOM Node. This object is not meant to be used outside the domdirector framework. 
+It is assumed to be immutable.

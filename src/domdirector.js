@@ -358,7 +358,7 @@
     }
   };
 
-  var domsetter = {
+  var domdirector = {
     h: function (selector, properties, children) {
       if (!children && (typeof properties === "string" || Array.isArray(properties)
 	      || (properties && properties.hasOwnProperty("vnodeSelector")))) {
@@ -410,13 +410,14 @@
       };
       var mount = null;
       var scheduled;
+      var destroyed = false;
       var doRender = function () {
         scheduled = null;
         if (!mount) {
           var timing1 = window.performance.now();
           var vnode = renderFunction();
           var timing2 = window.performance.now();
-          mount = domsetter.mergeDom(element, vnode, options);
+          mount = domdirector.mergeDom(element, vnode, options);
           stats.createExecuted(timing1, timing2, window.performance.now(), api);
         } else {
           var updateTiming1 = window.performance.now();
@@ -429,7 +430,7 @@
       scheduled = requestAnimationFrame(doRender);
       var api = {
         scheduleRender: function () {
-          if (!scheduled) {
+          if (!scheduled && !destroyed) {
             scheduled = requestAnimationFrame(doRender);
           }
         },
@@ -438,32 +439,33 @@
             cancelAnimationFrame(scheduled);
             scheduled = null;
           }
+          destroyed = true;
         }
       };
       return api;
     },
 
     createCache: function () {
-      var cachedValue = null;
-      var cachedKeys = null;
+      var cachedInputs = null;
+      var cachedOutcome = null;
       var result = {
         invalidate: function () {
-          cachedValue = null;
-          cachedKeys = null;
+          cachedOutcome = null;
+          cachedInputs = null;
         },
-        use: function (keys, renderFunction) {
-          if (cachedKeys) {
-            for (var i = 0; i < keys.length; i++) {
-              if (cachedKeys[i] !== keys[i]) {
-                cachedValue = null;
+        calculate: function (inputs, calculation) {
+          if (cachedInputs) {
+            for (var i = 0; i < inputs.length; i++) {
+              if (cachedInputs[i] !== inputs[i]) {
+                cachedOutcome = null;
               }
             }
           }
-          if (!cachedValue) {
-            cachedValue = renderFunction();
-            cachedKeys = keys;
+          if (!cachedOutcome) {
+            cachedOutcome = calculation();
+            cachedInputs = inputs;
           }
-          return cachedValue;
+          return cachedOutcome;
         }
       };
       return result;
@@ -474,15 +476,15 @@
 
   if (global.module !== undefined && global.module.exports) {
     // Node and other CommonJS-like environments that support module.exports
-    global.module.exports = domsetter;
+    global.module.exports = domdirector;
   } else if (typeof global.define == 'function' && global.define.amd) {
     // AMD / RequireJS
     global.define(function () {
-      return domsetter;
+      return domdirector;
     });
   } else {
     // Browser
-    global['domsetter'] = domsetter;
+    global['domdirector'] = domdirector;
   }
 
 })(this);

@@ -1,8 +1,8 @@
 {
-  "name": "domsetter",
-  "main": "domsetter.js",
+  "name": "domdirector",
+  "main": "domdirector.js",
   "version": "1.0.0-beta",
-  "homepage": "https://github.com/johan-gorter/domsetter",
+  "homepage": "https://github.com/johan-gorter/domdirector",
   "authors": [
     "Johan Gorter <johan@johangorter.com>"
   ],

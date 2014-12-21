@@ -5,6 +5,7 @@ window.createTodoViewModel = function (todosViewModel, id, title) {
   var vm = {
 
     id: id,
+    renderCache: window.domdirector.createCache(),
     title: title,
     completed: false,
 

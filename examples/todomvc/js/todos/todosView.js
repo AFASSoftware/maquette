@@ -2,8 +2,8 @@
 
   'use strict';
 
-  var domsetter = window.domsetter;
-  var h = domsetter.h;
+  var domdirector = window.domdirector;
+  var h = domdirector.h;
 
   window.renderTodosView = function (vm) {
     var anyTodos = vm.todos.length > 0;

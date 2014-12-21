@@ -17,8 +17,8 @@
 
   <script src="bower_components/todomvc-common/base.js"></script>
 
-  <script src="../../domsetter.js"></script>
-  <script src="../../domsetter-extras.js"></script>
+  <script src="../../src/domdirector.js"></script>
+  <script src="../../src/extras/domdirector-extras.js"></script>
 
   <script src="js/todo/todoView.js"></script>
   <script src="js/todo/todoViewModel.js"></script>
@@ -27,13 +27,13 @@
 
   <script>
     
-    var domsetter = window.domsetter;
-    var domsetterExtras = window.domsetterExtras;
+    var domdirector = window.domdirector;
+    var domdirectorExtras = window.domdirectorExtras;
 
     var viewModel = window.createTodosViewModel();
 
     document.addEventListener('DOMContentLoaded', function () {
-      domsetterExtras.syncRenderLoop(document.getElementById("todoapp"), function () {
+      domdirectorExtras.syncRenderLoop(document.getElementById("todoapp"), function () {
         return window.renderTodosView(viewModel);
       }, { /* No render options */ });
 
@@ -47,7 +47,7 @@
         for(i = 0; i < 50; i++) {
           var inputEvent = document.createEvent('Event');
           inputEvent.initEvent('input', true, true);
-          newTodo.value = 'Domsetter ------- Something to do ' + i;
+          newTodo.value = 'Domdirector ------- Something to do ' + i;
           newTodo.dispatchEvent(inputEvent);
 
           var keydownEvent = document.createEvent('Event');

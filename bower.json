@@ -1,7 +1,7 @@
 {
   "name": "domdirector",
   "main": "domdirector.js",
-  "version": "1.0.0-beta",
+  "version": "1.0.0",
   "homepage": "https://github.com/johan-gorter/domdirector",
   "authors": [
     "Johan Gorter <johan@johangorter.com>"

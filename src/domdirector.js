@@ -453,7 +453,7 @@
           cachedOutcome = null;
           cachedInputs = null;
         },
-        calculate: function (inputs, calculation) {
+        result: function (inputs, calculation) {
           if (cachedInputs) {
             for (var i = 0; i < inputs.length; i++) {
               if (cachedInputs[i] !== inputs[i]) {

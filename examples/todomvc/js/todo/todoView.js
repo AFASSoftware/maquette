@@ -7,7 +7,7 @@
 
   window.renderTodoView = function (vm) {
 
-    return vm.renderCache.calculate([vm.completed, vm.title], function () {
+    return vm.renderCache.result([vm.completed, vm.title], function () {
       return h("li", { key: vm.id, classes: { completed: vm.completed } }, [
         h("div.view", [
           h("input.toggle", { type: "checkbox", checked: vm.completed, onclick: vm.toggleClicked }),

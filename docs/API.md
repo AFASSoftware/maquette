@@ -186,10 +186,10 @@ On subsequent calls the previous outcome is returned if the inputs are identical
 This object can be used to bypass rendering of a virtual DOM subtree to speed up rendering and diffing of 
 the virtual DOM.
 
-## CalculationCache.calculate(inputs, calculation)
+## CalculationCache.result(inputs, calculation)
 
-Returns the previous outcome of CalculationCache.calculate if the input array matches the previous input array.
-Otherwise, the calculation function is executed and the outcome is cached and returned.
+Returns the previous outcome of `CalculationCache.result` if the input array matches the previous input array.
+Otherwise, the calculation function is executed and its result is cached and returned.
 objects in the inputs array are compared using ===.
 
 ### parameters

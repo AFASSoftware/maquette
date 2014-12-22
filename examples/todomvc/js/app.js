@@ -4,11 +4,11 @@
 
   var domdirector = window.domdirector;
 
-  var viewModel = window.createTodosViewModel();
+  var rootComponent = window.createTodoListComponent();
 
   document.addEventListener('DOMContentLoaded', function() {
     domdirector.renderLoop(document.getElementById("todoapp"), function () {
-      return window.renderTodosView(viewModel);
+      return rootComponent.render();
     }, { /* No render options */ });
   });
 

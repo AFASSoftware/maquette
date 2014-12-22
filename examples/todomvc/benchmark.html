@@ -20,22 +20,18 @@
   <script src="../../src/domdirector.js"></script>
   <script src="../../src/extras/domdirector-extras.js"></script>
 
-  <script src="js/todo/todoView.js"></script>
-  <script src="js/todo/todoViewModel.js"></script>
-  <script src="js/todos/todosView.js"></script>
-  <script src="js/todos/todosViewModel.js"></script>
+  <script src="js/todoComponent.js"></script>
+  <script src="js/todoListComponent.js"></script>
 
   <script>
     
     var domdirector = window.domdirector;
     var domdirectorExtras = window.domdirectorExtras;
 
-    var viewModel = window.createTodosViewModel();
+    var rootComponent = window.createTodoListComponent();
 
     document.addEventListener('DOMContentLoaded', function () {
-      domdirectorExtras.syncRenderLoop(document.getElementById("todoapp"), function () {
-        return window.renderTodosView(viewModel);
-      }, { /* No render options */ });
+      domdirectorExtras.syncRenderLoop(document.getElementById("todoapp"), rootComponent.render, { /* No render options */ });
 
       var newTodo = document.querySelector("#new-todo");
       newTodo.focus();

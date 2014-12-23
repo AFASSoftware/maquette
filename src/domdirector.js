@@ -47,7 +47,7 @@
     if (selector === "") {
       return; // textnodes can be safely ignored.
     }
-    if(sameAs.properties && sameAs.properties.key) {
+    if (sameAs.properties && sameAs.properties.key) {
       return; // uniqueness of keys is not checked for performance sake
     }
     for (var i = 0; i < selectorsThusFar.length; i++) {
@@ -136,7 +136,7 @@
           }
         }
       } else {
-        if(eventHandlerInterceptor && typeof propValue === "function") {
+        if (eventHandlerInterceptor && typeof propValue === "function") {
           propValue = eventHandlerInterceptor(propName, propValue); // intercept eventhandlers
         }
         domNode[propName] = propValue;
@@ -173,7 +173,7 @@
           propValue = "";
         }
         if (propName === "value") {
-          if(domNode["value"] === propValue) {
+          if (domNode["value"] === propValue) {
             continue; // Otherwise the cursor position would get updated
           } else {
             domNode["value"] = propValue;
@@ -181,7 +181,7 @@
           }
         } else if (propValue !== previousValue) {
           if (typeof propValue === "function") {
-            throw new Error("Functions may not be updated on subsequent calls (property: "+propName+")");
+            throw new Error("Functions may not be updated on subsequent calls (property: " + propName + ")");
           }
           domNode[propName] = propValue;
         }
@@ -309,7 +309,7 @@
     setProperties(domNode, vnode.properties, options);
     addChildren(domNode, vnode.children, options);
     if (vnode.properties && vnode.properties.afterCreate) {
-      vnode.properties.afterCreate(domNode, vnode.vnodeSelector, vnode.properties, vnode.children);
+      vnode.properties.afterCreate(domNode, options, vnode.vnodeSelector, vnode.properties, vnode.children);
     }
   };
 
@@ -328,6 +328,9 @@
     } else {
       updateProperties(domNode, previous.properties, vnode.properties, options);
       updateChildren(domNode, previous.children, vnode.children, options);
+      if (vnode.properties && vnode.properties.afterUpdate) {
+        vnode.properties.afterUpdate(domNode, options, vnode.vnodeSelector, vnode.properties, vnode.children);
+      }
     }
     vnode.domNode = previous.domNode;
   };
@@ -358,6 +361,19 @@
     }
   };
 
+  var createRendering = function (vnode, options) {
+    return {
+      update: function (updatedVnode) {
+        if(vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
+          throw new Error("The selector for the root VNode may not be changed. (consider using mergeDom with one extra level)");
+        }
+        updateDom(vnode, updatedVnode, options);
+        vnode = updatedVnode;
+      },
+      domNode: vnode.domNode
+    };
+  };
+
   var domdirector = {
     h: function (selector, properties, children) {
       if (!children && (typeof properties === "string" || Array.isArray(properties)
@@ -376,27 +392,23 @@
 
     createDom: function (vnode, options) {
       options = applyDefaultOptions(options);
-      createDom(vnode, noop, {});
-      return {
-        update: function (updatedVnode) {
-          updateDom(vnode, updatedVnode, options);
-          vnode = updatedVnode;
-        },
-        domNode: vnode.domNode
-      };
+      createDom(vnode, noop, options);
+      return createRendering(vnode, options);
+    },
+
+    appendToDom: function (element, vnode, options) {
+      options = applyDefaultOptions(options);
+      createDom(vnode, function (newElement) {
+         element.appendChild(newElement);
+      }, options);
+      return createRendering(vnode, options);
     },
 
     mergeDom: function (element, vnode, options) {
       options = applyDefaultOptions(options);
       vnode.domNode = element;
       initPropertiesAndChildren(element, vnode, options);
-      return {
-        update: function (updatedVnode) {
-          updateDom(vnode, updatedVnode, options);
-          vnode = updatedVnode;
-        },
-        domNode: element
-      };
+      return createRendering(vnode, options);
     },
 
     renderLoop: function (element, renderFunction, options) {

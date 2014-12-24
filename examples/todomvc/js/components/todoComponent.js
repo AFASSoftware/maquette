@@ -34,6 +34,7 @@ window.todoComponent = function (todoList, id, title) {
 
   var acceptEdit = function () {
     component.title = editingTitle.trim() || component.title;
+    todoList.todoTitleUpdated(component);
     todoList.editTodo(null);
     editingTitle = null;
   };

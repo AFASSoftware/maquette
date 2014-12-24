@@ -1,4 +1,4 @@
-window.todoRouter = function () {
+window.todoRouter = function (model) {
 
   'use strict';
 
@@ -22,9 +22,9 @@ window.todoRouter = function () {
           mode = "all";
       };
       if(!currentPage || currentPage.mode !== mode) {
-        currentPage = todoListComponent(mode);
+        currentPage = todoListComponent(mode, model);
       }
-      return  currentPage.render();
+      return h("main", [currentPage.render()]);
     }
   };
 

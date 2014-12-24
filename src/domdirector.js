@@ -82,7 +82,7 @@
     var selectorsThusFar = [];
     while (index < children.length) {
       var child = children[index];
-      if (!child) {
+      if (child === null || child === undefined) {
         children.splice(index, 1);
       } else if (Array.isArray(child)) {
         children.splice(index, 1);

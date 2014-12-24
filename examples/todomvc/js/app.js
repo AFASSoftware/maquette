@@ -5,7 +5,7 @@
   var domdirector = window.domdirector;
 
   // Using the vanilla JS implementation for Model and Store, nothing special here
-  var model = new app.Model(new app.Store("todomvc-domdirector"));
+  var model = new window.model(new window.store("todomvc-domdirector"));
 
   var router = window.todoRouter(model);
 

@@ -33,7 +33,7 @@
     var domdirectorExtras = window.domdirectorExtras;
 
     var lastId = 0;
-    //var model = new app.Model(new app.Store("todomvc-domdirector-benchmark"));
+    //var model = window.model(window.store("todomvc-domdirector-benchmark"));
     var dummyModel = {
       create: function (data, callback) {
         callback([{id:++lastId, title: data.title}]);

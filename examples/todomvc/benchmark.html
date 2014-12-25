@@ -33,7 +33,8 @@
     var domdirectorExtras = window.domdirectorExtras;
 
     var lastId = 0;
-    //var model = window.model(window.store("todomvc-domdirector-benchmark"));
+    var model = window.model(window.store("todomvc-domdirector-benchmark"));
+
     var dummyModel = {
       create: function (data, callback) {
         callback([{id:++lastId, title: data.title}]);
@@ -42,7 +43,8 @@
       remove: function (id, callback) { callback(); },
       read: function (callback) { callback([]); }
     };
-    var rootComponent = window.todoRouter(dummyModel);
+
+    var rootComponent = window.todoRouter(model);
 
     document.addEventListener('DOMContentLoaded', function () {
       domdirectorExtras.syncRenderLoop(document.getElementsByTagName("main")[0], rootComponent.render, { /* No render options */ });

@@ -12,9 +12,24 @@
 	 * real life you probably would be making AJAX calls
 	 */
   window.store = function (name) {
+    var data;
     if (!localStorage[name]) {
-      localStorage[name] = JSON.stringify({ todos: [] });
+      data = { todos: [] };
+      localStorage[name] = JSON.stringify(data);
+    } else {
+      data = JSON.parse(localStorage[name]);
     }
+
+    var flushTimeout = null;
+    var flush = function () {
+      if(!flushTimeout) {
+        flushTimeout = setTimeout(function () {
+          flushTimeout = null;
+          localStorage[name] = JSON.stringify(data);
+        });
+      }
+    };
+
 
     return {
 
@@ -36,7 +51,7 @@
           return;
         }
 
-        var todos = JSON.parse(localStorage[name]).todos;
+        var todos = data.todos;
 
         callback.call(undefined, todos.filter(function (todo) {
           for (var q in query) {
@@ -55,7 +70,7 @@
        */
       findAll: function (callback) {
         callback = callback || function () { };
-        callback.call(undefined, JSON.parse(localStorage[name]).todos);
+        callback.call(undefined, data.todos);
       },
 
       /**
@@ -67,7 +82,7 @@
        * @param {number} id An optional param to enter an ID of an item to update
        */
       save: function (updateData, callback, id) {
-        var data = JSON.parse(localStorage[name]);
+        
         var todos = data.todos;
 
         callback = callback || function () { };
@@ -83,14 +98,14 @@
             }
           }
 
-          localStorage[name] = JSON.stringify(data);
-          callback.call(undefined, JSON.parse(localStorage[name]).todos);
+          flush();
+          callback.call(undefined, data.todos);
         } else {
           // Generate an ID
           updateData.id = new Date().getTime();
 
           todos.push(updateData);
-          localStorage[name] = JSON.stringify(data);
+          flush();
           callback.call(undefined, [updateData]);
         }
       },
@@ -102,7 +117,6 @@
        * @param {function} callback The callback to fire after saving
        */
       remove: function (id, callback) {
-        var data = JSON.parse(localStorage[name]);
         var todos = data.todos;
 
         for (var i = 0; i < todos.length; i++) {
@@ -112,8 +126,8 @@
           }
         }
 
-        localStorage[name] = JSON.stringify(data);
-        callback.call(undefined, JSON.parse(localStorage[name]).todos);
+        flush();
+        callback.call(undefined, data.todos);
       },
 
       /**
@@ -122,8 +136,9 @@
        * @param {function} callback The callback to fire after dropping the data
        */
       drop: function (callback) {
-        localStorage[name] = JSON.stringify({ todos: [] });
-        callback.call(undefined, JSON.parse(localStorage[name]).todos);
+        data = { todos: [] };
+        flush();
+        callback.call(undefined, data.todos);
       }
 
     };

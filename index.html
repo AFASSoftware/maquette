@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Domdirector by johan-gorter</title>
+    <title>Domplotter by johan-gorter</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -15,17 +15,17 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>Domdirector</h1>
-        <p>Domdirector is a minimalistic Virtual DOM implementation which supports animated transitions.</p>
+        <h1>Domplotter</h1>
+        <p>Domplotter is a minimalistic Virtual DOM implementation which supports animated transitions.</p>
 
-        <p class="view"><a href="https://github.com/johan-gorter/domdirector">View the Project on GitHub</a></p>
+        <p class="view"><a href="https://github.com/johan-gorter/domplotter">View the Project on GitHub</a></p>
       </header>
       <section>
 
 	  <h2>Intro</h2>
-<p>Domdirector is a Javascript library which makes it easy to synchronize the DOM tree in the browser with your data.
+<p>Domplotter is a Javascript library which makes it easy to synchronize the DOM tree in the browser with your data.
 It uses a technique called 'Virtual DOM'. 
-Compared to other virtual DOM implementations, domdirector has 3 advantages:</p>
+Compared to other virtual DOM implementations, domplotter has 3 advantages:</p>
 
 <ul>
 <li>It is very lightweight (2Kb gzipped)</li>
@@ -33,12 +33,12 @@ Compared to other virtual DOM implementations, domdirector has 3 advantages:</p>
 <li>It is optimized for speed</li>
 </ul>
 
-<p>While domdirector is only focussed around the view of an application, we believe it is complete enough
+<p>While domplotter is only focussed around the view of an application, we believe it is complete enough
 to power a fully functional web application without needing yet another Javascript library.</p>
 
-<p>Domdirector allows you to write a <code>render()</code> function that turns your data into a virtual representation 
+<p>Domplotter allows you to write a <code>render()</code> function that turns your data into a virtual representation 
 of the DOM tree.
-Domdirector will execute that function at convenient moments and adjust the DOM tree in the browser
+Domplotter will execute that function at convenient moments and adjust the DOM tree in the browser
 accordingly.</p>
 
 <p>The following code shows this mechanism in its most basic form:</p>
@@ -63,7 +63,7 @@ accordingly.</p>
 };
 
 <span class="pl-c">// Starts the renderLoop, which renders the virtual DOM at the right moments</span>
-domdirector.renderLoop(<span class="pl-s3">document</span>.<span class="pl-sc">body</span>, render, {});</pre></div>
+domplotter.renderLoop(<span class="pl-s3">document</span>.<span class="pl-sc">body</span>, render, {});</pre></div>
 
 <p>The h() function is used to create virtual DOM nodes using a technique known as 'virtual hyperscript'.</p>
 
@@ -77,13 +77,13 @@ The renderLoop automatically schedules a render when a registered eventhandler o
 After all, rendering the whole represenation of the DOM and determining the difference with the 
 previous render seems slow.
 In my experience, rendering and diffing a large screen (say 2000 DOM nodes) is easily done within a single 
-frame (16ms) on modern devices. May the speed become an issue, domdirector also has a powerful caching
+frame (16ms) on modern devices. May the speed become an issue, domplotter also has a powerful caching
 mechanism which speeds up rendering and diffing significantly.</p>
 
 <h2>
 <a id="animated-transitions" class="anchor" href="#animated-transitions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Animated transitions</h2>
 
-<p>Domdirector allows adding and removing DOM nodes to be animated. 
+<p>Domplotter allows adding and removing DOM nodes to be animated. 
 It needs a transition plugin to do so. Right now the only available plugin uses VelocityJS.
 A plugin which uses CSS Transitions will be developed soon. Follow the steps below to animate transitions:</p>
 
@@ -96,13 +96,13 @@ You can use "slideDown" as enterAnimation and "slideUp" as exitAnimation for exa
 <li>Enjoy!</li>
 </ul>
 
-<p>More info can be found in the <a href="https://github.com/johan-gorter/domdirector/blob/master/docs/API.md">API Reference</a>.</p>
+<p>More info can be found in the <a href="https://github.com/johan-gorter/domplotter/blob/master/docs/API.md">API Reference</a>.</p>
 
 
 <h2>Credits</h2>
 
 <p>
-Domdirector was inspired by the following frameworks:
+Domplotter was inspired by the following frameworks:
 </p>
 
 <ul>

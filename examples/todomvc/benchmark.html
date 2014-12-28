@@ -17,8 +17,8 @@
 
   <script src="bower_components/todomvc-common/base.js"></script>
 
-  <script src="../../src/domdirector.js"></script>
-  <script src="../../src/extras/domdirector-extras.js"></script>
+  <script src="../../src/domplotter.js"></script>
+  <script src="../../src/extras/domplotter-extras.js"></script>
 
   <script src="js/models/store.js"></script>
   <script src="js/models/model.js"></script>
@@ -29,11 +29,11 @@
 
   <script>
     
-    var domdirector = window.domdirector;
-    var domdirectorExtras = window.domdirectorExtras;
+    var domplotter = window.domplotter;
+    var domplotterExtras = window.domplotterExtras;
 
     var lastId = 0;
-    var model = window.model(window.store("todomvc-domdirector-benchmark"));
+    var model = window.model(window.store("todomvc-domplotter-benchmark"));
 
     var dummyModel = {
       create: function (data, callback) {
@@ -47,7 +47,7 @@
     var rootComponent = window.todoRouter(model);
 
     document.addEventListener('DOMContentLoaded', function () {
-      domdirectorExtras.syncRenderLoop(document.getElementsByTagName("main")[0], rootComponent.render, { /* No render options */ });
+      domplotterExtras.syncRenderLoop(document.getElementsByTagName("main")[0], rootComponent.render, { /* No render options */ });
 
       var newTodo = document.querySelector("#new-todo");
       newTodo.focus();
@@ -59,7 +59,7 @@
         for(i = 0; i < 50; i++) {
           var inputEvent = document.createEvent('Event');
           inputEvent.initEvent('input', true, true);
-          newTodo.value = 'Domdirector ------- Something to do ' + i;
+          newTodo.value = 'Domplotter ------- Something to do ' + i;
           newTodo.dispatchEvent(inputEvent);
 
           var keydownEvent = document.createEvent('Event');

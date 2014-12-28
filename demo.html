@@ -18,13 +18,13 @@
       background-color: darkRed;
     }
   </style>
-  <script src="src/domdirector.js"></script>
+  <script src="src/domplotter.js"></script>
   <script src="bower_components/velocity/velocity.js"></script>
   <script src="bower_components/velocity/velocity.ui.js"></script>
   <script src="src/velocity-transitions.js"></script>
   <script src="src/extras/showStats.js"></script>
   <script>
-    var h = window.domdirector.h;
+    var h = window.domplotter.h;
 
     document.addEventListener('DOMContentLoaded', function () {
       var items = [];
@@ -37,7 +37,7 @@
         }));
       };
 
-      var renderLoop = window.domdirector.renderLoop(document.querySelector("#target"), render, { transitions: window.velocityTransitions });
+      var renderLoop = window.domplotter.renderLoop(document.querySelector("#target"), render, { transitions: window.velocityTransitions });
 
       setTimeout(function () {
         items[16].visible = false;

@@ -1,11 +1,11 @@
 API
 ===
 
-## domdirector
+## domplotter
 
-The domdirector object is the main object. It is either bound to window.domdirector or it can be obtained using requirejs.
+The domplotter object is the main object. It is either bound to window.domplotter or it can be obtained using requirejs.
 
-## domdirector.h
+## domplotter.h
 
 ```js
 function h(selector, properties, children) // returns a VNode object
@@ -34,7 +34,7 @@ Nested arrays are flattened and null and undefined values will be skipped.
 
 A [VNode](#vnode) object, used to render a real DOM later.
  
-NOTE: Because domdirector needs to be able to animate transitions and because it wants to be fast, you need to
+NOTE: Because domplotter needs to be able to animate transitions and because it wants to be fast, you need to
 follow these rules:
 
 * All children should either have a unique selector, or have a unique `key` property. 
@@ -44,7 +44,7 @@ When properties are to be cleared, they must be set to either null or undefined.
 
 
 
-## Domdirector.renderLoop
+## Domplotter.renderLoop
 
 ```js
 function renderLoop(element, renderFunction, options) // returns a RenderLoop object
@@ -60,7 +60,7 @@ The renderFunction is scheduled to be executed on the next animation frame after
 ### parameters
 
 * `element` *HTMLElement*  
-  The DOM node where the virtual DOM is rendered. See [mergeDom](#domdirectormergedom) for details on how this is done.
+  The DOM node where the virtual DOM is rendered. See [mergeDom](#domplottermergedom) for details on how this is done.
 * `renderFunction` *function*  
   The render function that takes zero arguments and returns a VNode.
 * `options` *object*  
@@ -70,7 +70,7 @@ The renderFunction is scheduled to be executed on the next animation frame after
 
 A [RenderLoop](#renderloop) object containing a [`scheduleRender()`](#renderloopschedulerender) method.
 
-## Domdirector.createCache
+## Domplotter.createCache
 
 ```js
 function createCache() // returns a CalculationCache object
@@ -84,21 +84,21 @@ A [CalculationCache](#calculationcache) object.
 
 
 
-## Domdirector.createDom
+## Domplotter.createDom
 
 ```js
 function createDom(vnode, options) // returns a Rendering object
 ```
 The createDom method creates a real DOM tree given a [VNode](#vnode). The [Rendering](#rendering) object returned 
 will contain the resulting DOM Node under the [`Rendering.domNode`](#renderingdomnode) property.
-This is a low-level method. Users wil typically use [`Domdirector.renderLoop`](#domdirectorrenderloop) instead.
+This is a low-level method. Users wil typically use [`Domplotter.renderLoop`](#domplotterrenderloop) instead.
 
 NOTE: VNode objects may only be rendered once.
 
 ### parameters
 
 * `vnode` *VNode*  
-  A virtual DOM tree that was created using the [`h()`](domdirectorh) function.
+  A virtual DOM tree that was created using the [`h()`](domplotterh) function.
 * `options` *object*  
   Rendering options
 
@@ -108,7 +108,7 @@ A [Rendering](#rendering) object.
 
 
 
-## Domdirector.mergeDom
+## Domplotter.mergeDom
 
 ```js
 function mergeDom(element, vnode, options) // returns a Rendering object
@@ -117,7 +117,7 @@ function mergeDom(element, vnode, options) // returns a Rendering object
 The mergeDom method creates a real DOM tree at an already existing DOM element given a [VNode](#vnode). 
 The selector for the root VNode will be ignored, but its properties and children will be applied to the provided
 element.
-This is a low-level method. Users wil typically use Domdirector.renderLoop instead.
+This is a low-level method. Users wil typically use Domplotter.renderLoop instead.
 
 NOTE: [VNode](#vnode) objects may only be rendered once.
 
@@ -206,5 +206,5 @@ Manually invalidates the cached outcome.
 
 ## VNode
 
-A virtual representation of a DOM Node. This object is not meant to be used outside the domdirector framework. 
+A virtual representation of a DOM Node. This object is not meant to be used outside the domplotter framework. 
 It is assumed to be immutable.

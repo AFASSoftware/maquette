@@ -2,7 +2,7 @@ window.todoRouter = function (model) {
 
   'use strict';
 
-  var h = window.domdirector.h;
+  var h = window.domplotter.h;
 
   var currentPage = null;
 

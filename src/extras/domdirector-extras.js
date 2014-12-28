@@ -2,9 +2,9 @@
 
   "use strict";
 
-  var domdirector = global.domdirector;
+  var domplotter = global.domplotter;
 
-  var domdirectorExtras = {
+  var domplotterExtras = {
 
     // renderLoop which executes rendering synchronously. Added to be able to run performance tests.
     syncRenderLoop: function (element, renderFunction, options) {
@@ -23,7 +23,7 @@
       var doRender = function () {
         if (!mount) {
           var vnode = renderFunction();
-          mount = domdirector.mergeDom(element, vnode, patchedOptions);
+          mount = domplotter.mergeDom(element, vnode, patchedOptions);
         } else {
           var updatedVnode = renderFunction();
           mount.update(updatedVnode);
@@ -38,15 +38,15 @@
 
   if (global.module !== undefined && global.module.exports) {
     // Node and other CommonJS-like environments that support module.exports
-    global.module.exports = domdirectorExtras;
+    global.module.exports = domplotterExtras;
   } else if (typeof global.define == 'function' && global.define.amd) {
     // AMD / RequireJS
     global.define(function () {
-      return domdirectorExtras;
+      return domplotterExtras;
     });
   } else {
     // Browser
-    global['domdirectorExtras'] = domdirectorExtras;
+    global['domplotterExtras'] = domplotterExtras;
   }
 
 })(this);

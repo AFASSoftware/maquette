@@ -374,7 +374,7 @@
     };
   };
 
-  var domdirector = {
+  var domplotter = {
     h: function (selector, properties, children) {
       if (!children && (typeof properties === "string" || Array.isArray(properties)
 	      || (properties && properties.hasOwnProperty("vnodeSelector")))) {
@@ -429,7 +429,7 @@
           var timing1 = window.performance.now();
           var vnode = renderFunction();
           var timing2 = window.performance.now();
-          mount = domdirector.mergeDom(element, vnode, options);
+          mount = domplotter.mergeDom(element, vnode, options);
           stats.createExecuted(timing1, timing2, window.performance.now(), api);
         } else {
           var updateTiming1 = window.performance.now();
@@ -488,15 +488,15 @@
 
   if (global.module !== undefined && global.module.exports) {
     // Node and other CommonJS-like environments that support module.exports
-    global.module.exports = domdirector;
+    global.module.exports = domplotter;
   } else if (typeof global.define == 'function' && global.define.amd) {
     // AMD / RequireJS
     global.define(function () {
-      return domdirector;
+      return domplotter;
     });
   } else {
     // Browser
-    global['domdirector'] = domdirector;
+    global['domplotter'] = domplotter;
   }
 
 })(this);

@@ -1,9 +1,9 @@
-Domdirector
+Domplotter
 =========
 
-Domdirector is a Javascript library which makes it easy to synchronize the DOM tree in the browser with your data.
+Domplotter is a Javascript library which makes it easy to synchronize the DOM tree in the browser with your data.
 It uses a technique called 'Virtual DOM'. 
-Compared to other virtual DOM implementations, domdirector has 3 advantages:
+Compared to other virtual DOM implementations, domplotter has 3 advantages:
 
 * It is very lightweight (2Kb gzipped)
 * It allows changes to be animated

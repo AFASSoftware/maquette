@@ -4,11 +4,11 @@ window.todoComponent = function (todoList, id, title) {
 
   // Think of a component as being a View (the render() function) combined with a ViewModel (the rest).
 
-  var h = window.domdirector.h;
+  var h = window.domplotter.h;
   var ENTER_KEY = 13;
   var ESC_KEY = 27;
 
-  var renderCache = window.domdirector.createCache();
+  var renderCache = window.domplotter.createCache();
   var editingTitle = null;
 
   var remove = function (evt) {

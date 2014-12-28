@@ -2,14 +2,14 @@
 
 (function () {
 
-  var domdirector = window.domdirector;
-  var h = domdirector.h;
+  var domplotter = window.domplotter;
+  var h = domplotter.h;
 
-  if (window.domdirectorShowStats) {
-    window.domdirectorShowStats.destroy();
+  if (window.domplotterShowStats) {
+    window.domplotterShowStats.destroy();
   }
 
-  var rootElement = document.createElement("domdirector-stats");
+  var rootElement = document.createElement("domplotter-stats");
   rootElement.style.position = "fixed";
   rootElement.style.top = "100px";
   rootElement.style.zIndex = "19999";
@@ -28,15 +28,15 @@
 
   var reRender = function (evt) {
     evt.preventDefault();
-    if (domdirector.stats.lastRenderLoop) {
-      domdirector.stats.lastRenderLoop.scheduleRender();
+    if (domplotter.stats.lastRenderLoop) {
+      domplotter.stats.lastRenderLoop.scheduleRender();
     }
   };
 
   var render = function () {
-    var stats = domdirector.stats;
+    var stats = domplotter.stats;
 
-    return h("domdirector-stats", [
+    return h("domplotter-stats", [
       h("div", {}, ["Stats"]),
       h("div#1", {}, ["" + stats.lastCreateVDom]),
       h("div#2", {}, ["" + stats.lastCreateDom]),
@@ -46,7 +46,7 @@
     ]);
   };
 
-  var mount = domdirector.mergeDom(rootElement, render());
+  var mount = domplotter.mergeDom(rootElement, render());
 
   var tick = function () {
     mount.update(render());
@@ -55,7 +55,7 @@
 
   var interval = window.setTimeout(tick, 100);
 
-  window.domdirectorShowStats = {
+  window.domplotterShowStats = {
     destroy: function () {
       window.clearInterval(interval);
       document.body.removeChild(rootElement);

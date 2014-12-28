@@ -2,10 +2,10 @@
 <html>
 <head>
   <title>Hello world</title>
-  <script src="../../dist/domdirector.min.js"></script>
+  <script src="../../dist/domplotter.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      var h = domdirector.h;
+      var h = domplotter.h;
 
       // Data
       var name = "";
@@ -27,11 +27,12 @@
       };
 
       // Starts the renderLoop, which renders the virtual DOM at the right moments
-      domdirector.renderLoop(document.body, render, {});
+      domplotter.renderLoop(document.body, render, {});
 
     });
   </script>
 </head>
-<body>
-</body>
+  <body>
+    <h1>Hello world</h1>
+  </body>
 </html>

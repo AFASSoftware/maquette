@@ -4,7 +4,7 @@ window.todoListComponent = function (mode, model) {
 
   // Think of a component as being a View (the render() function) combined with a ViewModel (the rest).
 
-  var h = window.domdirector.h;
+  var h = window.domplotter.h;
 
   var checkedAll = true;
   var completedCount = 0;

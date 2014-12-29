@@ -9,5 +9,5 @@ Compared to other virtual DOM implementations, domplotter has 3 advantages:
 * It allows changes to be animated
 * It is optimized for speed
 
-Visit the [website](http://johan-gorter.github.io/domsetter) for more information on how to use the framework.
+Visit the [website](http://johan-gorter.github.io/domplotter) for more information on how to use the framework.
 

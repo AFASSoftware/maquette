@@ -494,9 +494,10 @@
     global.define(function () {
       return domplotter;
     });
-  } else {
+  }
+  if (window) {
     // Browser
-    global['domplotter'] = domplotter;
+    window.domplotter = domplotter;
   }
 
 })(this);

@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>A new virtual dom framework</title>
+
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <link rel="stylesheet" href="/stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1><a href="/">Domplotter</a></h1>
+        <p>Domplotter is a minimalistic Virtual DOM implementation which supports animated transitions.</p>
+
+        <p class="view"><a href="https://github.com/johan-gorter/domplotter">View the Project on GitHub</a></p>
+      </header>
+      <section>
+
+         <h1 id="a-new-virtual-dom-framework">A new virtual dom framework</h1>
+
+<p>There are many virtual DOM frameworks to choose from already. 
+React is widely used, Mithril is very good, many others look promising as well. 
+Still, the framework I have in mind does not yet exist.</p>
+
+<p>First of all, I like animated transitions. AngularJS style, like React’s CSSTransitionGroup.
+Second, I want a lightweight framework. With lightweight I mean: Fast, easy to learn, easy to debug
+and predictable.</p>
+
+<p>So React is too heavyweight and Mithril does not really have animated transitions. 
+I know animated transitions can be added in Mithril, but I do not want to clutter up my code like that.</p>
+
+<p>So I decided to build my own virtual DOM framework. How hard can it be?
+So focussing on animated transitions first, I realized that there would be disappearing 
+elements in the real DOM that are no longer part of the virtual DOM. These DOM nodes should
+be left alone. This is why I settled on the following implementation:</p>
+
+<ul>
+  <li>Make the animation strategy pluggable thus allowing both velocityJS and CSS Transitions.</li>
+  <li>Keep a reference to the rendered DOM node on virtual DOM nodes.</li>
+  <li>Diffing and patching is done simultaneously.</li>
+  <li>Virtual DOM nodes are considered immutable. This allows a powerful caching mechanism based on comparing object identity. </li>
+</ul>
+
+<p>Keeping a reference to the rendered DOM on virtual DOM nodes is what makes domplotter really different from other implementations.
+I look forward to seeing what the performance implications of this decision are and what other possibilities this enables
+like progressive enhancement.</p>
+
+<p><a href="">Return to the main page</a></p>
+
+
+      </section>
+      <footer>
+        <p>This project is maintained <br /> by <a href="https://github.com/johan-gorter">johan-gorter</a></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

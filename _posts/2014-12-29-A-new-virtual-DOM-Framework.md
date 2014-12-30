@@ -29,4 +29,4 @@ Keeping a reference to the rendered DOM on virtual DOM nodes is what makes dompl
 I look forward to seeing what the performance implications of this decision are and what other possibilities this enables
 like progressive enhancement.
 
-<a href="{{ site.url }}">Return to the main page</a>
+<a href="{{ site.baseurl }}/">Return to the main page</a>

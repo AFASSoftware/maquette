@@ -7,7 +7,7 @@ title: Domplotter
 <p>
   {% for post in site.posts %}
     <b>{{ post.date | date_to_string }} </b> - 
-    <a href="{{ post.url }}">{{ post.title }}</a>
+    <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
   {% endfor %}
 </p>
 

@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>{{ page.title }}</title>
 
-    <link rel="stylesheet" href="{{ site.url }}/stylesheets/styles.css">
-    <link rel="stylesheet" href="{{ site.url }}/stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/stylesheets/styles.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/stylesheets/pygment_trac.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -15,7 +15,7 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1><a href="{{ site.url }}/">Domplotter</a></h1>
+        <h1><a href="{{ site.baseurl }}/">Domplotter</a></h1>
         <p>Domplotter is a minimalistic Virtual DOM implementation which supports animated transitions.</p>
 
         <p class="view"><a href="https://github.com/johan-gorter/domplotter">View the Project on GitHub</a></p>
@@ -29,7 +29,7 @@
         <p>This project is maintained <br /> by <a href="https://github.com/johan-gorter">johan-gorter</a></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+    <script src="{{ site.baseurl }}/javascripts/scale.fix.js"></script>
     
   </body>
 </html>

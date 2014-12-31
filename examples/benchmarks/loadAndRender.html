@@ -1,0 +1,25 @@
+﻿<html>
+<head>
+  <script src="../../dist/domplotter.min.js"></script>
+</head>
+<body>
+  <p>To run an execution time test on this page, run the profiler from your browser's developer tools and measure the running time of a page refresh. (Lower is better)</p>
+  <div id="container"></div>
+  <script>
+
+    var h = domplotter.h;
+
+    var items = [{ name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }];
+    var render = function () {
+      return h("div#container", items.map(
+        function (item, index) {
+          return h("input", { key: index, value: item.name });
+        }
+      ));
+    };
+
+    domplotter.renderLoop(document.getElementById("container"), render, {});
+
+  </script>
+</body>
+</html>

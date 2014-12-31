@@ -103,11 +103,13 @@
   var classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
 
   var immediateTransitions = {
-    nodeToRemove: function (node) {
+    nodeToRemove: function (node, properties) {
       node.parentNode.removeChild(node);
     },
-    nodeAdded: noop,
-    nodeUpdated: noop
+    nodeAdded: function (node, properties) {
+    },
+    nodeUpdated: function (node, type, name, newValue, oldValue) {
+    }
   };
 
   var defaultOptions = {
@@ -117,6 +119,13 @@
 
   var applyDefaultOptions = function (options) {
     return extend(defaultOptions, options);
+  };
+
+  var isAttribute = function (domNode, propName) {
+    if (propName in domNode) {
+      return false; // propName is a property
+    }
+    return true;
   };
 
   var setProperties = function (domNode, properties, options) {
@@ -135,10 +144,16 @@
             domNode.classList.add(className);
           }
         }
-      } else {
-        if (eventHandlerInterceptor && typeof propValue === "function") {
-          propValue = eventHandlerInterceptor(propName, propValue); // intercept eventhandlers
+      } else if (propName === "key") {
+        continue;
+      } else if (typeof propValue === "function") {
+        if (eventHandlerInterceptor) {
+          propValue = eventHandlerInterceptor(propName, propValue, domNode); // intercept eventhandlers
         }
+        domNode[propName] = propValue;
+      } else if (options.namespace || isAttribute(domNode, propName)) {
+        domNode.setAttribute(propName, propValue);
+      } else {
         domNode[propName] = propValue;
       }
     }
@@ -164,26 +179,39 @@
           }
           if (on) {
             domNode.classList.add(className);
+            options.transitions.nodeUpdated(domNode, "addClass", className, undefined, undefined);
           } else {
             domNode.classList.remove(className);
+            options.transitions.nodeUpdated(domNode, "removeClass", className, undefined, undefined);
           }
         }
       } else {
         if (!propValue && typeof previousValue === "string") {
           propValue = "";
         }
-        if (propName === "value") {
+        if (propName === "value") { // value, checked, selected can be manipulated by the user directly
           if (domNode["value"] === propValue) {
+            if (propValue !== previousValue) {
+              options.transitions.nodeUpdated(domNode, "property", "value", propValue, previousValue);
+            }
             continue; // Otherwise the cursor position would get updated
           } else {
-            domNode["value"] = propValue;
+            domNode["value"] = propValue; // Reset the value, even if the virtual DOM did not change
+            if (propValue !== previousValue) {
+              options.transitions.nodeUpdated(domNode, "property", "value", propValue, previousValue);
+            }
             continue;
           }
         } else if (propValue !== previousValue) {
           if (typeof propValue === "function") {
-            throw new Error("Functions may not be updated on subsequent calls (property: " + propName + ")");
+            throw new Error("Functions may not be updated on subsequent renders (property: " + propName + ")");
           }
-          domNode[propName] = propValue;
+          if (options.namespace || isAttribute(domNode, propName)) {
+            domNode.setAttribute(propName, propValue);
+          } else {
+            domNode[propName] = propValue;
+          }
+          options.transitions.nodeUpdated(domNode, "property", propName, propValue, previousValue);
         }
       }
     }
@@ -244,7 +272,7 @@
         if (findOldIndex >= 0) {
           // Remove preceding missing children
           for (i = oldIndex; i < findOldIndex; i++) {
-            transitions.nodeToRemove(oldChildren[i].domNode);
+            transitions.nodeToRemove(oldChildren[i].domNode, oldChildren[i].properties);
           }
           updateDom(oldChildren[findOldIndex], newChild, options);
           oldIndex = findOldIndex + 1;
@@ -258,7 +286,7 @@
               domNode.appendChild(childDomNode);
             }
           }, options);
-          transitions.nodeAdded(newChild.domNode);
+          transitions.nodeAdded(newChild.domNode, newChild.properties);
         }
       }
       newIndex++;
@@ -266,7 +294,7 @@
     if (oldChildren.length > oldIndex) {
       // Remove child fragments
       for (i = oldIndex; i < oldChildren.length; i++) {
-        transitions.nodeToRemove(oldChildren[i].domNode);
+        transitions.nodeToRemove(oldChildren[i].domNode, oldChildren[i].properties);
       }
     }
   };
@@ -324,6 +352,7 @@
     if (vnode.vnodeSelector === "") {
       if (vnode.text !== previous.text) {
         domNode.nodeValue = vnode.text;
+        options.transitions.nodeUpdated(domNode, "text", undefined, vnode.text, previous.text);
       }
     } else {
       updateProperties(domNode, previous.properties, vnode.properties, options);
@@ -364,7 +393,7 @@
   var createRendering = function (vnode, options) {
     return {
       update: function (updatedVnode) {
-        if(vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
+        if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
           throw new Error("The selector for the root VNode may not be changed. (consider using mergeDom with one extra level)");
         }
         updateDom(vnode, updatedVnode, options);
@@ -399,7 +428,7 @@
     appendToDom: function (element, vnode, options) {
       options = applyDefaultOptions(options);
       createDom(vnode, function (newElement) {
-         element.appendChild(newElement);
+        element.appendChild(newElement);
       }, options);
       return createRendering(vnode, options);
     },

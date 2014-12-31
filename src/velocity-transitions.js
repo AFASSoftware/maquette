@@ -11,8 +11,8 @@
   }
 
   var velocityTransitions = {
-    nodeToRemove: function (node) {
-      var animation = node.exitAnimation;
+    nodeToRemove: function (node, properties) {
+      var animation = properties.exitAnimation;
       if(animation) {
         velocity.animate(node, animation, {
           complete: function () {
@@ -23,13 +23,14 @@
         node.parentNode.removeChild(node);
       }
     },
-    nodeAdded: function (node) {
-      var animation = node.enterAnimation;
-      if (animation) {
+    nodeAdded: function (node, properties) {
+      var animation = properties.enterAnimation;
+      if(animation) {
         velocity.animate(node, animation);
       }
     },
-    nodeUpdated: noop
+    nodeUpdated: function (node, type, name, newValue, oldValue) {
+    }
   };
 
   if (global.module !== undefined && global.module.exports) {

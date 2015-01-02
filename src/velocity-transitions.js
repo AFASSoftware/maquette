@@ -4,7 +4,6 @@
 
   var domplotter = global.domplotter;
   var velocity = (global.jQuery || global.Zepto || global).Velocity;
-  var noop = function () { };
 
   if(!domplotter || !velocity) {
     throw new Error("domplotter and velocity must be loaded (first)");
@@ -41,9 +40,10 @@
     global.define(function () {
       return velocityTransitions;
     });
-  } else {
+  }
+  if (window) {
     // Browser
-    global['velocityTransitions'] = velocityTransitions;
+    window.velocityTransitions = velocityTransitions;
   }
 
 })(this);

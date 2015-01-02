@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>Virtual DOM test page</title>
+  <style>
+    .item {
+      background-color: red;
+      width: 300px;
+      padding: 10px;
+      border: solid 1px black;
+    }
+
+    .removed {
+      opacity: 0.5;
+    }
+
+    .added {
+      background-color: darkRed;
+    }
+  </style>
+  <style>
+
+    .slideDown {
+      -webkit-transition: 0.5s ease-out height;
+	    transition: 0.5s ease-out height;
+      height: 0;
+    }
+    .slideDown.slideDown-active {
+      height: 38.4px;
+    }
+
+    .slideUp {
+      -webkit-transition: 0.5s ease-out height;
+	    transition: 0.5s ease-out height;
+      height: 38.4px;
+    }
+    .slideUp.slideUp-active {
+      height: 0;
+    }
+
+  </style>
+  <script src="../../src/domplotter.js"></script>
+  <script src="../../bower_components/velocity/velocity.js"></script>
+  <script src="../../bower_components/velocity/velocity.ui.js"></script>
+  <script src="../../src/velocity-transitions.js"></script>
+  <script src="../../src/extras/showStats.js"></script>
+  <script>
+    var h = window.domplotter.h;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var items = [];
+      for (var i = 0; i < 20; i++) {
+        items.push({ title: "Item " + i, visible: i % 2 === 0, id: i });
+      }
+      var render = function () {
+        return h("div#target", {}, items.filter(function (item) { return item.visible; }).map(function (item) {
+          return h("div.item", { key: "item-" + item.id, enterAnimation: "slideDown", exitAnimation: "slideUp" }, [item.title]);
+        }));
+      };
+
+      var renderLoop = window.domplotter.renderLoop(document.querySelector("#target"), render, { transitions: window.velocityTransitions });
+
+      setTimeout(function () {
+        items[16].visible = false;
+        renderLoop.scheduleRender();
+        setTimeout(function () {
+          items[1].visible = true;
+          items[16].visible = true;
+          renderLoop.scheduleRender();
+        }, 700);
+      }, 300);
+    });
+  </script>
+</head>
+<body>
+  <div id="target"></div>
+</body>
+</html>

@@ -1,103 +1,54 @@
 ---
-layout: default
-title: Domplotter
 ---
-<h2>News</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Domplotter</title>
+  <link rel="stylesheet" href="combo.css">
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+</head>
+<body>
+  <div id="main">
 
-<p>
-  {% for post in site.posts %}
-    <b>{{ post.date | date_to_string }} </b> - 
-    <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-  {% endfor %}
-</p>
+	<nav><ul>
+		<li class="p-home"><a href="#home">Home</a></li>
+		<li class="p-home"><a href="#usage">Usage</a></li>
+		<li class="p-home"><a href="#performance">Performance</a></li>
+		<li class="p-home"><a href="#transitions">Animated transitions</a></li>
+		<li class="p-home"><a href="#credits">Credits</a></li>
+	</ul></nav>
 
-<h2>Intro</h2>
+	<div id="home" class="section p-home">
+		<div class="container {{ page.style }}">
+		  Home content here
+		</div>
+	</div>
 
-<p>Domplotter is a Javascript library which makes it easy to synchronize the DOM tree in the browser with your data.
-It uses a technique called 'Virtual DOM'. 
-Compared to other virtual DOM implementations, domplotter has 3 advantages:</p>
+	<div id="usage" class="section p-usage">
+		<div class="subtlecircle sectiondivider faicon">
+		  <span class="fa-stack">
+			<i class="fa fa-circle fa-stack-2x"></i>
+			<i class="fa fa-check-square-o fa-stack-1x"></i>
+		  </span>
+		  <h5 class="icon-title">Usage</h5>
+		</div>
+		<div class="container {{ page.style }}">
+		  Usage content here
+		</div>
+	</div>
+	
+    <div id="footer" class="section text-white">
+      <div class="container">
+        {% capture foottext %} {% include footer.md %} {% endcapture %}
+        {{ foottext | markdownify }}
+      </div>
+    </div>
+  </div>
 
-<ul>
-<li>It is very lightweight (2Kb gzipped)</li>
-<li>It allows changes to be animated</li>
-<li>It is optimized for speed</li>
-</ul>
-
-<p>While domplotter is only focussed around the view of an application, we believe it is complete enough
-to power a fully functional web application without needing yet another Javascript library.</p>
-
-<p>Domplotter allows you to write a <code>render()</code> function that turns your data into a virtual representation 
-of the DOM tree.
-Domplotter will execute that function at convenient moments and adjust the DOM tree in the browser
-accordingly.</p>
-
-<p>The following code shows this mechanism in its most basic form:</p>
-
-<div class="highlight highlight-js"><pre><span class="pl-c">// Data</span>
-<span class="pl-s">var</span> name <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>;
-
-<span class="pl-c">// Event handler for the 'input' event on the 'name' input</span>
-<span class="pl-s">var</span> <span class="pl-en">nameInputHandler</span> <span class="pl-k">=</span> <span class="pl-st">function</span> (<span class="pl-vpf">evt</span>) {
-  name <span class="pl-k">=</span> evt.<span class="pl-sc">target</span>.<span class="pl-sc">value</span>;
-};
-
-<span class="pl-c">// Renders the virtual DOM</span>
-<span class="pl-s">var</span> <span class="pl-en">render</span> <span class="pl-k">=</span> <span class="pl-st">function</span> () {
-  <span class="pl-k">return</span> h(<span class="pl-s1"><span class="pl-pds">"</span>body<span class="pl-pds">"</span></span>, [
-    h(<span class="pl-s1"><span class="pl-pds">"</span>p.input<span class="pl-pds">"</span></span>, [
-      h(<span class="pl-s1"><span class="pl-pds">"</span>span<span class="pl-pds">"</span></span>, [<span class="pl-s1"><span class="pl-pds">"</span>What is your name? <span class="pl-pds">"</span></span>]),
-      h(<span class="pl-s1"><span class="pl-pds">"</span>input<span class="pl-pds">"</span></span>, { type<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>, autofocus<span class="pl-k">:</span> <span class="pl-c1">true</span>, value<span class="pl-k">:</span> name, oninput<span class="pl-k">:</span> nameInputHandler })
-    ]),
-    name <span class="pl-k">?</span> h(<span class="pl-s1"><span class="pl-pds">"</span>p.output<span class="pl-pds">"</span></span>, [<span class="pl-s1"><span class="pl-pds">"</span>Hello <span class="pl-pds">"</span></span> <span class="pl-k">+</span> name <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span>!<span class="pl-pds">"</span></span>]) <span class="pl-k">:</span> <span class="pl-c1">null</span>
-  ]);
-};
-
-<span class="pl-c">// Starts the renderLoop, which renders the virtual DOM at the right moments</span>
-domplotter.renderLoop(<span class="pl-s3">document</span>.<span class="pl-sc">body</span>, render, {});</pre></div>
-
-<p>The h() function is used to create virtual DOM nodes using a technique known as 'virtual hyperscript'.</p>
-
-<p>The renderLoop schedules the <code>render()</code> function to be executed on requestAnimationFrame when needed. 
-The renderLoop automatically schedules a render when a registered eventhandler on the DOM is called.</p>
-
-<h2>
-<a id="speed" class="anchor" href="#speed" aria-hidden="true"><span class="octicon octicon-link"></span></a>Speed</h2>
-
-<p>The first question that people usually ask when they are new to virtual DOM is, how well does it perform?
-After all, rendering the whole represenation of the DOM and determining the difference with the 
-previous render seems slow.
-In my experience, rendering and diffing a large screen (say 2000 DOM nodes) is easily done within a single 
-frame (16ms) on modern devices. May the speed become an issue, domplotter also has a powerful caching
-mechanism which speeds up rendering and diffing significantly.</p>
-
-<h2>
-<a id="animated-transitions" class="anchor" href="#animated-transitions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Animated transitions</h2>
-
-<p>Domplotter allows adding and removing DOM nodes to be animated. 
-It needs a transition plugin to do so. Right now the only available plugin uses VelocityJS.
-A plugin which uses CSS Transitions will be developed soon. Follow the steps below to animate transitions:</p>
-
-<ul>
-<li>Add the velocity.js and velocityTransitions.js to the page (using script tags or requireJS)</li>
-<li>Add the <code>transitions: velocityTransitions</code> option to the renderLoop.</li>
-<li>Add enterAnimation and exitAnimation properties to the nodes that need to be animated.
-The value for this property is the first argument for the velocity.animate function. 
-You can use "slideDown" as enterAnimation and "slideUp" as exitAnimation for example.</li>
-<li>Enjoy!</li>
-</ul>
-
-<p>More info can be found in the <a href="https://github.com/johan-gorter/domplotter/blob/master/docs/API.md">API Reference</a>.</p>
-
-
-<h2>Credits</h2>
-
-<p>
-Domplotter was inspired by the following frameworks:
-</p>
-
-<ul>
-<li><strong><a href="http://facebook.github.io/react/">React</a></strong> for inventing the virtual DOM technology.</li>
-<li><strong><a href="http://lhorie.github.io/mithril/">Mithril</a></strong> for showing how simple and lightweight a virtual DOM can be.</li>
-<li><strong><a href="https://github.com/Raynos/mercury">Mercury</a></strong> for exploring several tenchiques and optimizations.</li>
-</ul>
-
+{% include analytics.html %}
+</body>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="site.js"></script>
+</html>

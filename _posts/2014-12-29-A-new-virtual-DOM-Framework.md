@@ -25,7 +25,7 @@ be left alone. This is why I settled on the following implementation:
 - Diffing and patching is done simultaneously.
 - Virtual DOM nodes are considered immutable. This allows a powerful caching mechanism based on comparing object identity. 
 
-Keeping a reference to the rendered DOM on virtual DOM nodes is what makes domplotter really different from other implementations.
+Keeping a reference to the rendered DOM on virtual DOM nodes is what makes maquette really different from other implementations.
 I look forward to seeing what the performance implications of this decision are and what other possibilities this enables
 like progressive enhancement.
 

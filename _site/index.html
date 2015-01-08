@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Domplotter</title>
+  <title>Maquette</title>
   <link rel="stylesheet" href="combo.css">
   <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
@@ -25,13 +25,13 @@
 <h2 id="news">News</h2>
 
 <p><em>29 Dec 2014</em> - 
-<a href="/domplotter/2014/12/29/A-new-virtual-DOM-Framework.html">A new virtual dom framework</a></p>
+<a href="/maquette/2014/12/29/A-new-virtual-DOM-Framework.html">A new virtual dom framework</a></p>
 
 <h2 id="intro">Intro</h2>
 
-<p>Domplotter is a Javascript utility which makes it easy to keep the DOM tree in the browser synchronized with your data.
+<p>Maquette is a Javascript utility which makes it easy to keep the DOM tree in the browser synchronized with your data.
 It uses a technique called <strong>Virtual DOM</strong>.
-Compared to other virtual DOM implementations, domplotter has 3 advantages:</p>
+Compared to other virtual DOM implementations, maquette has 3 advantages:</p>
 
 <ul>
   <li>It is very lightweight (2Kb gzipped)</li>
@@ -39,7 +39,7 @@ Compared to other virtual DOM implementations, domplotter has 3 advantages:</p>
   <li>It is optimized for speed</li>
 </ul>
 
-<p>While domplotter is only focussed around the view of an application, we believe it is complete enough
+<p>While maquette is only focussed around the view of an application, we believe it is complete enough
 to power a fully functional web application without needing yet another Javascript library.</p>
 
 
@@ -56,7 +56,7 @@ to power a fully functional web application without needing yet another Javascri
 	  </div>
 	  <div class="container">
 
-<p>Domplotter works by rendering the desired representation of the DOM tree using a 
+<p>Maquette works by rendering the desired representation of the DOM tree using a 
 technique known as virtual hyperscript. 
 Virtual Hyperscript (the <code>h()</code> function) is pure Javascript which executes very fast and has access
 to variables.
@@ -130,7 +130,7 @@ The following code shows how.</p>
       };
 
       // Starts the renderLoop, which renders the virtual DOM at the right moments
-      domplotter.renderLoop(document.body, render, {});
+      maquette.renderLoop(document.body, render, {});
 </pre></div>
 </td></tr></table>
 

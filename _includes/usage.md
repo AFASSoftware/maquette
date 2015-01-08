@@ -1,4 +1,4 @@
-Domplotter works by rendering the desired representation of the DOM tree using a 
+Maquette works by rendering the desired representation of the DOM tree using a 
 technique known as virtual hyperscript. 
 Virtual Hyperscript (the `h()` function) is pure Javascript which executes very fast and has access
 to variables.
@@ -46,5 +46,5 @@ This code represents the same DOM in the browser as the static HTML snippet belo
       };
 
       // Starts the renderLoop, which renders the virtual DOM at the right moments
-      domplotter.renderLoop(document.body, render, {});
+      maquette.renderLoop(document.body, render, {});
 {% endhighlight %}

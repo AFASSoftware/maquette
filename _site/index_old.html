@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Domplotter</title>
+    <title>Maquette</title>
 
-    <link rel="stylesheet" href="/domplotter/stylesheets/styles.css">
-    <link rel="stylesheet" href="/domplotter/stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="/maquette/stylesheets/styles.css">
+    <link rel="stylesheet" href="/maquette/stylesheets/pygment_trac.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -15,10 +15,10 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1><a href="/domplotter/">Domplotter</a></h1>
-        <p>Domplotter is a minimalistic Virtual DOM implementation which supports animated transitions.</p>
+        <h1><a href="/maquette/">Maquette</a></h1>
+        <p>Maquette is a minimalistic Virtual DOM implementation which supports animated transitions.</p>
 
-        <p class="view"><a href="https://github.com/johan-gorter/domplotter">View the Project on GitHub</a></p>
+        <p class="view"><a href="https://github.com/johan-gorter/maquette">View the Project on GitHub</a></p>
       </header>
       <section>
 
@@ -27,15 +27,15 @@
 <p>
   
     <b>29 Dec 2014 </b> - 
-    <a href="/domplotter/2014/12/29/A-new-virtual-DOM-Framework.html">A new virtual dom framework</a>
+    <a href="/maquette/2014/12/29/A-new-virtual-DOM-Framework.html">A new virtual dom framework</a>
   
 </p>
 
 <h2>Intro</h2>
 
-<p>Domplotter is a Javascript library which makes it easy to synchronize the DOM tree in the browser with your data.
+<p>Maquette is a Javascript library which makes it easy to synchronize the DOM tree in the browser with your data.
 It uses a technique called 'Virtual DOM'. 
-Compared to other virtual DOM implementations, domplotter has 3 advantages:</p>
+Compared to other virtual DOM implementations, maquette has 3 advantages:</p>
 
 <ul>
 <li>It is very lightweight (2Kb gzipped)</li>
@@ -43,12 +43,12 @@ Compared to other virtual DOM implementations, domplotter has 3 advantages:</p>
 <li>It is optimized for speed</li>
 </ul>
 
-<p>While domplotter is only focussed around the view of an application, we believe it is complete enough
+<p>While maquette is only focussed around the view of an application, we believe it is complete enough
 to power a fully functional web application without needing yet another Javascript library.</p>
 
-<p>Domplotter allows you to write a <code>render()</code> function that turns your data into a virtual representation 
+<p>Maquette allows you to write a <code>render()</code> function that turns your data into a virtual representation 
 of the DOM tree.
-Domplotter will execute that function at convenient moments and adjust the DOM tree in the browser
+Maquette will execute that function at convenient moments and adjust the DOM tree in the browser
 accordingly.</p>
 
 <p>The following code shows this mechanism in its most basic form:</p>
@@ -73,7 +73,7 @@ accordingly.</p>
 };
 
 <span class="pl-c">// Starts the renderLoop, which renders the virtual DOM at the right moments</span>
-domplotter.renderLoop(<span class="pl-s3">document</span>.<span class="pl-sc">body</span>, render, {});</pre></div>
+maquette.renderLoop(<span class="pl-s3">document</span>.<span class="pl-sc">body</span>, render, {});</pre></div>
 
 <p>The h() function is used to create virtual DOM nodes using a technique known as 'virtual hyperscript'.</p>
 
@@ -87,13 +87,13 @@ The renderLoop automatically schedules a render when a registered eventhandler o
 After all, rendering the whole represenation of the DOM and determining the difference with the 
 previous render seems slow.
 In my experience, rendering and diffing a large screen (say 2000 DOM nodes) is easily done within a single 
-frame (16ms) on modern devices. May the speed become an issue, domplotter also has a powerful caching
+frame (16ms) on modern devices. May the speed become an issue, maquette also has a powerful caching
 mechanism which speeds up rendering and diffing significantly.</p>
 
 <h2>
 <a id="animated-transitions" class="anchor" href="#animated-transitions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Animated transitions</h2>
 
-<p>Domplotter allows adding and removing DOM nodes to be animated. 
+<p>Maquette allows adding and removing DOM nodes to be animated. 
 It needs a transition plugin to do so. Right now the only available plugin uses VelocityJS.
 A plugin which uses CSS Transitions will be developed soon. Follow the steps below to animate transitions:</p>
 
@@ -106,13 +106,13 @@ You can use "slideDown" as enterAnimation and "slideUp" as exitAnimation for exa
 <li>Enjoy!</li>
 </ul>
 
-<p>More info can be found in the <a href="https://github.com/johan-gorter/domplotter/blob/master/docs/API.md">API Reference</a>.</p>
+<p>More info can be found in the <a href="https://github.com/johan-gorter/maquette/blob/master/docs/API.md">API Reference</a>.</p>
 
 
 <h2>Credits</h2>
 
 <p>
-Domplotter was inspired by the following frameworks:
+Maquette was inspired by the following frameworks:
 </p>
 
 <ul>
@@ -128,7 +128,7 @@ Domplotter was inspired by the following frameworks:
         <p>This project is maintained <br /> by <a href="https://github.com/johan-gorter">johan-gorter</a></p>
       </footer>
     </div>
-    <script src="/domplotter/javascripts/scale.fix.js"></script>
+    <script src="/maquette/javascripts/scale.fix.js"></script>
     
   </body>
 </html>

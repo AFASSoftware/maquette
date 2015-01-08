@@ -16,5 +16,4 @@ Compared to other virtual DOM implementations, maquette has 3 advantages:
 - It allows changes to be animated
 - It is optimized for speed
 
-While maquette is only focussed around the view of an application, we believe it is complete enough
-to power a fully functional web application without needing yet another Javascript library.
+While maquette is only focussed around the view of an application, we believe it is all you need to power a fully functional web application. See the todomvc example demonstrates how to do this.

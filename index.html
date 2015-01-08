@@ -49,10 +49,13 @@
 	    </span>
 	    <h5 class="icon-title">Performance</h5>
 	  </div>
-	  <div class="container center">
-	    Performance content here
+	  <div class="container">
+{% capture performancetext %} {% include performance.md %} {% endcapture %}
+{{ performancetext | markdownify }}
 	  </div>
 	</div>
+
+<!-- The rule -->
 
 	<div id="transitions" class="section p-transitions">
 	  <div class="subtlecircle sectiondivider faicon">
@@ -62,10 +65,13 @@
 	    </span>
 	    <h5 class="icon-title">Transitions</h5>
 	  </div>
-	  <div class="container center">
-	    Animated transitions content here
+	  <div class="container">
+{% capture transitionstext %} {% include transitions.md %} {% endcapture %}
+{{ transitionstext | markdownify }}
 	  </div>
 	</div>
+
+<!-- Gallery -->
 	
 	<div id="credits" class="section p-credits">
 	  <div class="subtlecircle sectiondivider faicon">
@@ -75,15 +81,18 @@
 	    </span>
 	    <h5 class="icon-title">Credits</h5>
 	  </div>
-	  <div class="container center">
-	    Credits content here
+	  <div class="container">
+{% capture creditstext %} {% include credits.md %} {% endcapture %}
+{{ creditstext | markdownify }}
 	  </div>
 	</div>
 	
     <div id="footer" class="section text-white">
       <div class="container">
+        <p>
         {% capture foottext %} {% include footer.md %} {% endcapture %}
         {{ foottext | markdownify }}
+        </p>
       </div>
     </div>
   </div>

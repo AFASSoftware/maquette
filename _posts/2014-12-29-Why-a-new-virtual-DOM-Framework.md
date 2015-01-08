@@ -1,8 +1,8 @@
 ---
 layout: default
-title: A new virtual dom framework
+title: Why a new virtual DOM framework
 ---
-# A new virtual dom framework
+# Why a new virtual DOM framework
 
 There are many virtual DOM frameworks to choose from already. 
 React is widely used, Mithril is very good, many others look promising as well. 

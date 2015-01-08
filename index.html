@@ -14,29 +14,70 @@
 
 	<nav><ul>
 		<li class="p-home"><a href="#home">Home</a></li>
-		<li class="p-home"><a href="#usage">Usage</a></li>
-		<li class="p-home"><a href="#performance">Performance</a></li>
-		<li class="p-home"><a href="#transitions">Animated transitions</a></li>
-		<li class="p-home"><a href="#credits">Credits</a></li>
+		<li class="p-usage"><a href="#usage">Usage</a></li>
+		<li class="p-performance"><a href="#performance">Performance</a></li>
+		<li class="p-transitions"><a href="#transitions">Animated transitions</a></li>
+		<li class="p-credits"><a href="#credits">Credits</a></li>
 	</ul></nav>
 
 	<div id="home" class="section p-home">
-		<div class="container {{ page.style }}">
-		  Home content here
-		</div>
+	  <div class="container ">
+{% capture hometext %} {% include home.md %} {% endcapture %}
+{{ hometext | markdownify }}
+	  </div>
 	</div>
 
 	<div id="usage" class="section p-usage">
-		<div class="subtlecircle sectiondivider faicon">
-		  <span class="fa-stack">
-			<i class="fa fa-circle fa-stack-2x"></i>
-			<i class="fa fa-check-square-o fa-stack-1x"></i>
-		  </span>
-		  <h5 class="icon-title">Usage</h5>
-		</div>
-		<div class="container {{ page.style }}">
-		  Usage content here
-		</div>
+	  <div class="subtlecircle sectiondivider faicon">
+	    <span class="fa-stack">
+	      <i class="fa fa-circle fa-stack-2x"></i>
+	      <i class="fa fa-check-square-o fa-stack-1x"></i>
+	    </span>
+	    <h5 class="icon-title">Usage</h5>
+	  </div>
+	  <div class="container">
+{% capture usagetext %} {% include usage.md %} {% endcapture %}
+{{ usagetext | markdownify }}
+	  </div>
+	</div>
+
+	<div id="performance" class="section p-performance">
+	  <div class="subtlecircle sectiondivider faicon">
+	    <span class="fa-stack">
+	      <i class="fa fa-circle fa-stack-2x"></i>
+	      <i class="fa fa-check-square-o fa-stack-1x"></i>
+	    </span>
+	    <h5 class="icon-title">Performance</h5>
+	  </div>
+	  <div class="container center">
+	    Performance content here
+	  </div>
+	</div>
+
+	<div id="transitions" class="section p-transitions">
+	  <div class="subtlecircle sectiondivider faicon">
+	    <span class="fa-stack">
+	      <i class="fa fa-circle fa-stack-2x"></i>
+	      <i class="fa fa-check-square-o fa-stack-1x"></i>
+	    </span>
+	    <h5 class="icon-title">Transitions</h5>
+	  </div>
+	  <div class="container center">
+	    Animated transitions content here
+	  </div>
+	</div>
+	
+	<div id="credits" class="section p-credits">
+	  <div class="subtlecircle sectiondivider faicon">
+	    <span class="fa-stack">
+	      <i class="fa fa-circle fa-stack-2x"></i>
+	      <i class="fa fa-check-square-o fa-stack-1x"></i>
+	    </span>
+	    <h5 class="icon-title">Credits</h5>
+	  </div>
+	  <div class="container center">
+	    Credits content here
+	  </div>
 	</div>
 	
     <div id="footer" class="section text-white">

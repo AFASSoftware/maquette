@@ -14,16 +14,30 @@ html { box-sizing: border-box; }
 .bg-{{c[0]}}     { background-color: {{ c[1] }} !important; }
 {% endfor %}
 
-/* ----- per-post colors! ----- */
-{% for node in site.posts %}
-  {% capture id %}{{ node.id | remove:'/' | downcase }}{% endcapture %}
-  {% capture bg %}{% if site.colors[node.bg] %}{{ site.colors[node.bg] }}{% else %}{{ node.bg }}{% endif %}{% endcapture %}
-  {% capture fg %}{% if site.colors[node.color] %}{{ site.colors[node.color] }}{% else %}{{ node.color }}{% endif %}{% endcapture %}
-  nav .p-{{id}} { border-color: {{ bg }}; }
-  #{{id}} { background-color: {{ bg }} !important; color: {{ fg }}; }
-  #{{id}} a { color: {{ fg }}; }
-  #{{id}} .sectiondivider { color: {{ bg }}; }
-{% endfor %}
+nav .p-home { border-color: white; }
+#home { background-color: white !important; color: black; }
+#home a { color: black; }
+#home .sectiondivider { color: white; }
+
+nav .p-usage { border-color: blue; }
+#usage { background-color: blue !important; color: white; }
+#usage a { color: white; }
+#usage .sectiondivider { color: blue; }
+
+nav .p-performance { border-color: orange; }
+#performance { background-color: orange !important; color: black; }
+#performance a { color: black; }
+#performance .sectiondivider { color: orange; }
+
+nav .p-transitions { border-color: #63BD2F; }
+#transitions { background-color: #63BD2F !important; color: white; }
+#transitions a { color: white; }
+#transitions .sectiondivider { color: #63BD2F; }
+
+nav .p-credits { border-color: purple; }
+#credits { background-color: purple !important; color: white; }
+#credits a { color: white; }
+#credits .sectiondivider { color: purple; }
 
 
 /* ----- code, syntax highlighting, etc ----- */
@@ -61,7 +75,7 @@ img {
 hr {
   margin:60px auto;
   width:50%;
-  border-color: {{ site.colors.black }};
+  border-color: black;
 }
 
 .container { word-wrap: break-word; }
@@ -111,9 +125,6 @@ hr {
 
 /* ----- top menu ----- */
 
-{% assign navborder = 3 %}
-{% assign navborder_active = 6 %}
-
 nav {
   font-size:15px;
   width:100%;
@@ -134,8 +145,8 @@ nav ul {
 
 nav ul li {
   display:inline-block;
-  border-top:{{navborder}}px solid;
-  padding: {{navborder}}px 0;
+  border-top:3px solid;
+  padding: 3px 6px;
   *display:inline;
   zoom:1;
   line-height:normal;
@@ -158,7 +169,7 @@ nav ul li a:hover {
   opacity:1
 }
 nav ul li:hover, nav ul li.active {
-  border-top-width: {{navborder_active}}px;
+  border-top-width: 6px;
   padding-top: 0;
 }
 

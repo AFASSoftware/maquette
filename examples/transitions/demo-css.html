@@ -43,11 +43,11 @@
     }
 
   </style>
-  <script src="../../src/domplotter.js"></script>
+  <script src="../../src/maquette.js"></script>
   <script src="../../src/css-transitions.js"></script>
   <script src="../../src/extras/showStats.js"></script>
   <script>
-    var h = window.domplotter.h;
+    var h = window.maquette.h;
 
     document.addEventListener('DOMContentLoaded', function () {
       var items = [];
@@ -62,7 +62,7 @@
         }));
       };
 
-      var renderLoop = window.domplotter.renderLoop(document.querySelector("#target"), render, { transitions: window.cssTransitions });
+      var renderLoop = window.maquette.renderLoop(document.querySelector("#target"), render, { transitions: window.cssTransitions });
 
       setTimeout(function () {
         items[16].visible = false;

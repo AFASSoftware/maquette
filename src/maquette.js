@@ -403,7 +403,7 @@
     };
   };
 
-  var domplotter = {
+  var maquette = {
     h: function (selector, properties, children) {
       if (!children && (typeof properties === "string" || Array.isArray(properties)
 	      || (properties && properties.hasOwnProperty("vnodeSelector")))) {
@@ -458,7 +458,7 @@
           var timing1 = window.performance.now();
           var vnode = renderFunction();
           var timing2 = window.performance.now();
-          mount = domplotter.mergeDom(element, vnode, options);
+          mount = maquette.mergeDom(element, vnode, options);
           stats.createExecuted(timing1, timing2, window.performance.now(), api);
         } else {
           var updateTiming1 = window.performance.now();
@@ -517,16 +517,16 @@
 
   if (global.module !== undefined && global.module.exports) {
     // Node and other CommonJS-like environments that support module.exports
-    global.module.exports = domplotter;
+    global.module.exports = maquette;
   } else if (typeof global.define == 'function' && global.define.amd) {
     // AMD / RequireJS
     global.define(function () {
-      return domplotter;
+      return maquette;
     });
   }
   if (window) {
     // Browser
-    window.domplotter = domplotter;
+    window.maquette = maquette;
   }
 
 })(this);

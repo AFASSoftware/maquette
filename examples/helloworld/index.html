@@ -2,10 +2,10 @@
 <html>
 <head>
   <title>Hello world</title>
-  <script src="../../dist/domplotter.min.js"></script>
+  <script src="../../dist/maquette.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      var h = domplotter.h;
+      var h = maquette.h;
 
       // Data
       var name = "";
@@ -27,7 +27,7 @@
       };
 
       // Starts the renderLoop, which renders the virtual DOM at the right moments
-      domplotter.renderLoop(document.body, render, {});
+      maquette.renderLoop(document.body, render, {});
 
     });
   </script>

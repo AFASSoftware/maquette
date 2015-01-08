@@ -2,15 +2,15 @@
 
   "use strict";
 
-  var domplotter = global.domplotter;
+  var maquette = global.maquette;
 
   var requestAnimationFrame =
     window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
       function (callback) { window.setTimeout(callback, 16); };
 
-  if(!domplotter) {
-    throw new Error("domplotter must be loaded (first)");
+  if(!maquette) {
+    throw new Error("maquette must be loaded (first)");
   }
 
   var browserSpecificTransitionEndEventName = null;

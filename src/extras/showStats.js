@@ -2,14 +2,14 @@
 
 (function () {
 
-  var domplotter = window.domplotter;
-  var h = domplotter.h;
+  var maquette = window.maquette;
+  var h = maquette.h;
 
-  if (window.domplotterShowStats) {
-    window.domplotterShowStats.destroy();
+  if (window.maquetteShowStats) {
+    window.maquetteShowStats.destroy();
   }
 
-  var rootElement = document.createElement("domplotter-stats");
+  var rootElement = document.createElement("maquette-stats");
   rootElement.style.position = "fixed";
   rootElement.style.top = "100px";
   rootElement.style.zIndex = "19999";
@@ -28,15 +28,15 @@
 
   var reRender = function (evt) {
     evt.preventDefault();
-    if (domplotter.stats.lastRenderLoop) {
-      domplotter.stats.lastRenderLoop.scheduleRender();
+    if (maquette.stats.lastRenderLoop) {
+      maquette.stats.lastRenderLoop.scheduleRender();
     }
   };
 
   var render = function () {
-    var stats = domplotter.stats;
+    var stats = maquette.stats;
 
-    return h("domplotter-stats", [
+    return h("maquette-stats", [
       h("div", {}, ["Stats"]),
       h("div#1", {}, ["" + stats.lastCreateVDom]),
       h("div#2", {}, ["" + stats.lastCreateDom]),
@@ -46,7 +46,7 @@
     ]);
   };
 
-  var mount = domplotter.mergeDom(rootElement, render());
+  var mount = maquette.mergeDom(rootElement, render());
 
   var tick = function () {
     mount.update(render());
@@ -55,7 +55,7 @@
 
   var interval = window.setTimeout(tick, 100);
 
-  window.domplotterShowStats = {
+  window.maquetteShowStats = {
     destroy: function () {
       window.clearInterval(interval);
       document.body.removeChild(rootElement);

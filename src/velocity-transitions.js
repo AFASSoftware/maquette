@@ -2,11 +2,11 @@
 
   "use strict";
 
-  var domplotter = global.domplotter;
+  var maquette = global.maquette;
   var velocity = (global.jQuery || global.Zepto || global).Velocity;
 
-  if(!domplotter || !velocity) {
-    throw new Error("domplotter and velocity must be loaded (first)");
+  if(!maquette || !velocity) {
+    throw new Error("maquette and velocity must be loaded (first)");
   }
 
   var velocityTransitions = {

@@ -163,6 +163,7 @@
     if (!properties) {
       return;
     }
+    var transitions = options.transitions;
     for (var propName in properties) {
       // assuming that properties will be nullified instead of missing is by design
       var propValue = properties[propName];
@@ -171,6 +172,7 @@
         if (propValue === previousValue) {
           continue;
         }
+        var classList = domNode.classList;
         for (var className in propValue) {
           var on = !!propValue[className];
           var previousOn = !!previousValue[className];
@@ -178,11 +180,11 @@
             continue;
           }
           if (on) {
-            domNode.classList.add(className);
-            options.transitions.nodeUpdated(domNode, "addClass", className, undefined, undefined);
+            classList.add(className);
+            transitions.nodeUpdated(domNode, "addClass", className, undefined, undefined);
           } else {
-            domNode.classList.remove(className);
-            options.transitions.nodeUpdated(domNode, "removeClass", className, undefined, undefined);
+            classList.remove(className);
+            transitions.nodeUpdated(domNode, "removeClass", className, undefined, undefined);
           }
         }
       } else {
@@ -190,15 +192,15 @@
           propValue = "";
         }
         if (propName === "value") { // value, checked, selected can be manipulated by the user directly
-          if (domNode["value"] === propValue) {
+          if (domNode.value === propValue) {
             if (propValue !== previousValue) {
-              options.transitions.nodeUpdated(domNode, "property", "value", propValue, previousValue);
+              transitions.nodeUpdated(domNode, "property", "value", propValue, previousValue);
             }
             continue; // Otherwise the cursor position would get updated
           } else {
-            domNode["value"] = propValue; // Reset the value, even if the virtual DOM did not change
+            domNode.value = propValue; // Reset the value, even if the virtual DOM did not change
             if (propValue !== previousValue) {
-              options.transitions.nodeUpdated(domNode, "property", "value", propValue, previousValue);
+              transitions.nodeUpdated(domNode, "property", "value", propValue, previousValue);
             }
             continue;
           }
@@ -211,7 +213,7 @@
           } else {
             domNode[propName] = propValue;
           }
-          options.transitions.nodeUpdated(domNode, "property", propName, propValue, previousValue);
+          transitions.nodeUpdated(domNode, "property", propName, propValue, previousValue);
         }
       }
     }

@@ -130,7 +130,7 @@ window.todoListComponent = function (mode, model) {
         anyTodos ? [
           h("section#main", { key: mode }, [
             h("input#toggle-all", { type: "checkbox", checked: checkedAll, onclick: checkedAllClicked }),
-            h("label", { htmlFor: "toggle-all" }, ["Mark all as complete"]),
+            h("label", { "for": "toggle-all" }, ["Mark all as complete"]),
             h("ul#todo-list",
               todos.filter(visibleInMode).map(function (todo) { return todo.render(); })
             )

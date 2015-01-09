@@ -121,13 +121,6 @@
     return extend(defaultOptions, options);
   };
 
-  var isAttribute = function (domNode, propName) {
-    if (propName in domNode) {
-      return false; // propName is a property
-    }
-    return true;
-  };
-
   var setProperties = function (domNode, properties, options) {
     if (!properties) {
       return;
@@ -146,15 +139,18 @@
         }
       } else if (propName === "key") {
         continue;
-      } else if (typeof propValue === "function") {
-        if (eventHandlerInterceptor) {
-          propValue = eventHandlerInterceptor(propName, propValue, domNode); // intercept eventhandlers
-        }
-        domNode[propName] = propValue;
-      } else if (options.namespace || isAttribute(domNode, propName)) {
-        domNode.setAttribute(propName, propValue);
       } else {
-        domNode[propName] = propValue;
+        var type = typeof propValue;
+        if (type === "function") {
+          if (eventHandlerInterceptor) {
+            propValue = eventHandlerInterceptor(propName, propValue, domNode); // intercept eventhandlers
+          }
+          domNode[propName] = propValue;
+        } else if (type === "string") {
+          domNode.setAttribute(propName, propValue);
+        } else {
+          domNode[propName] = propValue;
+        }
       }
     }
   };
@@ -205,10 +201,11 @@
             continue;
           }
         } else if (propValue !== previousValue) {
-          if (typeof propValue === "function") {
+          var type = typeof propValue;
+          if (type === "function") {
             throw new Error("Functions may not be updated on subsequent renders (property: " + propName + ")");
           }
-          if (options.namespace || isAttribute(domNode, propName)) {
+          if (type === "string") {
             domNode.setAttribute(propName, propValue);
           } else {
             domNode[propName] = propValue;

@@ -20,7 +20,7 @@ This code renders the same DOM in the browser as the static HTML snippet below (
 {% endhighlight %}
 
 
-The following code demonstrates how to read user input and display it again.
+The following code demonstrates how easy it is to read user input and display it again.
 
 
 {% highlight text linenos=table %}
@@ -50,6 +50,8 @@ return h("body", [
 maquette.renderLoop(document.body, render, {});
 {% endhighlight %}
 
-There is one special rule when creating a virtual DOM nodes, all childnodes must be distinguishable. This means
-that all children must eather have a unique selector, or they should have a unique key.
-This is needed to do accurate animations and it also helps maquette to perform better.
+There is one special rule when creating a virtual DOM nodes that requires special attention.
+Maquette needs all childnodes to be distinguishable. This means that all children must eather have a unique selector, or they must provide a unique key property.
+Maquette needs ths information to do accurate animations. It also helps maquette to perform better.
+
+More info can be found in the <a href="https://github.com/johan-gorter/maquette/blob/master/docs/API.md">API Reference</a>.

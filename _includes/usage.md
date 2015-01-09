@@ -1,7 +1,7 @@
 Maquette works by rendering the desired representation of the DOM tree using a 
 technique known as virtual hyperscript. 
 Virtual Hyperscript is pure Javascript which executes very fast.
-The following code shows how.
+The following code shows an example of virtual hyperscript.
 
 {% highlight text linenos=table %}
 return h("p.input", [
@@ -50,8 +50,8 @@ return h("body", [
 maquette.renderLoop(document.body, render, {});
 {% endhighlight %}
 
-There is one special rule when creating a virtual DOM nodes that requires special attention.
-Maquette needs all childnodes to be distinguishable. This means that all children must eather have a unique selector, or they must provide a unique key property.
+There is one rule when creating a virtual DOM nodes that requires special attention.
+Maquette needs all childnodes to be distinguishable. This means that all children must either have a unique selector, or they must provide a unique `key` property.
 Maquette needs ths information to do accurate animations. It also helps maquette to perform better.
 
 More info can be found in the <a href="https://github.com/johan-gorter/maquette/blob/master/docs/API.md">API Reference</a>.

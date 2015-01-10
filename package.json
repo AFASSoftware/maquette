@@ -15,6 +15,9 @@
     "url": "https://github.com/johan-gorter/maquette"
   },
   "main": "dist/maquette-min.js",
+  "scripts": {
+    "release": "node release.js"
+  },
   "licenses": [
     {
       "type": "MIT",
@@ -27,8 +30,10 @@
     "gulp-bump": "^0.1.11",
     "gulp-filter": "^2.0.0",
     "gulp-git": "^0.5.5",
+    "gulp-prompt": "^0.1.1",
     "gulp-rename": "^1.2.0",
     "gulp-tag-version": "^1.2.1",
-    "gulp-uglify": "^1.0.2"
+    "gulp-uglify": "^1.0.2",
+    "inquirer": "^0.8.0"
   }
 }

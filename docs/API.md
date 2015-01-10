@@ -87,10 +87,10 @@ A [CalculationCache](#calculationcache) object.
 ## Maquette.createDom
 
 ```js
-function createDom(vnode, options) // returns a Rendering object
+function createDom(vnode, options) // returns a Projection object
 ```
-The createDom method creates a real DOM tree given a [VNode](#vnode). The [Rendering](#rendering) object returned 
-will contain the resulting DOM Node under the [`Rendering.domNode`](#renderingdomnode) property.
+The createDom method creates a real DOM tree given a [VNode](#vnode). The [Projection](#projection) object returned 
+will contain the resulting DOM Node under the [`Projection.domNode`](#projectiondomnode) property.
 This is a low-level method. Users wil typically use [`Maquette.renderLoop`](#maquetterenderloop) instead.
 
 NOTE: VNode objects may only be rendered once.
@@ -100,18 +100,18 @@ NOTE: VNode objects may only be rendered once.
 * `vnode` *VNode*  
   A virtual DOM tree that was created using the [`h()`](maquetteh) function.
 * `options` *object*  
-  Rendering options
+  Projection options
 
 ### returns
 
-A [Rendering](#rendering) object.
+A [Projection](#rprojection) object.
 
 
 
 ## Maquette.mergeDom
 
 ```js
-function mergeDom(element, vnode, options) // returns a Rendering object
+function mergeDom(element, vnode, options) // returns a Projection object
 ```
 
 The mergeDom method creates a real DOM tree at an already existing DOM element given a [VNode](#vnode). 
@@ -129,17 +129,17 @@ NOTE: [VNode](#vnode) objects may only be rendered once.
 * `vnode` *VNode*  
   The root of the virtual DOM tree that was created using the [`h()`](#domsetterh) function.
 * `options` *object*  
-  Rendering options
+  Projection options
 
 ### returns
 
-A [Rendering](#rendering) object.
+A [Projection](#projection) object.
 
 
 
 ## RenderLoop
 
-A renderLoop is an object that reschedules the rendering of the virtual DOM at the right moment.
+A renderLoop is an object that reschedules the rendering and projection of the virtual DOM at the right moment.
 It has the following properties:
 
 ## RenderLoop.scheduleRender
@@ -160,12 +160,12 @@ Makes sure that no more renderings take place.
 
 
 
-## Rendering
+## Projection
 
-A Rendering object represents a VNode tree that has been converted to a real DOM tree. 
+A Projection object represents a VNode tree that has been converted to a real DOM tree. 
 It provides the following properties:
 
-## Rendering.update
+## Projection.update
 
 ```js
 function update(updatedVNode)
@@ -173,7 +173,7 @@ function update(updatedVNode)
 
 This function updates the rendered VNode to another VNode from a subsequent rendering.
 
-## Rendering.domNode
+## Projection.domNode
 
 This property contains the root DOM Node that has been rendered.
 

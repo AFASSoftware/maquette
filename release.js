@@ -17,22 +17,29 @@ exec("git status --porcelain", function (error, stdout, stderr) {
   }
 
   spawn("gulp.cmd", ["compress"], { stdio: 'inherit' }).on('close', function (code) {
-    if (code === 0) {
-      inquirer.prompt({
-        type: 'list',
-        name: 'bump',
-        message: 'What type of bump would you like to do?',
-        choices: ['patch', 'minor', 'major']
-      }, function (importance) {
-        spawn("gulp.cmd", ["bump-" + importance.bump], { stdio: 'inherit' }).on("close", function (code) {
-          if (code === 0) {
-            spawn('npm.cmd', ['publish'], { stdio: 'inherit' }).on('close', function (code2) {
-              process.exit(code2);
+    if(code !== 0) {
+      process.exit(code);
+    }
+    inquirer.prompt({
+      type: 'list',
+      name: 'bump',
+      message: 'What type of bump would you like to do?',
+      choices: ['patch', 'minor', 'major']
+    }, function (importance) {
+      spawn("gulp.cmd", ["bump-" + importance.bump], { stdio: 'inherit' }).on("close", function (code2) {
+        if(code2 !== 0) { process.exit(code2); }
+        spawn("git", ["push"], { stdio: 'inherit' }).on("close", function (code3) {
+          if(code3 !== 0) { process.exit(code3); }
+          spawn("git", ["push", "--tags"], { stdio: 'inherit' }).on("close", function (code4) {
+            if(code4 !== 0) {
+              process.exit(code4);
+            }
+            spawn('npm.cmd', ['publish'], { stdio: 'inherit' }).on('close', function (code5) {
+              process.exit(code5);
             });
-          }
+          });
         });
       });
-    }
+    });
   });
-
 });

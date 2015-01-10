@@ -33,13 +33,7 @@ function inc(importance) {
     // read only one file to get the version number
     .pipe(filter('package.json'))
     // **tag it in the repository**
-    .pipe(tag_version())
-    .pipe(git.push('origin', 'master', function (err) {
-      if (err) throw err;
-    }))
-    .pipe(git.push('origin', 'master', {args: "--tags"}, function (err) {
-      if (err) throw err;
-    }));
+    .pipe(tag_version());
 }
 
 gulp.task('bump-patch', ["compress"], function () { return inc('patch'); });

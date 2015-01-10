@@ -3,23 +3,25 @@ var exec = require('child_process').exec;
 var inquirer = require('inquirer');
 
 
-exec("git status --porcelain", function (error, stdout, stderr) {
-  if(error) {
-    console.log(stdout);
-    console.log(stderr);
-    console.log("error: "+error);
-    process.exit(error);
-  }
-  if (stdout) {
-    console.log(stdout);
-    console.log("There are uncommitted changes");
-    process.exit(1);
+
+spawn("gulp.cmd", ["compress"], { stdio: 'inherit' }).on('close', function (code) {
+  if(code !== 0) {
+    process.exit(code);
   }
 
-  spawn("gulp.cmd", ["compress"], { stdio: 'inherit' }).on('close', function (code) {
-    if(code !== 0) {
-      process.exit(code);
+  exec("git status --porcelain", function (error, stdout, stderr) {
+    if (error) {
+      console.log(stdout);
+      console.log(stderr);
+      console.log("error: " + error);
+      process.exit(error);
     }
+    if (stdout) {
+      console.log(stdout);
+      console.log("There are uncommitted changes");
+      process.exit(1);
+    }
+
     inquirer.prompt({
       type: 'list',
       name: 'bump',

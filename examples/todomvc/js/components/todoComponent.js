@@ -33,13 +33,18 @@ window.todoComponent = function (todoList, id, title) {
   };
 
   var acceptEdit = function () {
-    component.title = editingTitle.trim() || component.title;
-    todoList.todoTitleUpdated(component);
-    todoList.editTodo(null);
-    editingTitle = null;
+    component.title = editingTitle.trim();
+    if (!component.title) {
+      todoList.editTodo(null);
+      todoList.removeTodo(component);
+    } else {
+      todoList.todoTitleUpdated(component);
+      todoList.editTodo(null);
+      editingTitle = null;
+    }
   };
 
-  var editKeyPressed = function (evt) {
+  var editKeyup = function (evt) {
     if (evt.keyCode == ENTER_KEY) {
       acceptEdit();
     }
@@ -76,7 +81,7 @@ window.todoComponent = function (todoList, id, title) {
             h("button.destroy", { onclick: remove })
           ]),
           editing
-            ? h("input.edit", { value: editingTitle, oninput: editInputHandler, onkeypress: editKeyPressed, onblur: editBlurred, afterCreate: focusEdit })
+            ? h("input.edit", { value: editingTitle, oninput: editInputHandler, onkeyup: editKeyup, onblur: editBlurred, afterCreate: focusEdit })
             : null
         ]);
       });

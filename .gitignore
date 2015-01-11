@@ -1,3 +1,9 @@
+bower_components
+node_modules
+
+# Linux gedit temp files
+*~
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -14,12 +20,10 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
-# =========================
-# Operating System Files
-# =========================
+# Visual Studio
+Web.config
 
 # OSX
-# =========================
 
 .DS_Store
 .AppleDouble
@@ -42,10 +46,3 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-
-bower_components
-Web.config
-node_modules
-bower_components
-
-*~

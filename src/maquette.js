@@ -389,7 +389,7 @@
     }
   };
 
-  var createRendering = function (vnode, options) {
+  var createProjection = function (vnode, options) {
     return {
       update: function (updatedVnode) {
         if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
@@ -421,22 +421,23 @@
     createDom: function (vnode, options) {
       options = applyDefaultOptions(options);
       createDom(vnode, noop, options);
-      return createRendering(vnode, options);
+      return createProjection(vnode, options);
     },
 
     appendToDom: function (element, vnode, options) {
       options = applyDefaultOptions(options);
-      createDom(vnode, function (newElement) {
-        element.appendChild(newElement);
-      }, options);
-      return createRendering(vnode, options);
+      var afterCreate = append.appendChild ? function (newElement) {
+        append.appendChild(newElement);
+      } : append;
+      createDom(vnode, afterCreate, options);
+      return createProjection(vnode, options);
     },
 
     mergeDom: function (element, vnode, options) {
       options = applyDefaultOptions(options);
       vnode.domNode = element;
       initPropertiesAndChildren(element, vnode, options);
-      return createRendering(vnode, options);
+      return createProjection(vnode, options);
     },
 
     renderLoop: function (element, renderFunction, options) {

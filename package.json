@@ -16,7 +16,7 @@
   },
   "main": "dist/maquette-min.js",
   "scripts": {
-    "release": "node release.js"
+    "test": "mocha"
   },
   "licenses": [
     {

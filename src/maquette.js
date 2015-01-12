@@ -364,7 +364,7 @@
   };
 
   // polyfill for window.performance
-  window.performance = (window.performance || {
+  var performance = (global.performance || {
     offset: new Date(),
     now: function now() {
       return new Date() - this.offset;
@@ -455,17 +455,17 @@
       var doRender = function () {
         scheduled = null;
         if (!mount) {
-          var timing1 = window.performance.now();
+          var timing1 = performance.now();
           var vnode = renderFunction();
-          var timing2 = window.performance.now();
+          var timing2 = performance.now();
           mount = maquette.mergeDom(element, vnode, options);
-          stats.createExecuted(timing1, timing2, window.performance.now(), api);
+          stats.createExecuted(timing1, timing2, performance.now(), api);
         } else {
-          var updateTiming1 = window.performance.now();
+          var updateTiming1 = performance.now();
           var updatedVnode = renderFunction();
-          var updateTiming2 = window.performance.now();
+          var updateTiming2 = performance.now();
           mount.update(updatedVnode);
-          stats.updateExecuted(updateTiming1, updateTiming2, window.performance.now(), api);
+          stats.updateExecuted(updateTiming1, updateTiming2, performance.now(), api);
         }
       };
       scheduled = requestAnimationFrame(doRender);
@@ -517,16 +517,15 @@
   // Deprecated name for createProjector
   maquette.renderLoop = maquette.createProjector;
 
-  if (global.module !== undefined && global.module.exports) {
+  if (typeof module !== undefined && module.exports) {
     // Node and other CommonJS-like environments that support module.exports
-    global.module.exports = maquette;
-  } else if (typeof global.define == 'function' && global.define.amd) {
+    module.exports = maquette;
+  } else if (typeof define == 'function' && define.amd) {
     // AMD / RequireJS
-    global.define(function () {
+    define(function () {
       return maquette;
     });
-  }
-  if (window) {
+  } else {
     // Browser
     window.maquette = maquette;
   }

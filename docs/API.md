@@ -44,18 +44,18 @@ When properties are to be cleared, they must be set to either null or undefined.
 
 
 
-## Maquette.renderLoop
+## Maquette.createProjector
 
 ```js
-function renderLoop(element, renderFunction, options) // returns a RenderLoop object
+function createProjector(element, renderFunction, options) // returns a Projector object
 ```
 
 Starts a render loop that re-renders the DOM at the right moments. 
 The renderFunction is always executed on requestAnimationFrame.
-The renderFunction is scheduled to be executed on the next animation frame after:
-* The renderLoop was first started
-* The [`renderLoop.scheduleRender()`](#renderloopschedulerender) function was called
-* A registered event handler (onclick for example) was executed
+The renderFunction is scheduled to be executed on the first animation frame after:
+* The projector was first started
+* The [`projector.scheduleRender()`](#projectorchedulerender) function was called
+* An event handler on a rendered virtual DOM node (onclick for example) was executed
 
 ### parameters
 
@@ -68,7 +68,7 @@ The renderFunction is scheduled to be executed on the next animation frame after
 
 ### returns
 
-A [RenderLoop](#renderloop) object containing a [`scheduleRender()`](#renderloopschedulerender) method.
+A [Projector](#projector) object containing a [`scheduleRender()`](#projectorschedulerender) method.
 
 ## Maquette.createCache
 
@@ -91,7 +91,7 @@ function createDom(vnode, options) // returns a Projection object
 ```
 The createDom method creates a real DOM tree given a [VNode](#vnode). The [Projection](#projection) object returned 
 will contain the resulting DOM Node under the [`Projection.domNode`](#projectiondomnode) property.
-This is a low-level method. Users wil typically use [`Maquette.renderLoop`](#maquetterenderloop) instead.
+This is a low-level method. Users wil typically use [`Maquette.createProjector`](#maquettecreateprojector) instead.
 
 NOTE: VNode objects may only be rendered once.
 
@@ -117,7 +117,7 @@ function mergeDom(element, vnode, options) // returns a Projection object
 The mergeDom method creates a real DOM tree at an already existing DOM element given a [VNode](#vnode). 
 The selector for the root VNode will be ignored, but its properties and children will be applied to the provided
 element.
-This is a low-level method. Users wil typically use Maquette.renderLoop instead.
+This is a low-level method. Users wil typically use Maquette.createProjector instead.
 
 NOTE: [VNode](#vnode) objects may only be rendered once.
 
@@ -137,27 +137,27 @@ A [Projection](#projection) object.
 
 
 
-## RenderLoop
+## Projector
 
-A renderLoop is an object that reschedules the rendering and projection of the virtual DOM at the right moment.
+A projector is an object that reschedules the rendering and projection of the virtual DOM at the right moment.
 It has the following properties:
 
-## RenderLoop.scheduleRender
+## Projector.scheduleRender
 
 ```js
 function scheduleRender()
 ```
 
-Signals the renderLoop that a render needs to take place at the next animation frame.
+Signals the projector that a render needs to take place at the next animation frame.
 
-## RenderLoop.destroy
+## Projector.destroy
 
 ```js
 function destroy()
 ```
 
-Makes sure that no more renderings take place.
-
+Makes sure that no more renderings take place. Note that calling `destroy()` is not mandatory. 
+A projector is a passive object that will get garbage collected as usual if it is no longer in scope.
 
 
 ## Projection
@@ -206,5 +206,5 @@ Manually invalidates the cached outcome.
 
 ## VNode
 
-A virtual representation of a DOM Node. This object is not meant to be used outside the maquette framework. 
+A virtual representation of a DOM Node. This object is not meant to be used outside the maquette library. 
 It is assumed to be immutable.

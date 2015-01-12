@@ -10,9 +10,9 @@
   var router = window.todoRouter(model);
 
   document.addEventListener('DOMContentLoaded', function() {
-    var renderLoop = maquette.renderLoop(document.getElementsByTagName("main")[0], router.render, { /* No render options */ });
+    var projector = maquette.createProjector(document.getElementsByTagName("main")[0], router.render, { /* No projection options */ });
     window.onhashchange = function (evt) {
-      renderLoop.scheduleRender();
+      projector.scheduleRender();
     };
   });
 

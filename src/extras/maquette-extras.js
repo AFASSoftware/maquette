@@ -6,8 +6,8 @@
 
   var maquetteExtras = {
 
-    // renderLoop which executes rendering synchronously. Added to be able to run performance tests.
-    syncRenderLoop: function (element, renderFunction, options) {
+    // projector which executes rendering synchronously (immediately). Created to be able to run performance tests.
+    createSyncProjector: function (element, renderFunction, options) {
       var patchedOptions = {};
       Object.keys(options).forEach(function (key) {
         patchedOptions[key] = options[key];

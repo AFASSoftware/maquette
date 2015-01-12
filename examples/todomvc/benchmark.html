@@ -47,7 +47,7 @@
     var rootComponent = window.todoRouter(model);
 
     document.addEventListener('DOMContentLoaded', function () {
-      maquetteExtras.syncRenderLoop(document.getElementsByTagName("main")[0], rootComponent.render, { /* No render options */ });
+      maquetteExtras.createSyncProjector(document.getElementsByTagName("main")[0], rootComponent.render, { /* No render options */ });
 
       var newTodo = document.querySelector("#new-todo");
       newTodo.focus();

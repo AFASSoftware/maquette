@@ -280,7 +280,7 @@
           createDom(newChild, function (childDomNode) {
             if (oldIndex < oldChildren.length) {
               var nextChild = oldChildren[oldIndex];
-              nextChild.domNode.parentNode.insertBefore(childDomNode, nextChild.domNode);
+              domNode.insertBefore(childDomNode, nextChild.domNode);
             } else {
               domNode.appendChild(childDomNode);
             }
@@ -376,14 +376,14 @@
     lastCreateDom: null,
     lastUpdateVDom: null,
     lastUpdateDom: null,
-    lastRenderLoop: null,
-    createExecuted: function (timing1, timing2, timing3, renderLoop) {
-      stats.lastRenderLoop = renderLoop;
+    lastProjector: null,
+    createExecuted: function (timing1, timing2, timing3, projector) {
+      stats.lastProjector = projector;
       stats.lastCreateVDom = timing2 - timing1;
       stats.lastCreateDom = timing3 - timing2;
     },
-    updateExecuted: function (timing1, timing2, timing3, renderLoop) {
-      stats.lastRenderLoop = renderLoop;
+    updateExecuted: function (timing1, timing2, timing3, projector) {
+      stats.lastProjector = projector;
       stats.lastUpdateVDom = timing2 - timing1;
       stats.lastUpdateDom = timing3 - timing2;
     }
@@ -440,7 +440,7 @@
       return createProjection(vnode, options);
     },
 
-    renderLoop: function (element, renderFunction, options) {
+    createProjector: function (element, renderFunction, options) {
       options = applyDefaultOptions(options);
       options.eventHandlerInterceptor = function (propertyName, functionPropertyArgument) {
         return function () {
@@ -514,6 +514,8 @@
 
     stats: stats,
   };
+  // Deprecated name for createProjector
+  maquette.renderLoop = maquette.createProjector;
 
   if (global.module !== undefined && global.module.exports) {
     // Node and other CommonJS-like environments that support module.exports

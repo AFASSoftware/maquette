@@ -58,15 +58,15 @@
         }));
       };
 
-      var renderLoop = window.maquette.renderLoop(document.querySelector("#target"), render, { transitions: window.velocityTransitions });
+      var projector = window.maquette.createProjector(document.querySelector("#target"), render, { transitions: window.velocityTransitions });
 
       setTimeout(function () {
         items[16].visible = false;
-        renderLoop.scheduleRender();
+        projector.scheduleRender();
         setTimeout(function () {
           items[1].visible = true;
           items[16].visible = true;
-          renderLoop.scheduleRender();
+          projector.scheduleRender();
         }, 700);
       }, 300);
     });

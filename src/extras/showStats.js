@@ -28,8 +28,8 @@
 
   var reRender = function (evt) {
     evt.preventDefault();
-    if (maquette.stats.lastRenderLoop) {
-      maquette.stats.lastRenderLoop.scheduleRender();
+    if (maquette.stats.lastProjector) {
+      maquette.stats.lastProjector.scheduleRender();
     }
   };
 
@@ -42,7 +42,7 @@
       h("div#2", {}, ["" + stats.lastCreateDom]),
       h("div#3", {}, ["" + stats.lastUpdateVDom]),
       h("div#4", {}, ["" + stats.lastUpdateDom]),
-      stats.lastRenderLoop ? h("button", { onclick: reRender }, ["Render"]) : null
+      stats.lastProjector ? h("button", { onclick: reRender }, ["Render"]) : null
     ]);
   };
 

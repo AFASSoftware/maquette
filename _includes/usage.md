@@ -45,7 +45,8 @@ var render = function () {
   ]);
 };
 
-// Starts the projector, which renders the virtual DOM and updates the projection to the real DOM at the optimal moments
+// Starts the projector, which renders the virtual DOM and 
+// updates the projection to the real DOM at the optimal moments
 maquette.createProjector(document.body, render, {});
 {% endhighlight %}
 

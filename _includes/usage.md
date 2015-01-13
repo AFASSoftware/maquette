@@ -24,6 +24,9 @@ The following code demonstrates how easy it is to read user input and display it
 
 
 {% highlight text linenos=table %}
+var h = maquette.h;
+
+// Data
 var name = "";
 
 // Event handler for the 'input' event on the 'name' input
@@ -33,21 +36,17 @@ var nameInput = function (evt) {
 
 // Renders the virtual DOM
 var render = function () {
-return h("body", [
-  h("p.input", [
-    h("span", [
-      "What is your name? "
+  return h("body", [
+    h("p.input", [
+      h("span", ["What is your name? "]),
+      h("input", { type: "text", autofocus: true, value: name, oninput: nameInput })
     ]),
-    h("input", { type: "text", autofocus: true, value: name, oninput: nameInput })
-  ]),
-  name ? h("p.output", [
-    "Hello " + name + "!"
-  ]) : null
-]);
+    name ? h("p.output", ["Hello " + name + "!"]) : null
+  ]);
 };
 
-// Starts the renderLoop, which renders the virtual DOM at the right moments
-maquette.renderLoop(document.body, render, {});
+// Starts the projector, which renders the virtual DOM and updates the projection to the real DOM at the optimal moments
+maquette.createProjector(document.body, render, {});
 {% endhighlight %}
 
 There is one rule when creating a virtual DOM nodes that requires special attention.

@@ -517,10 +517,10 @@
   // Deprecated name for createProjector
   maquette.renderLoop = maquette.createProjector;
 
-  if (typeof module !== undefined && module.exports) {
+  if (typeof module !== "undefined" && module.exports) {
     // Node and other CommonJS-like environments that support module.exports
     module.exports = maquette;
-  } else if (typeof define == 'function' && define.amd) {
+  } else if (typeof define === "function" && define.amd) {
     // AMD / RequireJS
     define(function () {
       return maquette;

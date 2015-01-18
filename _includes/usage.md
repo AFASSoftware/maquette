@@ -25,21 +25,20 @@ function render() {
 </p>
 {% endhighlight %}
 
-The following code snippet shows how maquette uses a so called projector object which 
-calls the `render()` function when needed. 
+The following code snippet shows how maquette uses a projector to call the `render()` function when needed. 
 The projector always calls the render function asynchronously (using `requestAnimationFrame`). 
-See the reference documentation for `projector()` for more details.
+See the reference documentation for [`createProjector()`](https://github.com/johan-gorter/maquette/blob/master/docs/API.md#maquettecreateprojector) for more details.
 
 {% highlight text linenos=table %}
 maquette.createProjector(document.body, render);
 {% endhighlight %}
 
-If you are curious about the remaining lines of code that will make the hello world application,
+If you are curious about the remaining lines of code that will make the hello world application work,
 you can find it [here](https://github.com/johan-gorter/maquette/blob/master/examples/helloworld/index.html).
 
 There is one rule when creating a virtual DOM nodes that requires special attention.
 Maquette needs all childnodes of a virtual DOM node to be distinguishable. 
-This means that they must either have a unique selector, or they must provide a unique `key` property.
+This means that they must either have a unique selector or they must provide a unique `key` property.
 Maquette needs this information to animate transitions. This also helps maquette to perform better.
 
 More info can be found in the [API Reference](https://github.com/johan-gorter/maquette/blob/master/docs/API.md).

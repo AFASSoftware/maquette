@@ -1,16 +1,22 @@
-Maquette works by rendering the desired representation of the DOM tree using a 
-technique known as virtual hyperscript. 
-Virtual Hyperscript is pure Javascript which executes very fast.
-The following code shows an example of virtual hyperscript.
+Maquette makes it easy to keep your user interface synchronized with your data.
+All you need to do is provide a `render()` function which creates the current state of your 
+user interface from scratch.
+This `render()` function returns a tree of virtual DOM nodes using the `h()` function. 
+How the virtual DOM is translated to the real DOM is shown in the following 2 code snippets.
+More details about the `h()` function can be found 
+[in the API reference](https://github.com/johan-gorter/maquette/blob/master/docs/API.md#maquetteh). 
 
 {% highlight text linenos=table %}
-return h("p.input", [
-  h("span", ["What is your name? "]),
-  h("input", { type: "text", autofocus: true, value: name, oninput: nameInput })
-]);
-{% endhighlight %}
+var h = maquette.h;
+var name = "";
 
-This code renders the same DOM in the browser as the static HTML snippet below (if the `name` variable is assigned an empty string).
+function render() {
+  return h("p.input", [
+    h("span", ["What is your name? "]),
+    h("input", { type: "text", autofocus: true, value: name, oninput: nameInput })
+  ]);
+}
+{% endhighlight %}
 
 {% highlight text linenos=table %}
 <p class="input">
@@ -19,39 +25,21 @@ This code renders the same DOM in the browser as the static HTML snippet below (
 </p>
 {% endhighlight %}
 
-
-The following code demonstrates how easy it is to read user input and display it again.
-
+The following code snippet shows how maquette uses a so called projector object which 
+calls the `render()` function when needed. 
+The projector always calls the render function asynchronously (using `requestAnimationFrame`). 
+See the reference documentation for `projector()` for more details.
 
 {% highlight text linenos=table %}
-var h = maquette.h;
-
-// Data
-var name = "";
-
-// Event handler for the 'input' event on the 'name' input
-var nameInput = function (evt) {
-  name = evt.target.value;
-};
-
-// Renders the virtual DOM
-var render = function () {
-  return h("body", [
-    h("p.input", [
-      h("span", ["What is your name? "]),
-      h("input", { type: "text", autofocus: true, value: name, oninput: nameInput })
-    ]),
-    name ? h("p.output", ["Hello " + name + "!"]) : null
-  ]);
-};
-
-// Starts the projector, which renders the virtual DOM and 
-// updates the projection to the real DOM at the optimal moments
-maquette.createProjector(document.body, render, {});
+maquette.createProjector(document.body, render);
 {% endhighlight %}
 
-There is one rule when creating a virtual DOM nodes that requires special attention.
-Maquette needs all childnodes to be distinguishable. This means that all children must either have a unique selector, or they must provide a unique `key` property.
-Maquette needs ths information to do accurate animations. It also helps maquette to perform better.
+If you are curious about the remaining lines of code that will make the hello world application,
+you can find it [here](https://github.com/johan-gorter/maquette/blob/master/examples/helloworld/index.html).
 
-More info can be found in the <a href="https://github.com/johan-gorter/maquette/blob/master/docs/API.md">API Reference</a>.
+There is one rule when creating a virtual DOM nodes that requires special attention.
+Maquette needs all childnodes of a virtual DOM node to be distinguishable. 
+This means that they must either have a unique selector, or they must provide a unique `key` property.
+Maquette needs this information to animate transitions. This also helps maquette to perform better.
+
+More info can be found in the [API Reference](https://github.com/johan-gorter/maquette/blob/master/docs/API.md).

@@ -33,10 +33,10 @@ See the reference documentation for [`createProjector()`](https://github.com/joh
 maquette.createProjector(document.body, render);
 {% endhighlight %}
 
-If you are curious about the remaining lines of code that will make the hello world application work,
+If you are curious about the remaining lines of code that will make a hello world application work,
 you can find it [here](https://github.com/johan-gorter/maquette/blob/master/examples/helloworld/index.html).
 
-There is one rule when creating a virtual DOM nodes that requires special attention.
+There is one rule when creating virtual DOM nodes that requires special attention.
 Maquette needs all childnodes of a virtual DOM node to be distinguishable. 
 This means that they must either have a unique selector or they must provide a unique `key` property.
 Maquette needs this information to animate transitions. This also helps maquette to perform better.

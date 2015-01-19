@@ -50,7 +50,7 @@ When properties are to be cleared, they must be set to either null or undefined.
 function createProjector(element, renderFunction, options) // returns a Projector object
 ```
 
-Starts a render loop that re-renders the DOM at the right moments. 
+Starts a projector that executes the renderFunction and updates the DOM at the optimal moments. 
 The renderFunction is always executed on requestAnimationFrame.
 The renderFunction is scheduled to be executed on the first animation frame after:
 * The projector was first started

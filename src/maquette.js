@@ -139,6 +139,8 @@
         }
       } else if (propName === "key") {
         continue;
+      } else if (propValue === null || propValue === undefined) {
+        continue;
       } else {
         var type = typeof propValue;
         if (type === "function") {

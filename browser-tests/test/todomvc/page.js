@@ -161,19 +161,22 @@ module.exports = function Page(browser) {
 
 	this.filterByActiveItems = function () {
 		return this.getFilterElements().then(function (filters) {
-			filters[1].click();
+		  filters[1].click();
+		  browser.sleep(100); // wait for onhashchange to fire
 		});
 	};
 
 	this.filterByCompletedItems = function () {
 		return this.getFilterElements().then(function (filters) {
 			filters[2].click();
+			browser.sleep(100); // wait for onhashchange to fire
 		});
 	};
 
 	this.filterByAllItems = function () {
 		return this.getFilterElements().then(function (filters) {
 			filters[0].click();
+			browser.sleep(100); // wait for onhashchange to fire
 		});
 	};
 };

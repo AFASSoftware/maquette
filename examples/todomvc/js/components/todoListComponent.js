@@ -94,6 +94,7 @@ window.todoListComponent = function (mode, model) {
           completedCount--;
         } else {
           itemsLeft--;
+          checkedAll = completedCount === todos.length;
         }
       });
     },

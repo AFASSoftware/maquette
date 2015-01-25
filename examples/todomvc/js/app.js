@@ -9,8 +9,10 @@
 
   var router = window.todoRouter(model);
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var projector = maquette.createProjector(document.getElementsByTagName("main")[0], router.render, { /* No projection options */ });
+  document.addEventListener('DOMContentLoaded', function () {
+    var sync = !!window.location.href.match(/[?&]sync/);
+    var createProjector = sync ? maquetteExtras.createSyncProjector : maquette.createProjector;
+    var projector = createProjector(document.getElementsByTagName("main")[0], router.render, {});
     window.onhashchange = function (evt) {
       projector.scheduleRender();
     };

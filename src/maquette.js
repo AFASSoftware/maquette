@@ -189,18 +189,12 @@
         if (!propValue && typeof previousValue === "string") {
           propValue = "";
         }
-        if (propName === "value") { // value, checked, selected can be manipulated by the user directly
-          if (domNode.value === propValue) {
-            if (propValue !== previousValue) {
-              transitions.nodeUpdated(domNode, "property", "value", propValue, previousValue);
-            }
-            continue; // Otherwise the cursor position would get updated
-          } else {
-            domNode.value = propValue; // Reset the value, even if the virtual DOM did not change
-            if (propValue !== previousValue) {
-              transitions.nodeUpdated(domNode, "property", "value", propValue, previousValue);
-            }
-            continue;
+        if (propName === "value") { // value can be manipulated by the user directly and using event.preventDefault() is not an option
+          if (domNode[propName] !== propValue) {
+            domNode[propName] = propValue; // Reset the value, even if the virtual DOM did not change
+          } // else do not update the domNode, otherwise the cursor position would be changed
+          if (propValue !== previousValue) {
+            transitions.nodeUpdated(domNode, "property", propName, propValue, previousValue);
           }
         } else if (propValue !== previousValue) {
           var type = typeof propValue;

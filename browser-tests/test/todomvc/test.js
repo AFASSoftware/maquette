@@ -21,8 +21,10 @@ module.exports.todoMVCTest = function (frameworkName, baseUrl, speedMode, laxMod
 		}
 
 		function launchBrowser() {
-			browser = new webdriver.Builder()
-			.withCapabilities({browserName : browserName})
+		  browser = new webdriver.Builder()
+      .usingServer("http://maquette:aa11d379-185c-4f60-8f64-d161ecbc85dd@localhost:4445/wd/hub")
+			.withCapabilities({ browserName: browserName, username: "maquette", "access-key": "aa11d379-185c-4f60-8f64-d161ecbc85dd" })
+//			.withCapabilities({ browserName: browserName })
 			.build();
 
 			browser.get(baseUrl);
@@ -31,7 +33,7 @@ module.exports.todoMVCTest = function (frameworkName, baseUrl, speedMode, laxMod
 			testOps = new TestOperations(page);
 
 			// for apps that use require, we have to wait a while for the dependencies to
-			// be loaded. There must be a more elegant solution than this!
+		  // be loaded. There must be a more elegant solution than this!
 			browser.sleep(200);
 		}
 
@@ -62,25 +64,31 @@ module.exports.todoMVCTest = function (frameworkName, baseUrl, speedMode, laxMod
 		} else {
 			test.beforeEach(function () {
 				launchBrowser();
+				webdriver.setContext("sauce:job-name=" + this.currentTest.fullTitle());
 			});
 			test.afterEach(function () {
-				closeBrowser();
+			  closeBrowser();
+			  if(this.currentTest.state === "failed") {
+			    webdriver.setContext("sauce:job-result=failed");
+			  } else {
+			    webdriver.setContext("sauce:job-result=passed");
+			  }
 			});
 		}
 
-		test.describe('When page is initially opened', function () {
-			test.it('should focus on the todo input field', function () {
-				testOps.assertFocussedElementId('new-todo');
-			});
-		});
-
-		test.describe('No Todos', function () {
-			test.it('should hide #main and #footer', function () {
-				testOps.assertItemCount(0);
-				testOps.assertMainSectionIsHidden();
-				testOps.assertFooterIsHidden();
-			});
-		});
+//		test.describe('When page is initially opened', function () {
+//			test.it('should focus on the todo input field', function () {
+//				testOps.assertFocussedElementId('new-todo');
+//			});
+//		});
+//
+//		test.describe('No Todos', function () {
+//			test.it('should hide #main and #footer', function () {
+//				testOps.assertItemCount(0);
+//				testOps.assertMainSectionIsHidden();
+//				testOps.assertFooterIsHidden();
+//			});
+//		});
 
 		test.describe('New Todo', function () {
 			test.it('should allow me to add todo items', function () {
@@ -103,6 +111,8 @@ module.exports.todoMVCTest = function (frameworkName, baseUrl, speedMode, laxMod
 				testOps.assertItemText(1, TODO_ITEM_TWO);
 				testOps.assertItemText(2, TODO_ITEM_THREE);
 			});
+
+		  return;
 
 			test.it('should trim text input', function () {
 				page.enterItem('   ' + TODO_ITEM_ONE + '  ');

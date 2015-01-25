@@ -31,22 +31,22 @@
       };
       doRender();
       return {
-        render: doRender
+        scheduleRender: doRender
       };
     }
   };
 
-  if (global.module !== undefined && global.module.exports) {
+  if (typeof module !== "undefined" && module.exports) {
     // Node and other CommonJS-like environments that support module.exports
-    global.module.exports = maquetteExtras;
-  } else if (typeof global.define == 'function' && global.define.amd) {
+    module.exports = maquetteExtras;
+  } else if (typeof define === "function" && define.amd) {
     // AMD / RequireJS
-    global.define(function () {
+    define(function () {
       return maquetteExtras;
     });
   } else {
     // Browser
-    global['maquetteExtras'] = maquetteExtras;
+    window.maquetteExtras = maquetteExtras;
   }
 
 })(this);

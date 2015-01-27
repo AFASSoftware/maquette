@@ -1,6 +1,5 @@
 'use strict';
 
-var testSuite = require('./test.js');
 var fs = require('fs');
 var rootUrl = 'http://localhost:8000';
 
@@ -9,7 +8,8 @@ require('colors');
 var _ = require("lodash");
 var chai = require("chai");
 var chaiAsPromised = require("chai-as-promised");
-var Page = require("./page");
+
+var createTodoPage = require("./todoPage");
 
 chai.use(chaiAsPromised);
 chai.should();
@@ -40,6 +40,7 @@ desired.tags = ['maquette'];
 
 describe('todomvc-maquette (' + desired.browserName + ')', function() {
   var browser;
+  var page;
   var allPassed = true;
 
   before(function (done) {
@@ -61,18 +62,21 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
     }
     browser
       .init(desired)
+      .setAsyncScriptTimeout(3000)
       .then(function () {
         // Hack needed for sauce on windows
         require('dns').lookup(require('os').hostname(), function (err, add, fam) {
           console.log('local ip: ' + add);
           rootUrl = rootUrl.replace("localhost", add);
+          page = createTodoPage(browser, browser.get(rootUrl + "/examples/todomvc/index.html"));
           done();
         });
       });
   });
 
   afterEach(function(done) {
-    allPassed = allPassed && (this.currentTest.state === 'passed');  
+    allPassed = allPassed && (this.currentTest.state === 'passed');
+    // todo: reset the page
     done();
   });
 
@@ -90,28 +94,43 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
   var TODO_ITEM_TWO = 'feed the cat';
   var TODO_ITEM_THREE = 'book a doctors appointment';
 
-//  describe('New Todo', function () {
-//    it('should allow me to add todo items', function (done) {
-//      new Page(browser)
-//        .enterItem(TODO_ITEM_ONE)
-//        .assertItems([TODO_ITEM_ONE])
-//        .enterItem(TODO_ITEM_TWO)
-//        .assertItems([TODO_ITEM_ONE, TODO_ITEM_TWO])
-//        .nodeify(done);
-//    });
-//  });
+  describe('When page is initially opened', function () {
+  	it('should focus on the todo input field', function () {
+  	  return page.assertFocussedElementId("new-todo");
+	  });
+  });
+  
+  describe('No Todos', function () {
+  	it('should hide #main and #footer', function () {
+  	  return page
+        .assertItems([])
+  		  .assertMainSectionIsHidden()
+  		  .assertFooterIsHidden();
+  	});
+  });
 
-    it("should get home page", function(done) {
-        browser
-          .get(rootUrl+"/examples/todomvc/index.html")
-          .title()
-          .should.become("Maquette - TodoMVC")
-          .nodeify(done);
+  describe('New Todo', function () {
+    it('should allow me to add todo items', function () {
+      return page
+        .enterItem(TODO_ITEM_ONE)
+        .assertItems([TODO_ITEM_ONE])
+        .enterItem(TODO_ITEM_TWO)
+        .assertItems([TODO_ITEM_ONE, TODO_ITEM_TWO]);
     });
+
+    it('should clear text input field when an item is added', function () {
+      return page
+        .enterItem(TODO_ITEM_ONE)
+        .assertItemInputFieldText('');
+    });
+
+    it('should append new items to the bottom of the list', function () {
+//      createStandardItems();
+//      testOps.assertItemCount(3);
+//      testOps.assertItemText(0, TODO_ITEM_ONE);
+//      testOps.assertItemText(1, TODO_ITEM_TWO);
+//      testOps.assertItemText(2, TODO_ITEM_THREE);
+    });
+
+  });
 });
-
-
-//testSuite.todoMVCTest(
-//	"maquette",
-//	rootUrl + '/examples/todomvc/index.html?sync', argv.speedMode, // sync does not wait for requestAnimationFrame
-//	argv.laxMode, argv.browser);

@@ -79,6 +79,10 @@ window.todoListComponent = function (mode, model) {
     }
   };
 
+  var focus = function (element) {
+    element.focus();
+  };
+
   var component = {
 
     // public interface (accessible from both app and todoComponent)
@@ -126,7 +130,7 @@ window.todoListComponent = function (mode, model) {
       return h("section#todoapp", {key: mode}, [
         h("header#header", [
           h("h1", ["todos"]),
-          h("input#new-todo", { autofocus: true, placeholder: "What needs to be done?", onkeypress: newTodoKeypress, oninput: newTodoInput, value: newTodoTitle })
+          h("input#new-todo", { autofocus: true, placeholder: "What needs to be done?", onkeypress: newTodoKeypress, oninput: newTodoInput, value: newTodoTitle, afterCreate: focus })
         ]),
         anyTodos ? [
           h("section#main", { key: mode }, [

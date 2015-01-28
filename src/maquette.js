@@ -29,11 +29,17 @@
     for (var i = 0; i < insertions.length; i++) {
       var item = insertions[i];
       if (Array.isArray(item)) {
-        mainIndex = flattenInto(item, main, mainIndex);
+        mainIndex = flattenInto(parentSelector, item, main, mainIndex, selectorsThusFar);
       } else {
-        checkForDuplicateSelectors(parentSelector, item, selectorsThusFar);
-        main.splice(mainIndex, 0, item);
-        mainIndex++;
+        if (item !== null && item !== undefined) {
+          if (item.hasOwnProperty("vnodeSelector")) {
+            checkForDuplicateSelectors(parentSelector, item, selectorsThusFar);
+          } else {
+            item = toTextVNode(item);
+          }
+          main.splice(mainIndex, 0, item);
+          mainIndex++;
+        }
       }
     }
     return mainIndex;
@@ -61,7 +67,7 @@
   var toTextVNode = function (data) {
     return {
       vnodeSelector: "",
-      text: (data == null) ? "" : ("" + data),
+      text: (data === null || data === undefined) ? "" : data.toString(),
       domNode: null
     };
   };
@@ -112,20 +118,20 @@
     }
   };
 
-  var defaultOptions = {
+  var defaultProjectionOptions = {
     namespace: null,
     transitions: immediateTransitions
   };
 
-  var applyDefaultOptions = function (options) {
-    return extend(defaultOptions, options);
+  var applyDefaultProjectionOptions = function (projectionOptions) {
+    return extend(defaultProjectionOptions, projectionOptions);
   };
 
-  var setProperties = function (domNode, properties, options) {
+  var setProperties = function (domNode, properties, projectionOptions) {
     if (!properties) {
       return;
     }
-    var eventHandlerInterceptor = options.eventHandlerInterceptor;
+    var eventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
     for (var propName in properties) {
       var propValue = properties[propName];
       if (propName === "class" || propName === "className" || propName === "classList") {
@@ -157,11 +163,11 @@
     }
   };
 
-  var updateProperties = function (domNode, previousProperties, properties, options) {
+  var updateProperties = function (domNode, previousProperties, properties, projectionOptions) {
     if (!properties) {
       return;
     }
-    var transitions = options.transitions;
+    var transitions = projectionOptions.transitions;
     for (var propName in properties) {
       // assuming that properties will be nullified instead of missing is by design
       var propValue = properties[propName];
@@ -212,14 +218,14 @@
     }
   };
 
-  var addChildren = function (domNode, children, options) {
+  var addChildren = function (domNode, children, projectionOptions) {
     if (!children) {
       return;
     }
     children.forEach(function (child) {
       createDom(child, function (childDomNode) {
         domNode.appendChild(childDomNode);
-      }, options);
+      }, projectionOptions);
     });
   };
 
@@ -245,22 +251,30 @@
     return -1;
   };
 
-  var updateChildren = function (domNode, oldChildren, newChildren, options) {
+  var updateChildren = function (domNode, oldChildren, newChildren, projectionOptions) {
     if (oldChildren === newChildren) {
       return;
     }
     oldChildren = oldChildren || emptyArray;
     newChildren = newChildren || emptyArray;
-    var transitions = options.transitions;
+    var transitions = projectionOptions.transitions;
 
     var oldIndex = 0;
     var newIndex = 0;
     var i;
+    var insertChild = function (childDomNode) {
+      if (oldIndex < oldChildren.length) {
+        var nextChild = oldChildren[oldIndex];
+        domNode.insertBefore(childDomNode, nextChild.domNode);
+      } else {
+        domNode.appendChild(childDomNode);
+      }
+    };
     while (newIndex < newChildren.length) {
       var oldChild = (oldIndex < oldChildren.length) ? oldChildren[oldIndex] : null;
       var newChild = newChildren[newIndex];
       if (oldChild && same(oldChild, newChild)) {
-        updateDom(oldChild, newChild, options);
+        updateDom(oldChild, newChild, projectionOptions);
         oldIndex++;
       } else {
         var findOldIndex = findIndexOfChild(oldChildren, newChild, oldIndex + 1);
@@ -269,18 +283,11 @@
           for (i = oldIndex; i < findOldIndex; i++) {
             transitions.nodeToRemove(oldChildren[i].domNode, oldChildren[i].properties);
           }
-          updateDom(oldChildren[findOldIndex], newChild, options);
+          updateDom(oldChildren[findOldIndex], newChild, projectionOptions);
           oldIndex = findOldIndex + 1;
         } else {
           // New child
-          createDom(newChild, function (childDomNode) {
-            if (oldIndex < oldChildren.length) {
-              var nextChild = oldChildren[oldIndex];
-              domNode.insertBefore(childDomNode, nextChild.domNode);
-            } else {
-              domNode.appendChild(childDomNode);
-            }
-          }, options);
+          createDom(newChild, insertChild, projectionOptions);
           transitions.nodeAdded(newChild.domNode, newChild.properties);
         }
       }
@@ -294,7 +301,7 @@
     }
   };
 
-  var createDom = function (vnode, afterCreate, options) {
+  var createDom = function (vnode, afterCreate, projectionOptions) {
     if (vnode.vnodeSelector === "") {
       vnode.domNode = document.createTextNode(vnode.text);
       afterCreate(vnode.domNode);
@@ -310,10 +317,10 @@
         if (!domNode) {
           // create domNode from the first part
           if (part === "svg") {
-            options = extend(options, { namespace: "http://www.w3.org/2000/svg" });
+            projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
           }
-          if (options.namespace) {
-            domNode = vnode.domNode = document.createElementNS(options.namespace, part);
+          if (projectionOptions.namespace) {
+            domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, part);
           } else {
             domNode = vnode.domNode = document.createElement(part);
           }
@@ -324,19 +331,19 @@
           domNode.id = part.substr(1);
         }
       }
-      initPropertiesAndChildren(domNode, vnode, options);
+      initPropertiesAndChildren(domNode, vnode, projectionOptions);
     }
   };
 
-  var initPropertiesAndChildren = function (domNode, vnode, options) {
-    setProperties(domNode, vnode.properties, options);
-    addChildren(domNode, vnode.children, options);
+  var initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
+    setProperties(domNode, vnode.properties, projectionOptions);
+    addChildren(domNode, vnode.children, projectionOptions);
     if (vnode.properties && vnode.properties.afterCreate) {
-      vnode.properties.afterCreate(domNode, options, vnode.vnodeSelector, vnode.properties, vnode.children);
+      vnode.properties.afterCreate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
     }
   };
 
-  var updateDom = function (previous, vnode, options) {
+  var updateDom = function (previous, vnode, projectionOptions) {
     var domNode = previous.domNode;
     if (!domNode) {
       throw new Error("previous node was not mounted");
@@ -347,13 +354,13 @@
     if (vnode.vnodeSelector === "") {
       if (vnode.text !== previous.text) {
         domNode.nodeValue = vnode.text;
-        options.transitions.nodeUpdated(domNode, "text", undefined, vnode.text, previous.text);
+        projectionOptions.transitions.nodeUpdated(domNode, "text", undefined, vnode.text, previous.text);
       }
     } else {
-      updateProperties(domNode, previous.properties, vnode.properties, options);
-      updateChildren(domNode, previous.children, vnode.children, options);
+      updateProperties(domNode, previous.properties, vnode.properties, projectionOptions);
+      updateChildren(domNode, previous.children, vnode.children, projectionOptions);
       if (vnode.properties && vnode.properties.afterUpdate) {
-        vnode.properties.afterUpdate(domNode, options, vnode.vnodeSelector, vnode.properties, vnode.children);
+        vnode.properties.afterUpdate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
       }
     }
     vnode.domNode = previous.domNode;
@@ -385,13 +392,13 @@
     }
   };
 
-  var createProjection = function (vnode, options) {
+  var createProjection = function (vnode, projectionOptions) {
     return {
       update: function (updatedVnode) {
         if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
           throw new Error("The selector for the root VNode may not be changed. (consider using mergeDom with one extra level)");
         }
-        updateDom(vnode, updatedVnode, options);
+        updateDom(vnode, updatedVnode, projectionOptions);
         vnode = updatedVnode;
       },
       domNode: vnode.domNode
@@ -400,8 +407,8 @@
 
   var maquette = {
     h: function (selector, properties, children) {
-      if (!children && (typeof properties === "string" || Array.isArray(properties)
-	      || (properties && properties.hasOwnProperty("vnodeSelector")))) {
+      if (!children &&
+        (typeof properties === "string" || Array.isArray(properties) || (properties && properties.hasOwnProperty("vnodeSelector")))) {
         children = properties;
         properties = null;
       }
@@ -414,31 +421,31 @@
       };
     },
 
-    createDom: function (vnode, options) {
-      options = applyDefaultOptions(options);
-      createDom(vnode, noop, options);
-      return createProjection(vnode, options);
+    createDom: function (vnode, projectionOptions) {
+      projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+      createDom(vnode, noop, projectionOptions);
+      return createProjection(vnode, projectionOptions);
     },
 
-    appendToDom: function (element, vnode, options) {
-      options = applyDefaultOptions(options);
+    appendToDom: function (append, vnode, projectionOptions) {
+      projectionOptions = applyDefaultProjectionOptions(projectionOptions);
       var afterCreate = append.appendChild ? function (newElement) {
         append.appendChild(newElement);
       } : append;
-      createDom(vnode, afterCreate, options);
-      return createProjection(vnode, options);
+      createDom(vnode, afterCreate, projectionOptions);
+      return createProjection(vnode, projectionOptions);
     },
 
     mergeDom: function (element, vnode, options) {
-      options = applyDefaultOptions(options);
+      options = applyDefaultProjectionOptions(options);
       vnode.domNode = element;
       initPropertiesAndChildren(element, vnode, options);
       return createProjection(vnode, options);
     },
 
-    createProjector: function (element, renderFunction, options) {
-      options = applyDefaultOptions(options);
-      options.eventHandlerInterceptor = function (propertyName, functionPropertyArgument) {
+    createProjector: function (element, renderFunction, projectionOptions) {
+      projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+      projectionOptions.eventHandlerInterceptor = function (propertyName, functionPropertyArgument) {
         return function () {
           // intercept function calls (event handlers) to do a render afterwards.
           api.scheduleRender();
@@ -454,7 +461,7 @@
           var timing1 = performance.now();
           var vnode = renderFunction();
           var timing2 = performance.now();
-          mount = maquette.mergeDom(element, vnode, options);
+          mount = maquette.mergeDom(element, vnode, projectionOptions);
           stats.createExecuted(timing1, timing2, performance.now(), api);
         } else {
           var updateTiming1 = performance.now();

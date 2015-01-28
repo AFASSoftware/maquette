@@ -1,0 +1,7 @@
+{
+  "node": true,
+  "browser": true,
+  "predef": [ "define" ],
+  "unused": "var",
+  "undef":  true
+}

@@ -1,7 +1,7 @@
 {
   "name": "maquette",
   "main": "maquette.js",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "homepage": "http://johan-gorter.github.io/maquette/",
   "authors": [
     "Johan Gorter <johan@johangorter.com>"

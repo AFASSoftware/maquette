@@ -25,7 +25,9 @@
     "bower_components",
     "test",
     "tests",
-    "examples"
+    "examples",
+    "scripts",
+    "browser-tests"
   ],
   "dependencies": {
     "velocity": "~1.1.0"

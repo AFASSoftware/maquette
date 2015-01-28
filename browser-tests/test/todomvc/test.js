@@ -34,7 +34,7 @@ module.exports.todoMVCTest = function (frameworkName, baseUrl, speedMode, laxMod
 
 			// for apps that use require, we have to wait a while for the dependencies to
 		  // be loaded. There must be a more elegant solution than this!
-			browser.sleep(200);
+			//browser.sleep(200);
 		}
 
 		function closeBrowser() {
@@ -76,19 +76,19 @@ module.exports.todoMVCTest = function (frameworkName, baseUrl, speedMode, laxMod
 			});
 		}
 
-//		test.describe('When page is initially opened', function () {
-//			test.it('should focus on the todo input field', function () {
-//				testOps.assertFocussedElementId('new-todo');
-//			});
-//		});
-//
-//		test.describe('No Todos', function () {
-//			test.it('should hide #main and #footer', function () {
-//				testOps.assertItemCount(0);
-//				testOps.assertMainSectionIsHidden();
-//				testOps.assertFooterIsHidden();
-//			});
-//		});
+		test.describe('When page is initially opened', function () {
+			test.it('should focus on the todo input field', function () {
+				testOps.assertFocussedElementId('new-todo');
+			});
+		});
+
+		test.describe('No Todos', function () {
+			test.it('should hide #main and #footer', function () {
+				testOps.assertItemCount(0);
+				testOps.assertMainSectionIsHidden();
+				testOps.assertFooterIsHidden();
+			});
+		});
 
 		test.describe('New Todo', function () {
 			test.it('should allow me to add todo items', function () {
@@ -111,8 +111,6 @@ module.exports.todoMVCTest = function (frameworkName, baseUrl, speedMode, laxMod
 				testOps.assertItemText(1, TODO_ITEM_TWO);
 				testOps.assertItemText(2, TODO_ITEM_THREE);
 			});
-
-		  return;
 
 			test.it('should trim text input', function () {
 				page.enterItem('   ' + TODO_ITEM_ONE + '  ');

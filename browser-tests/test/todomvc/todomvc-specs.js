@@ -74,10 +74,15 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
       });
   });
 
+  beforeEach(function (done) {
+    browser.refresh().then(function () { done(); });
+  });
+
   afterEach(function(done) {
     allPassed = allPassed && (this.currentTest.state === 'passed');
-    // todo: reset the page
-    done();
+    //browser.executeAsync('localStorage["todomvc-maquette"]=null', done);
+    browser.safeExecute('window.localStorage["todomvc-maquette"]=""')
+      .then(function () { done(); });
   });
 
   after(function(done) {
@@ -93,6 +98,13 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
   var TODO_ITEM_ONE = 'buy some cheese';
   var TODO_ITEM_TWO = 'feed the cat';
   var TODO_ITEM_THREE = 'book a doctors appointment';
+
+  var createStandardItems = function () {
+    return page
+      .enterItem(TODO_ITEM_ONE)
+      .enterItem(TODO_ITEM_TWO)
+      .enterItem(TODO_ITEM_THREE);
+  };
 
   describe('When page is initially opened', function () {
   	it('should focus on the todo input field', function () {
@@ -125,12 +137,25 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
     });
 
     it('should append new items to the bottom of the list', function () {
-//      createStandardItems();
-//      testOps.assertItemCount(3);
-//      testOps.assertItemText(0, TODO_ITEM_ONE);
-//      testOps.assertItemText(1, TODO_ITEM_TWO);
-//      testOps.assertItemText(2, TODO_ITEM_THREE);
+      createStandardItems();
+      return page
+        .assertItems([TODO_ITEM_ONE, TODO_ITEM_TWO, TODO_ITEM_THREE]);
     });
+
+    it('should trim text input', function () {
+      return page
+        .enterItem('   ' + TODO_ITEM_ONE + '  ')
+        .assertItems([TODO_ITEM_ONE]);
+    });
+
+    it('should show #main and #footer when items added', function () {
+      return page
+        .enterItem(TODO_ITEM_ONE)
+        .waitForAnimationFrame()
+        .assertMainSectionIsVisible()
+        .assertFooterIsVisible();
+    });
+
 
   });
 });

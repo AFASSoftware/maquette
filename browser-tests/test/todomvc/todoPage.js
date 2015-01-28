@@ -4,6 +4,9 @@ var expect = require("chai").expect;
 
 module.exports = function (browser, chain) {
 
+  chain = chain
+    .waitForElementByCss('#new-todo');
+
   var getItemInputField = function () {
     return chain.waitForElementByCss('#new-todo');
   };
@@ -18,7 +21,13 @@ module.exports = function (browser, chain) {
     });
   };
 
+  var waitForAnimationFrame = function () {
+    chain = chain.executeAsync("window.requestAnimationFrame(arguments[arguments.length - 1]);");
+    return page;
+  };
+
   var page = {
+    waitForAnimationFrame: waitForAnimationFrame,
     assertFocussedElementId: function (expectedId) {
       return browser.waitForConditionInBrowser("document.activeElement.id === '"+expectedId+"'");
     },
@@ -29,6 +38,7 @@ module.exports = function (browser, chain) {
       return page;
     },
     assertItems: function (itemTexts) {
+      waitForAnimationFrame();
       chain = chain
         .then(function () {
           return getItemTexts().then(function (foundTexts) {
@@ -50,6 +60,18 @@ module.exports = function (browser, chain) {
       chain = chain
         .elementsByCss("#footer")
         .then(function (elements) { expect(elements.length).to.equal(0); });
+      return page;
+    },
+    assertMainSectionIsVisible: function () {
+      chain = chain
+        .elementsByCss("#main")
+        .then(function (elements) { expect(elements.length).to.equal(1); });
+      return page;
+    },
+    assertFooterIsVisible: function () {
+      chain = chain
+        .elementsByCss("#footer")
+        .then(function (elements) { expect(elements.length).to.equal(1); });
       return page;
     },
     assertItemInputFieldText: function (text) {

@@ -76,7 +76,7 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
   });
 
   beforeEach(function (done) {
-    browser.refresh().then(function () { done(); });
+    browser.get(rootUrl + "/examples/todomvc/index.html").then(function () { done(); });
   });
 
   afterEach(function(done) {
@@ -107,15 +107,13 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
       .enterItem(TODO_ITEM_THREE);
   };
 
-  var noop = function () {};
-
-  noop('When page is initially opened', function () {
+  describe('When page is initially opened', function () {
   	it('should focus on the todo input field', function () {
   	  return page.assertFocussedElementId("new-todo");
 	  });
   });
   
-  noop('No Todos', function () {
+  describe('No Todos', function () {
   	it('should hide #main and #footer', function () {
   	  return page
         .assertItems([])
@@ -124,7 +122,7 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
   	});
   });
 
-  noop('New Todo', function () {
+  describe('New Todo', function () {
     it('should allow me to add todo items', function () {
       return page
         .enterItem(TODO_ITEM_ONE)
@@ -160,7 +158,7 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
     });
   });
 
-  noop('Mark all as completed', function () {
+  describe('Mark all as completed', function () {
     it('should allow me to mark all items as completed', function () {
       createStandardItems();
       return page
@@ -192,7 +190,7 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
     });
   });
 
-  noop('Item', function () {
+  describe('Item', function () {
     it('should allow me to mark items as complete', function () {
       return page
         .enterItem(TODO_ITEM_ONE)
@@ -234,6 +232,7 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
       createStandardItems();
       return page
         .doubleClickItemAtIndex(1)
+        .waitForAnimationFrame()
         .assertItemToggleIsHidden(1)
         .assertItemLabelIsHidden(1);
     });
@@ -289,6 +288,117 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
         .editItem('foo' + keys.Escape)
         .waitForAnimationFrame()
         .assertItems([TODO_ITEM_ONE, TODO_ITEM_TWO, TODO_ITEM_THREE]);
+    });
+  });
+
+  describe('Counter', function () {
+    it('should display the current number of todo items', function () {
+      return page
+        .enterItem(TODO_ITEM_ONE)
+        .assertItemCountText('1 item left')
+        .enterItem(TODO_ITEM_TWO)
+        .assertItemCountText('2 items left');
+    });
+  });
+
+  describe('Clear completed button', function () {
+    it('should display the number of completed items', function () {
+      createStandardItems();
+      return page
+        .toggleItemAtIndex(1)
+        .waitForAnimationFrame()
+        .assertClearCompleteButtonText('Clear completed (1)')
+        .toggleItemAtIndex(2)
+        .waitForAnimationFrame()
+        .assertClearCompleteButtonText('Clear completed (2)');
+    });
+
+    it('should remove completed items when clicked', function () {
+      createStandardItems();
+      return page
+        .toggleItemAtIndex(1)
+        .waitForAnimationFrame()
+        .clickClearCompleteButton()
+        .waitForAnimationFrame()
+        .assertItems([TODO_ITEM_ONE, TODO_ITEM_THREE]);
+    });
+
+    it('should be hidden when there are no items that are completed', function () {
+      createStandardItems();
+      return page
+        .toggleItemAtIndex(1)
+        .waitForAnimationFrame()
+        .assertClearCompleteButtonIsVisible()
+        .clickClearCompleteButton()
+        .waitForAnimationFrame()
+        .assertClearCompleteButtonIsHidden();
+    });
+  });
+
+  describe('Routing', function () {
+    it('should allow me to display active items', function () {
+      createStandardItems();
+      return page
+        .toggleItemAtIndex(1)
+        .waitForAnimationFrame()
+        .filterByActiveItems()
+        .waitForAnimationFrame()
+        .assertItems([TODO_ITEM_ONE, TODO_ITEM_THREE]);
+    });
+
+    it('should respect the back button', function () {
+      createStandardItems();
+      return page
+        .toggleItemAtIndex(1)
+        .waitForAnimationFrame()
+        .filterByActiveItems()
+        .waitForAnimationFrame()
+        .filterByCompletedItems()
+        .waitForAnimationFrame()
+        .assertItems([TODO_ITEM_TWO])
+        .back()
+        .waitForAnimationFrame()
+        .assertItems([TODO_ITEM_ONE, TODO_ITEM_THREE])
+        .back()
+        .waitForAnimationFrame()
+        .assertItems([TODO_ITEM_ONE, TODO_ITEM_TWO, TODO_ITEM_THREE]);
+    });
+
+    it('should allow me to display completed items', function () {
+      createStandardItems();
+      return page
+        .toggleItemAtIndex(1)
+        .waitForAnimationFrame()
+        .filterByCompletedItems()
+        .waitForAnimationFrame()
+        .assertItems([TODO_ITEM_TWO]);
+    });
+
+    it('should allow me to display all items', function () {
+      createStandardItems();
+      return page
+        .toggleItemAtIndex(1)
+        .waitForAnimationFrame()
+        .filterByActiveItems()
+        .waitForAnimationFrame()
+        .filterByCompletedItems()
+        .waitForAnimationFrame()
+        .filterByAllItems()
+        .waitForAnimationFrame()
+        .assertItems([TODO_ITEM_ONE, TODO_ITEM_TWO, TODO_ITEM_THREE]);
+    });
+
+    it('should highlight the currently applied filter', function () {
+      createStandardItems();
+      return page
+        // initially 'all' should be selected
+        .assertFilterAtIndexIsSelected(0)
+        .filterByActiveItems()
+        .waitForAnimationFrame()
+        .assertFilterAtIndexIsSelected(1)
+        .filterByCompletedItems()
+        .waitForAnimationFrame()
+        .assertFilterAtIndexIsSelected(2);
     });
   });
 

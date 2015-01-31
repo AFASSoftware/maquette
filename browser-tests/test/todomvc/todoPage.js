@@ -140,24 +140,74 @@ module.exports = function (browser, chain) {
     },
 
     assertItemToggleIsHidden: function (index) {
-      chain.elementsByCss("#todo-list li")
+      chain = chain.elementsByCss("#todo-list li")
         .then(function (items) {
-          return items[index].elementsByCss("input.toggle").then(function (candidates) {
-            expect(candidates.length).to.be.empty();
-          });
+          return items[index].elementsByCss("input.toggle").should.eventually.be.length(0);
         });
       return page;
     },
 
     assertItemLabelIsHidden: function (index) {
-      chain.elementsByCss("#todo-list li")
+      chain = chain.elementsByCss("#todo-list li")
         .then(function (items) {
-          return items[index].elementsByCss("label").then(function (candidates) {
-            expect(candidates.length).to.be.empty();
-          });
+          return items[index].elementsByCss("label").should.eventually.be.length(0);
         });
       return page;
     },
+
+    assertItemCountText: function (text) {
+      chain = chain.elementByCss("#todo-count").text().should.become(text);
+      return page;
+    },
+
+    assertClearCompleteButtonText: function (text) {
+      chain = chain.elementByCss("#clear-completed").text().should.become(text);
+      return page;
+    },
+
+    clickClearCompleteButton: function () {
+      chain = chain.elementByCss("#clear-completed").click();
+      return page;
+    },
+
+    assertClearCompleteButtonIsVisible: function () {
+      chain = chain.elementsByCss("#clear-completed").should.eventually.be.length(1);
+      return page;
+    },
+
+    assertClearCompleteButtonIsHidden: function () {
+      chain = chain.elementsByCss("#clear-completed").should.eventually.be.length(0);
+      return page;
+    },
+
+    filterByAllItems: function () {
+      chain = chain.elementsByCss("#filters a").then(function (links) { return links[0].click(); });
+      return page;
+    },
+
+    filterByActiveItems: function () {
+      chain = chain.elementsByCss("#filters a").then(function (links) { return links[1].click(); });
+      return page;
+    },
+
+    filterByCompletedItems: function () {
+      chain = chain.elementsByCss("#filters a").then(function (links) { return links[2].click(); });
+      return page;
+    },
+
+    assertFilterAtIndexIsSelected: function (index) {
+      chain = chain
+        .elementsByCss("#filters a")
+        .then(function (links) { return links[index].getAttribute("class"); })
+        .should.become("selected");
+      return page;
+    },
+
+    back: function () {
+      chain = chain.back();
+      return page;
+    },
+
 
     then: function (onFulfilled, onRejected) {
       chain = chain.then(onFulfilled, onRejected);

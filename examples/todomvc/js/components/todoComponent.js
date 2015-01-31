@@ -75,14 +75,13 @@ window.todoComponent = function (todoList, id, title) {
 
       return renderCache.result([component.completed, component.title, editing], function () {
         return h("li", { key: id, classes: { completed: component.completed, editing: editing } }, [
-          h("div.view", [
-            h("input.toggle", { type: "checkbox", checked: component.completed, onclick: toggleClicked }),
-            h("label", { ondblclick: labelDoubleClicked }, [component.title]),
-            h("button.destroy", { onclick: remove })
-          ]),
           editing
             ? h("input.edit", { value: editingTitle, oninput: editInputHandler, onkeyup: editKeyup, onblur: editBlurred, afterCreate: focusEdit })
-            : null
+            : h("div.view", [
+                h("input.toggle", { type: "checkbox", checked: component.completed, onclick: toggleClicked }),
+                h("label", { ondblclick: labelDoubleClicked }, [component.title]),
+                h("button.destroy", { onclick: remove })
+              ])
         ]);
       });
     }

@@ -21,7 +21,7 @@ window.todoRouter = function (model) {
         default:
           mode = "all";
       };
-      if(!currentPage || currentPage.mode !== mode) {
+      if(!currentPage || (currentPage.mode !== mode)) {
         currentPage = todoListComponent(mode, model);
       }
       return h("main", [currentPage.render()]);

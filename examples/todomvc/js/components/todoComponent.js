@@ -62,6 +62,7 @@ window.todoComponent = function (todoList, id, title) {
 
   var focusEdit = function (domNode) {
     domNode.focus();
+    domNode.selectionStart = 0;
     domNode.selectionEnd = domNode.value.length;
   };
 

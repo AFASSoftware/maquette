@@ -154,7 +154,7 @@
             propValue = eventHandlerInterceptor(propName, propValue, domNode); // intercept eventhandlers
           }
           domNode[propName] = propValue;
-        } else if (type === "string") {
+        } else if (type === "string" && propName !== "value") {
           domNode.setAttribute(propName, propValue);
         } else {
           domNode[propName] = propValue;

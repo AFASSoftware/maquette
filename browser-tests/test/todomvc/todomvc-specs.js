@@ -81,7 +81,6 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
 
   afterEach(function(done) {
     allPassed = allPassed && (this.currentTest.state === 'passed');
-    //browser.executeAsync('localStorage["todomvc-maquette"]=null', done);
     browser.safeExecute('window.localStorage["todomvc-maquette"]=""')
       .then(function () { done(); });
   });
@@ -89,7 +88,7 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
   after(function(done) {
     browser = browser.quit();
     if(sauce) {
-      browser.sauceJobStatus(allPassed);
+      browser = browser.sauceJobStatus(allPassed);
     }
     browser.nodeify(done);
   });

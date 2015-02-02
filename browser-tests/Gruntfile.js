@@ -31,9 +31,9 @@ var gruntConfig = {
 		}
   };
  
-_(desireds).each(function(desired, key) {
+Object.keys(desireds).forEach(function(key) {
     gruntConfig.env[key] = { 
-        DESIRED: JSON.stringify(desired)
+      DESIRED: JSON.stringify(desireds[key])
     };
     gruntConfig.concurrent['test-sauce'].push('test:sauce:' + key);
 });
@@ -54,8 +54,8 @@ module.exports = function(grunt) {
     // Default task.
     grunt.registerTask('default', ['test:sauce:' + _(desireds).keys().first()]);
 
-    _(desireds).each(function(desired, key) {
-            grunt.registerTask('test:sauce:' + key, ['connect', 'env:' + key, 'simplemocha:sauce']);
+    Object.keys(desireds).forEach(function(key) {
+      grunt.registerTask('test:sauce:' + key, ['connect', 'env:' + key, 'simplemocha:sauce']);
     });
 
     grunt.registerTask('test:sauce:parallel', ['connect', 'concurrent:test-sauce']);

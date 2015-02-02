@@ -367,7 +367,7 @@
   };
 
   // polyfill for window.performance
-  var performance = (global.performance || {
+  var performance = (global.performance && global.performance.now ? global.performance : {
     offset: new Date(),
     now: function now() {
       return new Date() - this.offset;

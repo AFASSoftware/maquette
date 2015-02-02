@@ -16,7 +16,7 @@
   },
   "main": "dist/maquette-min.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha && cd browser-tests && grunt"
   },
   "licenses": [
     {

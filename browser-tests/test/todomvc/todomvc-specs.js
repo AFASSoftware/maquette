@@ -38,6 +38,9 @@ wd.configureHttp( {
 var desired = JSON.parse(process.env.DESIRED || '{browserName: "chrome"}');
 desired.name = 'todomvc-specs ' + desired.browserName;
 desired.tags = ['maquette'];
+if(process.env.TRAVIS_BUILD_NUMBER) {
+  desired.tags.push("build-" + process.env.TRAVIS_BUILD_NUMBER);
+}
 
 describe('todomvc-maquette (' + desired.browserName + ')', function() {
   var browser;
@@ -98,6 +101,12 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
   var TODO_ITEM_ONE = 'buy some cheese';
   var TODO_ITEM_TWO = 'feed the cat';
   var TODO_ITEM_THREE = 'book a doctors appointment';
+
+  if(desired.browserName === "internet explorer") {
+    TODO_ITEM_ONE = "1";
+    TODO_ITEM_TWO = "2";
+    TODO_ITEM_THREE = "3";
+  }
 
   var createStandardItems = function () {
     return page

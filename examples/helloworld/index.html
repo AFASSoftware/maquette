@@ -22,7 +22,9 @@
             h("span", ["What is your name? "]),
             h("input", { type: "text", autofocus: true, value: name, oninput: nameInput })
           ]),
-          name ? h("p.output", ["Hello " + name + "!"]) : null
+          name ? [
+            h("p.output", ["Hello " + name + "!"])
+          ] : []
         ]);
       };
 

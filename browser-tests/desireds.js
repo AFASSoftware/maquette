@@ -3,5 +3,7 @@
 module.exports = {
     chrome: {browserName: 'chrome'},
     firefox: {browserName: 'firefox'},
-    explorer: {browserName: 'internet explorer'}
+    ie11: { browserName: 'internet explorer', version: "11" },
+    ie10: { browserName: 'internet explorer', version: "10" },
+    ie9: { browserName: 'internet explorer', version: "9" }
 };

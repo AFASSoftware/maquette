@@ -40,8 +40,11 @@ module.exports = function (browser, chain) {
     },
     enterItem: function (itemText) {
       chain = getItemInputField()
-        .sendKeys(itemText)
+        .sendKeys(itemText);
+      waitForAnimationFrame();
+      chain = getItemInputField()
         .sendKeys('\uE007'); // enter
+      waitForAnimationFrame();
       return page;
     },
     assertItems: function (itemTexts) {

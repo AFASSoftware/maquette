@@ -1,3 +1,11 @@
+env:
+  global:
+    - secure: Ph1LSlQiFMrUjm2GxPB7m44W0AdWY6uvIO8fcXPlKxRNeq8i+XyV6MGzBLFHTMAvntaBaYon6ngVvW8N6w0VkKoas/nZossHyIwzh/UubeyACg7mZXqNLdkT9faqtlDGLW2diyabmrIfq3VWG6WkEiN148aedLW6ZTaKOn1y7Fw=
+    - secure: cPb3GjniYKH5quHT2MDyd6vQesUUTQLhaGxjEhrxNPYquzX9sfcUQFtiZLu0Qvf1Br29sQcMQxg673D9/UMaopTbOru4qntf+SxUlwI8bmKr/O+POPryIqfEnEK+8Pv/SOTTjoEXptaydU96yk+z4FV19VmHMc2gee0GaKWHvkI=
+
+addons:
+  sauce_connect: true
+
 language: node_js
 node_js:
   - "0.10"

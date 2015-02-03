@@ -69,12 +69,12 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
       .setAsyncScriptTimeout(3000)
       .then(function () {
         // Hack needed for sauce on windows
-        require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-          console.log('local ip: ' + add);
-          rootUrl = rootUrl.replace("localhost", add);
+//      require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+//        console.log('local ip: ' + add);
+//        rootUrl = rootUrl.replace("localhost", add);
           page = createTodoPage(browser, browser.get(rootUrl + "/examples/todomvc/index.html"));
           done();
-        });
+//        });
       });
   });
 

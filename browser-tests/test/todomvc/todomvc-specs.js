@@ -40,6 +40,7 @@ desired.name = 'todomvc-specs ' + desired.browserName;
 desired.tags = ['maquette'];
 if(process.env.TRAVIS_BUILD_NUMBER) {
   desired.tags.push("build-" + process.env.TRAVIS_BUILD_NUMBER);
+  desired.build = "build-" + process.env.TRAVIS_BUILD_NUMBER;
 }
 if(process.env.TRAVIS_JOB_NUMBER) {
   desired["tunnel-identifier"] = process.env.TRAVIS_JOB_NUMBER;

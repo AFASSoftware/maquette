@@ -16,7 +16,7 @@
   },
   "main": "dist/maquette-min.js",
   "scripts": {
-    "test": "mocha && cd browser-tests && npm install && grunt"
+    "test": "mocha && cd browser-tests && npm install && grunt test:sauce:parallel"
   },
   "licenses": [
     {

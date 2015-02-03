@@ -71,13 +71,18 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
       .init(desired)
       .setAsyncScriptTimeout(3000)
       .then(function () {
-        // Hack needed for sauce on windows
-//      require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-//        console.log('local ip: ' + add);
-//        rootUrl = rootUrl.replace("localhost", add);
+        if(process.platform === "win32") {
+          // Hack needed for sauce on windows
+          require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+            console.log('local ip: ' + add);
+            rootUrl = rootUrl.replace("localhost", add);
+            page = createTodoPage(browser, browser.get(rootUrl + "/examples/todomvc/index.html"));
+            done();
+          });
+        } else {
           page = createTodoPage(browser, browser.get(rootUrl + "/examples/todomvc/index.html"));
           done();
-//        });
+        }
       });
   });
 
@@ -105,11 +110,11 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
   var TODO_ITEM_TWO = 'feed the cat';
   var TODO_ITEM_THREE = 'book a doctors appointment';
 
-  if(desired.browserName === "internet explorer") {
-    TODO_ITEM_ONE = "1";
-    TODO_ITEM_TWO = "2";
-    TODO_ITEM_THREE = "3";
-  }
+//  if(desired.browserName === "internet explorer") {
+//    TODO_ITEM_ONE = "1";
+//    TODO_ITEM_TWO = "2";
+//    TODO_ITEM_THREE = "3";
+//  }
 
   var createStandardItems = function () {
     return page

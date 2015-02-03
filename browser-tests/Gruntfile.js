@@ -35,7 +35,7 @@ Object.keys(desireds).forEach(function(key) {
     gruntConfig.env[key] = { 
       DESIRED: JSON.stringify(desireds[key])
     };
-    gruntConfig.concurrent['test-sauce'].push('test:sauce:' + key);
+    gruntConfig.concurrent['test-sauce'].push('dotest:sauce:' + key);
 });
 
 //console.log(gruntConfig);
@@ -55,6 +55,10 @@ module.exports = function(grunt) {
     grunt.registerTask('default', ['test:sauce:' + _(desireds).keys().first()]);
 
     Object.keys(desireds).forEach(function(key) {
+      grunt.registerTask('dotest:sauce:' + key, ['env:' + key, 'simplemocha:sauce']);
+    });
+
+    Object.keys(desireds).forEach(function (key) {
       grunt.registerTask('test:sauce:' + key, ['connect', 'env:' + key, 'simplemocha:sauce']);
     });
 

@@ -152,6 +152,16 @@
         if (type === "function") {
           if (eventHandlerInterceptor) {
             propValue = eventHandlerInterceptor(propName, propValue, domNode); // intercept eventhandlers
+            if (propName === "oninput") {
+              (function () {
+                // record the evt.target.value, because IE sometimes does a requestAnimationFrame between changing value and running oninput
+                var tmp = propValue;
+                propValue = function (evt) {
+                  evt.target["oninput-value"] = evt.target.value;
+                  tmp.apply(this, [evt]);
+                };
+              }());
+            }
           }
           domNode[propName] = propValue;
         } else if (type === "string" && propName !== "value") {
@@ -196,7 +206,7 @@
           propValue = "";
         }
         if (propName === "value") { // value can be manipulated by the user directly and using event.preventDefault() is not an option
-          if (domNode[propName] !== propValue) {
+          if (domNode[propName] !== propValue && domNode["oninput-value"] !== propValue) {
             domNode[propName] = propValue; // Reset the value, even if the virtual DOM did not change
           } // else do not update the domNode, otherwise the cursor position would be changed
           if (propValue !== previousValue) {

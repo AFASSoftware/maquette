@@ -42,25 +42,29 @@ Object.keys(desireds).forEach(function(key) {
 
 module.exports = function(grunt) {
 
-    // Project configuration.
-    grunt.initConfig(gruntConfig);
+  // Project configuration.
+  grunt.initConfig(gruntConfig);
 
-    // These plugins provide necessary tasks.
-    grunt.loadNpmTasks('grunt-contrib-connect');
-    grunt.loadNpmTasks('grunt-env');
-    grunt.loadNpmTasks('grunt-simple-mocha');
-    grunt.loadNpmTasks('grunt-concurrent');
+  // These plugins provide necessary tasks.
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-env');
+  grunt.loadNpmTasks('grunt-simple-mocha');
+  grunt.loadNpmTasks('grunt-concurrent');
 
-    // Default task.
-    grunt.registerTask('default', ['test:sauce:' + _(desireds).keys().first()]);
+  // Default task.
+  grunt.registerTask('default', ['test:sauce:' + _(desireds).keys().first()]);
 
-    Object.keys(desireds).forEach(function(key) {
-      grunt.registerTask('dotest:sauce:' + key, ['env:' + key, 'simplemocha:sauce']);
-    });
+  Object.keys(desireds).forEach(function(key) {
+    grunt.registerTask('dotest:sauce:' + key, ['env:' + key, 'simplemocha:sauce']);
+  });
 
-    Object.keys(desireds).forEach(function (key) {
-      grunt.registerTask('test:sauce:' + key, ['connect', 'env:' + key, 'simplemocha:sauce']);
-    });
+  var serialTasks = ['connect'];
+  Object.keys(desireds).forEach(function (key) {
+    grunt.registerTask('test:sauce:' + key, ['connect', 'env:' + key, 'simplemocha:sauce']);
+    serialTasks.push('dotest:sauce:' + key);
+  });
 
-    grunt.registerTask('test:sauce:parallel', ['connect', 'concurrent:test-sauce']);
+  grunt.registerTask('test:sauce:parallel', ['connect', 'concurrent:test-sauce']);
+
+  grunt.registerTask('test:sauce:serial', serialTasks);
 };

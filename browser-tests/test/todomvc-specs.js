@@ -1,8 +1,5 @@
 'use strict';
 
-var fs = require('fs');
-var rootUrl = 'http://localhost:8000';
-
 var wd = require('wd');
 var keys = wd.SPECIAL_KEYS;
 require('colors');
@@ -11,84 +8,31 @@ var chai = require("chai");
 var chaiAsPromised = require("chai-as-promised");
 
 var createTodoPage = require("./todoPage");
+var setup = require("./setup");
 
 chai.use(chaiAsPromised);
 chai.should();
 chaiAsPromised.transferPromiseness = wd.transferPromiseness;
 
-var sauce = true;
-// checking sauce credential
-if(!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY){
-  console.warn(
-    '\nNot using sauce, if you want to use sauce configure your sauce credential as follows:\n\n' +
-    'export SAUCE_USERNAME=<SAUCE_USERNAME>\n' +
-    'export SAUCE_ACCESS_KEY=<SAUCE_ACCESS_KEY>\n\n'
-  );
-  sauce = false;
-  //    throw new Error("Missing sauce credentials");
-}
+setup.browserCapabilities.name = 'todomvc-specs';
 
-// http configuration, not needed for simple runs
-wd.configureHttp( {
-  timeout: 60000,
-  retryDelay: 15000,
-  retries: 5
-});
-
-var desired = JSON.parse(process.env.DESIRED || '{browserName: "chrome"}');
-desired.name = 'todomvc-specs ' + desired.browserName;
-desired.tags = ['maquette'];
-if(process.env.TRAVIS_BUILD_NUMBER) {
-  desired.tags.push("build-" + process.env.TRAVIS_BUILD_NUMBER);
-  desired.build = "build-" + process.env.TRAVIS_BUILD_NUMBER;
-}
-if(process.env.TRAVIS_JOB_NUMBER) {
-  desired["tunnel-identifier"] = process.env.TRAVIS_JOB_NUMBER;
-}
-
-describe('todomvc-maquette (' + desired.browserName + ')', function() {
+describe('todomvc-maquette', function () {
   var browser;
   var page;
   var allPassed = true;
 
   before(function (done) {
-    if(sauce) {
-      var username = process.env.SAUCE_USERNAME;
-      var accessKey = process.env.SAUCE_ACCESS_KEY;
-      browser = wd.promiseChainRemote("localhost", 4445, username, accessKey);
-    } else {
-      browser = wd.promiseChainRemote("localhost", 4444, username, accessKey);
-    }
-    if (true || process.env.VERBOSE) {
-      // optional logging     
-      browser.on('status', function(info) {
-        console.log(info.cyan);
+    return setup.createBrowser().then(function (createdBrowser) {
+      browser = createdBrowser;
+      page = createTodoPage(browser, browser.get(setup.rootUrl + "/examples/todomvc/index.html"));
+      page.then(function () {
+        done();
       });
-      browser.on('command', function(meth, path, data) {
-        console.log(' > ' + meth.yellow, path.grey, data || '');
-      });            
-    }
-    browser
-      .init(desired)
-      .setAsyncScriptTimeout(3000)
-      .then(function () {
-        if(process.platform === "win32") {
-          // Hack needed for sauce on windows
-          require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-            console.log('local ip: ' + add);
-            rootUrl = rootUrl.replace("localhost", add);
-            page = createTodoPage(browser, browser.get(rootUrl + "/examples/todomvc/index.html"));
-            done();
-          });
-        } else {
-          page = createTodoPage(browser, browser.get(rootUrl + "/examples/todomvc/index.html"));
-          done();
-        }
-      });
+    });
   });
 
   beforeEach(function (done) {
-    browser.get(rootUrl + "/examples/todomvc/index.html").then(function () { done(); });
+    browser.get(setup.rootUrl + "/examples/todomvc/index.html").then(function () { done(); });
   });
 
   afterEach(function(done) {
@@ -97,12 +41,9 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
       .then(function () { done(); });
   });
 
-  after(function(done) {
-    browser = browser.quit();
-    if(sauce) {
-      browser = browser.sauceJobStatus(allPassed);
-    }
-    browser.nodeify(done);
+  after(function (done) {
+    setup.quitBrowser(browser, allPassed)
+      .then(function () { done(); });
   });
 
   // The tests
@@ -110,12 +51,6 @@ describe('todomvc-maquette (' + desired.browserName + ')', function() {
   var TODO_ITEM_ONE = 'buy some cheese';
   var TODO_ITEM_TWO = 'feed the cat';
   var TODO_ITEM_THREE = 'book a doctors appointment';
-
-//  if(desired.browserName === "internet explorer") {
-//    TODO_ITEM_ONE = "1";
-//    TODO_ITEM_TWO = "2";
-//    TODO_ITEM_THREE = "3";
-//  }
 
   var createStandardItems = function () {
     return page

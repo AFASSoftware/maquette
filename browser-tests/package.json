@@ -6,6 +6,7 @@
     "chai": "latest",
     "chai-as-promised": "latest",
     "colors": "latest",
+    "connect": "^2.27.1",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-concurrent": "latest",
@@ -15,5 +16,10 @@
     "lodash": "latest",
     "q": "^1.1.2",
     "wd": "latest"
+  },
+  "dependencies": {
+    "finalhandler": "^0.3.3",
+    "mocha": "^2.1.0",
+    "serve-static": "^1.8.1"
   }
 }

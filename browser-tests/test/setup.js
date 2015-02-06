@@ -90,9 +90,11 @@ var createBrowser = function () {
 };
 
 var quitBrowser = function (browser, allPassed) {
-  browser = browser.quit();
-  if (setup.sauce) {
-    browser = browser.sauceJobStatus(allPassed);
+  if(browser) {
+    browser = browser.quit();
+    if(setup.sauce) {
+      browser = browser.sauceJobStatus(allPassed);
+    }
   }
   return browser;
 };
@@ -100,7 +102,7 @@ var quitBrowser = function (browser, allPassed) {
 var setup = {
   rootUrl: 'http://localhost:8000',
   server: server,
-  browserCapabilities: { browserName: "chrome" },
+  browserCapabilities: { browserName: "firefox" },
   sauce: false,
   createBrowser: createBrowser, // returns a promise for a browser
   quitBrowser: quitBrowser

@@ -2,9 +2,6 @@
 
 var Mocha = require("mocha");
 
-var mocha_instance = new Mocha({ timeout: 60000 });
-mocha_instance.addFile("test/todomvc-specs.js");
-
 var desiredName = process.argv[2];
 
 var desireds = require("./desireds");
@@ -29,7 +26,9 @@ var totalErrors = 0;
 var next = function () {
   if(desiredIndex < desiredNames.length) {
     setup.browserCapabilities = desireds[desiredNames[desiredIndex++]];
-    mocha_instance.run(function (errCount) {
+    var mochaInstance = new Mocha({ timeout: 60000 });
+    mochaInstance.addFile("test/todomvc-specs.js");
+    mochaInstance.run(function (errCount) {
       totalErrors += errCount;
       next();
     });

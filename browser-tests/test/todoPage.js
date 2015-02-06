@@ -36,7 +36,7 @@ module.exports = function (browser, chain) {
   var page = {
     waitForAnimationFrame: waitForAnimationFrame,
     assertFocussedElementId: function (expectedId) {
-      return browser.waitForConditionInBrowser("document.activeElement.id === '"+expectedId+"'");
+      return browser.waitForConditionInBrowser("document.activeElement && (document.activeElement.id === '" + expectedId + "')", 10000);
     },
     enterItem: function (itemText) {
       chain = getItemInputField()

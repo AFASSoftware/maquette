@@ -23,11 +23,12 @@ var desiredIndex = 0;
 
 var totalErrors = 0;
 
+var mochaInstance = new Mocha({ timeout: 60000 });
+mochaInstance.addFile("test/todomvc-specs.js");
+
 var next = function () {
   if(desiredIndex < desiredNames.length) {
     setup.browserCapabilities = desireds[desiredNames[desiredIndex++]];
-    var mochaInstance = new Mocha({ timeout: 60000 });
-    mochaInstance.addFile("test/todomvc-specs.js");
     mochaInstance.run(function (errCount) {
       totalErrors += errCount;
       next();

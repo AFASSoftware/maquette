@@ -14,7 +14,6 @@ chai.use(chaiAsPromised);
 chai.should();
 chaiAsPromised.transferPromiseness = wd.transferPromiseness;
 
-setup.browserCapabilities.name = 'todomvc-specs';
 
 describe('todomvc-maquette', function () {
   var browser;
@@ -22,6 +21,7 @@ describe('todomvc-maquette', function () {
   var allPassed = true;
 
   before(function (done) {
+    setup.browserCapabilities.name = 'todomvc-specs';
     return setup.createBrowser().then(function (createdBrowser) {
       browser = createdBrowser;
       page = createTodoPage(browser, browser.get(setup.rootUrl + "/examples/todomvc/index.html"));

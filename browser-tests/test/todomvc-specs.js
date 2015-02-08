@@ -299,6 +299,10 @@ describe('todomvc-maquette', function () {
     });
 
     it('should respect the back button', function () {
+      if (setup.browserCapabilities.browserName === "safari") {
+        console.log("Skipping test, Safari does not support back button");
+        return;
+      }
       createStandardItems();
       return page
         .toggleItemAtIndex(1)

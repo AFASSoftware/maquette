@@ -29,14 +29,17 @@ module.exports = function (browser, chain) {
   };
 
   var waitForAnimationFrame = function () {
-    chain = chain.executeAsync("window.requestAnimationFrame(arguments[arguments.length - 1]);");
+    chain = chain.safeExecuteAsync("window.requestAnimationFrame(arguments[arguments.length - 1]);");
     return page;
   };
 
   var page = {
     waitForAnimationFrame: waitForAnimationFrame,
     assertFocussedElementId: function (expectedId) {
-      return browser.waitForConditionInBrowser("document.activeElement && (document.activeElement.id === '" + expectedId + "')", 10000);
+      var condition = "!!(document && document.activeElement && (document.activeElement.id === '" + expectedId + "'))";
+//      return browser.safeExecute(condition).should.become(true);
+      return browser
+        .waitForConditionInBrowser(condition, 10000);
     },
     enterItem: function (itemText) {
       chain = getItemInputField()

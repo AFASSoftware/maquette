@@ -19,8 +19,10 @@ describe('todomvc-maquette', function () {
   var browser;
   var page;
   var allPassed = true;
+  var pageLoaded = false;
 
   before(function (done) {
+    browser = null;
     setup.browserCapabilities.name = 'todomvc-specs';
     return setup.createBrowser().then(function (createdBrowser) {
       browser = createdBrowser;
@@ -31,19 +33,23 @@ describe('todomvc-maquette', function () {
     });
   });
 
-  beforeEach(function (done) {
-    browser.get(setup.rootUrl + "/examples/todomvc/index.html").then(function () { done(); });
+  beforeEach(function () {
+    pageLoaded = true;
+    return browser.get(setup.rootUrl + "/examples/todomvc/index.html").then(function () { pageLoaded = true; });
   });
 
-  afterEach(function(done) {
+  afterEach(function () {
     allPassed = allPassed && (this.currentTest.state === 'passed');
-    browser.safeExecute('window.localStorage["todomvc-maquette"]=""')
-      .then(function () { done(); });
+    if(pageLoaded) {
+      return browser.safeExecute('window.localStorage["todomvc-maquette"]=""');
+      pageLoaded = false;
+    }
   });
 
-  after(function (done) {
-    setup.quitBrowser(browser, allPassed)
-      .then(function () { done(); });
+  after(function () {
+    if(browser) {
+      return setup.quitBrowser(browser, allPassed);
+    }
   });
 
   // The tests

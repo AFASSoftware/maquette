@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.org/johan-gorter/maquette.png?branch=master)](https://travis-ci.org/johan-gorter/maquette)
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/maquette.svg)](https://saucelabs.com/u/maquette)
-
 Maquette
 =========
 

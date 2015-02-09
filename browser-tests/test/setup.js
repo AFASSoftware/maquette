@@ -74,18 +74,18 @@ var createBrowser = function () {
     .init(desired)
     .setAsyncScriptTimeout(3000)
     .then(function () {
-      var deferred = Q.defer();
       if(process.platform === "win32" && setup.rootUrl.indexOf("localhost") !== -1) {
         // Hack needed for sauce on windows
+        var deferred = Q.defer();
         require('dns').lookup(require('os').hostname(), function (err, add, fam) {
           console.log('local ip: ' + add);
           setup.rootUrl = setup.rootUrl.replace("localhost", add);
           deferred.resolve(browser);
         });
+        return deferred.promise;
       } else {
-        deferred.resolve(browser);
+        return browser;
       }
-      return deferred.promise;
     });
 };
 

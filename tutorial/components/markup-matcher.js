@@ -1,4 +1,4 @@
-﻿window.createMarkupMatcher = function (projector, desiredMarkup, getMarkup) {
+﻿window.createMarkupMatcher = function (projector, desiredMarkup, getContentWindow) {
 
   // constants
   var h = maquette.h;
@@ -11,7 +11,8 @@
   var lastMarkup = "";
 
   var verify = function () {
-    var markup = getMarkup();
+    var contentWindow = getContentWindow();
+    var markup = contentWindow ? contentWindow.document.body.innerHTML : "";
     if(markup !== lastMarkup) {
       lastMarkup = markup;
       var matchedUntil = 0;

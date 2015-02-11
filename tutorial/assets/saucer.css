@@ -1,0 +1,53 @@
+﻿* {
+  /* border-box (meaning height and width INCLUDES padding and border) makes styling and animation a lot easier */
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+html {
+  font: normal normal normal  14px/20px sans-serif;
+  height: 100%;
+}
+
+body {
+  margin:0;padding:0;
+  height:100%;
+  display: flex;
+}
+
+.landscape {
+  position:absolute;
+  top:0;bottom:0;
+  left:0;right:0;
+  display:flex;
+  align-items:center;
+  justify-content: center;
+  background: linear-gradient(to bottom, blue, #444444 80%, orange);
+}
+
+.saucer {
+  width: 200px;
+  height: 50px;
+  text-align:center;
+  position:relative;
+  background-color: silver;
+  color: white;
+  font-weight:bold;
+  font-size: 20px;
+  line-height: 55px;
+  border-radius: 40% 40% 50% 50%/60% 60% 40% 40%;
+  transform: rotate(-30deg);
+}
+
+.saucer:before {
+  content: '';
+  position:absolute;
+  background-color: #EEEEEE;
+  width: 70px;
+  height: 30px;
+  border-radius: 50% 50% 0 0 / 90% 90% 0 0;
+  z-index: -1;
+  top:-29px;
+  left:65px;  
+}

@@ -1,4 +1,4 @@
-﻿window.createWorkbench = function (projector, script) {
+﻿window.createWorkbench = function (projector, script, objectives) {
 
   // constants
   var h = maquette.h;
@@ -13,7 +13,9 @@
   var contentWindow;
 
   var iframeBodyObserver = new MutationObserver(function (mutations) {
-    console.log("MutationObserver " + mutations.length + ": " + contentWindow.document.body.innerHTML);
+    objectives.forEach(function (objective) {
+      objective.onSceneUpdate(contentWindow);
+    });
     projector.scheduleRender();
   });
 
@@ -92,22 +94,30 @@
 
       return h("div.work", [
         h("div.input", [
-          h("div.tab", ["saucer.js"]),
+          h("div.tabs", [
+            h("button.tab", ["saucer.js"])
+          ]),
           h("div.editor", { afterCreate: createEditor }),
           h("div.parseError", [parseError])
         ]),
         h("div.result", [
-          h("div.objectives", [
-            h("section.objective", { key: 1 }, [
-              h("header", [
-                h("span", ["Objective 1: Update the DOM to match", null])
-              ]),
-              h("div.detail", [
-                h("p", ["Make sure the DOM matches the following markup"]),
-                markupMatcher.renderMaquette()
-              ])
-            ])
-          ]),
+          h("div.header", ["Objectives"]),
+          h("div.objectives",
+            objectives.map(function (objective, index) {
+              var current = !objective.isAchieved();
+              return h("section.objective", { key: index, classes: {achieved: objective.isAchieved(), current: current} }, [
+                h("header", [
+                  h("span", ["" + (index + 1) + ". " + objective.title]),
+                  objective.isAchieved() ? h("span.result.achieved", ["\u2713"]) : []
+                ]),
+                current ? [
+                  h("div.detail", [
+                    objective.renderMaquette()
+                  ])
+                ] : []
+              ]);
+            })
+          ),
           h("div.preview", [
             h("iframe", { srcdoc: html, onload: iframeLoaded, afterCreate: applySrcdoc, afterUpdate: applySrcdoc })
           ])
@@ -115,8 +125,6 @@
       ]);
     }
   };
-
-  var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>', function () { return contentWindow; });
 
   return workbench;
 };

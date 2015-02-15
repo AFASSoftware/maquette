@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Tutorial</title>
+    <link href="tutorial.css" rel="stylesheet" />
+    <script src="bower_components/maquette/dist/maquette.min.js"></script>
+    <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
+    <script src="components/markup-matcher.js"></script>
+    <script src="components/workbench.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+
+        var h = maquette.h;
+
+        // Data
+        var htmlScript = "var h = maquette.h;\n" +
+          "\n" +
+          "\n" +
+          "function renderMaquette() {\n" +
+          "  return h(\"body\", [\n" +
+          "    h(\"div.landscape\", [])\n" +
+          "  ]);\n" +
+          "}\n" +
+          "\n" +
+          "\n" +
+          "// Initializes the projector \n" +
+          "document.addEventListener('DOMContentLoaded', function () {\n" +
+          "  maquette.createProjector(document.body, renderMaquette);\n" +
+          "});\n";
+
+        // Renders the virtual DOM
+        var render = function () {
+          return h("div.projector", [
+            workbench.renderMaquette()
+          ]);
+        };
+
+        // Starts the projector, which renders the virtual DOM at the right moments
+        var projector = maquette.createProjector(document.querySelector(".projector"), render, {});
+
+        var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
+        var workbench = createWorkbench(projector, htmlScript, [
+          markupMatcher
+        ]);
+      });
+    </script>
+  </head>
+<body>
+  <div class="instructions">
+    <h1>Tutorial</h1>
+    <p>
+      In this tutorial we will make you familliar with the virtual DOM technique and the maquette library.
+      The application we are building in this tutorial is a simulator for css transitions. More specifically, we are going to make a remote control for a flying saucer.
+      This tutorial is made for people who are familiar with HTML and Javascript.
+    </p>
+
+    <h2>
+      Get started
+    </h2>
+    <p>
+      In this first exercise you will create the flying saucer we are going to control.
+      Thanks to some alien piece of CSS, the flying saucer only needs the following markup: &lt;div class="saucer"&gt;
+      In maquette, the browser DOM is not created from HTML however, but from a notation called 'virtual hyperscript'.
+      It is different from HTML in two important ways.
+    </p>
+    <ul>
+      <li>It is a template language, which means it combines data with markup.</li>
+      <li>It is plain Javascript, which means it runs very fast.</li>
+    </ul>
+    <p>
+      The `h()` function in virtual hyperscript is responsible for creating the DOM.
+      The first parameter of this function is a CSS selector string, like "div.landscape", which results in a &lt;div class="landscape"&gt;.
+      The last parameter is an array of contents, text strings and other nodes.
+    </p>
+    
+    <p>
+      Below you can see the sourcefiles, the objectives and a live preview. Good luck!
+    </p>
+  </div>
+  <div class="projector"></div>
+</body>
+</html>

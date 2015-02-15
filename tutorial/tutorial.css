@@ -36,15 +36,44 @@ body {
   flex: 1 0 400px;
 }
 
+.input > .tabs {
+  background-color: black;
+  display: flex;
+  height: 25px;
+}
+
+.input > .tabs > .tab {
+  padding: 2px 15px;
+  background-color: black;
+  border: solid 1px #888888;
+  color: #AAAAAA;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  margin: 3px 3px 0 3px;
+  outline: 0;
+}
+
 .input > .editor {
   flex-grow: 1;
+  min-height: 300px;
 }
+
+/* Workbench */
 
 .work > .result {
   display: flex;
   flex-direction: column;
   min-height: 400px;
   flex: 1 0 400px;
+  background-color: black;
+  color: #DDDDDD;
+}
+
+.result > .header {
+  flex: 0 0 25px;
+  padding-left: 20px;
+  font-weight: bold;
+  line-height: 25px;
 }
 
 .result > .preview {
@@ -60,7 +89,7 @@ body {
 }
 
 .markup-matcher > pre > .ok {
-  background-color: lightgreen;
+  background-color: darkgreen;
 }
 
 .markup-matcher > pre > .wrong {
@@ -70,4 +99,61 @@ body {
 
 .markup-matcher > pre > .missing {
   color: #888888;
+}
+
+.objectives {
+  padding: 110px 10px 5px 10px;
+  max-width: 500px;
+}
+
+.objective {
+  position: relative;
+}
+
+.objective > header {
+  padding: 0 10px;
+  display: block;
+  height: 20px;
+  background-color: #AAAAAA;
+  color: black;
+  border-radius: 10px;
+}
+
+.objective > header > .result {
+  position: absolute;
+  right: 8px;
+  height: 20px;
+  line-height: 20px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.objective.achieved,
+.objective.current {
+  top: -100px;
+}
+
+.objective.achieved > header {
+  background-color: darkgreen;
+  color: #CCCCCC;
+}
+
+.objective > .detail {
+  display: block;
+  position: absolute;
+  height: 100px;
+  border: solid 1px #AAAAAA;
+  border-top: none;
+  left: 11px;
+  right: 11px;
+  padding: 2px 5px;
+  border-radius: 0 0 5px 5px;
+}
+
+.objective > .detail > p {
+  margin: 5px 0;
+}
+
+.objective > .detail > code > pre {
+  margin: 5px 0;
 }

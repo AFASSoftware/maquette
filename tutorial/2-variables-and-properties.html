@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Tutorial</title>
+    <link href="tutorial.css" rel="stylesheet" />
+  </head>
+<body>
+  <div class="instructions">
+    <h1>Variables and properties</h1>
+    <p>
+      In your next assignment, you are going to apply a variable rotation to the flying saucer.
+      Because hyperscript is a pure JavaScript function, you have access to variables while rendering markup.
+      In our application we are going to use the style attribute to control the flying saucer.
+      Attributes can be set on virtual DOM nodes using the properties parameter on the h() function. The full signature of the h() function is:
+    </p>
+    <pre>function h(selector /* String */, properties /* Object */, children /* Array */) // returns a VNode object</pre>
+
+    <p>Example:</p>
+
+    <pre>h("a", {href: "/"}, ["Home"])</pre>
+    
+    <p>
+      The objective of your next assignment is to set the `style` attribute to `"transform:45deg"`. You must use the variable rotation to construct the value.
+    </p>
+    <p>
+      Press next to start. Good luck.
+    </p>
+  </div>
+  <div class="navigation">
+    <button class="previous">Previous</button>
+    <button class="index">Index</button>
+    <button class="next">Next</button>
+  </div>
+</body>
+</html>

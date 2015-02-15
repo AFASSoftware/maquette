@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Tutorial</title>
+    <link href="tutorial.css" rel="stylesheet" />
+    <script src="bower_components/maquette/dist/maquette.min.js"></script>
+    <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
+    <script src="components/markup-matcher.js"></script>
+    <script src="components/workbench.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+
+        // Data
+        var htmlScript = "var h = maquette.h;\n" +
+          "\n" +
+          "\n" +
+          "function renderMaquette() {\n" +
+          "  return h(\"body\", [\n" +
+          "    h(\"div.landscape\", [\n" +
+          "      h(\"div.saucer\", {}, [\"Flying saucer\"])\n" +
+          "    ])\n" +
+          "  ]);\n" +
+          "}\n" +
+          "\n" +
+          "\n" +
+          "// Initializes the projector \n" +
+          "document.addEventListener('DOMContentLoaded', function () {\n" +
+          "  maquette.createProjector(document.body, renderMaquette);\n" +
+          "});\n";
+
+        // Renders the virtual DOM
+        var render = function () {
+          return workbench.renderMaquette();
+        };
+
+        // Starts the projector, which renders the virtual DOM at the right moments
+        var projector = maquette.createProjector(document.querySelector(".work"), render, {});
+
+        var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
+        var workbench = createWorkbench(projector, htmlScript, [
+          markupMatcher
+        ]);
+      });
+    </script>
+  </head>
+<body>
+  <div class="work"></div>
+</body>
+</html>

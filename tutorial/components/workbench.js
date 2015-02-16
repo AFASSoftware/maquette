@@ -89,6 +89,11 @@
   };
 
   var workbench = {
+    allObjectivesAchieved : function () {
+      return objectives.every(function (objective) {
+         return objective.isAchieved();
+      });
+    },
     renderMaquette: function () {
       var html = htmlStart + lastValidScript + htmlEnd;
 

@@ -7,6 +7,7 @@
     <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
     <script src="components/markup-matcher.js"></script>
     <script src="components/workbench.js"></script>
+    <script src="components/navigation.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
 
@@ -31,7 +32,8 @@
         // Renders the virtual DOM
         var render = function () {
           return h("div.projector", [
-            workbench.renderMaquette()
+            workbench.renderMaquette(),
+            navigation.renderMaquette()
           ]);
         };
 
@@ -42,6 +44,7 @@
         var workbench = createWorkbench(projector, htmlScript, [
           markupMatcher
         ]);
+        var navigation = createNavigation(projector, null, "2-variables-and-properties.html", workbench.allObjectivesAchieved);
       });
     </script>
   </head>

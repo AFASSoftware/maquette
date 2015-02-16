@@ -22,7 +22,7 @@ body {
 }
 
 .work {
-  flex-grow: 1;
+  flex-grow: 100000;
   min-height: 400px;
   display: flex;
   align-items: stretch;
@@ -156,4 +156,46 @@ body {
 
 .objective > .detail > code > pre {
   margin: 5px 0;
+}
+
+.projector {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+/* Navigation */
+.navigation {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  background-color: black;
+  align-items: flex-end;
+}
+
+.navigation > a,
+.navigation > span {
+  display: block;
+  width:150px;
+}
+
+.navigation > a {
+  border: solid 1px #AAAAAA;
+  color: #AAAAAA;
+  height: 30px;
+  line-height: 30px;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+}
+
+.navigation.light {
+  background-color: white;
+}
+
+.navigation.light > a {
+  color: black;
+  border-color: black;
 }

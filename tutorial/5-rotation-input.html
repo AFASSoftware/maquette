@@ -49,47 +49,48 @@
         // Starts the projector, which renders the virtual DOM at the right moments
         var projector = maquette.createProjector(document.querySelector(".projector"), render, {});
 
-        var hasStyleAttribute = false;
-        var usesRotation = false;
-        var rotationOk = false;
-        var objective = {
-          title: "Render the DOM",
+        var objective1 = {
+          title: "Assign the rotation variable to the value property of the saucer",
           isAchieved: function () {
-            return hasStyleAttribute && usesRotation && rotationOk;
+            return false;
           },
           onSceneUpdate: function (contentWindow) {
-            hasStyleAttribute = false;
-            usesRotation = false;
-            rotationOk = false;
-            var oldRotation = contentWindow.rotation;
-            try {
-              var vnode = contentWindow.renderMaquette();
-              var saucer = vnode.children[0].children[0];
-              var style = saucer.properties.style;
-              hasStyleAttribute = typeof style === "string";
-              if (hasStyleAttribute) {
-                rotationOk = style === "transform:rotate(45deg)";
-                contentWindow.rotation = 615243;
-                style = contentWindow.renderMaquette().children[0].children[0].properties.style;
-                usesRotation = style.indexOf("615243") !== -1;
-                contentWindow.rotation = oldRotation;
-              }
-            } catch(e) {
-              contentWindow.rotation = oldRotation;
-            }
           },
           renderMaquette: function () {
-            return h("ul", [
-              h("li", {key:1, classes: {complete:hasStyleAttribute} }, ["The saucer has a style attribute"]),
-              h("li", {key:2, classes: {complete:usesRotation} }, ["The style attribute uses the rotation variable"]),
-              h("li", { key: 3, classes: { complete: rotationOk } }, ["The style attribute equals 'transform:rotation(45deg)'"])
-          ]);
+            return h("p", []);
           }
         };
+
+        var objective2 = {
+          title: "Assign the handleRotationInput function to the oninput property of the saucer",
+          isAchieved: function () {
+            return false;
+          },
+          onSceneUpdate: function (contentWindow) {
+          },
+          renderMaquette: function () {
+            return h("p", []);
+          }
+        };
+
+        var objective3 = {
+          title: "Take the flying saucer for a testdrive",
+          isAchieved: function () {
+            return false;
+          },
+          onSceneUpdate: function (contentWindow) {
+          },
+          renderMaquette: function () {
+            return h("p", ["Rotate the flying saucer 360 degrees using the remote control"]);
+          }
+        };
+
         var workbench = createWorkbench(projector, htmlScript, [
-          objective
+          objective1,
+          objective2,
+          objective3
         ]);
-        var navigation = createNavigation(projector, "2-variables-and-properties.html", "9-to-be-continued.html", workbench.allObjectivesAchieved);
+        var navigation = createNavigation(projector, "4-input.html", "9-to-be-continued.html", workbench.allObjectivesAchieved);
       });
     </script>
   </head>

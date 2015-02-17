@@ -21,9 +21,54 @@ body {
   top:0;bottom:0;
   left:0;right:0;
   display:flex;
+  flex-wrap: wrap;
   align-items:center;
-  justify-content: center;
+  justify-content: space-around;
   background: linear-gradient(to bottom, blue, #444444 80%, orange);
+}
+
+.remote {
+  display: block;
+  width: 200px;
+  position: relative;
+  border: solid 5px black;
+  background-color: #444444;
+  padding: 3px;
+  height: 300px;
+  color: #AAAAAA;
+}
+
+.remote:before {
+  content: '';
+  position:absolute;
+  top: -105px;
+  left: 50%;
+  border: solid 2px black;
+  height: 100px;
+}
+
+.remote:after {
+  content: '';
+  position:absolute;
+  top: -110px;
+  left: calc(50% - 8px);
+  border: solid 10px black;
+  height: 0px;
+  width: 0px;
+  border-radius: 10px;
+}
+
+.remote > .function {
+  padding: 10px 5px;
+  background-color: black;
+  margin-bottom: 3px;
+}
+
+.function input {
+  width: 50px;
+  text-align: right;
+  padding-right: 5px;
+  margin: 0 3px;
 }
 
 .saucer {
@@ -37,7 +82,8 @@ body {
   font-size: 20px;
   line-height: 55px;
   border-radius: 40% 40% 50% 50%/60% 60% 40% 40%;
-  transform: rotate(-30deg);
+  transform: rotate(0deg);
+  transition: transform 0.5s ease-out;
 }
 
 .saucer:before {

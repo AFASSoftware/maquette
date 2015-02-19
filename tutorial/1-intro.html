@@ -13,22 +13,6 @@
 
         var h = maquette.h;
 
-        // Data
-        var htmlScript = "var h = maquette.h;\n" +
-          "\n" +
-          "\n" +
-          "function renderMaquette() {\n" +
-          "  return h(\"body\", [\n" +
-          "    h(\"div.landscape\", [])\n" +
-          "  ]);\n" +
-          "}\n" +
-          "\n" +
-          "\n" +
-          "// Initializes the projector \n" +
-          "document.addEventListener('DOMContentLoaded', function () {\n" +
-          "  maquette.createProjector(document.body, renderMaquette);\n" +
-          "});\n";
-
         // Renders the virtual DOM
         var render = function () {
           return h("div.projector", [
@@ -41,7 +25,7 @@
         var projector = maquette.createProjector(document.querySelector(".projector"), render, {});
 
         var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
-        var workbench = createWorkbench(projector, htmlScript, [
+        var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
           markupMatcher
         ]);
         var navigation = createNavigation(projector, null, "2-variables-and-properties.html", workbench.allObjectivesAchieved);

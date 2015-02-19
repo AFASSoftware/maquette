@@ -4,7 +4,7 @@ var rotation = 45;
 
 function handleRotationInput(evt) {
   rotation = evt.target.value;
-};
+}
 
 function renderMaquette() {
   return h("body", [
@@ -12,7 +12,7 @@ function renderMaquette() {
       h("div.remote", {}, [
         h("div.function", [
           "rotation: ",
-          h("input", { type: "text", value: rotation, oninput: handleRotationInput }),
+          h("input", { type: "text" }),
           "degrees"
         ])
       ]),

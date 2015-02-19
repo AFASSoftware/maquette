@@ -1,16 +1,33 @@
-﻿window.createWorkbench = function (projector, script, objectives) {
+﻿window.createWorkbench = function (projector, scriptUrl, objectives) {
 
   // constants
   var h = maquette.h;
   var htmlStart = "<!doctype html><html><head><link href='assets/saucer.css' rel='stylesheet' /><script src='bower_components/maquette/dist/maquette.min.js'><" + "/script><script>";
   var htmlEnd = "<" + "/script></head><body></body></html>";
 
+  var script = "";
   var lastValidScript = script;
   var validateTimeout;
   var parseError;
   var editor;
   var changeDelay;
   var contentWindow;
+
+  var request = new XMLHttpRequest();
+  request.onreadystatechange = function () {
+    if(request.readyState === 4) {
+      projector.scheduleRender();
+      script = request.responseText;
+      lastValidScript = script;
+      if(editor) {
+        editor.setValue(script, 0);
+        editor.focus();
+        editor.clearSelection();
+      }
+    }
+  };
+  request.open("GET", scriptUrl);
+  request.send();
 
   var iframeBodyObserver = new MutationObserver(function (mutations) {
     objectives.forEach(function (objective) {
@@ -94,7 +111,11 @@
          return objective.isAchieved();
       });
     },
+    getScript: function () {
+      return editor.getValue();
+    },
     renderMaquette: function () {
+      var currentObjectiveHad = false;
       var html = htmlStart + lastValidScript + htmlEnd;
 
       return h("div.work", [
@@ -109,8 +130,11 @@
           h("div.header", ["Objectives"]),
           h("div.objectives",
             objectives.map(function (objective, index) {
-              var current = !objective.isAchieved();
-              return h("section.objective", { key: index, classes: {achieved: objective.isAchieved(), current: current} }, [
+              var current = !currentObjectiveHad && !objective.isAchieved();
+              if(current) {
+                currentObjectiveHad = true;
+              }
+              return h("section.objective", { key: index, classes: {achieved: objective.isAchieved(), current: current, "future": !current && currentObjectiveHad} }, [
                 h("header", [
                   h("span", ["" + (index + 1) + ". " + objective.title]),
                   objective.isAchieved() ? h("span.result.achieved", ["\u2713"]) : []

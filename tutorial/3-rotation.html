@@ -18,25 +18,6 @@
 
         var h = maquette.h;
 
-        // Data
-        var htmlScript = "var h = maquette.h;\n" +
-          "\n" +
-          "var rotation = 45;\n" +
-          "\n" +
-          "function renderMaquette() {\n" +
-          "  return h(\"body\", [\n" +
-          "    h(\"div.landscape\", [\n" +
-          "      h(\"div.saucer\", {}, [\"Flying saucer\"])\n" +
-          "    ])\n" +
-          "  ]);\n" +
-          "}\n" +
-          "\n" +
-          "\n" +
-          "// Initializes the projector \n" +
-          "document.addEventListener('DOMContentLoaded', function () {\n" +
-          "  maquette.createProjector(document.body, renderMaquette);\n" +
-          "});\n";
-
         // Renders the virtual DOM
         var render = function () {
           return h("div.projector", [
@@ -86,7 +67,7 @@
           ]);
           }
         };
-        var workbench = createWorkbench(projector, htmlScript, [
+        var workbench = createWorkbench(projector, "assets/saucer-rotation.js", [
           objective
         ]);
         var navigation = createNavigation(projector, "2-variables-and-properties.html", "9-to-be-continued.html", workbench.allObjectivesAchieved);

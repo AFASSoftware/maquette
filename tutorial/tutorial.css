@@ -102,7 +102,7 @@ body {
 }
 
 .objectives {
-  padding: 110px 10px 5px 10px;
+  padding: 10px 10px 105px 10px;
   max-width: 500px;
 }
 
@@ -128,9 +128,8 @@ body {
   font-size: 18px;
 }
 
-.objective.achieved,
-.objective.current {
-  top: -100px;
+.objective.future {
+  top: 100px;
 }
 
 .objective.achieved > header {

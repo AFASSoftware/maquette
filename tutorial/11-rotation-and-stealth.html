@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <title>Tutorial</title>
+  <link href="tutorial.css" rel="stylesheet" />
+  <script src="bower_components/maquette/dist/maquette.min.js"></script>
+  <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
+  <script src="components/markup-matcher.js"></script>
+  <script src="components/workbench.js"></script>
+  <script src="components/navigation.js"></script>
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+
+        var h = maquette.h;
+
+        // Renders the virtual DOM
+        var render = function () {
+          return h("div.projector", [
+            workbench.renderMaquette(),
+            navigation.renderMaquette()
+          ]);
+
+        };
+
+        // Starts the projector, which renders the virtual DOM at the right moments
+        var projector = maquette.createProjector(document.querySelector(".projector"), render, {});
+
+        var achieved1 = false;
+        var objective1 = {
+          title: "Fix the crash",
+          isAchieved: function () {
+            return achieved1;
+          },
+          onSceneUpdate: function (contentWindow) {
+          },
+          renderMaquette: function () {
+            return h("p", ["Work in progress, sorry"]);
+          }
+        };
+
+        var workbench = createWorkbench(projector, "assets/saucer-rotation-and-stealth.js", [
+          objective1
+        ]);
+        var navigation = createNavigation(projector, "10-distinguishable.html", "12-done.html", workbench.allObjectivesAchieved);
+      });
+  </script>
+</head>
+<body>
+  <div class="projector"></div>
+</body>
+</html>

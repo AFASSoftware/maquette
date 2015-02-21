@@ -1,16 +1,38 @@
-...
+<!doctype html>
+<html>
+<head>
+  <title>Tutorial</title>
+  <link href="tutorial.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="instructions">
+    <h1>Conditional CSS classes</h1>
+    <p>
+      Congratulations on completing the tutorial this far! We still need to explain two more concepts before you are ready to build maquette applications yourself.
+    </p>
+    <p>
+      The first concept is about conditional CSS classes.
+      You are already familliar with css classes in the selector. For example
+      "div.landscape" creates a &lt;div class="landscape"&gt;.
+      But what if our landscape div can also have a CSS class "night" which is conditional?
+      This usecase is so common, that maquette provides a special construction for this.
+      It uses the classes property, which is an object literal mapping classnames to a condition.
+      It works as follows:
+    </p>
+    <pre>h("div.landscape", { night: new Date().getHours() &lt;= 8 })</pre>
+    <p>
+      Looks easy right? Your next assignment is to assign the CSS class 'stealth' to the
+      flying saucer, based on the 'stealth' variable.
+    </p>
+    <p>
+      Good luck!
+    </p>
+  </div>
+  <div class="navigation light">
+    <a class="previous" href="7-rotation.html">Previous</a>
+    <a class="index" href="index.html">Index</a>
+    <a class="next" href="9-stealth.html">Next</a>
+  </div>
+</body>
+</html>
 
-The first concept is about conditional CSS classes.
-You are already familliar with css classes in the selector. For example 
-"div.landscape" creates a <div class="landscape">. But what if our landscape
-div can also have a CSS class "night" which is conditional?
-This usecase is so common, that maquette provides a special construction for this.
-It uses the classes property, which is an object literal mapping classnames to a condition.
-It works as follows:
-
-h("div.landscape", { night: new Date().getHours() <= 8 })
-
-Quite easy right? Your next assignment is to assign the css class 'stealth' to the
-flying saucer, based on the 'stealth' variable.
-
-Good luck!

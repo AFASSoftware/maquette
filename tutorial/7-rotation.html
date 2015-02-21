@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Tutorial</title>
+    <link href="tutorial.css" rel="stylesheet" />
+    <script src="bower_components/maquette/dist/maquette.min.js"></script>
+    <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
+    <script src="components/markup-matcher.js"></script>
+    <script src="components/workbench.js"></script>
+    <script src="components/navigation.js"></script>
+    <style>
+      li.complete {
+        background-color: green;
+      }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+
+        var h = maquette.h;
+
+        // Renders the virtual DOM
+        var render = function () {
+          return h("div.projector", [
+            workbench.renderMaquette(),
+            navigation.renderMaquette()
+          ]);
+
+        };
+
+        // Starts the projector, which renders the virtual DOM at the right moments
+        var projector = maquette.createProjector(document.querySelector(".projector"), render, {});
+
+        var changeCount = 0;
+        var lastRotation = 0;
+        var objective1 = {
+          title: "Analyze the problem",
+          isAchieved: function () {
+            return changeCount > 40;
+          },
+          onSceneUpdate: function (contentWindow) {
+            var rotation = contentWindow.rotation;
+            if(rotation && rotation !== lastRotation) {
+              lastRotation = rotation;
+              changeCount++;
+            }
+          },
+          renderMaquette: function () {
+            return h("p", ["Move the rotation slider up and down to get a feeling of what is wrong."]);
+          }
+        };
+
+        var achieved2 = false;
+        var objective2 = {
+          title: "Fix the problem",
+          isAchieved: function () {
+            return achieved2;
+          },
+          onSceneUpdate: function (contentWindow) {
+            var oldProjector = contentWindow.projector;
+            var tick = contentWindow.tick;
+            if(oldProjector && tick && !achieved2) {
+              try {
+                contentWindow.projector = {
+                  scheduleRender: function () {
+                    achieved2 = true;
+                  }
+                };
+                tick();
+              } catch(e) {
+              }
+              contentWindow.projector = oldProjector;
+            }
+          },
+          renderMaquette: function () {
+            return h("p", ["Make sure the projectector schedules a render after each update to the data."]);
+          }
+        };
+
+        var workbench = createWorkbench(projector, "assets/saucer-orbit.js", [
+          objective1,
+          objective2
+        ]);
+        var navigation = createNavigation(projector, "6-how-it-works.html", "8-classes.html", workbench.allObjectivesAchieved);
+      });
+    </script>
+  </head>
+<body>
+  <div class="projector"></div>
+</body>
+</html>

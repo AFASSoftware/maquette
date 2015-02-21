@@ -11,7 +11,6 @@ function handleRotationInput(evt) {
 }
 
 function tick() {
-//  projector.scheduleRender();
   var moment = (new Date().getTime() - startDate)/1000;
   x = Math.round(150 * Math.sin(moment));
   y = Math.round(150 * Math.cos(moment));

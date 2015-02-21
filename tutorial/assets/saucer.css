@@ -102,7 +102,11 @@ body {
   line-height: 55px;
   border-radius: 40% 40% 50% 50%/60% 60% 40% 40%;
   transform: rotate(0deg);
-  transition: transform 0.5s ease-out;
+  transition: transform 0.5s ease-out, opacity 1s ease-out;
+}
+
+.saucer.stealth {
+  opacity: 0.2;
 }
 
 .saucer:before {

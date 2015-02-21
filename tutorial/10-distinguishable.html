@@ -1,0 +1,21 @@
+The last concept that we are going to explain in this tutorial is the distinguishable rule.
+
+As you may already know, the maquette library is optimized for speed. 
+It is also able to animate transitions.
+To make this work, maquette requires you to obide by one simple rule.
+You must make sure that all childnodes of a node are distinguishable.
+This is usually not as hard as it looks.
+Nodes are already distinguishable if they have a different selector. 
+If two childnodes have the same selector, they must have a 'key' attribute 
+that is unique among the childnodes. This is usually a database-id or an index number.
+
+Here is one quick example (Documentation about the javascript map() function can be found here):
+
+h("ul), [
+  items.map(function(item) {
+    return h("li", {key: item.id}, [item.text]);
+  })
+])
+
+For your next assignment, we have already added the stealth checkbox to the remote control.
+The application gives crashes right now. It is your task to make the application work. Good luck.  

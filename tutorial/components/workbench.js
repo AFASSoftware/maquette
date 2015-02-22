@@ -13,6 +13,33 @@
   var changeDelay;
   var contentWindow;
 
+    var lastError;
+    window.onerror = function (msg, url, lineNumber) {
+      if (!lastError) {
+        lastError = { msg: msg, lineNumber: lineNumber };
+        if (document.body) {
+          var errorDiv = document.createElement("div");
+          errorDiv.classList.add("javascript-error");
+          errorDiv.appendChild(document.createTextNode("Javascript crash: "+msg+" line number "+lineNumber));
+          document.body.appendChild(errorDiv);
+        };
+      }
+    };
+
+  htmlStart = htmlStart
+    + "var lastError;"
+    + "window.onerror = function (msg, url, lineNumber, colNr, error) {"
+    + "  if (!lastError) {"
+    + "    lastError = { msg: msg, lineNumber: lineNumber };"
+    + "    setTimeout(function() {"
+    + "      var errorDiv = document.createElement(\"div\");"
+    + "      errorDiv.classList.add(\"javascript-error\");"
+    + "      errorDiv.appendChild(document.createTextNode(\"Javascript crash: \"+msg + (lineNumber > 1 ? (\" line number \"+lineNumber) : \"\")));"
+    + "      document.body.appendChild(errorDiv);"
+    + "    });"
+    + "  }"
+    + "};";
+
   var request = new XMLHttpRequest();
   request.onreadystatechange = function () {
     if(request.readyState === 4) {

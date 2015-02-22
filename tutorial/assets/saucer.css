@@ -17,6 +17,18 @@ body {
   overflow-x: hidden;
 }
 
+.javascript-error {
+  position: fixed;
+  top: 45vh;
+  padding: 10px;
+  left: 0;
+  width: 100vw;
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  text-align: center; 
+}
+
 .landscape {
   position:absolute;
   top:0;bottom:0;

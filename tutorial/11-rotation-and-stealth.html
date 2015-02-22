@@ -32,9 +32,20 @@
             return achieved1;
           },
           onSceneUpdate: function (contentWindow) {
+            achieved1 = false;
+            var works = contentWindow.document.body && contentWindow.document.body.firstChild && !contentWindow.lastError;
+            if(works) {
+              try {
+                var vnode = contentWindow.renderMaquette();
+                var function1 = vnode.children[0].children[0].children[0].properties;
+                var function2 = vnode.children[0].children[0].children[1].properties;
+                achieved1 = (function1 && function1.key) || (function2 && function2.key);
+              } catch(e) {
+              }
+            }
           },
           renderMaquette: function () {
-            return h("p", ["Work in progress, sorry"]);
+            return h("p", ["Use a key property on one of the function divs"]);
           }
         };
 

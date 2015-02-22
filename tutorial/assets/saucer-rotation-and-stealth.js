@@ -21,7 +21,7 @@ function renderMaquette() {
           h("input", { type: "text", value: rotation, oninput: handleRotationInput }),
           "degrees"
         ]),
-        h("div.function#s", [
+        h("div.function", [
           "stealth: ",
           h("input", { type: "checkbox", checked: stealth, onchange: handleStealthChange })
         ])

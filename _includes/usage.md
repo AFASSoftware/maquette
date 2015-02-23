@@ -1,44 +1,12 @@
 Maquette makes it easy to keep your user interface synchronized with your data.
-All you need to do is provide a `render()` function which creates the current state of your 
+All you need to do is provide a `renderMaquette()` function which creates the current state of your 
 user interface from scratch.
-This `render()` function returns a tree of virtual DOM nodes using the `h()` function. 
-How the virtual DOM is translated to the real DOM is shown in the following 2 code snippets.
-More details about the `h()` function can be found 
-[in the API reference](https://github.com/johan-gorter/maquette/blob/master/docs/API.md#maquetteh). 
+After that you create a projector using `createProjector()` passing it a DOM node and the render function.
+The projector will then take care of creating and updating the DOM when needed.
+The projector calls the render function at the right moments, just before the browser paints the next frame but only ifthe DOM may have changed.
+The projector compares the newly rendered user interface with the previous one and changes the DOM. This can be done using animations.
+This recreating from scratch and finding differences may seem inefficient, but it is fast enough to run at 60 frames per second even with large pages on low-power devices.
 
-{% highlight text linenos=table %}
-var h = maquette.h;
-var name = "";
-
-function render() {
-  return h("p.input", [
-    h("span", ["What is your name? "]),
-    h("input", { type: "text", autofocus: true, value: name, oninput: nameInput })
-  ]);
-}
-{% endhighlight %}
-
-{% highlight text linenos=table %}
-<p class="input">
-  <span>What is your name? </span>
-  <input type="text" autofocus value="" oninput="nameInput"></input>
-</p>
-{% endhighlight %}
-
-The following code snippet shows how maquette uses a projector to call the `render()` function when needed. 
-The projector always calls the render function asynchronously (using `requestAnimationFrame`). 
-See the reference documentation for [`createProjector()`](https://github.com/johan-gorter/maquette/blob/master/docs/API.md#maquettecreateprojector) for more details.
-
-{% highlight text linenos=table %}
-maquette.createProjector(document.body, render);
-{% endhighlight %}
-
-If you are curious about the remaining lines of code that will make a hello world application work,
-you can find it [here](https://github.com/johan-gorter/maquette/blob/master/examples/helloworld/index.html).
-
-There is one rule when creating virtual DOM nodes that requires special attention.
-Maquette needs all childnodes of a virtual DOM node to be distinguishable. 
-This means that they must either have a unique selector or they must provide a unique `key` property.
-Maquette needs this information to animate transitions. This also helps maquette to perform better.
+Start [learning maquette](tutorial/1-intro.html)
 
 More info can be found in the [API Reference](https://github.com/johan-gorter/maquette/blob/master/docs/API.md).

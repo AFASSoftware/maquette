@@ -11,21 +11,25 @@
 
   var velocityTransitions = {
     nodeToRemove: function (node, properties) {
-      var animation = properties.exitAnimation;
-      if(animation) {
-        velocity.animate(node, animation, {
-          complete: function () {
-            node.parentNode.removeChild(node);
-          }
-        });
-      } else {
-        node.parentNode.removeChild(node);
+      if (properties) {
+        var animation = properties.exitAnimation;
+        if(animation) {
+          velocity.animate(node, animation, {
+            complete: function () {
+              node.parentNode.removeChild(node);
+            }
+          });
+        } else {
+          node.parentNode.removeChild(node);
+        }
       }
     },
     nodeAdded: function (node, properties) {
-      var animation = properties.enterAnimation;
-      if(animation) {
-        velocity.animate(node, animation);
+      if (properties) {
+        var animation = properties.enterAnimation;
+        if(animation) {
+          velocity.animate(node, animation);
+        }
       }
     },
     nodeUpdated: function (node, properties, type, name, newValue, oldValue) {

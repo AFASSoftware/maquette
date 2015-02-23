@@ -35,24 +35,26 @@
 
   var cssTransitions = {
     nodeToRemove: function (node, properties) {
-      var animation = properties.exitAnimation;
-      if (animation) {
-        init(node);
-        var finished = false;
-        var transitionEnd = function (evt) {
-          if (!finished) {
-            finished = true;
-            node.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
-            node.parentNode.removeChild(node);
-          }
-        };
-        node.classList.add(animation);
-        node.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
-        requestAnimationFrame(function () {
-          node.classList.add(animation + "-active");
-        });
-      } else {
-        node.parentNode.removeChild(node);
+      if (properties) {
+        var animation = properties.exitAnimation;
+        if (animation) {
+          init(node);
+          var finished = false;
+          var transitionEnd = function (evt) {
+            if (!finished) {
+              finished = true;
+              node.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+              node.parentNode.removeChild(node);
+            }
+          };
+          node.classList.add(animation);
+          node.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+          requestAnimationFrame(function () {
+            node.classList.add(animation + "-active");
+          });
+        } else {
+          node.parentNode.removeChild(node);
+        }
       }
     },
     nodeAdded: function (node, properties) {

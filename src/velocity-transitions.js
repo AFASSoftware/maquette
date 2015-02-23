@@ -28,7 +28,7 @@
         velocity.animate(node, animation);
       }
     },
-    nodeUpdated: function (node, type, name, newValue, oldValue) {
+    nodeUpdated: function (node, properties, type, name, newValue, oldValue) {
     }
   };
 

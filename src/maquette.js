@@ -108,7 +108,7 @@
     },
     nodeAdded: function (node, properties) {
     },
-    nodeUpdated: function (node, type, name, newValue, oldValue) {
+    nodeUpdated: function (node, properties, type, name, newValue, oldValue) {
     }
   };
 
@@ -186,10 +186,10 @@
           }
           if (on) {
             classList.add(className);
-            transitions.nodeUpdated(domNode, "addClass", className, undefined, undefined);
+            transitions.nodeUpdated(domNode, properties, "addClass", className, undefined, undefined);
           } else {
             classList.remove(className);
-            transitions.nodeUpdated(domNode, "removeClass", className, undefined, undefined);
+            transitions.nodeUpdated(domNode, properties, "removeClass", className, undefined, undefined);
           }
         }
       } else {
@@ -201,7 +201,7 @@
             domNode[propName] = propValue; // Reset the value, even if the virtual DOM did not change
           } // else do not update the domNode, otherwise the cursor position would be changed
           if (propValue !== previousValue) {
-            transitions.nodeUpdated(domNode, "property", propName, propValue, previousValue);
+            transitions.nodeUpdated(domNode, properties, "changeProperty", propName, propValue, previousValue);
           }
         } else if (propValue !== previousValue) {
           var type = typeof propValue;
@@ -214,7 +214,7 @@
           } else {
             domNode[propName] = propValue;
           }
-          transitions.nodeUpdated(domNode, "property", propName, propValue, previousValue);
+          transitions.nodeUpdated(domNode, properties, "changeProperty", propName, propValue, previousValue);
         }
       }
     }
@@ -356,7 +356,7 @@
     if (vnode.vnodeSelector === "") {
       if (vnode.text !== previous.text) {
         domNode.nodeValue = vnode.text;
-        projectionOptions.transitions.nodeUpdated(domNode, "text", undefined, vnode.text, previous.text);
+        projectionOptions.transitions.nodeUpdated(domNode, vnode.properties, "changeText", undefined, vnode.text, previous.text);
       }
     } else {
       updateChildren(domNode, previous.children, vnode.children, projectionOptions);
@@ -412,7 +412,7 @@
       if (!children && (Array.isArray(properties)) && typeof selector === "string") {
         children = properties;
         properties = undefined;
-      } else if (typeof selector !== "string" || (children && !Array.isArray(children))) {
+      } else if (typeof selector !== "string" || (children && !Array.isArray(children)) || (properties !== undefined && typeof properties !== "object")) {
         throw new Error("Incorrect arguments passed to the h() function. Correct signature: h(string, optional object, optional array)");
       }
       children = flatten(selector, children);

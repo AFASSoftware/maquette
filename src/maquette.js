@@ -338,8 +338,8 @@
   };
 
   var initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
-    setProperties(domNode, vnode.properties, projectionOptions);
     addChildren(domNode, vnode.children, projectionOptions); // children before properties, needed for value property of <select>.
+    setProperties(domNode, vnode.properties, projectionOptions);
     if (vnode.properties && vnode.properties.afterCreate) {
       vnode.properties.afterCreate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
     }

@@ -67,6 +67,7 @@ body {
   flex: 1 0 400px;
   background-color: black;
   color: #DDDDDD;
+  overflow: hidden;
 }
 
 .result > .header {
@@ -104,6 +105,7 @@ body {
 .objectives {
   padding: 10px 10px 105px 10px;
   max-width: 500px;
+  flex-shrink: 0;
 }
 
 .objective {
@@ -166,6 +168,7 @@ body {
 /* Navigation */
 .navigation {
   flex-grow: 1;
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   padding: 5px;

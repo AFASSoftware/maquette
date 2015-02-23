@@ -2,9 +2,6 @@
 
   "use strict";
 
-  // constant flags
-  var skipUniqueSelectorCheck = false;
-
   // Utilities
 
   var noop = function () { };
@@ -46,9 +43,6 @@
   };
 
   var checkForDuplicateSelectors = function (parentSelector, sameAs, selectorsThusFar) {
-    if (skipUniqueSelectorCheck) {
-      return;
-    }
     var selector = sameAs.vnodeSelector;
     if (selector === "") {
       return; // textnodes can be safely ignored.
@@ -58,7 +52,7 @@
     }
     for (var i = 0; i < selectorsThusFar.length; i++) {
       if (selector === selectorsThusFar[i]) {
-        throw new Error("[" + parentSelector + "] contains undistinguishable child nodes [" + selector + "], please add unique key properties.");
+        throw new Error("[" + parentSelector + "] contains indistinguishable child nodes [" + selector + "], please add unique key properties.");
       }
     }
     selectorsThusFar.push(selector);
@@ -135,7 +129,7 @@
     for (var propName in properties) {
       var propValue = properties[propName];
       if (propName === "class" || propName === "className" || propName === "classList") {
-        throw new Error("Not supported, use 'classes' instead.");
+        throw new Error("Property " + className + " is not supported, use 'classes' instead.");
       } else if (propName === "classes") {
         // object with string keys and boolean values
         for (var className in propValue) {
@@ -155,10 +149,10 @@
             if (propName === "oninput") {
               (function () {
                 // record the evt.target.value, because IE sometimes does a requestAnimationFrame between changing value and running oninput
-                var tmp = propValue;
+                var oldPropValue = propValue;
                 propValue = function (evt) {
                   evt.target["oninput-value"] = evt.target.value;
-                  tmp.apply(this, [evt]);
+                  oldPropValue.apply(this, [evt]);
                 };
               }());
             }
@@ -183,9 +177,6 @@
       var propValue = properties[propName];
       var previousValue = previousProperties[propName];
       if (propName === "classes") {
-        if (propValue === previousValue) {
-          continue;
-        }
         var classList = domNode.classList;
         for (var className in propValue) {
           var on = !!propValue[className];
@@ -215,7 +206,8 @@
         } else if (propValue !== previousValue) {
           var type = typeof propValue;
           if (type === "function") {
-            throw new Error("Functions may not be updated on subsequent renders (property: " + propName + ")");
+            throw new Error("Functions may not be updated on subsequent renders (property: " + propName +
+              "). Hint: declare event handler functions outside the render() function.");
           }
           if (type === "string") {
             domNode.setAttribute(propName, propValue);
@@ -347,7 +339,7 @@
 
   var initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
     setProperties(domNode, vnode.properties, projectionOptions);
-    addChildren(domNode, vnode.children, projectionOptions);
+    addChildren(domNode, vnode.children, projectionOptions); // children before properties, needed for value property of <select>.
     if (vnode.properties && vnode.properties.afterCreate) {
       vnode.properties.afterCreate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
     }
@@ -367,8 +359,8 @@
         projectionOptions.transitions.nodeUpdated(domNode, "text", undefined, vnode.text, previous.text);
       }
     } else {
-      updateProperties(domNode, previous.properties, vnode.properties, projectionOptions);
       updateChildren(domNode, previous.children, vnode.children, projectionOptions);
+      updateProperties(domNode, previous.properties, vnode.properties, projectionOptions);
       if (vnode.properties && vnode.properties.afterUpdate) {
         vnode.properties.afterUpdate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
       }
@@ -417,10 +409,11 @@
 
   var maquette = {
     h: function (selector, properties, children) {
-      if (!children &&
-        (typeof properties === "string" || Array.isArray(properties) || (properties && properties.hasOwnProperty("vnodeSelector")))) {
+      if (!children && (Array.isArray(properties)) && typeof selector === "string") {
         children = properties;
-        properties = null;
+        properties = undefined;
+      } else if (typeof selector !== "string" || (children && !Array.isArray(children))) {
+        throw new Error("Incorrect arguments passed to the h() function. Correct signature: h(string, optional object, optional array)");
       }
       children = flatten(selector, children);
       return {
@@ -527,8 +520,6 @@
 
     stats: stats,
   };
-  // Deprecated name for createProjector
-  maquette.renderLoop = maquette.createProjector;
 
   if (typeof module !== "undefined" && module.exports) {
     // Node and other CommonJS-like environments that support module.exports

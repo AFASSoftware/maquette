@@ -61,9 +61,17 @@ window.todoComponent = function (todoList, id, title) {
   };
 
   var focusEdit = function (domNode) {
-    domNode.focus();
-    domNode.selectionStart = 0;
-    domNode.selectionEnd = domNode.value.length;
+    if(window.setImmediate) {
+      window.setImmediate(function () { // IE weirdness
+        domNode.focus();
+        domNode.selectionStart = 0;
+        domNode.selectionEnd = domNode.value.length;
+      });
+    } else {
+      domNode.focus();
+      domNode.selectionStart = 0;
+      domNode.selectionEnd = domNode.value.length;
+    }
   };
 
   var component = {

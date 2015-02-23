@@ -232,7 +232,7 @@ describe('todomvc-maquette', function () {
       return page
         .doubleClickItemAtIndex(1)
         .waitForAnimationFrame()
-        .editItem(keys.Delete)
+        .editItem(" ")
         .editItem(keys.Enter)
         .waitForAnimationFrame()
         .assertItems([TODO_ITEM_ONE, TODO_ITEM_THREE]);

@@ -102,7 +102,7 @@ var quitBrowser = function (browser, allPassed) {
 var setup = {
   rootUrl: 'http://localhost:8000',
   server: server,
-  browserCapabilities: { browserName: "firefox" },
+  browserCapabilities: { browserName: "chrome" },
   sauce: false,
   createBrowser: createBrowser, // returns a promise for a browser
   quitBrowser: quitBrowser

@@ -140,6 +140,7 @@ module.exports = function (browser, chain) {
     },
 
     editItem: function (text) {
+      chain = chain.safeExecute("document.querySelector('#todo-list input.edit').value = ''");
       chain = chain.elementByCss("#todo-list input.edit")
         .sendKeys(text);
       return page;

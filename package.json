@@ -16,7 +16,7 @@
   },
   "main": "dist/maquette-min.js",
   "scripts": {
-    "test": "mocha && cd browser-tests && npm install && node sauce.js"
+    "test": "mocha && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js"
   },
   "licenses": [
     {

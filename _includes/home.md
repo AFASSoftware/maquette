@@ -8,11 +8,11 @@
 
 ## Intro
 
-Maquette is a Javascript utility which makes it easy to keep the DOM tree in the browser synchronized with your data.
+Maquette is a Javascript library which makes it easy to keep the DOM tree in the browser synchronized with your data.
 It uses a technique called **Virtual DOM**.
 Compared to other virtual DOM implementations, maquette has 3 advantages:
 
-- It is very lightweight (Only 2.3Kb gzipped)
+- It is ultra lightweight (Only 2.4Kb gzipped)
 - It allows changes to be animated
 - It is optimized for speed
 

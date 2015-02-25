@@ -1,22 +1,3 @@
-﻿* {
-  /* border-box (meaning height and width INCLUDES padding and border) makes styling and animation a lot easier */
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-}
-
-html {
-  font: normal normal normal  14px/20px sans-serif;
-  height: 100%;
-}
-
-body {
-  margin:0;padding:0;
-  height:100%;
-  display: flex;
-  flex-direction: column;
-}
-
 .instructions {
   flex-shrink: 0;
 }
@@ -157,6 +138,7 @@ body {
 
 .objective > .detail > code > pre {
   margin: 5px 0;
+  overflow: hidden;
 }
 
 .projector {

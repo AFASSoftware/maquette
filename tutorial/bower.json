@@ -15,7 +15,7 @@
     "tests"
   ],
   "dependencies": {
-    "maquette": "~1.4.6",
+    "maquette": "latest",
     "ace-builds": "~1.1.8"
   }
 }

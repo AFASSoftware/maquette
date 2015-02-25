@@ -20,7 +20,10 @@
       if(achieved) {
         return;
       }
-      var markup = contentWindow.document.body.innerHTML;
+      var markup = "";
+      if (!contentWindow.document.body.querySelector(".javascript-error")) {
+        markup = contentWindow.document.body.innerHTML;
+      }
       if (markup !== lastMarkup) {
         lastMarkup = markup;
         var matchedUntil = 0;

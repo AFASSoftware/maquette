@@ -57,6 +57,7 @@
   request.send();
 
   var iframeBodyObserver = new MutationObserver(function (mutations) {
+    console.log("MutationObserver fired");
     objectives.forEach(function (objective) {
       objective.onSceneUpdate(contentWindow);
     });
@@ -64,7 +65,7 @@
   });
 
   var iframeLoaded = function (evt) {
-    console.log("IFrame onload fired " + evt.target.contentWindow.document.body.innerHTML);
+    console.log("IFrame onload fired");
     contentWindow = evt.target.contentWindow;
     iframeBodyObserver.disconnect();
     iframeBodyObserver.observe(evt.target.contentWindow.document.body, { childList: true, attributes: true, characterData: true, subtree: true });
@@ -175,7 +176,9 @@
             })
           ),
           h("div.preview", [
-            h("iframe", { srcdoc: html, onload: iframeLoaded, afterCreate: applySrcdoc, afterUpdate: applySrcdoc })
+            lastValidScript ? [
+              h("iframe", { srcdoc: html, onload: iframeLoaded, afterCreate: applySrcdoc, afterUpdate: applySrcdoc })
+            ] : []
           ])
         ])
       ]);

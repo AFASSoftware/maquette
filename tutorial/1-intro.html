@@ -4,6 +4,7 @@
 <html>
   <head>
     <title>Tutorial</title>
+    <link href="../style.css" rel="stylesheet" />
     <link href="tutorial.css" rel="stylesheet" />
     <script src="bower_components/maquette/dist/maquette.min.js"></script>
     <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
@@ -35,35 +36,46 @@
     </script>
   </head>
 <body>
-  <div class="instructions">
-    <h1>Tutorial</h1>
+
+  <nav class="light-blue lighten-1" role="navigation">
+    <div class="container">
+      <div class="nav-wrapper">
+        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="instructions container">
     <p>
       In this tutorial we will make you familliar with the virtual DOM technique and the maquette library.
-      The application we are building in this tutorial is a simulator for css transitions. More specifically, we are going to make a remote control for a flying saucer.
+      The application we are building in this tutorial is a remote control for a flying saucer.
       This tutorial is made for people who are familiar with HTML and Javascript.
     </p>
 
-    <h2>
+    <h5>
       Get started
-    </h2>
+    </h5>
     <p>
       In this first exercise you will create the flying saucer we are going to control.
-      Thanks to some alien piece of CSS, the flying saucer only needs the following markup: &lt;div class="saucer"&gt;
-      In maquette, the browser DOM is not created from HTML however, but from a notation called 'virtual hyperscript'.
-      It is different from HTML in two important ways.
+      Thanks to some alien piece of CSS, all that is needed to create the the flying saucer is the following markup: 
+      <code>&lt;div class="saucer"&gt;</code>
     </p>
-    <ul>
-      <li>It is a template language, which means it combines data with markup.</li>
-      <li>It is plain Javascript, which means it runs very fast.</li>
-    </ul>
     <p>
-      The `h()` function in virtual hyperscript is responsible for creating the DOM.
-      The first parameter of this function is a CSS selector string, like "div.landscape", which results in a &lt;div class="landscape"&gt;.
-      The last parameter is an array of contents, text strings and other nodes.
+      Because maquette allows you to make the browser DOM reflect the onderlying data, it does not use HTML.
+      Maquette uses a notation called 'hyperscript'. 
+      This is essentially just a javascript function which returns a tree of virtual DOM nodes.
+    </p>
+    <p>
+      The virtual DOM nodes are created using the <code>h()</code> function.
+      The first parameter of this function is a CSS selector string, like <code>"div.landscape"</code>, 
+      which results in <code>&lt;div class="landscape"&gt;</code>.
+      The last parameter is an array of contents: text strings and other virtual DOM nodes.
     </p>
     
     <p>
-      Below you can see the sourcefiles, the objectives and a live preview. Good luck!
+      In the workbench below you can edit the sourcefiles for this exercise.
+      In order to create the flying saucer, you need to complement the <code>renderMaquette()</code> function.
+      In the top-right of the workbench you can see your progress on the objectives you have to complete. Good luck!
     </p>
   </div>
   <div class="projector"></div>

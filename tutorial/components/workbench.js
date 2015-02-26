@@ -77,7 +77,7 @@
       // Polyfill for browsers who do not support the HTML5 srcdoc
       var jsUrl = "javascript: window.frameElement.getAttribute('srcdoc');";
       iframe.setAttribute("src", jsUrl);
-      if (iframe.contentWindow) {
+      if (iframe.contentWindow && iframe.contentWindow.document.body) {
         iframe.contentWindow.document.body.innerHTML = "";
         iframe.contentWindow.location = jsUrl;
       }

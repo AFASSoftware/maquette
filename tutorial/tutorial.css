@@ -183,3 +183,9 @@
   color: black;
   border-color: black;
 }
+
+.lock {
+  position:absolute;
+  right: 40px;
+  color:#444444;
+}

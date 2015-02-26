@@ -19,7 +19,8 @@
         var enhancer = window.createProgressiveEnhancer({
           "#next": {
             renderMaquette: function () {
-              return h("a", {style: "visibility:" +(workbench.allObjectivesAchieved()?"visible":"hidden") });
+              var locked = !workbench.allObjectivesAchieved();
+              return h("a", [locked ? [h("i.mdi-action-lock.lock")] : []]);
             }
           },
           ".projector": {
@@ -47,9 +48,8 @@
     <div class="nav-wrapper container">
       <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
       <ul class="right">
-        <li><a class="disabled" href="#">Previous</a></li>
         <li><a href="index.html">Index</a></li>
-        <li><a class="disabled" id="next" href="2-variables-and-properties.html">Next</a></li>
+        <li><a id="next" href="2-variables-and-properties.html">Next</a></li>
       </ul>
     </div>
   </nav>

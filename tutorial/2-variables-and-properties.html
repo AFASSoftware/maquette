@@ -4,34 +4,52 @@
 <html>
   <head>
     <title>Tutorial</title>
+    <link href="../style.css" rel="stylesheet" />
     <link href="tutorial.css" rel="stylesheet" />
   </head>
 <body>
-  <div class="instructions">
-    <h1>Variables and properties</h1>
+
+  <div class="navbar-fixed">
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
+        <ul class="right">
+          <li><a href="1-intro.html">Previous</a></li>
+          <li><a href="index.html">Index</a></li>
+          <li><a id="next" href="3-rotation.html">Next</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="instructions container">
+    <h3>Variables and properties</h3>
     <p>
       In your next assignment, you are going to apply a variable rotation to the flying saucer.
-      Because hyperscript is a pure JavaScript function, you have access to variables while rendering markup.
-      In our application we are going to use the style attribute to control the flying saucer.
-      Attributes can be set on virtual DOM nodes using the properties parameter on the h() function. The full signature of the h() function is:
+      Because hyperscript is a pure JavaScript function, you have easy access to variables while rendering markup.
+      In our application we are going to use the <code>style</code> attribute to control the flying saucer.
+      Attributes can be set on virtual DOM nodes using the <code>properties</code> parameter on the <code>h()</code> function. 
+      The full signature of the <code>h()</code> function is:
     </p>
-    <pre>function h(selector /* String */, properties /* Object */, children /* Array */) // returns a VNode object</pre>
+    <pre>function h(selector, properties, children) // returns a virtual node object</pre>
 
-    <p>Example:</p>
+    <h5>Parameters</h5>
+    <ul>
+      <li><b>selector</b> CSS selector containing the tagname, id and fixed css classnames</li>
+      <li><b>properties</b> Object literal containing element attributes and some other special properties.</li>
+      <li><b>children</b> Array of childnodes and text strings</li>
+    </ul>
+    <h5>Example:</h5>
 
     <pre>h("a", {href: "/"}, ["Home"])</pre>
     
     <p>
-      The objective of your next assignment is to set the `style` attribute to `"transform:45deg"`. You must use the variable rotation to construct the value.
+      The objective of your next assignment is to set the <code>style</code> attribute to <code>"transform:45deg"</code>. 
+      You must use the provided variable rotation to construct the value.
     </p>
     <p>
       Press next to start. Good luck.
     </p>
-  </div>
-  <div class="navigation light">
-    <a class="previous" href="1-intro.html">Previous</a>
-    <a class="index" href="index.html">Index</a>
-    <a class="next" href="3-rotation.html">Next</a>
   </div>
   {% include analytics.html %}
 </body>

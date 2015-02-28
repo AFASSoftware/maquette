@@ -16,6 +16,15 @@
 
         var h = maquette.h;
 
+        // Starts the projector, which renders the virtual DOM at the right moments
+        var projector = maquette.createProjector(document.body, function() {return enhancer.renderMaquette();}, {});
+
+        var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
+
+        var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
+          markupMatcher
+        ]);
+
         var enhancer = window.createProgressiveEnhancer({
           "#next": {
             renderMaquette: function () {
@@ -23,36 +32,25 @@
               return h("a", [locked ? [h("i.mdi-action-lock.lock")] : []]);
             }
           },
-          ".projector": {
-            renderMaquette: function () {
-              return h("div.projector", [
-                workbench.renderMaquette()
-              ]);
-            }
-          }
+          ".work": workbench
         });
 
-        // Starts the projector, which renders the virtual DOM at the right moments
-        var projector = maquette.createProjector(document.body, enhancer.renderMaquette, {});
-
-        var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
-        var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
-          markupMatcher
-        ]);
       });
     </script>
   </head>
 <body>
 
-  <nav class="light-blue lighten-1" role="navigation">
-    <div class="nav-wrapper container">
-      <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
-      <ul class="right">
-        <li><a href="index.html">Index</a></li>
-        <li><a id="next" href="2-variables-and-properties.html">Next</a></li>
-      </ul>
-    </div>
-  </nav>
+  <div class="navbar-fixed">
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
+        <ul class="right">
+          <li><a href="index.html">Index</a></li>
+          <li><a id="next" href="2-variables-and-properties.html">Next</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
 
   <div class="instructions container">
     <p>
@@ -87,7 +85,7 @@
       In the top-right of the workbench you can see your progress on the objectives you have to complete. Good luck!
     </p>
   </div>
-  <div class="projector"></div>
+  <div class="work"></div>
   {% include analytics.html %}
 </body>
 </html>

@@ -23,51 +23,51 @@ For the tutorial I created a component with only afterUpdate and afterCreate cal
 ## The code
 
 The special enhancer component:
-```javascript
-window.createProgressiveEnhancer = function (componentsByQuerSelector) {
-  var components = [];
-  var projections = [];
 
-  var afterCreate = function (domNode, projectionOptions) {
-    Object.keys(componentsByQuerSelector).forEach(function (querySelector) {
-      var target = domNode.querySelector(querySelector);
-      if (!target) {
-        throw new Error("Could not find: " + querySelector);
-      }
-      var component = componentsByQuerSelector[querySelector];
-      components.push(component);
-      projections.push(maquette.mergeDom(target, component.renderMaquette(), projectionOptions));
-    });
-  };
+    window.createProgressiveEnhancer = function (componentsByQuerSelector) {
+      var components = [];
+      var projections = [];
 
-  var afterUpdate = function () {
-    for (var i = 0; i < projections.length; i++) {
-      projections[i].update(components[i].renderMaquette());
-    }
-  };
+      var afterCreate = function (domNode, projectionOptions) {
+        Object.keys(componentsByQuerSelector).forEach(function (querySelector) {
+          var target = domNode.querySelector(querySelector);
+          if (!target) {
+            throw new Error("Could not find: " + querySelector);
+          }
+          var component = componentsByQuerSelector[querySelector];
+          components.push(component);
+          projections.push(maquette.mergeDom(target, component.renderMaquette(), projectionOptions));
+        });
+      };
 
-  return {
-    renderMaquette: function () {
-      return maquette.h("body", {
-        afterCreate: afterCreate,
-        afterUpdate: afterUpdate
-      });
-    }
-  };
-};
-```
+      var afterUpdate = function () {
+        for (var i = 0; i < projections.length; i++) {
+          projections[i].update(components[i].renderMaquette());
+        }
+      };
+
+      return {
+        renderMaquette: function () {
+          return maquette.h("body", {
+            afterCreate: afterCreate,
+            afterUpdate: afterUpdate
+          });
+        }
+      };
+    };
+
 
 The usage of the enhancer component:
-```javascript
-var enhancer = window.createProgressiveEnhancer({
-  "#next": {
-    renderMaquette: function () {
-      var locked = !workbench.allObjectivesAchieved();
-      return h("a", [locked ? [h("i.mdi-action-lock.lock")] : []]);
-    }
-  },
-  ".work": workbench
-});
-```
+
+    var enhancer = window.createProgressiveEnhancer({
+      "#next": {
+        renderMaquette: function () {
+          var locked = !workbench.allObjectivesAchieved();
+          return h("a", [locked ? [h("i.mdi-action-lock.lock")] : []]);
+        }
+      },
+      ".work": workbench
+    });
+
 
 The result can be viewed [here](/tutorial/01-intro.html)

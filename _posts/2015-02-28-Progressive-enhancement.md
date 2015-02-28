@@ -23,7 +23,7 @@ For the tutorial I created a component with only afterUpdate and afterCreate cal
 ## The code
 
 The special enhancer component:
-```
+```javascript
 window.createProgressiveEnhancer = function (componentsByQuerSelector) {
   var components = [];
   var projections = [];
@@ -58,7 +58,7 @@ window.createProgressiveEnhancer = function (componentsByQuerSelector) {
 ```
 
 The usage of the enhancer component:
-```
+```javascript
 var enhancer = window.createProgressiveEnhancer({
   "#next": {
     renderMaquette: function () {
@@ -70,4 +70,4 @@ var enhancer = window.createProgressiveEnhancer({
 });
 ```
 
-The result can be viewed [here](/tutorial/)
+The result can be viewed [here](/tutorial/01-intro.html)

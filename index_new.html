@@ -1,0 +1,107 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="../style.css" rel="stylesheet" />
+  <title>Maquette</title>
+</head>
+<body>
+
+  <div class="navbar-fixed">
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="/" class="brand-logo">Maquette</a>
+      </div>
+    </nav>
+  </div>
+  
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <br><br>
+      <h1 class="header center orange-text">Maquette</h1>
+      <div class="row center">
+        <h5 class="header col s12 light">Minimalistic Virtual DOM implementation with support for animated transitions</h5>
+      </div>
+      <br>
+      <br>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="row">
+      <div class="col s12 m4">
+        <div class="icon-block">
+          <h2 class="center light-blue-text"><i class="mdi-image-movie-creation"><!--mdi-action-theaters--></i></h2>
+          <h5 class="center">Animated transitions</h5>
+
+          <p class="light">
+            Maquette can use animations to make changes to the user interface. 
+            All you have to do is specify the desired animation for entering and exiting and render only visible elements.
+            Maquette takes care of the rest.
+          </p>
+        </div>
+      </div>
+
+      <div class="col s12 m4">
+        <div class="icon-block">
+          <h2 class="center light-blue-text"><i class="mdi-image-flash-on"></i></h2>
+          <h5 class="center">Fast</h5>
+
+          <p class="light">
+            Maquette was built up from the ground with performance in mind. 
+            This has resulted in an implementation that can easily render and diff thousands of nodes within a single frame. 
+          </p>
+        </div>
+      </div>
+
+      <div class="col s12 m4">
+        <div class="icon-block">
+          <h2 class="center light-blue-text"><i class="mdi-navigation-fullscreen-exit"></i></h2>
+          <h5 class="center">Ultra lightweight</h5>
+
+          <p class="light">
+            Maquette is a pure and simple library which is only 2.4Kb gzipped. Compare this to React (36Kb) or JQuery (29Kb).
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col s12 m8">
+        <h5>Why</h5>
+        <p>
+          Anyone who has ever created complex user interfaces knows how hard it is to keep it in sync with the underlaying data.
+          This usually involves creating the DOM tree to match the data and updating the DOM when the data changes.
+          Virtual DOM is a technique that handles updating the DOM for you. 
+          All you have to do is provide a function which renders the virtual DOM based on the current data and
+          maquette will update the real DOM, using animated transitions if needed.
+        </p>
+      </div>
+      <div class="col s12 m4">
+        <h5>News</h5>
+        <ul>
+        {% for post in site.posts %}
+        <li>
+          <b>{{ post.date | date_to_string }}</b> - <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+        </li>
+        {% endfor %}
+        </ul>        
+      </div>
+    </div>
+    
+    <h5>Get started</h5>
+    <p>
+      Getting started with maquette is easy. We have created a tutorial which will teach you the basics of how maquette works.
+    </p>
+
+    <div class="row center">
+      <a href="/tutorial/01-intro.html" class="btn-large waves-effect waves-light orange">Start the tutorial</a>
+    </div>
+  </div>
+
+  {% include analytics.html %}
+</body>
+</html>

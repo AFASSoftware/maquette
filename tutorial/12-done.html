@@ -2,13 +2,27 @@
 ---
 <!doctype html>
 <html>
-<head>
-  <title>Tutorial</title>
-  <link href="tutorial.css" rel="stylesheet" />
-</head>
+  <head>
+    <title>Tutorial</title>
+    <link href="../style.css" rel="stylesheet" />
+    <link href="tutorial.css" rel="stylesheet" />
+  </head>
 <body>
-  <div class="instructions">
-    <h1>The end</h1>
+
+  <div class="navbar-fixed">
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
+        <ul class="right">
+          <li><a href="11-rotation-and-stealth.html">Previous</a></li>
+          <li><a href="index.html">Index</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="instructions container">
+    <h3>The end</h3>
     <p>
       Congratulations, you now have enough knowledge about the maquette framework to build your own application!
       If you need any help, the maquette API is documented <a href="https://github.com/johan-gorter/maquette/blob/master/docs/API.md">here</a>.
@@ -27,13 +41,8 @@
       <li>Integrating third party components (like Google graphs)</li>
     </ul>
     <p>
-      Back to the <a href="..">homepage</a>.
+      Back to the <a href="/">homepage</a>.
     </p>
-  </div>
-  <div class="navigation light">
-    <a class="previous" href="11-rotation-and-stealth.html">Previous</a>
-    <a class="index" href="index.html">Index</a>
-    <span class="placeholder"></span>
   </div>
   {% include analytics.html %}
 </body>

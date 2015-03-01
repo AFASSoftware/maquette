@@ -4,11 +4,26 @@
 <html>
   <head>
     <title>Tutorial</title>
+    <link href="../style.css" rel="stylesheet" />
     <link href="tutorial.css" rel="stylesheet" />
   </head>
 <body>
-  <div class="instructions">
-    <h1>Input</h1>
+
+  <div class="navbar-fixed">
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
+        <ul class="right">
+          <li><a href="3-rotation.html">Previous</a></li>
+          <li><a href="index.html">Index</a></li>
+          <li><a id="next" href="5-rotation-input.html">Next</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="instructions container">
+    <h3>Input</h3>
     <p>
       Now that you know your way around hyperscript you are ready to experience the true power of virtual DOM.
       All that is needed to control the rotation of the flying saucer is an input element.
@@ -28,11 +43,6 @@
     <p>
       Press next to start. Good luck.
     </p>
-  </div>
-  <div class="navigation light">
-    <a class="previous" href="3-rotation.html">Previous</a>
-    <a class="index" href="index.html">Index</a>
-    <a class="next" href="5-rotation-input.html">Next</a>
   </div>
   {% include analytics.html %}
 </body>

@@ -10,6 +10,7 @@
     <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
     <script src="components/markup-matcher.js"></script>
     <script src="components/workbench.js"></script>
+    <script src="components/next-button.js"></script>
     <script src="components/enhancer.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
@@ -24,15 +25,11 @@
         var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
           markupMatcher
         ]);
+        var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
 
         var enhancer = window.createProgressiveEnhancer({
-          "#next": {
-            renderMaquette: function () {
-              var locked = !workbench.allObjectivesAchieved();
-              return h("a", [locked ? [h("i.mdi-action-lock.lock")] : []]);
-            }
-          },
-          ".work": workbench
+          "#next": nextButton.renderMaquette,
+          ".work": workbench.renderMaquette
         });
 
       });
@@ -65,7 +62,7 @@
     <p>
       In this first exercise you will create the flying saucer we are going to control.
       Thanks to some alien piece of CSS, all that is needed to create the the flying saucer is the following markup:
-      <code>&lt;div class="saucer"&gt;</code>
+      <code>&lt;div class="saucer" /&gt;</code>
     </p>
     <p>
       Because maquette allows you to make the browser DOM reflect the onderlying data, it does not use HTML.
@@ -82,7 +79,7 @@
     <p>
       In the workbench below you can edit the sourcefiles for this exercise.
       In order to create the flying saucer, you need to complement the <code>renderMaquette()</code> function.
-      In the top-right of the workbench you can see your progress on the objectives you have to complete. Good luck!
+      In the top-right of the workbench you can see your progress. Good luck!
     </p>
   </div>
   <div class="work"></div>

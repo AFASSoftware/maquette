@@ -2,13 +2,28 @@
 ---
 <!doctype html>
 <html>
-<head>
-  <title>Tutorial</title>
-  <link href="tutorial.css" rel="stylesheet" />
-</head>
+  <head>
+    <title>Tutorial</title>
+    <link href="../style.css" rel="stylesheet" />
+    <link href="tutorial.css" rel="stylesheet" />
+  </head>
 <body>
-  <div class="instructions">
-    <h1>Conditional CSS classes</h1>
+
+  <div class="navbar-fixed">
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
+        <ul class="right">
+          <li><a href="7-rotation.html">Previous</a></li>
+          <li><a href="index.html">Index</a></li>
+          <li><a id="next" href="9-stealth.html">Next</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="instructions container">
+    <h3>Conditional CSS classes</h3>
     <p>
       Congratulations on completing the tutorial this far! We still need to explain two more concepts before you are ready to build maquette applications yourself.
     </p>
@@ -29,11 +44,6 @@
     <p>
       Good luck!
     </p>
-  </div>
-  <div class="navigation light">
-    <a class="previous" href="7-rotation.html">Previous</a>
-    <a class="index" href="index.html">Index</a>
-    <a class="next" href="9-stealth.html">Next</a>
   </div>
   {% include analytics.html %}
 </body>

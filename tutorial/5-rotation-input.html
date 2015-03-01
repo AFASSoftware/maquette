@@ -4,12 +4,13 @@
 <html>
   <head>
     <title>Tutorial</title>
+    <link href="../style.css" rel="stylesheet" />
     <link href="tutorial.css" rel="stylesheet" />
     <script src="bower_components/maquette/dist/maquette.min.js"></script>
     <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
-    <script src="components/markup-matcher.js"></script>
+    <script src="components/enhancer.js"></script>
     <script src="components/workbench.js"></script>
-    <script src="components/navigation.js"></script>
+    <script src="components/next-button.js"></script>
     <style>
       li.complete {
         background-color: green;
@@ -20,17 +21,7 @@
 
         var h = maquette.h;
 
-        // Renders the virtual DOM
-        var render = function () {
-          return h("div.projector", [
-            workbench.renderMaquette(),
-            navigation.renderMaquette()
-          ]);
-
-        };
-
-        // Starts the projector, which renders the virtual DOM at the right moments
-        var projector = maquette.createProjector(document.querySelector(".projector"), render, {});
+        var projector = maquette.createProjector(document.body, function() {return enhancer.renderMaquette();}, {});
 
         var achieved1 = false;
         var objective1 = {
@@ -98,12 +89,32 @@
           objective2,
           objective3
         ]);
-        var navigation = createNavigation(projector, "4-input.html", "6-how-it-works.html", workbench.allObjectivesAchieved);
+
+        var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
+
+        var enhancer = window.createProgressiveEnhancer({
+          "#next": nextButton.renderMaquette,
+          ".work": workbench.renderMaquette
+        });
       });
     </script>
   </head>
-<body>
-  <div class="projector"></div>
-  {% include analytics.html %}
-</body>
+  <body>
+
+    <div class="navbar-fixed">
+      <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container">
+          <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
+          <ul class="right">
+            <li><a href="2-variables-and-properties.html">Previous</a></li>
+            <li><a href="index.html">Index</a></li>
+            <li><a id="next" href="4-input.html">Next</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="work"></div>
+    {% include analytics.html %}
+  </body>
 </html>

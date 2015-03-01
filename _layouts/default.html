@@ -1,35 +1,27 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>{{ page.title }}</title>
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/style.css" rel="stylesheet" />
+  <title>Maquette</title>
+</head>
+<body>
 
-    <link rel="stylesheet" href="{{ site.baseurl }}/stylesheets/styles.css">
-    <link rel="stylesheet" href="{{ site.baseurl }}/stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1><a href="{{ site.baseurl }}/">Maquette</a></h1>
-        <p>Maquette is a minimalistic Virtual DOM implementation which supports animated transitions.</p>
+  <div class="navbar-fixed">
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="/" class="brand-logo">Maquette</a>
+      </div>
+    </nav>
+  </div>
 
-        <p class="view"><a href="https://github.com/johan-gorter/maquette">View the Project on GitHub</a></p>
-      </header>
-      <section>
 
-         {{ content }}
+  <div class="container">
+   {{ content }}
+  </div>
 
-      </section>
-      <footer>
-        <p>This project is maintained <br /> by <a href="https://github.com/johan-gorter">johan-gorter</a></p>
-      </footer>
-    </div>
-    <script src="{{ site.baseurl }}/javascripts/scale.fix.js"></script>
     
-  </body>
+</body>
 </html>

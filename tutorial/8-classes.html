@@ -36,7 +36,9 @@
       It uses the classes property, which is an object literal mapping classnames to a condition.
       It works as follows:
     </p>
-    <pre>h("div.landscape", { night: new Date().getHours() &lt;= 8 })</pre>
+    <pre>h("div.landscape", {
+  classes: { night: new Date().getHours() &lt;= 8 }        
+})</pre>
     <p>
       Looks easy right? Your next assignment is to assign the CSS class 'stealth' to the
       flying saucer, based on the 'stealth' variable.

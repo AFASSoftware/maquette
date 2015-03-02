@@ -2,13 +2,28 @@
 ---
 <!doctype html>
 <html>
-<head>
-  <title>Tutorial</title>
-  <link href="tutorial.css" rel="stylesheet" />
-</head>
+  <head>
+    <title>Tutorial</title>
+    <link href="../style.css" rel="stylesheet" />
+    <link href="tutorial.css" rel="stylesheet" />
+  </head>
 <body>
-  <div class="instructions">
-    <h1>The distinguishable rule</h1>
+
+  <div class="navbar-fixed">
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
+        <ul class="right">
+          <li><a href="9-stealth.html">Previous</a></li>
+          <li><a href="index.html">Index</a></li>
+          <li><a id="next" href="11-rotation-and-stealth.html">Next</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="instructions container">
+    <h3>The distinguishable rule</h3>
     <p>
       The last concept that we are going to explain in this tutorial is the distinguishable rule.
     </p>
@@ -33,13 +48,8 @@ h("ul", [
     </pre>
     <p>
       For your final assignment, we have already added the stealth checkbox to the remote control.
-      The application gives crashes right now. It is your task to make the application work. Good luck.
+      The application crashes right now. It is your task to make the application work. Good luck.
     </p>
-  </div>
-  <div class="navigation light">
-    <a class="previous" href="9-stealth.html">Previous</a>
-    <a class="index" href="index.html">Index</a>
-    <a class="next" href="11-rotation-and-stealth.html">Next</a>
   </div>
   {% include analytics.html %}
 </body>

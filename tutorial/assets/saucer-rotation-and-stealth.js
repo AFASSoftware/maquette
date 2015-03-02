@@ -25,8 +25,12 @@ function renderMaquette() {
           "stealth: ",
           h("input", { type: "checkbox", checked: stealth, onchange: handleStealthChange })
         ])
-    ]),
-      h("div.saucer", {style:"transform:rotate("+rotation+"deg)", classes: {stealth: stealth} }, ["Flying saucer"])
+      ]),
+      h("div.saucer", {
+        style: "transform:rotate(" + rotation + "deg)", classes: { stealth: stealth } 
+      }, [
+        "Flying saucer"
+      ])
     ])
   ]);
 }

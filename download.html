@@ -1,0 +1,49 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="../style.css" rel="stylesheet" />
+  <title>Maquette</title>
+</head>
+<body>
+
+  <div class="navbar-fixed">
+    <nav class="light-blue lighten-1" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="/" class="brand-logo">Maquette</a>
+        <ul class="right">
+          <li><a class="active" href="docs.html">Docs</a></li>
+          <li><a href="download.html">Download</a></li>
+          <li><a href="support.html">Support</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  
+
+  <div class="container">
+    
+    <h5>Download</h5>
+    <p>
+      You can download maquette using one of the following methods: 
+    </p>
+    <ol>
+      <li>CDN
+        <code><pre>&lt;script src="//cdnjs.cloudflare.com/ajax/libs/maquette/1.5.1/maquette.min.js"&gt;&lt;/script&gt;</pre></code>
+      </li>
+      <li>Bower 
+        <code><pre>bower install maquette</pre></code>
+      </li>
+      <li>NPM
+        <code><pre>npm install maquette</pre></code>
+      </li>
+    </ol>
+
+  </div>
+
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+  {% include analytics.html %}
+</body>
+</html>

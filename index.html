@@ -13,7 +13,12 @@
     <nav class="light-blue lighten-1" role="navigation">
       <div class="nav-wrapper container">
         <a id="logo-container" href="/" class="brand-logo">Maquette</a>
-        <div class="right">
+        <ul class="right">
+          <li><a href="docs.html">Docs</a></li>
+          <li><a href="download.html">Download</a></li>
+          <li><a href="support.html">Support</a></li>
+        </ul>
+        <div class="right" style="padding-top:9px;">
           <a href="https://twitter.com/share" class="twitter-share-button" data-size="large" data-count="none">Tweet</a>
           <iframe src="https://ghbtns.com/github-btn.html?user=johan-gorter&repo=maquette&type=star&count=false&size=large" 
                   frameborder="0" scrolling="0" width="80px" height="30px"style="transform: translateY(0.9px) scaleY(0.93);"></iframe>
@@ -102,10 +107,19 @@
       Getting started with maquette is easy. We have created a tutorial which will teach you the basics of how maquette works.
     </p>
 
+    <br />
     <div class="row center">
       <a href="/tutorial/01-intro.html" class="btn-large waves-effect waves-light orange">Start the tutorial</a>
     </div>
+    <br />
   </div>
+  
+  <footer class="page-footer orange">
+    <div class="container">
+      Made by <a class="orange-text text-lighten-3" href="http://linkedin.com/in/jgorter">Johan Gorter</a>
+    </div>
+    <br />
+  </footer>  
 
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   {% include analytics.html %}

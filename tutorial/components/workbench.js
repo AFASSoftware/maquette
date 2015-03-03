@@ -7,11 +7,14 @@
 
   var script = "";
   var lastValidScript = script;
+  var htmlFile = "";
+  var cssFile = "";
   var validateTimeout;
   var parseError;
   var editor;
   var changeDelay;
   var contentWindow;
+  var currentTab = 2;
 
     var lastError;
     window.onerror = function (msg, url, lineNumber) {
@@ -40,21 +43,46 @@
     + "  }"
     + "};";
 
-  var request = new XMLHttpRequest();
-  request.onreadystatechange = function () {
-    if(request.readyState === 4) {
-      projector.scheduleRender();
-      script = request.responseText;
-      lastValidScript = script;
-      if(editor) {
-        editor.setValue(script, 0);
-        editor.focus();
+  var get = function (url, onComplete) {
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+      if (request.readyState === 4) {
+        projector.scheduleRender();
+        onComplete(request.responseText);
+      }
+    };
+    request.open("GET", url);
+    request.send();
+  };
+
+  get(scriptUrl, function (responseText) {
+    script = responseText;
+    lastValidScript = script;
+    if (editor && currentTab === 2) {
+      editor.setValue(script, 0);
+      editor.focus();
+      editor.clearSelection();
+    }
+  });
+
+  setTimeout(function () {
+    get("assets/saucer.html", function (responseText) {
+      htmlFile = responseText;
+      if (editor && currentTab === 0) {
+        editor.setValue(htmlFile, 0);
         editor.clearSelection();
       }
-    }
-  };
-  request.open("GET", scriptUrl);
-  request.send();
+    });
+
+    get("assets/saucer.css", function (responseText) {
+      cssFile = responseText;
+      if (editor && currentTab === 1) {
+        editor.setValue(cssFile, 0);
+        editor.clearSelection();
+      }
+    });
+
+  }, 500);
 
   var iframeBodyObserver = new MutationObserver(function (mutations) {
     console.log("MutationObserver fired");
@@ -86,23 +114,26 @@
   };
 
   var throttleValidateScript = function () {
-    if(!validateTimeout) {
-      validateTimeout = setTimeout(validateScript);
+    if (validateTimeout) {
+      clearTimeout(validateTimeout);
     }
+    validateTimeout = setTimeout(validateScript, 50);
   };
 
   // Super-fast way to validate the javascript
   var validateScript = function () {
     validateTimeout = null;
-    try {
-      script = editor.getValue();
-      var test = new Function(script);
-      lastValidScript = script;
-      parseError = null;
-    } catch (e) {
-      parseError = e.message;
-    };
-    projector.scheduleRender();
+    if (currentTab === 2) {
+      try {
+        script = editor.getValue();
+        var test = new Function(script);
+        lastValidScript = script;
+        parseError = null;
+      } catch(e) {
+        parseError = e.message;
+      };
+      projector.scheduleRender();
+    }
   };
 
   var validateScriptUsingAce = function () {
@@ -123,15 +154,45 @@
   var createEditor = function (div) {
     editor = ace.edit(div);
     editor.setTheme("ace/theme/monokai");
-    editor.getSession().setMode("ace/mode/javascript");
+    refreshEditor();
     editor.setBehavioursEnabled(true);
-    editor.setValue(script, 0);
-    editor.focus();
-    editor.clearSelection();
 
     //editor.getSession().on("changeAnnotation", validateScriptUsingAce);
     editor.getSession().on("change", throttleValidateScript);
   };
+
+  var refreshEditor = function () {
+    switch(currentTab) {
+      case 0:
+        editor.getSession().setMode("ace/mode/html");
+        editor.setValue(htmlFile, 0);
+        editor.setReadOnly(true);
+        break;
+      case 1:
+        editor.getSession().setMode("ace/mode/css");
+        editor.setValue(cssFile, 0);
+        editor.setReadOnly(true);
+        break;
+      case 2:
+        editor.getSession().setMode("ace/mode/javascript");
+        editor.setValue(script, 0);
+        editor.setReadOnly(false);
+        editor.focus();
+        break;
+    }
+    editor.clearSelection();
+  };
+
+  var generateSwitchTo = function (newTabIndex) {
+    return function (evt) {
+      evt.preventDefault();
+      currentTab = newTabIndex;
+      refreshEditor();
+    };
+  };
+  var switchToHtml = generateSwitchTo(0);
+  var switchToCss = generateSwitchTo(1);
+  var switchToScript = generateSwitchTo(2);
 
   var workbench = {
     allObjectivesAchieved : function () {
@@ -149,7 +210,9 @@
       return h("div.work", [
         h("div.input", [
           h("div.tabs", [
-            h("button.tab", ["saucer.js"])
+            h("button.tab", { key: 1, onclick: switchToHtml, classes: { active: currentTab === 0 } }, ["saucer.html"]),
+            h("button.tab", { key: 2, onclick: switchToCss, classes: { active: currentTab === 1 } }, ["saucer.css"]),
+            h("button.tab", { key: 3, onclick: switchToScript, classes: { active: currentTab === 2 } }, ["saucer.js"])
           ]),
           h("div.editor", { afterCreate: createEditor }),
           h("div.parseError", [parseError])

@@ -32,6 +32,13 @@
   border-radius: 8px 8px 0 0;
   margin: 3px 3px 0 3px;
   outline: 0;
+  cursor: pointer;
+}
+
+.input > .tabs > .tab.active {
+  background-color: rgb(39, 40, 34);
+  color: white;
+  cursor: default;
 }
 
 .input > .editor {
@@ -164,28 +171,3 @@
   width:150px;
 }
 
-.navigation > a {
-  border: solid 1px #AAAAAA;
-  color: #AAAAAA;
-  height: 30px;
-  line-height: 30px;
-  font-size: 22px;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-}
-
-.navigation.light {
-  background-color: white;
-}
-
-.navigation.light > a {
-  color: black;
-  border-color: black;
-}
-
-.lock {
-  position:absolute;
-  right: 40px;
-  color:#444444;
-}

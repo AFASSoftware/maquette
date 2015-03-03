@@ -1,5 +1,4 @@
 ﻿* {
-  /* border-box (meaning height and width INCLUDES padding and border) makes styling and animation a lot easier */
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
           box-sizing: border-box;

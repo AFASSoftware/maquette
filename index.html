@@ -84,11 +84,12 @@
         <h5>Why</h5>
         <p>
           Anyone who has ever created complex user interfaces knows how hard it is to keep it in sync with the underlaying data.
-          This usually involves creating the DOM tree to match the data and updating the DOM when the data changes.
-          Virtual DOM is a technique that handles updating the DOM for you. 
-          All you have to do is provide a function which renders the virtual DOM based on the current data and
-          maquette will update the real DOM, using animated transitions if needed.
+          This usually involves creating the right DOM tree for the data and updating the DOM whenever the data changes.
+          Virtual DOM is a technique that simplifies this by taking care of updating the DOM for you. 
+          All you have to do is provide a function which renders the virtual DOM based on the current data.
+          Maquette will update the real DOM, using animated transitions if needed.
         </p>
+        <p>The code below is a small demonstration of how maquette simplifies web applications.</p>
       </div>
       <div class="col s12 m4">
         <h5>News</h5>
@@ -105,24 +106,24 @@
     <div class="row">
       <div class="col s12 m8">
         <h5>Live editor</h5>
-        <textarea id="live-editor" rows="20" cols="90">// The data
-var name = "";
+        <textarea id="live-editor" rows="20" cols="90" style="height:340px;line-height:16px">var name = ""; // The data
 
-// Plain old event handler
+// Ordinary event handler
 function handleNameInput(evt) {
   name = evt.target.value;
 };
 
-// The projection of the data to the dom using 'hyperscript' notation
+// This function uses the 'hyperscript' notation to create the virtual DOM
 var renderMaquette = function () {
   return h("p#live-editor-result", [
-    h("input", { type: "text", placeholder: "What is your name?", 
-      value: name, oninput: handleNameInput }),
+    h("input", { 
+      type: "text", placeholder: "What is your name?", value: name, oninput: handleNameInput 
+    }),
     h("p.output", ["Hello " + (name || "you"), "!"])
   ]);
 }
 
-// Starts the projector, which renders the virtual DOM at the right moments
+// Starts the projector, which renders the virtual DOM at just the right moments
 maquette.createProjector(document.getElementById("live-editor-result"), renderMaquette);</textarea>
         <div id="live-editor-message"></div>
       </div>
@@ -142,7 +143,21 @@ maquette.createProjector(document.getElementById("live-editor-result"), renderMa
       <a href="/tutorial/01-intro.html" class="btn-large waves-effect waves-light orange">Start the tutorial</a>
     </div>
     <br />
+    
+    <h5>Credits</h5>
+    <p>
+      We are grateful for the following projects which inspired maquette:
+    </p>
+
+    <ul>
+      <li><strong><a href="http://facebook.github.io/react/">React</a></strong> for inventing the virtual DOM technology.</li>
+      <li><strong><a href="http://lhorie.github.io/mithril/">Mithril</a></strong> for showing how simple and lightweight a virtual DOM can be.</li>
+      <li><strong><a href="https://github.com/Raynos/mercury">Mercury</a></strong> for exploring several techniques and optimizations.</li>
+    </ul>
+    
   </div>
+  
+  
   
   <footer class="page-footer orange">
     <div class="container">
@@ -152,7 +167,6 @@ maquette.createProjector(document.getElementById("live-editor-result"), renderMa
   </footer>  
 
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-  {% include analytics.html %}
   <script>
     function enhance() {
       window.h = maquette.h;
@@ -188,5 +202,6 @@ maquette.createProjector(document.getElementById("live-editor-result"), renderMa
     }
   </script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/maquette/1.5.1/maquette.min.js" async onload="enhance()"></script>
+  {% include analytics.html %}
 </body>
 </html>

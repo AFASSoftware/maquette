@@ -102,6 +102,36 @@
       </div>
     </div>
     
+    <div class="row">
+      <div class="col s12 m8">
+        <h5>Live editor</h5>
+        <textarea id="live-editor" rows="20" cols="90">// The data
+var name = "";
+
+// Plain old event handler
+function handleNameInput(evt) {
+  name = evt.target.value;
+};
+
+// The projection of the data to the dom using 'hyperscript' notation
+var renderMaquette = function () {
+  return h("p#live-editor-result", [
+    h("input", { type: "text", placeholder: "What is your name?", 
+      value: name, oninput: handleNameInput }),
+    h("p.output", ["Hello " + (name || "you"), "!"])
+  ]);
+}
+
+// Starts the projector, which renders the virtual DOM at the right moments
+maquette.createProjector(document.getElementById("live-editor-result"), renderMaquette);</textarea>
+        <div id="live-editor-message"></div>
+      </div>
+      <div class="col s12 m4">
+        <h5>Result</h5>
+        <p id="live-editor-result"></p>
+      </div>
+    </div>
+
     <h5>Get started</h5>
     <p>
       Getting started with maquette is easy. We have created a tutorial which will teach you the basics of how maquette works.
@@ -123,5 +153,40 @@
 
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   {% include analytics.html %}
+  <script>
+    function enhance() {
+      window.h = maquette.h;
+      var liveEditor = document.getElementById("live-editor");
+      var liveEditorMessage = document.getElementById("live-editor-message");
+      var liveEditorResult = document.getElementById("live-editor-result");
+      var script = liveEditor.value;
+
+      var executeScript = function () {
+        var func;
+        try {
+          func = new Function(script);
+        } catch(e) {
+          liveEditorMessage.innerHTML = "Compile error: " + e;
+        }
+        if (func) {
+          liveEditorMessage.innerHTML = "";
+          liveEditorResult.innerHTML = "";
+          try {
+            func();
+          } catch(e) {
+            liveEditorMessage.innerHTML = "Runtime error: " + e;
+          }
+        }
+      };
+
+      liveEditor.oninput = function (evt) {
+        script = liveEditor.value;
+        executeScript();
+      };
+
+      executeScript();
+    }
+  </script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/maquette/1.5.1/maquette.min.js" async onload="enhance()"></script>
 </body>
 </html>

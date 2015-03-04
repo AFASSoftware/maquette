@@ -148,26 +148,9 @@
   overflow: hidden;
 }
 
-.projector {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-/* Navigation */
-.navigation {
-  flex-grow: 1;
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-between;
-  padding: 5px;
-  background-color: black;
-  align-items: flex-end;
-}
-
-.navigation > a,
-.navigation > span {
-  display: block;
-  width:150px;
+.lock {
+  position:absolute;
+  right: 40px;
+  color:#444444;
 }
 

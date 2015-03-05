@@ -70,19 +70,20 @@
       This is essentially just a javascript function which returns a tree of virtual DOM nodes.
     </p>
     <p>
-      The virtual DOM nodes are created using the <code>h()</code> function.
+      Virtual DOM nodes are created using the <code>h()</code> function.
       The first parameter of this function is a CSS selector string, like <code>"div.landscape"</code>,
       which results in <code>&lt;div class="landscape"&gt;</code>.
-      The last parameter is an array of contents: text strings and other virtual DOM nodes.
+      The last parameter is an array of contents. This may contain strings for text and virtual DOM nodes for childnodes.
     </p>
 
     <p>
       In the workbench below you can edit the sourcefiles for this exercise.
       In order to create the flying saucer, you need to complement the <code>renderMaquette()</code> function.
-      In the top-right of the workbench you can see your progress. Good luck!
+      In the top-right of the workbench you can see your progress. 
+      The <b>next</b> button on top of the screen will be unlocked once you complete the objectives. Good luck!
     </p>
   </div>
-  <div class="work"></div>
+  <div class="work" style="height:460px"></div>
   {% include analytics.html %}
 </body>
 </html>

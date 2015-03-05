@@ -81,15 +81,21 @@
 
     <div class="row">
       <div class="col s12 m8">
-        <h5>Why</h5>
+        <h5>Why virtual DOM</h5>
         <p>
-          Anyone who has ever created complex user interfaces knows how hard it is to keep it in sync with the underlaying data.
-          This usually involves creating the right DOM tree for the data and updating the DOM whenever the data changes.
-          Virtual DOM is a technique that simplifies this by taking care of updating the DOM for you. 
-          All you have to do is provide a function which renders the virtual DOM based on the current data.
-          Maquette will update the real DOM, using animated transitions if needed.
+          Anyone who ever created a complex user interface knows it is hard to keep it synchronized with underlying data.
+          In web applications this involves creating the right DOM tree representing the data 
+          and then updating the DOM whenever the data changes.
         </p>
-        <p>The code below is a small demonstration of how maquette simplifies web applications.</p>
+        <p>
+          Virtual DOM is a technique which automatically updates the DOM for you.
+          All you have to do is provide a function which renders the desired 'virtual' DOM representing the current data.
+          Maquette will update the real DOM, using animated transitions if desired.
+        </p>
+        <p>
+          The code below is a small demonstration of how maquette simplifies web applications. 
+          Pay close attention to where the <code>name</code> variable is used. 
+        </p>
       </div>
       <div class="col s12 m4">
         <h5>News</h5>
@@ -106,14 +112,16 @@
     <div class="row">
       <div class="col s12 m8">
         <h5>Live editor</h5>
-        <textarea id="live-editor" rows="20" cols="90" style="height:340px;line-height:16px">var name = ""; // The data
+        <code><textarea id="live-editor" rows="20" cols="90" spellcheck="false"
+        style="height:340px;line-height:16px;font-size:12px">var name = ""; // The data
 
 // Ordinary event handler
 function handleNameInput(evt) {
   name = evt.target.value;
 };
 
-// This function uses the 'hyperscript' notation to create the virtual DOM
+// This function uses the 'hyperscript' notation to create the virtual DOM. 
+// The 'name' variable is used twice here
 var renderMaquette = function () {
   return h("p#live-editor-result", [
     h("input", { 
@@ -124,7 +132,7 @@ var renderMaquette = function () {
 }
 
 // Starts the projector, which renders the virtual DOM at just the right moments
-maquette.createProjector(document.getElementById("live-editor-result"), renderMaquette);</textarea>
+maquette.createProjector(document.getElementById("live-editor-result"), renderMaquette);</textarea></code>
         <div id="live-editor-message"></div>
       </div>
       <div class="col s12 m4">
@@ -133,14 +141,17 @@ maquette.createProjector(document.getElementById("live-editor-result"), renderMa
       </div>
     </div>
 
-    <h5>Get started</h5>
-    <p>
-      Getting started with maquette is easy. We have created a tutorial which will teach you the basics of how maquette works.
+    <br />
+
+    <h5 class="center">Get started</h5>
+    <p class="center">
+      Are you ready to get started? <br />
+      We have created a fun tutorial which will teach you everything you need to know in less than 10 minutes. 
     </p>
 
     <br />
     <div class="row center">
-      <a href="/tutorial/01-intro.html" class="btn-large waves-effect waves-light orange">Start the tutorial</a>
+      <a href="/tutorial/01-intro.html" class="btn-large waves-effect waves-light orange">Learn maquette</a>
     </div>
     <br />
     

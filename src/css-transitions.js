@@ -52,10 +52,10 @@
           requestAnimationFrame(function () {
             node.classList.add(animation + "-active");
           });
-        } else {
-          node.parentNode.removeChild(node);
+          return;
         }
       }
+      node.parentNode.removeChild(node);
     },
     nodeAdded: function (node, properties) {
       var animation = properties.enterAnimation;

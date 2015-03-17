@@ -154,6 +154,10 @@
   var createEditor = function (div) {
     editor = ace.edit(div);
     editor.setTheme("ace/theme/monokai");
+    editor.getSession().setTabSize(2);
+    editor.getSession().setUseSoftTabs(true);
+    editor.setHighlightActiveLine(false);
+    editor.setShowPrintMargin(false);
     refreshEditor();
     editor.setBehavioursEnabled(true);
 
@@ -164,23 +168,24 @@
   var refreshEditor = function () {
     switch(currentTab) {
       case 0:
-        editor.getSession().setMode("ace/mode/html");
         editor.setValue(htmlFile, 0);
+        editor.getSession().setMode("ace/mode/html");
         editor.setReadOnly(true);
         break;
       case 1:
-        editor.getSession().setMode("ace/mode/css");
         editor.setValue(cssFile, 0);
+        editor.getSession().setMode("ace/mode/css");
         editor.setReadOnly(true);
         break;
       case 2:
-        editor.getSession().setMode("ace/mode/javascript");
         editor.setValue(script, 0);
+        editor.getSession().setMode("ace/mode/javascript");
         editor.setReadOnly(false);
         editor.focus();
         break;
     }
     editor.clearSelection();
+    editor.gotoLine(0);
   };
 
   var generateSwitchTo = function (newTabIndex) {

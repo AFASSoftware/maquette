@@ -1,37 +1,34 @@
 ﻿(function () {
   var h = maquette.h;
 
-  var transformFunctions = ["rotate", "translateX", "translateY", "scaleX", "scaleY", "skewX", "skewY"];
+  var transformFunctionNames = ["rotate", "translateX", "translateY", "scaleX", "scaleY", "skewX", "skewY"];
   var nextKey = 0;
 
   window.createRemoteFunction = function (remote) {
 
-    var key = nextKey ++;
-    var transform = null;
-    var value = 0;
+    var key = nextKey++;
+    var transformFunctionName = null;
+    var value = "";
 
     var getValueSuffix = function () {
-      if(transform === "translateX" || transform === "translateY") {
+      if(transformFunctionName === "translateX" || transformFunctionName === "translateY") {
         return "px";
       }
-      if(transform === "scaleX" || transform === "scaleY") {
+      if(transformFunctionName === "scaleX" || transformFunctionName === "scaleY") {
         return "";
       }
       return "deg";
     };
 
-    // initializes transform and value
-    for (var i = 0; !transform && i < transformFunctions.length; i++) {
-      if (remote.isTransformAvailable(transformFunctions[i])) {
-        transform = transformFunctions[i];
-        if (getValueSuffix() === "") {
-          value = 1; // scale 0 is not really a nice starting point
-        }
+    // initialize transform to the first available value
+    for(var i = 0; !transformFunctionName && i < transformFunctionNames.length; i++) {
+      if(remote.isTransformAvailable(transformFunctionNames[i])) {
+        transformFunctionName = transformFunctionNames[i];
       }
     }
 
     var handleTransformChange = function (evt) {
-      transform = evt.target.value;
+      transformFunctionName = evt.target.value;
     };
 
     var handleValueInput = function (evt) {
@@ -40,17 +37,27 @@
 
     return {
       getTransform: function () {
-        return transform;
+        return transformFunctionName;
       },
       getSaucerStyle: function () {
-        return transform + "(" + value + getValueSuffix() + ")";
+        if(value) {
+          return transformFunctionName + "(" + value + getValueSuffix() + ")";
+        } else {
+          return "";
+        }
+      },
+      getValue: function () {
+        return value;
       },
       renderMaquette: function () {
         return h("div.function", { key: key }, [
-          h("select", { value: transform, onchange: handleTransformChange }, [
-            transformFunctions.map(function (transformFunction) {
-              return h("option", { key: transformFunction, value: transformFunction }, [transformFunction]);
-            })
+          h("select", { value: transformFunctionName, onchange: handleTransformChange }, [
+            transformFunctionNames
+              .map(function (name) {
+                return h("option", { key: name, value: name }, [
+                  name
+                ]);
+              })
           ]),
           h("input", { value: value, oninput: handleValueInput }),
           getValueSuffix()

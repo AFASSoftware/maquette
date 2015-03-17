@@ -24,7 +24,9 @@
           functions.map(function (f) {
             return f.renderMaquette();
           }),
-          h("button.add", { onclick: handleAddClick}, ["+"])
+          functions.some(function (f) { return !f.getValue(); }) ? [] : [
+            h("button.add", { onclick: handleAddClick }, ["+"])
+          ]
         ]);
       }
     };

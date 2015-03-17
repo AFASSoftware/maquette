@@ -37,6 +37,7 @@ body {
   align-items:center;
   justify-content: space-around;
   background: linear-gradient(to bottom, blue, #444444 80%, orange);
+  overflow: hidden;
 }
 
 .remote {

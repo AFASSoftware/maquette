@@ -7,7 +7,7 @@ function renderMaquette() {
     h("div.landscape", [
       remote.renderMaquette(),
       h("div.saucer", {
-        style: "transform:"+remote.getSaucerStyle() 
+        style: "transform:" + remote.getSaucerStyle()
       }, [
         "Flying saucer"
       ])

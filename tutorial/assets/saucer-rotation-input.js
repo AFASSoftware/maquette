@@ -10,13 +10,15 @@ function renderMaquette() {
   return h("body", [
     h("div.landscape", [
       h("div.remote", {}, [
-        h("div.function", [
+        h("div.row", [
           "rotation: ",
           h("input", { type: "text" }),
           "degrees"
         ])
       ]),
-      h("div.saucer", {style:"transform:rotate("+rotation+"deg)"}, ["Flying saucer"])
+      h("div.saucer", { style: "transform:rotate(" + rotation + "deg)" }, [
+        "Flying saucer"
+      ])
     ])
   ]);
 }

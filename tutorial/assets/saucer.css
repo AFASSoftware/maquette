@@ -36,7 +36,7 @@ body {
   flex-wrap: wrap;
   align-items:center;
   justify-content: space-around;
-  background: linear-gradient(to bottom, blue, #444444 80%, orange);
+  background: linear-gradient(to bottom, blue 0%, #71B1D5 70%, #7CB71D 70%, #5E8113 100%);
   overflow: hidden;
 }
 
@@ -47,7 +47,7 @@ body {
   border: solid 5px black;
   background-color: #444444;
   padding: 3px;
-  height: 300px;
+  height: 322px;
   color: #AAAAAA;
 }
 
@@ -71,21 +71,25 @@ body {
   border-radius: 10px;
 }
 
-.remote > .function {
+.remote > .row {
   padding: 10px 5px;
   background-color: black;
   margin-bottom: 3px;
 }
 
-.function input {
+.row input {
   width: 50px;
   text-align: right;
   padding-right: 5px;
   margin: 0 3px;
 }
 
-.function input.slider {
+.row input.slider {
   width: 100%;
+}
+
+.row select {
+  width: 85px;
 }
 
 .planet {

@@ -21,7 +21,7 @@ function renderMaquette() {
   return h("body", [
     h("div.landscape", [
       h("div.remote", {}, [
-        h("div.function", [
+        h("div.row", [
           "rotation: ",
           h("input.slider", { type: "range", min:"-45", max:"45", value: rotation, oninput: handleRotationInput, onchange: handleRotationInput })
         ])

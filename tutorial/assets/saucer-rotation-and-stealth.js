@@ -16,12 +16,12 @@ function renderMaquette() {
   return h("body", [
     h("div.landscape", [
       h("div.remote", {}, [
-        h("div.function", [
+        h("div.row", [
           "rotation: ",
           h("input", { type: "text", value: rotation, oninput: handleRotationInput }),
           "degrees"
         ]),
-        h("div.function", [
+        h("div.row", [
           "stealth: ",
           h("input", { type: "checkbox", checked: stealth, onchange: handleStealthChange })
         ])

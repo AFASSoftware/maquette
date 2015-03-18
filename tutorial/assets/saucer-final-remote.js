@@ -3,35 +3,40 @@
 
   window.createRemote = function () {
 
-    var functions = [];
+    var rows = [];
 
     var handleAddClick = function (evt) {
       evt.preventDefault();
-      functions.push(createRemoteFunction(remote));
+      rows.push(createRemoteRow(remote)); // TODO
     };
 
     var remote = {
       getSaucerStyle: function () {
-        return functions.map(function (f) { return f.getSaucerStyle(); }).join(" ");
+        return rows.map(function (f) { return f.getSaucerStyle(); }).join(" ");
       },
-      isTransformAvailable: function (transform) {
-        return !functions.some(function (f) {
+      hasTransform: function (transform) {
+        return rows.some(function (f) {
           return f.getTransform() === transform;
         });
       },
       renderMaquette: function () {
         return h("div.remote", {}, [
-          functions.map(function (f) {
+          rows.map(function (f) {
             return f.renderMaquette();
           }),
-          functions.some(function (f) { return !f.getValue(); }) ? [] : [
+          rows.some(function (row) {
+             return !row.getSaucerStyle();
+          }) || rows.length == 7 ? [
+            // Do not show the add button when there are still empty rows
+          ] : [
             h("button.add", { onclick: handleAddClick }, ["+"])
           ]
         ]);
       }
     };
 
-    functions.push(createRemoteFunction(remote));
+    // Initialize with one row
+    rows.push(createRemoteRow(remote));
 
     return remote;
   };

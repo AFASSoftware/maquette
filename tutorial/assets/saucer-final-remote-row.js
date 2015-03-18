@@ -2,31 +2,31 @@
   var h = maquette.h;
 
   var transformFunctionNames = ["rotate", "translateX", "translateY", "scaleX", "scaleY", "skewX", "skewY"];
-  var nextKey = 0;
 
-  window.createRemoteFunction = function (remote) {
+  window.createRemoteRow = function (remote) {
 
-    var key = nextKey++;
+    // State
     var transformFunctionName = null;
     var value = "";
 
-    var getValueSuffix = function () {
-      if(transformFunctionName === "translateX" || transformFunctionName === "translateY") {
-        return "px";
-      }
-      if(transformFunctionName === "scaleX" || transformFunctionName === "scaleY") {
-        return "";
-      }
-      return "deg";
-    };
-
-    // initialize transform to the first available value
+    // initializes transformFunctionName to the first available value
     for(var i = 0; !transformFunctionName && i < transformFunctionNames.length; i++) {
-      if(remote.isTransformAvailable(transformFunctionNames[i])) {
+      if(!remote.hasTransform(transformFunctionNames[i])) {
         transformFunctionName = transformFunctionNames[i];
       }
     }
 
+    var getValueSuffix = function () {
+      if(transformFunctionName === "translateX" || transformFunctionName === "translateY") {
+        return "px";
+      } else if(transformFunctionName === "scaleX" || transformFunctionName === "scaleY") {
+        return "";
+      } else {
+        return "deg";
+      }
+    };
+
+    // Event handlers
     var handleTransformChange = function (evt) {
       transformFunctionName = evt.target.value;
     };
@@ -35,7 +35,8 @@
       value = evt.target.value;
     };
 
-    return {
+    // The 'API' exposed by a 'remote row' component
+    var remoteRow = {
       getTransform: function () {
         return transformFunctionName;
       },
@@ -46,13 +47,11 @@
           return "";
         }
       },
-      getValue: function () {
-        return value;
-      },
       renderMaquette: function () {
-        return h("div.function", { key: key }, [
+        return h("div.row", { key: remoteRow }, [
           h("select", { value: transformFunctionName, onchange: handleTransformChange }, [
             transformFunctionNames
+              .filter(function (name) { return name === transformFunctionName || !remote.hasTransform(name); }) // TODO
               .map(function (name) {
                 return h("option", { key: name, value: name }, [
                   name
@@ -64,6 +63,8 @@
         ]);
       }
     };
+
+    return remoteRow;
   };
 
 }());

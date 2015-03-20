@@ -1,33 +1,25 @@
-﻿window.createWorkbench = function (projector, scriptUrl, objectives) {
+﻿window.createWorkbench = function (projector, scriptTabs, objectives) {
+
+  if(typeof scriptTabs === "string") {
+    scriptTabs = [{ name: "saucer.js", url: scriptTabs }];
+  }
 
   // constants
   var h = maquette.h;
   var htmlStart = "<!doctype html><html><head><link href='assets/saucer.css' rel='stylesheet' /><script src='bower_components/maquette/dist/maquette.min.js'><" + "/script><script>";
   var htmlEnd = "<" + "/script></head><body></body></html>";
 
-  var script = "";
-  var lastValidScript = script;
+  var scripts = [];
+  var scriptsValid = [];
+
+  var lastValidScript = ""; // all scripts concatenated
   var htmlFile = "";
   var cssFile = "";
   var validateTimeout;
   var parseError;
   var editor;
-  var changeDelay;
   var contentWindow;
   var currentTab = 2;
-
-    var lastError;
-    window.onerror = function (msg, url, lineNumber) {
-      if (!lastError) {
-        lastError = { msg: msg, lineNumber: lineNumber };
-        if (document.body) {
-          var errorDiv = document.createElement("div");
-          errorDiv.classList.add("javascript-error");
-          errorDiv.appendChild(document.createTextNode("Javascript crash: "+msg+" line number "+lineNumber));
-          document.body.appendChild(errorDiv);
-        };
-      }
-    };
 
   htmlStart = htmlStart
     + "var lastError;"
@@ -55,17 +47,29 @@
     request.send();
   };
 
-  get(scriptUrl, function (responseText) {
-    script = responseText;
-    lastValidScript = script;
-    if (editor && currentTab === 2) {
-      editor.setValue(script, 0);
-      editor.focus();
-      editor.clearSelection();
+  var updateLastValidScript = function () {
+    if(!scriptsValid.some(function (valid) { return !valid; })) {
+      lastValidScript = scripts.join("");
     }
+  };
+
+  scriptTabs.forEach(function (scriptTab, index) {
+    scripts[index] = "";
+    scriptsValid[index] = false;
+    get(scriptTab.url, function (responseText) {
+      scripts[index] = responseText;
+      scriptsValid[index] = true;
+      updateLastValidScript();
+      if(editor && currentTab >= 2) {
+        editor.setValue(scripts[currentTab-2], 0);
+        editor.focus();
+        editor.clearSelection();
+      }
+    });
   });
 
   setTimeout(function () {
+    // wait a short time before fetching these
     get("assets/saucer.html", function (responseText) {
       htmlFile = responseText;
       if (editor && currentTab === 0) {
@@ -123,32 +127,20 @@
   // Super-fast way to validate the javascript
   var validateScript = function () {
     validateTimeout = null;
-    if (currentTab === 2) {
+    if (currentTab >= 2) {
       try {
-        script = editor.getValue();
+        var script = editor.getValue();
+        scripts[currentTab-2] = script;
         var test = new Function(script);
-        lastValidScript = script;
+        scriptsValid[currentTab - 2] = true;
+        updateLastValidScript();
         parseError = null;
       } catch(e) {
+        scriptsValid[currentTab - 2] = false;
         parseError = e.message;
       };
       projector.scheduleRender();
     }
-  };
-
-  var validateScriptUsingAce = function () {
-    // is called after JSLint has parsed the code
-    changeDelay = undefined;
-    var session = editor.getSession();
-    var markers = session.getAnnotations();
-    var markerCount = markers.length;
-    if (markerCount === 0) {
-      lastValidScript = session.getValue();
-      parseError = null;
-    } else {
-      parseError = "" + markerCount + " errors";
-    }
-    projector.scheduleRender();
   };
 
   var createEditor = function (div) {
@@ -169,17 +161,17 @@
     switch(currentTab) {
       case 0:
         editor.setValue(htmlFile, 0);
-        editor.getSession().setMode("ace/mode/html");
+        editor.getSession().setMode({ path: "ace/mode/html", v: new Date() });
         editor.setReadOnly(true);
         break;
       case 1:
         editor.setValue(cssFile, 0);
-        editor.getSession().setMode("ace/mode/css");
+        editor.getSession().setMode({ path: "ace/mode/css", v: new Date() });
         editor.setReadOnly(true);
         break;
-      case 2:
-        editor.setValue(script, 0);
-        editor.getSession().setMode("ace/mode/javascript");
+      default:
+        editor.setValue(scripts[currentTab-2], 0);
+        editor.getSession().setMode({ path: "ace/mode/javascript", v: new Date() });
         editor.setReadOnly(false);
         editor.focus();
         break;
@@ -195,9 +187,13 @@
       refreshEditor();
     };
   };
+
   var switchToHtml = generateSwitchTo(0);
   var switchToCss = generateSwitchTo(1);
-  var switchToScript = generateSwitchTo(2);
+  var switchToScripts = [];
+  scriptTabs.forEach(function (scriptTab, index) {
+    switchToScripts[index] = generateSwitchTo(index + 2);
+  });
 
   var workbench = {
     allObjectivesAchieved : function () {
@@ -217,7 +213,9 @@
           h("div.tabs", [
             h("button.tab", { key: 1, onclick: switchToHtml, classes: { active: currentTab === 0 } }, ["saucer.html"]),
             h("button.tab", { key: 2, onclick: switchToCss, classes: { active: currentTab === 1 } }, ["saucer.css"]),
-            h("button.tab", { key: 3, onclick: switchToScript, classes: { active: currentTab === 2 } }, ["saucer.js"])
+            scriptTabs.map(function (scriptTab, index) {
+              return h("button.tab", { key: 3 + index, onclick: switchToScripts[index], classes: { active: currentTab === 2 } }, [scriptTab.name]);
+            })
           ]),
           h("div.editor", { afterCreate: createEditor }),
           h("div.parseError", [parseError])

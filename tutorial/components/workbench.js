@@ -1,7 +1,11 @@
 ﻿window.createWorkbench = function (projector, tabs, objectives) {
 
   if(typeof tabs === "string") {
-    tabs = [{ name: "saucer.js", url: tabs }]; // TODO: custom html as well
+    tabs = [
+      { name: "saucer.html", url: "assets/saucer.html" },
+      { name: "saucer.css", url: "assets/saucer.css" },
+      { name: "saucer.js", url: tabs }
+    ];
   }
 
   // constants
@@ -54,14 +58,17 @@
   };
 
   tabs.forEach(function (scriptTab, index) {
-    scripts[index] = "";
-    scriptsValid[index] = false;
+    if(index < 2) {
+      return; // loaded after a delay
+    }
+    scripts[index - 2] = "";
+    scriptsValid[index - 2] = false;
     get(scriptTab.url, function (responseText) {
-      scripts[index] = responseText;
-      scriptsValid[index] = true;
+      scripts[index - 2] = responseText;
+      scriptsValid[index - 2] = true;
       updateLastValidScript();
-      if(editor && currentTab >= 2) {
-        editor.setValue(scripts[currentTab-2], 0);
+      if(editor && currentTab === index) {
+        editor.setValue(scripts[currentTab - 2], 0);
         editor.focus();
         editor.clearSelection();
       }
@@ -70,7 +77,7 @@
 
   setTimeout(function () {
     // wait a short time before fetching these
-    get("assets/saucer.html", function (responseText) {
+    get(tabs[0].url, function (responseText) {
       htmlFile = responseText;
       if (editor && currentTab === 0) {
         editor.setValue(htmlFile, 0);
@@ -78,7 +85,7 @@
       }
     });
 
-    get("assets/saucer.css", function (responseText) {
+    get(tabs[1].url, function (responseText) {
       cssFile = responseText;
       if (editor && currentTab === 1) {
         editor.setValue(cssFile, 0);
@@ -188,11 +195,9 @@
     };
   };
 
-  var switchToHtml = generateSwitchTo(0);
-  var switchToCss = generateSwitchTo(1);
-  var switchToScripts = [];
+  var switchTo = [];
   tabs.forEach(function (scriptTab, index) {
-    switchToScripts[index] = generateSwitchTo(index + 2);
+    switchTo[index] = generateSwitchTo(index);
   });
 
   var workbench = {
@@ -211,10 +216,8 @@
       return h("div.work", [
         h("div.input", [
           h("div.tabs", [
-            h("button.tab", { key: 1, onclick: switchToHtml, classes: { active: currentTab === 0 } }, ["saucer.html"]),
-            h("button.tab", { key: 2, onclick: switchToCss, classes: { active: currentTab === 1 } }, ["saucer.css"]),
             tabs.map(function (scriptTab, index) {
-              return h("button.tab", { key: 3 + index, onclick: switchToScripts[index], classes: { active: currentTab === 2 + index } }, [scriptTab.name]);
+              return h("button.tab", { key: index+1, onclick: switchTo[index], classes: { active: currentTab === index } }, [scriptTab.name]);
             })
           ]),
           h("div.editor", { afterCreate: createEditor }),

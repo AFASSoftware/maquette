@@ -1,6 +1,6 @@
 ﻿var h = maquette.h;
 
-var remote = createRemote();
+var remote = createRemote(); // createRemote is defined in remote.js
 
 function renderMaquette() {
   return h("body", [

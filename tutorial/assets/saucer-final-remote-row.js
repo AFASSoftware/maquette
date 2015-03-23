@@ -1,13 +1,15 @@
 ﻿(function () {
   var h = maquette.h;
 
-  var transformFunctionNames = ["rotate", "translateX", "translateY", "scaleX", "scaleY", "skewX", "skewY"];
+  var transformFunctionNames = ["rotate", "translateX",
+    "translateY", "scaleX", "scaleY", "skewX", "skewY"];
 
-  window.createRemoteRow = function (remote) {
+  // Creates a new *row* component. The "remote" parameter is required, the rest is optional.
+  window.createRemoteRow = function (remote, initialTransformFunctionName, initialValue) {
 
     // State
-    var transformFunctionName = null;
-    var value = "";
+    var transformFunctionName = initialTransformFunctionName;
+    var value = initialValue || "";
 
     // initializes transformFunctionName to the first available value
     for(var i = 0; !transformFunctionName && i < transformFunctionNames.length; i++) {
@@ -51,11 +53,8 @@
         return h("div.row", { key: remoteRow }, [
           h("select", { value: transformFunctionName, onchange: handleTransformChange }, [
             transformFunctionNames
-              .filter(function (name) { return name === transformFunctionName || !remote.hasTransform(name); }) // TODO
               .map(function (name) {
-                return h("option", { key: name, value: name }, [
-                  name
-                ]);
+                return h("option", { key: name, value: name }, [name]);
               })
           ]),
           h("input", { value: value, oninput: handleValueInput }),

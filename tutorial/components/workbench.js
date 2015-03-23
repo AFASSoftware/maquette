@@ -1,7 +1,7 @@
-﻿window.createWorkbench = function (projector, scriptTabs, objectives) {
+﻿window.createWorkbench = function (projector, tabs, objectives) {
 
-  if(typeof scriptTabs === "string") {
-    scriptTabs = [{ name: "saucer.js", url: scriptTabs }];
+  if(typeof tabs === "string") {
+    tabs = [{ name: "saucer.js", url: tabs }]; // TODO: custom html as well
   }
 
   // constants
@@ -49,11 +49,11 @@
 
   var updateLastValidScript = function () {
     if(!scriptsValid.some(function (valid) { return !valid; })) {
-      lastValidScript = scripts.join("");
+      lastValidScript = scripts.slice().reverse().join("");
     }
   };
 
-  scriptTabs.forEach(function (scriptTab, index) {
+  tabs.forEach(function (scriptTab, index) {
     scripts[index] = "";
     scriptsValid[index] = false;
     get(scriptTab.url, function (responseText) {
@@ -191,7 +191,7 @@
   var switchToHtml = generateSwitchTo(0);
   var switchToCss = generateSwitchTo(1);
   var switchToScripts = [];
-  scriptTabs.forEach(function (scriptTab, index) {
+  tabs.forEach(function (scriptTab, index) {
     switchToScripts[index] = generateSwitchTo(index + 2);
   });
 
@@ -213,8 +213,8 @@
           h("div.tabs", [
             h("button.tab", { key: 1, onclick: switchToHtml, classes: { active: currentTab === 0 } }, ["saucer.html"]),
             h("button.tab", { key: 2, onclick: switchToCss, classes: { active: currentTab === 1 } }, ["saucer.css"]),
-            scriptTabs.map(function (scriptTab, index) {
-              return h("button.tab", { key: 3 + index, onclick: switchToScripts[index], classes: { active: currentTab === 2 } }, [scriptTab.name]);
+            tabs.map(function (scriptTab, index) {
+              return h("button.tab", { key: 3 + index, onclick: switchToScripts[index], classes: { active: currentTab === 2 + index } }, [scriptTab.name]);
             })
           ]),
           h("div.editor", { afterCreate: createEditor }),

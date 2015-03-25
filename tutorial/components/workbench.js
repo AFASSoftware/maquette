@@ -14,6 +14,7 @@
   var htmlEnd = "<" + "/script></head><body></body></html>";
 
   var scripts = [];
+  var pristineScripts = [];
   var scriptsValid = [];
 
   var lastValidScript = ""; // all scripts concatenated
@@ -51,6 +52,17 @@
     request.send();
   };
 
+  var isValidJavascript = function (text) {
+    try {
+      var test = new Function(text);
+      parseError = null;
+      return true;
+    } catch(e) {
+      parseError = e.message;
+      return false;
+    }
+  };
+
   var updateLastValidScript = function () {
     if(!scriptsValid.some(function (valid) { return !valid; })) {
       lastValidScript = scripts.slice().reverse().join("");
@@ -63,9 +75,18 @@
     }
     scripts[index - 2] = "";
     scriptsValid[index - 2] = false;
+    var key = document.location.pathname + ":" + tabs[index].name;
+    var script = window.localStorage[key]; 
+    if(script) {
+      scripts[index - 2] = script;
+      scriptsValid[index - 2] = isValidJavascript(script);
+    }
     get(scriptTab.url, function (responseText) {
-      scripts[index - 2] = responseText;
-      scriptsValid[index - 2] = true;
+      pristineScripts[index - 2] = responseText;
+      if(!scripts[index - 2]) {
+        scripts[index - 2] = responseText;
+        scriptsValid[index - 2] = true;
+      }
       updateLastValidScript();
       if(editor && currentTab === index) {
         editor.setValue(scripts[currentTab - 2], 0);
@@ -128,24 +149,23 @@
     if (validateTimeout) {
       clearTimeout(validateTimeout);
     }
-    validateTimeout = setTimeout(validateScript, 50);
+    validateTimeout = setTimeout(validateScript, 250);
   };
 
   // Super-fast way to validate the javascript
   var validateScript = function () {
     validateTimeout = null;
     if (currentTab >= 2) {
-      try {
-        var script = editor.getValue();
-        scripts[currentTab-2] = script;
-        var test = new Function(script);
+      var script = editor.getValue();
+      scripts[currentTab - 2] = script;
+      var key = document.location.pathname + ":" + tabs[currentTab].name;
+      window.localStorage[key] = script;
+      if (isValidJavascript(script)) {
         scriptsValid[currentTab - 2] = true;
         updateLastValidScript();
-        parseError = null;
-      } catch(e) {
+      } else {
         scriptsValid[currentTab - 2] = false;
-        parseError = e.message;
-      };
+      }
       projector.scheduleRender();
     }
   };
@@ -200,6 +220,30 @@
     switchTo[index] = generateSwitchTo(index);
   });
 
+  var handleReset = function (evt) {
+    evt.preventDefault();
+    for(var i = 0; i < pristineScripts.length; i++) {
+      scripts[i] = pristineScripts[i];
+      scriptsValid[i] = true;
+      if(currentTab - 2 === i) {
+        editor.setValue(scripts[i], 0);
+        editor.clearSelection();
+        editor.gotoLine(0);
+        editor.focus();
+      }
+    }
+    updateLastValidScript();
+  };
+
+  var isPristine = function () {
+    for(var i = 0; i < pristineScripts.length; i++) {
+      if(scripts[i] !== pristineScripts[i]) {
+        return false;
+      }
+    };
+    return true;
+  };
+
   var workbench = {
     allObjectivesAchieved : function () {
       return objectives.every(function (objective) {
@@ -218,10 +262,11 @@
           h("div.tabs", [
             tabs.map(function (scriptTab, index) {
               return h("button.tab", { key: index+1, onclick: switchTo[index], classes: { active: currentTab === index } }, [scriptTab.name]);
-            })
+            }),
+            h("button.reset", { onclick: handleReset, disabled: isPristine() }, ["Reset"])
           ]),
           h("div.editor", { afterCreate: createEditor }),
-          h("div.parseError", [parseError])
+//          h("div.parseError", [parseError])
         ]),
         h("div.result", [
           h("div.header", ["Objectives"]),

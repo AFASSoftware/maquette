@@ -20,7 +20,9 @@
 .input > .tabs {
   background-color: black;
   display: flex;
+  position: relative;
   height: 25px;
+  padding-right: 50px; /* Space for the reset button */
 }
 
 .input > .tabs > .tab {
@@ -39,6 +41,20 @@
   background-color: rgb(39, 40, 34);
   color: white;
   cursor: default;
+}
+
+.input > .tabs > .reset {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  margin: 0;
+  border: none;
+}
+
+.input > .tabs > .reset:disabled {
+  opacity: 0.7
 }
 
 .input > .editor {

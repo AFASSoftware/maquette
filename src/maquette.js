@@ -224,10 +224,11 @@
     if (!children) {
       return;
     }
+    var afterCreate = function (childDomNode) {
+      domNode.appendChild(childDomNode);
+    };
     children.forEach(function (child) {
-      createDom(child, function (childDomNode) {
-        domNode.appendChild(childDomNode);
-      }, projectionOptions);
+      createDom(child, afterCreate, projectionOptions);
     });
   };
 
@@ -315,7 +316,6 @@
         if (!part) {
           continue;
         }
-        type = part.charAt(0);
         if (!domNode) {
           // create domNode from the first part
           if (part === "svg") {
@@ -327,10 +327,13 @@
             domNode = vnode.domNode = document.createElement(part);
           }
           afterCreate(domNode);
-        } else if (type === ".") {
-          domNode.classList.add(part.substring(1));
-        } else if (type === "#") {
-          domNode.id = part.substr(1);
+        } else {
+          type = part.charAt(0);
+          if(type === ".") {
+            domNode.classList.add(part.substring(1));
+          } else if (type === "#") {
+            domNode.id = part.substr(1);
+          }
         }
       }
       initPropertiesAndChildren(domNode, vnode, projectionOptions);
@@ -359,6 +362,9 @@
         projectionOptions.transitions.nodeUpdated(domNode, vnode.properties, "changeText", undefined, vnode.text, previous.text);
       }
     } else {
+      if(vnode.vnodeSelector.substr(0, 3) === "svg") {
+        projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
+      }
       updateChildren(domNode, previous.children, vnode.children, projectionOptions);
       updateProperties(domNode, previous.properties, vnode.properties, projectionOptions);
       if (vnode.properties && vnode.properties.afterUpdate) {

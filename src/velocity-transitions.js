@@ -19,10 +19,10 @@
               node.parentNode.removeChild(node);
             }
           });
-        } else {
-          node.parentNode.removeChild(node);
+          return;
         }
       }
+      node.parentNode.removeChild(node);
     },
     nodeAdded: function (node, properties) {
       if (properties) {

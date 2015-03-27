@@ -2,37 +2,18 @@
 
   "use strict";
 
-  var maquette = global.maquette;
   var velocity = (global.jQuery || global.Zepto || global).Velocity;
 
-  if(!maquette || !velocity) {
-    throw new Error("maquette and velocity must be loaded (first)");
+  if(!velocity) {
+    throw new Error("Velocity must be loaded (first)");
   }
 
   var velocityTransitions = {
-    nodeToRemove: function (node, properties) {
-      if (properties) {
-        var animation = properties.exitAnimation;
-        if(animation) {
-          velocity.animate(node, animation, {
-            complete: function () {
-              node.parentNode.removeChild(node);
-            }
-          });
-          return;
-        }
-      }
-      node.parentNode.removeChild(node);
+    exit: function (node, properties, exitAnimation, removeNode) {
+      velocity.animate(node, exitAnimation, removeNode);
     },
-    nodeAdded: function (node, properties) {
-      if (properties) {
-        var animation = properties.enterAnimation;
-        if(animation) {
-          velocity.animate(node, animation);
-        }
-      }
-    },
-    nodeUpdated: function (node, properties, type, name, newValue, oldValue) {
+    enter: function (node, properties, enterAnimation) {
+      velocity.animate(node, enterAnimation);
     }
   };
 

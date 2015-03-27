@@ -102,19 +102,16 @@
 
   var classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
 
-  var immediateTransitions = {
-    nodeToRemove: function (node, properties) {
-      node.parentNode.removeChild(node);
-    },
-    nodeAdded: function (node, properties) {
-    },
-    nodeUpdated: function (node, properties, type, name, newValue, oldValue) {
-    }
-  };
-
   var defaultProjectionOptions = {
     namespace: null,
-    transitions: immediateTransitions
+    transitions: {
+      enter: function () {
+        throw new Error("Provide a transitions object to the projectionOptions to do animations");
+      },
+      exit: function () {
+        throw new Error("Provide a transitions object to the projectionOptions to do animations");
+      }
+    }
   };
 
   var applyDefaultProjectionOptions = function (projectionOptions) {
@@ -171,7 +168,7 @@
     if (!properties) {
       return;
     }
-    var transitions = projectionOptions.transitions;
+    var propertiesUpdated = false;
     for (var propName in properties) {
       // assuming that properties will be nullified instead of missing is by design
       var propValue = properties[propName];
@@ -184,12 +181,11 @@
           if (on === previousOn) {
             continue;
           }
+          propertiesUpdated = true;
           if (on) {
             classList.add(className);
-            transitions.nodeUpdated(domNode, properties, "addClass", className, undefined, undefined);
           } else {
             classList.remove(className);
-            transitions.nodeUpdated(domNode, properties, "removeClass", className, undefined, undefined);
           }
         }
       } else {
@@ -200,8 +196,8 @@
           if (domNode[propName] !== propValue && domNode["oninput-value"] !== propValue) {
             domNode[propName] = propValue; // Reset the value, even if the virtual DOM did not change
           } // else do not update the domNode, otherwise the cursor position would be changed
-          if (propValue !== previousValue) {
-            transitions.nodeUpdated(domNode, properties, "changeProperty", propName, propValue, previousValue);
+          if(propValue !== previousValue) {
+            propertiesUpdated = true;
           }
         } else if (propValue !== previousValue) {
           var type = typeof propValue;
@@ -214,14 +210,20 @@
           } else {
             domNode[propName] = propValue;
           }
-          transitions.nodeUpdated(domNode, properties, "changeProperty", propName, propValue, previousValue);
+          propertiesUpdated = true;
         }
       }
     }
+    return propertiesUpdated;
   };
 
   var addChildren = function (domNode, children, projectionOptions) {
     if (!children) {
+      return;
+    }
+    if(children.length === 1 && children[0].vnodeSelector === "") { // performance optimization
+      domNode.textContent = children[0].text;
+      children[0].domNode = domNode.firstChild;
       return;
     }
     var afterCreate = function (childDomNode) {
@@ -254,6 +256,41 @@
     return -1;
   };
 
+  var nodeAdded = function (vNode, transitions) {
+    if(vNode.properties) {
+      var enterAnimation = vNode.properties.enterAnimation;
+      if(enterAnimation) {
+        if(typeof enterAnimation === "function") {
+          enterAnimation(vNode.domNode, vNode.properties);
+        } else {
+          transitions.enter(vNode.domNode, vNode.properties, enterAnimation);
+        }
+      }
+    }
+  };
+
+  var nodeToRemove = function (vNode, transitions) {
+    var domNode = vNode.domNode;
+    if(vNode.properties) {
+      var exitAnimation = vNode.properties.exitAnimation;
+      if(exitAnimation) {
+        var removeDomNode = function () {
+          if(domNode.parentNode) {
+            domNode.parentNode.removeChild(domNode);
+          }
+        };
+        if(typeof exitAnimation === "function") {
+          exitAnimation(domNode, removeDomNode, vNode.properties);
+          return;
+        } else {
+          transitions.exit(vNode.domNode, vNode.properties, exitAnimation, removeDomNode);
+          return;
+        }
+      }
+    }
+    domNode.parentNode.removeChild(domNode);
+  };
+
   var updateChildren = function (domNode, oldChildren, newChildren, projectionOptions) {
     if (oldChildren === newChildren) {
       return;
@@ -265,6 +302,7 @@
     var oldIndex = 0;
     var newIndex = 0;
     var i;
+    var textUpdated = false;
     var insertChild = function (childDomNode) {
       if (oldIndex < oldChildren.length) {
         var nextChild = oldChildren[oldIndex];
@@ -277,31 +315,32 @@
       var oldChild = (oldIndex < oldChildren.length) ? oldChildren[oldIndex] : null;
       var newChild = newChildren[newIndex];
       if (oldChild && same(oldChild, newChild)) {
-        updateDom(oldChild, newChild, projectionOptions);
+        textUpdated = textUpdated || updateDom(oldChild, newChild, projectionOptions);
         oldIndex++;
       } else {
         var findOldIndex = findIndexOfChild(oldChildren, newChild, oldIndex + 1);
         if (findOldIndex >= 0) {
           // Remove preceding missing children
-          for (i = oldIndex; i < findOldIndex; i++) {
-            transitions.nodeToRemove(oldChildren[i].domNode, oldChildren[i].properties);
+          for(i = oldIndex; i < findOldIndex; i++) {
+            nodeToRemove(oldChildren[i], transitions);
           }
-          updateDom(oldChildren[findOldIndex], newChild, projectionOptions);
+          textUpdated = textUpdated || updateDom(oldChildren[findOldIndex], newChild, projectionOptions);
           oldIndex = findOldIndex + 1;
         } else {
           // New child
           createDom(newChild, insertChild, projectionOptions);
-          transitions.nodeAdded(newChild.domNode, newChild.properties);
+          nodeAdded(newChild, transitions);
         }
       }
       newIndex++;
     }
     if (oldChildren.length > oldIndex) {
       // Remove child fragments
-      for (i = oldIndex; i < oldChildren.length; i++) {
-        transitions.nodeToRemove(oldChildren[i].domNode, oldChildren[i].properties);
+      for(i = oldIndex; i < oldChildren.length; i++) {
+        nodeToRemove(oldChildren[i], transitions);
       }
     }
+    return textUpdated;
   };
 
   var createDom = function (vnode, afterCreate, projectionOptions) {
@@ -353,25 +392,31 @@
     if (!domNode) {
       throw new Error("previous node was not mounted");
     }
-    if (previous === vnode) {
-      return; // we assume that nothing has changed
+    var textUpdated = false;
+    if(previous === vnode) {
+      return textUpdated; // we assume that nothing has changed
     }
+    var updated = false;
     if (vnode.vnodeSelector === "") {
       if (vnode.text !== previous.text) {
         domNode.nodeValue = vnode.text;
-        projectionOptions.transitions.nodeUpdated(domNode, vnode.properties, "changeText", undefined, vnode.text, previous.text);
+        textUpdated = true;
       }
     } else {
       if(vnode.vnodeSelector.substr(0, 3) === "svg") {
         projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
       }
-      updateChildren(domNode, previous.children, vnode.children, projectionOptions);
-      updateProperties(domNode, previous.properties, vnode.properties, projectionOptions);
+      updated = updateChildren(domNode, previous.children, vnode.children, projectionOptions);
+      updated = updated || updateProperties(domNode, previous.properties, vnode.properties, projectionOptions);
       if (vnode.properties && vnode.properties.afterUpdate) {
         vnode.properties.afterUpdate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
       }
     }
+    if(updated && vnode.properties && vnode.properties.updateAnimation) {
+      vnode.properties.updateAnimation(domNode, vnode.properties, previous.properties);
+    }
     vnode.domNode = previous.domNode;
+    return textUpdated;
   };
 
   // polyfill for window.performance

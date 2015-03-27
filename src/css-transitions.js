@@ -2,17 +2,6 @@
 
   "use strict";
 
-  var maquette = global.maquette;
-
-  var requestAnimationFrame =
-    window.requestAnimationFrame ||
-      window.webkitRequestAnimationFrame ||
-      function (callback) { window.setTimeout(callback, 16); };
-
-  if(!maquette) {
-    throw new Error("maquette must be loaded (first)");
-  }
-
   var browserSpecificTransitionEndEventName = null;
 
   var determineBrowserSpecificStyleNames = function (element) {
@@ -34,50 +23,38 @@
   };
 
   var cssTransitions = {
-    nodeToRemove: function (node, properties) {
-      if (properties) {
-        var animation = properties.exitAnimation;
-        if (animation) {
-          init(node);
-          var finished = false;
-          var transitionEnd = function (evt) {
-            if (!finished) {
-              finished = true;
-              node.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
-              node.parentNode.removeChild(node);
-            }
-          };
-          node.classList.add(animation);
-          node.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
-          requestAnimationFrame(function () {
-            node.classList.add(animation + "-active");
-          });
-          return;
+    exit: function (node, properties, exitAnimation, removeNode) {
+      init(node);
+      var finished = false;
+      var transitionEnd = function (evt) {
+        if (!finished) {
+          finished = true;
+          node.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+          removeNode();
         }
-      }
-      node.parentNode.removeChild(node);
+      };
+      node.classList.add(exitAnimation);
+      node.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+      requestAnimationFrame(function () {
+        node.classList.add(exitAnimation + "-active");
+      });
     },
-    nodeAdded: function (node, properties) {
-      var animation = properties.enterAnimation;
-      if(animation) {
-        init(node);
-        var finished = false;
-        var transitionEnd = function (evt) {
-          if (!finished) {
-            finished = true;
-            node.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
-            node.classList.remove(animation);
-            node.classList.remove(animation + "-active");
-          }
-        };
-        node.classList.add(animation);
-        node.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
-        requestAnimationFrame(function () {
-          node.classList.add(animation + "-active");
-        });
-      }
-    },
-    nodeUpdated: function (node, properties, type, name, newValue, oldValue) {
+    enter: function (node, properties, enterAnimation) {
+      init(node);
+      var finished = false;
+      var transitionEnd = function (evt) {
+        if (!finished) {
+          finished = true;
+          node.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+          node.classList.remove(enterAnimation);
+          node.classList.remove(enterAnimation + "-active");
+        }
+      };
+      node.classList.add(enterAnimation);
+      node.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+      requestAnimationFrame(function () {
+        node.classList.add(enterAnimation + "-active");
+      });
     }
   };
 

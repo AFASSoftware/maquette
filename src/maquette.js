@@ -221,7 +221,7 @@
     if (!children) {
       return;
     }
-    if(children.length === 1 && children[0].vnodeSelector === "") { // performance optimization
+    if(children.length === 1 && children[0].vnodeSelector === "" && children[0].text) { // performance optimization
       domNode.textContent = children[0].text;
       children[0].domNode = domNode.firstChild;
       return;
@@ -315,7 +315,7 @@
       var oldChild = (oldIndex < oldChildren.length) ? oldChildren[oldIndex] : null;
       var newChild = newChildren[newIndex];
       if (oldChild && same(oldChild, newChild)) {
-        textUpdated = textUpdated || updateDom(oldChild, newChild, projectionOptions);
+        textUpdated = updateDom(oldChild, newChild, projectionOptions) || textUpdated;
         oldIndex++;
       } else {
         var findOldIndex = findIndexOfChild(oldChildren, newChild, oldIndex + 1);
@@ -324,7 +324,7 @@
           for(i = oldIndex; i < findOldIndex; i++) {
             nodeToRemove(oldChildren[i], transitions);
           }
-          textUpdated = textUpdated || updateDom(oldChildren[findOldIndex], newChild, projectionOptions);
+          textUpdated = updateDom(oldChildren[findOldIndex], newChild, projectionOptions) || textUpdated;
           oldIndex = findOldIndex + 1;
         } else {
           // New child
@@ -407,7 +407,7 @@
         projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
       }
       updated = updateChildren(domNode, previous.children, vnode.children, projectionOptions);
-      updated = updated || updateProperties(domNode, previous.properties, vnode.properties, projectionOptions);
+      updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
       if (vnode.properties && vnode.properties.afterUpdate) {
         vnode.properties.afterUpdate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
       }

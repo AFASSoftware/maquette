@@ -7,6 +7,8 @@ describe('Maquette', function () {
     var toTextVNode = function (text) {
       return {
         vnodeSelector: "",
+        properties: undefined,
+        children: undefined,
         text: text,
         domNode: null
       };

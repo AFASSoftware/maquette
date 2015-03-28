@@ -4,7 +4,6 @@
 
   // Utilities
 
-  var noop = function () { };
   var emptyArray = [];
 
   var extend = function (base, overrides) {
@@ -61,6 +60,8 @@
   var toTextVNode = function (data) {
     return {
       vnodeSelector: "",
+      properties: undefined,
+      children: undefined,
       text: (data === null || data === undefined) ? "" : data.toString(),
       domNode: null
     };
@@ -69,7 +70,7 @@
   // removes nulls, flattens embedded arrays
   var flatten = function (parentSelector, children) {
     if (children === null || children === undefined) {
-      return null;
+      return undefined;
     }
     if (!Array.isArray(children)) {
       if (children.hasOwnProperty("vnodeSelector")) {
@@ -103,7 +104,7 @@
   var classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
 
   var defaultProjectionOptions = {
-    namespace: null,
+    namespace: undefined,
     transitions: {
       enter: function () {
         throw new Error("Provide a transitions object to the projectionOptions to do animations");
@@ -221,17 +222,9 @@
     if (!children) {
       return;
     }
-    if(children.length === 1 && children[0].vnodeSelector === "" && children[0].text) { // performance optimization
-      domNode.textContent = children[0].text;
-      children[0].domNode = domNode.firstChild;
-      return;
+    for(var i = 0; i < children.length; i++) {
+      createDom(children[i], domNode, undefined, projectionOptions);
     }
-    var afterCreate = function (childDomNode) {
-      domNode.appendChild(childDomNode);
-    };
-    children.forEach(function (child) {
-      createDom(child, afterCreate, projectionOptions);
-    });
   };
 
   var same = function (vnode1, vnode2) {
@@ -293,7 +286,7 @@
 
   var updateChildren = function (domNode, oldChildren, newChildren, projectionOptions) {
     if (oldChildren === newChildren) {
-      return;
+      return false;
     }
     oldChildren = oldChildren || emptyArray;
     newChildren = newChildren || emptyArray;
@@ -303,18 +296,10 @@
     var newIndex = 0;
     var i;
     var textUpdated = false;
-    var insertChild = function (childDomNode) {
-      if (oldIndex < oldChildren.length) {
-        var nextChild = oldChildren[oldIndex];
-        domNode.insertBefore(childDomNode, nextChild.domNode);
-      } else {
-        domNode.appendChild(childDomNode);
-      }
-    };
     while (newIndex < newChildren.length) {
-      var oldChild = (oldIndex < oldChildren.length) ? oldChildren[oldIndex] : null;
+      var oldChild = (oldIndex < oldChildren.length) ? oldChildren[oldIndex] : undefined;
       var newChild = newChildren[newIndex];
-      if (oldChild && same(oldChild, newChild)) {
+      if (oldChild !== undefined && same(oldChild, newChild)) {
         textUpdated = updateDom(oldChild, newChild, projectionOptions) || textUpdated;
         oldIndex++;
       } else {
@@ -328,7 +313,7 @@
           oldIndex = findOldIndex + 1;
         } else {
           // New child
-          createDom(newChild, insertChild, projectionOptions);
+          createDom(newChild, domNode, (oldIndex < oldChildren.length) ? oldChildren[oldIndex].domNode : undefined, projectionOptions);
           nodeAdded(newChild, transitions);
         }
       }
@@ -343,36 +328,60 @@
     return textUpdated;
   };
 
-  var createDom = function (vnode, afterCreate, projectionOptions) {
-    if (vnode.vnodeSelector === "") {
-      vnode.domNode = document.createTextNode(vnode.text);
-      afterCreate(vnode.domNode);
+  var createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
+    var domNode, i;
+    var vnodeSelector = vnode.vnodeSelector;
+    if(vnodeSelector === "") {
+      domNode = vnode.domNode = document.createTextNode(vnode.text);
+      if(insertBefore !== undefined) {
+        parentNode.insertBefore(domNode, insertBefore);
+      } else {
+        parentNode.appendChild(domNode);
+      }
     } else {
-      var domNode, part, i, type;
-      var tagParts = vnode.vnodeSelector.split(classIdSplit);
-      for (i = 0; i < tagParts.length; i++) {
-        part = tagParts[i];
-        if (!part) {
-          continue;
-        }
-        if (!domNode) {
-          // create domNode from the first part
-          if (part === "svg") {
-            projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
-          }
-          if (projectionOptions.namespace) {
-            domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, part);
-          } else {
-            domNode = vnode.domNode = document.createElement(part);
-          }
-          afterCreate(domNode);
+      // parsing the selector
+      var lastStart = 0;
+      var mode;
+      var nextMode = "tag";
+      var found = undefined;
+      var length = vnodeSelector.length;
+      for(i = 0; i < length; i++) {
+        mode = nextMode;
+        if(i === length - 1) {
+          found = lastStart === 0 ? vnodeSelector : vnodeSelector.substr(lastStart);
         } else {
-          type = part.charAt(0);
-          if(type === ".") {
-            domNode.classList.add(part.substring(1));
-          } else if (type === "#") {
-            domNode.id = part.substr(1);
+          var c = vnodeSelector.charAt(i);
+          if(c === ".") {
+            nextMode = "class";
+            found = vnodeSelector.substring(lastStart, i);
+            lastStart = i + 1;
+          } else if(c === "#") {
+            nextMode = "id";
+            found = vnodeSelector.substring(lastStart, i);
+            lastStart = i + 1;
           }
+        }
+        if(found !== undefined) {
+          if(mode === "tag") {
+            if(found === "svg") {
+              projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
+            }
+            if(projectionOptions.namespace !== undefined) {
+              domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, found);
+            } else {
+              domNode = vnode.domNode = document.createElement(found);
+            }
+            if(insertBefore !== undefined) {
+              parentNode.insertBefore(domNode, insertBefore);
+            } else {
+              parentNode.appendChild(domNode);
+            }
+          } else if(mode === "class") {
+            domNode.classList.add(found);
+          } else {
+            domNode.id = found;
+          }
+          found = undefined;
         }
       }
       initPropertiesAndChildren(domNode, vnode, projectionOptions);
@@ -381,6 +390,9 @@
 
   var initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
     addChildren(domNode, vnode.children, projectionOptions); // children before properties, needed for value property of <select>.
+    if(vnode.text) {
+      domNode.textContent = vnode.text;
+    }
     setProperties(domNode, vnode.properties, projectionOptions);
     if (vnode.properties && vnode.properties.afterCreate) {
       vnode.properties.afterCreate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
@@ -405,6 +417,14 @@
     } else {
       if(vnode.vnodeSelector.substr(0, 3) === "svg") {
         projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
+      }
+      if(previous.text !== vnode.text) {
+        textUpdated = true;
+        if(vnode.text === undefined) {
+          domNode.removeChild(domNode.firstChild); // the only textnode presumably
+        } else {
+          domNode.textContent = vnode.text;
+        }
       }
       updated = updateChildren(domNode, previous.children, vnode.children, projectionOptions);
       updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
@@ -466,27 +486,31 @@
       } else if (typeof selector !== "string" || (children && !Array.isArray(children)) || (properties !== undefined && typeof properties !== "object")) {
         throw new Error("Incorrect arguments passed to the h() function. Correct signature: h(string, optional object, optional array)");
       }
-      children = flatten(selector, children);
+      var text = undefined;
+      if(children && children.length === 1 && typeof children[0] === "string") {
+        text = children[0];
+        children = undefined;
+      } else {
+        children = flatten(selector, children);
+      }
       return {
         vnodeSelector: selector,
         properties: properties,
         children: children,
+        text: text, // Only used in combination with children === undefined
         domNode: null
       };
     },
 
     createDom: function (vnode, projectionOptions) {
       projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-      createDom(vnode, noop, projectionOptions);
+      createDom(vnode, document.createElement("div"), undefined, projectionOptions);
       return createProjection(vnode, projectionOptions);
     },
 
-    appendToDom: function (append, vnode, projectionOptions) {
+    appendToDom: function (parentNode, vnode, projectionOptions) {
       projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-      var afterCreate = append.appendChild ? function (newElement) {
-        append.appendChild(newElement);
-      } : append;
-      createDom(vnode, afterCreate, projectionOptions);
+      createDom(vnode, parentNode, undefined, projectionOptions);
       return createProjection(vnode, projectionOptions);
     },
 
@@ -506,11 +530,11 @@
           return functionPropertyArgument.apply(this, arguments);
         };
       };
-      var mount = null;
+      var mount = undefined;
       var scheduled;
       var destroyed = false;
       var doRender = function () {
-        scheduled = null;
+        scheduled = undefined;
         if (!mount) {
           var timing1 = performance.now();
           var vnode = renderFunction();
@@ -535,7 +559,7 @@
         destroy: function () {
           if (scheduled) {
             cancelAnimationFrame(scheduled);
-            scheduled = null;
+            scheduled = undefined;
           }
           destroyed = true;
         }
@@ -544,18 +568,18 @@
     },
 
     createCache: function () {
-      var cachedInputs = null;
-      var cachedOutcome = null;
+      var cachedInputs = undefined;
+      var cachedOutcome = undefined;
       var result = {
         invalidate: function () {
-          cachedOutcome = null;
-          cachedInputs = null;
+          cachedOutcome = undefined;
+          cachedInputs = undefined;
         },
         result: function (inputs, calculation) {
           if (cachedInputs) {
             for (var i = 0; i < inputs.length; i++) {
               if (cachedInputs[i] !== inputs[i]) {
-                cachedOutcome = null;
+                cachedOutcome = undefined;
               }
             }
           }

@@ -10,7 +10,7 @@ describe('Maquette', function () {
 
     jsdom();
 
-    it('should create and update single textnodes', function () {
+    it("should create and update single textnodes", function () {
       var projection = maquette.createDom(h("div", ["text"]));
       expect(projection.domNode.outerHTML).to.equal("<div>text</div>");
 
@@ -26,6 +26,18 @@ describe('Maquette', function () {
       projection.update(h("div", ["text"]));
       expect(projection.domNode.outerHTML).to.equal("<div>text</div>");
     });
+
+    it("should work correctly with adjacent textnodes", function () {
+      var projection = maquette.createDom(h("div", ["", "1", ""]));
+      expect(projection.domNode.outerHTML).to.equal("<div>1</div>");
+
+      projection.update(h("div", ["",""]));
+      expect(projection.domNode.outerHTML).to.equal("<div></div>");
+
+      projection.update(h("div", ["", "1", ""]));
+      expect(projection.domNode.outerHTML).to.equal("<div>1</div>");
+    });
+
 
   });
 });

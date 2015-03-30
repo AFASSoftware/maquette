@@ -281,7 +281,9 @@
         }
       }
     }
-    domNode.parentNode.removeChild(domNode);
+    if(domNode.parentNode) {
+      domNode.parentNode.removeChild(domNode);
+    }
   };
 
   var updateChildren = function (domNode, oldChildren, newChildren, projectionOptions) {

@@ -18,34 +18,20 @@
       background-color: darkRed;
     }
   </style>
-  <style>
-
-    .slideDown {
-      -webkit-transition: 0.5s ease-out height;
-	    transition: 0.5s ease-out height;
-      height: 0;
-    }
-    .slideDown.slideDown-active {
-      height: 38.4px;
-    }
-
-    .slideUp {
-      -webkit-transition: 0.5s ease-out height;
-	    transition: 0.5s ease-out height;
-      height: 38.4px;
-    }
-    .slideUp.slideUp-active {
-      height: 0;
-    }
-
-  </style>
   <script src="../../src/maquette.js"></script>
   <script src="../../bower_components/velocity/velocity.js"></script>
   <script src="../../bower_components/velocity/velocity.ui.js"></script>
-  <script src="../../src/velocity-transitions.js"></script>
   <script src="../../src/extras/showStats.js"></script>
   <script>
     var h = window.maquette.h;
+
+    var slideDown = function (element) {
+      Velocity.animate(element, "slideDown");
+    };
+
+    var slideUp = function (element, removeElement) {
+      Velocity.animate(element, "slideUp", removeElement);
+    };
 
     document.addEventListener('DOMContentLoaded', function () {
       var items = [];
@@ -54,11 +40,11 @@
       }
       var render = function () {
         return h("div#target", {}, items.filter(function (item) { return item.visible; }).map(function (item) {
-          return h("div.item", { key: "item-" + item.id, enterAnimation: "slideDown", exitAnimation: "slideUp" }, [item.title]);
+          return h("div.item", { key: "item-" + item.id, enterAnimation: slideDown, exitAnimation: slideUp }, [item.title]);
         }));
       };
 
-      var projector = window.maquette.createProjector(document.querySelector("#target"), render, { transitions: window.velocityTransitions });
+      var projector = window.maquette.createProjector(document.querySelector("#target"), render);
 
       setTimeout(function () {
         items[16].visible = false;

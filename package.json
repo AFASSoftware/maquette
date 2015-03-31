@@ -1,7 +1,7 @@
 {
   "name": "maquette",
   "description": "Minimalistic Virtual DOM implementation with support for animated transitions.",
-  "homepage": "http://johan-gorter.github.io/maquette/",
+  "homepage": "http://maquettejs.org/",
   "keywords": [
     "virtual",
     "dom",
@@ -12,7 +12,7 @@
   "author": "Johan Gorter <johan@johangorter.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/johan-gorter/maquette"
+    "url": "https://github.com/AFASSoftware/maquette"
   },
   "main": "dist/maquette.min.js",
   "scripts": {

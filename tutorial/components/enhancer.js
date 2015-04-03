@@ -1,14 +1,14 @@
-﻿window.createProgressiveEnhancer = function (renderFunctionsByQuerSelector) {
+﻿window.createProgressiveEnhancer = function (renderFunctionsByQuerySelector) {
   var renderFunctions = [];
   var projections = [];
 
   var afterCreate = function (domNode, projectionOptions) {
-    Object.keys(renderFunctionsByQuerSelector).forEach(function (querySelector) {
+    Object.keys(renderFunctionsByQuerySelector).forEach(function (querySelector) {
       var target = domNode.querySelector(querySelector);
       if (!target) {
         throw new Error("Could not find: " + querySelector);
       }
-      var renderFunction = renderFunctionsByQuerSelector[querySelector];
+      var renderFunction = renderFunctionsByQuerySelector[querySelector];
       renderFunctions.push(renderFunction);
       projections.push(maquette.mergeDom(target, renderFunction(), projectionOptions));
     });
@@ -22,7 +22,7 @@
 
   return {
     renderMaquette: function () {
-      return maquette.h("body", {
+      return maquette.h("body", { // body is just a placeholder, it will be ignored by maquette.mergeDom
         afterCreate: afterCreate,
         afterUpdate: afterUpdate
       });

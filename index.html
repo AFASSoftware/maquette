@@ -113,9 +113,9 @@
       <div class="col s12 m8">
         <h5>Live editor</h5>
         <code><textarea id="live-editor" rows="20" cols="90" spellcheck="false"
-        style="height:340px;line-height:16px;font-size:12px">var name = ""; // The data
+        style="height:340px;line-height:16px;font-size:12px">var name = ""; // A piece of data
 
-// Ordinary event handler
+// An ordinary event handler
 function handleNameInput(evt) {
   name = evt.target.value;
 };
@@ -127,12 +127,12 @@ var renderMaquette = function () {
     h("input", { 
       type: "text", placeholder: "What is your name?", value: name, oninput: handleNameInput 
     }),
-    h("p.output", ["Hello " + (name || "you"), "!"])
+    h("p.output", ["Hello " + (name || "you") + "!"])
   ]);
 }
 
 // Starts the projector, which renders the virtual DOM at just the right moments
-maquette.createProjector(document.getElementById("live-editor-result"), renderMaquette);</textarea></code>
+maquette.createProjector(domNode, renderMaquette);</textarea></code>
         <div id="live-editor-message"></div>
       </div>
       <div class="col s12 m4">
@@ -180,39 +180,19 @@ maquette.createProjector(document.getElementById("live-editor-result"), renderMa
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <script>
     function enhance() {
-      window.h = maquette.h;
-      var liveEditor = document.getElementById("live-editor");
-      var liveEditorMessage = document.getElementById("live-editor-message");
-      var liveEditorResult = document.getElementById("live-editor-result");
-      var script = liveEditor.value;
-
-      var executeScript = function () {
-        var func;
-        try {
-          func = new Function(script);
-        } catch(e) {
-          liveEditorMessage.innerHTML = "Compile error: " + e;
-        }
-        if (func) {
-          liveEditorMessage.innerHTML = "";
-          liveEditorResult.innerHTML = "";
-          try {
-            func();
-          } catch(e) {
-            liveEditorMessage.innerHTML = "Runtime error: " + e;
-          }
-        }
-      };
-
-      liveEditor.oninput = function (evt) {
-        script = liveEditor.value;
-        executeScript();
-      };
-
-      executeScript();
+      if(window.maquette && window.createLiveEditor && window.ace) {
+        var liveEditor = createLiveEditor();
+        var projector = maquetteEnhance(document.body, {
+          "#live-editor": liveEditor.renderEditor,
+          "#live-editor-result": liveEditor.renderResult
+        }, {});
+        liveEditor.projector = projector;
+      }
     }
   </script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/maquette/1.5.1/maquette.min.js" async onload="enhance()"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/maquette/1.6.0/maquette.min.js" async onload="enhance()"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js" async onload=" enhance()"></script>
+  <script src="script.js" async onload="enhance()"></script>
   {% include analytics.html %}
 </body>
 </html>

@@ -83,18 +83,19 @@ window.createLiveEditor = function (projector) { // projector can also be inject
     editor.setShowPrintMargin(false);
     editor.setBehavioursEnabled(true);
     editor.renderer.setShowGutter(false);
-    editor.renderer.getContainerElement().style.minHeight = "350px";
+    editor.renderer.getContainerElement().style.minHeight = "310px";
     editor.getSession().on("change", throttleValidateScript);
   };
 
   var registerResultDomNode = function (domNode) {
     resultDomNode = domNode;
+    validateScript();
   };
 
   var liveEditor = {
     projector: projector,
     renderEditor: function () {
-      return h("textarea", { style:"height: 350px", afterCreate: createAce });
+      return h("textarea", { afterCreate: createAce });
     },
     renderResult: function () {
       return h("div.result", { afterCreate: registerResultDomNode, classes: { error: !!error } }); // Contents is supplied using resultDomNode

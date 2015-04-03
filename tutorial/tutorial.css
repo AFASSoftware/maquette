@@ -160,6 +160,10 @@
   margin: 5px 0;
 }
 
+.objective > .detail > div > p {
+  margin: 5px 0;
+}
+
 .objective > .detail > code > pre {
   margin: 5px 0;
   overflow: hidden;

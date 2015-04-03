@@ -93,8 +93,8 @@
           Maquette will update the real DOM, using animated transitions if desired.
         </p>
         <p>
-          The code below is a small demonstration of how maquette simplifies web applications. 
-          Pay close attention to where the <code>name</code> variable is used. 
+          The code below is a small live demonstration of how maquette simplifies web development. 
+          Focus on the <code>name</code> variable to find out how it works.
         </p>
       </div>
       <div class="col s12 m4">
@@ -113,7 +113,7 @@
       <div class="col s12 m8">
         <h5>Live editor</h5>
         <code><textarea id="live-editor" rows="20" cols="90" spellcheck="false"
-        style="height:340px;line-height:16px;font-size:12px">var name = ""; // A piece of data
+        style="height:310px;line-height:16px;font-size:12px">var name = ""; // A piece of data
 
 // An ordinary event handler
 function handleNameInput(evt) {
@@ -131,22 +131,20 @@ var renderMaquette = function () {
   ]);
 }
 
-// Starts the projector, which renders the virtual DOM at just the right moments
+// Starts the projector, which updates the real DOM at just the right moments
 maquette.createProjector(domNode, renderMaquette);</textarea></code>
         <div id="live-editor-message"></div>
       </div>
       <div class="col s12 m4">
         <h5>Result</h5>
-        <p id="live-editor-result"></p>
+        <div id="live-editor-result"></div>
       </div>
     </div>
-
-    <br />
 
     <h5 class="center">Get started</h5>
     <p class="center">
       Are you ready to get started? <br />
-      We have created a fun tutorial which will teach you everything you need to know in less than 10 minutes. 
+      We have created a fun tutorial which will teach you everything you need to know. 
     </p>
 
     <br />

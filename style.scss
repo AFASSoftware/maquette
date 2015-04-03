@@ -1,3 +1,28 @@
 ---
 ---
 @import "materialize";
+
+#live-editor-result {
+  top: 3px;
+  border: solid 1px lightGray;
+  background-color: lightGray;
+  padding: 7px;
+  min-height: 200px;
+  position: relative;
+  
+  &.error {
+    border: solid 1px red;
+    padding: 7px;
+    color: red;
+  }
+  
+  > input {
+    border: solid 1px #444444 !important;
+    box-shadow: none !important;
+    padding: 7px;
+    line-height:1.5;
+    height: auto;
+    width: calc(100% - 14px);
+    background-color:white;
+  }
+}

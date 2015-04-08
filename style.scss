@@ -2,6 +2,10 @@
 ---
 @import "materialize";
 
+pre {
+  margin: 0;
+}
+
 #live-editor-result {
   top: 3px;
   border: solid 1px lightGray;

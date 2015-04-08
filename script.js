@@ -75,6 +75,7 @@ window.createLiveEditor = function (projector) { // projector can also be inject
 
   var createAce = function (textArea) {
     editor = ace.edit(textArea);
+    editor.setOptions({minLines: 5, maxLines: 30});
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode({ path: "ace/mode/javascript" });
     editor.getSession().setTabSize(2);
@@ -82,8 +83,7 @@ window.createLiveEditor = function (projector) { // projector can also be inject
     editor.setHighlightActiveLine(false);
     editor.setShowPrintMargin(false);
     editor.setBehavioursEnabled(true);
-    editor.renderer.setShowGutter(false);
-    editor.renderer.getContainerElement().style.minHeight = "310px";
+//    editor.renderer.setShowGutter(false);
     editor.getSession().on("change", throttleValidateScript);
   };
 

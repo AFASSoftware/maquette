@@ -75,7 +75,7 @@ window.createLiveEditor = function (projector) { // projector can also be inject
 
   var createAce = function (textArea) {
     editor = ace.edit(textArea);
-    editor.setOptions({minLines: 5, maxLines: 30});
+    editor.setOptions({minLines: 5, maxLines: 50});
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode({ path: "ace/mode/javascript" });
     editor.getSession().setTabSize(2);

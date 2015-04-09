@@ -122,7 +122,7 @@ function handleNameInput(evt) {
 
 // This function uses the 'hyperscript' notation to create the virtual DOM. 
 // The 'you' variable is used twice here
-var renderMaquette = function () {
+function renderMaquette() {
   return h("p#live-editor-result", [
     h("input", { 
       type: "text", placeholder: "What is your name?", value: you, oninput: handleNameInput 

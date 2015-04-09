@@ -81,7 +81,7 @@ You can then use the following lines to the stylesheet to trigger the desired CS
 
     .slideDown {
       -webkit-transition: 0.5s ease-out height;
-	    transition: 0.5s ease-out height;
+      transition: 0.5s ease-out height;
       height: 0;
     }
     

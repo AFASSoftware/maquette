@@ -94,7 +94,7 @@
         </p>
         <p>
           The code below is a small live demonstration of how maquette simplifies web development. 
-          Focus on the <code>name</code> variable to find out how it works.
+          Focus on the <code>you</code> variable to find out how it works.
         </p>
       </div>
       <div class="col s12 m4">
@@ -113,21 +113,21 @@
       <div class="col s12 m8">
         <h5>Live editor</h5>
         <code><textarea id="live-editor" rows="20" cols="90" spellcheck="false"
-        style="height:310px;line-height:16px;font-size:12px">var name = ""; // A piece of data
+        style="height:310px;line-height:16px;font-size:12px">var you = ""; // A piece of data
 
 // An ordinary event handler
 function handleNameInput(evt) {
-  name = evt.target.value;
-};
+  you = evt.target.value;
+}
 
 // This function uses the 'hyperscript' notation to create the virtual DOM. 
-// The 'name' variable is used twice here
+// The 'you' variable is used twice here
 var renderMaquette = function () {
   return h("p#live-editor-result", [
     h("input", { 
-      type: "text", placeholder: "What is your name?", value: name, oninput: handleNameInput 
+      type: "text", placeholder: "What is your name?", value: you, oninput: handleNameInput 
     }),
-    h("p.output", ["Hello " + (name || "you") + "!"])
+    h("p.output", ["Hello " + (you || "you") + "!"])
   ]);
 }
 

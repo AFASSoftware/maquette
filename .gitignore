@@ -1,7 +1,7 @@
 bower_components
 node_modules
+coverage
 *.log
-
 
 # Linux gedit temp files
 *~
@@ -49,3 +49,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.cmd
+
+# Files for NodeJS plugin for visual studio
+maquette.njsproj
+.ntvs_analysis.dat
+bin
+obj

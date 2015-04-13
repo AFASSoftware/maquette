@@ -8,6 +8,11 @@ var bump = require('gulp-bump');
 var filter = require('gulp-filter');
 var tag_version = require('gulp-tag-version');
 
+var browserSync = require('browser-sync');
+var reload = browserSync.reload;
+
+var BROWSERSYNC_PORT = parseInt(process.env.BROWSERSYNC_PORT) || 3002;
+
 gulp.task("compress",  function() {
   gulp.src("src/*.js")
     .pipe(uglify())
@@ -36,6 +41,21 @@ function inc(importance) {
     .pipe(tag_version());
 }
 
+// these tasks are called from scripts/release.js
 gulp.task('bump-patch', ["compress"], function () { return inc('patch'); });
 gulp.task('bump-minor', ["compress"], function () { return inc('minor'); });
 gulp.task('bump-major', ["compress"], function () { return inc('major'); });
+
+gulp.task('reload', reload);
+
+gulp.task('serve', ['default'], function () {
+  browserSync({
+    port: BROWSERSYNC_PORT,
+    notify: false,
+    server: '.'
+  });
+    
+  gulp.watch('./src/**/*', ['compress', 'reload']);
+  gulp.watch('./examples/**/*', ['reload']);
+  gulp.watch('./browser-tests/**/*', ['reload']);
+});

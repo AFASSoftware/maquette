@@ -267,6 +267,7 @@
     if(vNode.properties) {
       var exitAnimation = vNode.properties.exitAnimation;
       if(exitAnimation) {
+        domNode.style.pointerEvents = "none";
         var removeDomNode = function () {
           if(domNode.parentNode) {
             domNode.parentNode.removeChild(domNode);

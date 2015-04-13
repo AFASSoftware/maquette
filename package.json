@@ -16,7 +16,8 @@
   },
   "main": "dist/maquette.min.js",
   "scripts": {
-    "test": "mocha && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js"
+    "test": "mocha && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js",
+    "coverage": "node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha"
   },
   "licenses": [
     {
@@ -26,6 +27,7 @@
   ],
   "devDependencies": {
     "Set": "^0.4.1",
+    "browser-sync": "^2.5.2",
     "chai": "^2.2.0",
     "del": "^1.1.1",
     "gulp": "^3.8.10",
@@ -37,6 +39,7 @@
     "gulp-tag-version": "^1.2.1",
     "gulp-uglify": "^1.0.2",
     "inquirer": "^0.8.0",
+    "istanbul": "^0.3.13",
     "jsdom": "^4.1.0",
     "mocha": "^2.1.0",
     "mocha-jsdom": "^0.2.1"

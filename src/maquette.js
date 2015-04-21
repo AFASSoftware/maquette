@@ -469,6 +469,9 @@
   };
 
   var createProjection = function (vnode, projectionOptions) {
+    if (!vnode.vnodeSelector) {
+      throw new Error("Invalid vnode argument");
+    }
     return {
       update: function (updatedVnode) {
         if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
@@ -483,9 +486,13 @@
 
   var maquette = {
     h: function (selector, properties, children) {
-      if (!children && (Array.isArray(properties)) && typeof selector === "string") {
-        children = properties;
-        properties = undefined;
+      if (arguments.length === 2 && typeof selector === "string") {
+        if (Array.isArray(properties)) {
+          children = properties;
+          properties = undefined;
+        } else if (properties === undefined) {
+          throw new Error("undefined is not a valid value for properties, maybe you forgot the comma between } and [ ?");
+        }
       } else if (typeof selector !== "string" || (children && !Array.isArray(children)) || (properties !== undefined && typeof properties !== "object")) {
         throw new Error("Incorrect arguments passed to the h() function. Correct signature: h(string, optional object, optional array)");
       }

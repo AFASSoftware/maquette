@@ -4,6 +4,8 @@ var assert = require("assert");
 describe('Maquette', function () {
   describe('#h()', function () {
 
+    var h = maquette.h;
+    
     var toTextVNode = function (text) {
       return {
         vnodeSelector: "",
@@ -15,7 +17,6 @@ describe('Maquette', function () {
     };
 
     it('should flatten nested arrays', function () {
-      var h = maquette.h;
 
       var vnode = h("div", [
         "text",
@@ -35,6 +36,15 @@ describe('Maquette', function () {
         toTextVNode("deep"),
         toTextVNode("here")
       ]);
+    });
+    
+    it('should notice a common pitfall with a missing comma', function() {
+      try {
+        h("div", {classes:{}} ["text"])
+        assert.fail("there was no error");
+      } catch(e) {
+        assert.ok(e.message.indexOf("forgot the comma") !== -1, "errormessage was right");
+      }
     });
   });
 });

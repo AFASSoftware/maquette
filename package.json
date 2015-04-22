@@ -41,7 +41,7 @@
     "inquirer": "^0.8.0",
     "istanbul": "^0.3.13",
     "mocha": "^2.1.0",
-    "jsdom": "^3.1.0", // pre-4.0.0
+    "jsdom": "^3.1.0",
     "mocha-jsdom": "^0.2.0"
   }
 }

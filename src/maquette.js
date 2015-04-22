@@ -101,8 +101,6 @@
 
   // Render helper functions
 
-  var classIdSplit = /([\.#]?[a-zA-Z0-9_:-]+)/;
-
   var defaultProjectionOptions = {
     namespace: undefined,
     transitions: {

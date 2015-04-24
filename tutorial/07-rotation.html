@@ -8,7 +8,6 @@
     <link href="tutorial.css" rel="stylesheet" />
     <script src="bower_components/velocity/velocity.min.js"></script>
     <script src="bower_components/maquette/dist/maquette.min.js"></script>
-    <script src="bower_components/maquette/dist/velocity-transitions.min.js"></script>
     <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
     <script src="components/enhancer.js"></script>
     <script src="components/workbench.js"></script>
@@ -23,7 +22,7 @@
 
         var h = maquette.h;
 
-        var projector = maquette.createProjector(document.body, function() {return enhancer.renderMaquette();}, {transitions: velocityTransitions});
+        var projector = maquette.createProjector(document.body, function() {return enhancer.renderMaquette();}, {});
 
         var changeCount = 0;
         var lastRotation = 0;

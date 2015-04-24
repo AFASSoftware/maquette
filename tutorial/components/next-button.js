@@ -1,8 +1,10 @@
-﻿window.createNextButton = function (projector, getUnlocked) {
+window.createNextButton = function (projector, getUnlocked) {
 
   var h = maquette.h;
 
-  var removeLock = { opacity: [0, "easeInCubic", 1], scale: [4, "easeOutQuad", 1]};
+  var removeLock = function(element, removeElement) {
+    window.Velocity.animate(element, { opacity: [0, "easeInCubic", 1], scale: [4, "easeOutQuad", 1]}, removeElement);
+  };
 
   var handleClick = function(evt) {
     if (!getUnlocked()) {

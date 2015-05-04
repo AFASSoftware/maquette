@@ -1,22 +1,28 @@
-window.todoListComponent = function (mode, model) {
+window.createListComponent = function (mode, model) {
 
   'use strict';
 
-  // Think of a component as being a View (the render() function) combined with a ViewModel (the rest).
+  // Think of a component as being a View (the renderMaquette() function) combined with a ViewModel (the rest).
 
   var h = window.maquette.h;
 
+  // State
+
+  // TODO: make functions of these 3:
   var checkedAll = true;
   var completedCount = 0;
   var itemsLeft = 0;
+
   var newTodoTitle = "";
   var todos = [];
+
+  // Helper functions
 
   var addTodo = function () {
     var title = newTodoTitle.trim();
     if (title) {
       model.create(newTodoTitle, function (results) {
-        var todo = todoComponent(component, results[0].id, results[0].title);
+        var todo = createTodoComponent(listComponent, results[0].id, results[0].title);
         todos.push(todo);
         itemsLeft++;
         checkedAll = false;
@@ -35,9 +41,13 @@ window.todoListComponent = function (mode, model) {
     }
   };
 
+  var focus = function (element) {
+    element.focus();
+  };
+
   // event handlers
 
-  var newTodoKeypress = function (evt) {
+  var handleNewTodoKeypress = function (evt) {
     newTodoTitle = evt.target.value;
     if(evt.keyCode === 13 /* Enter */) {
       addTodo();
@@ -49,11 +59,11 @@ window.todoListComponent = function (mode, model) {
     }
   };
   
-  var newTodoInput = function (evt) {
+  var handleNewTodoInput = function (evt) {
     newTodoTitle = evt.target.value;
   };
 
-  var checkedAllClicked = function (evt) {
+  var handleToggleAllClick = function (evt) {
     evt.preventDefault();
     checkedAll = !checkedAll;
     todos.forEach(function (todo) {
@@ -71,26 +81,19 @@ window.todoListComponent = function (mode, model) {
     }
   };
 
-  var clearCompletedClicked = function (evt) {
+  var handleClearCompletedClick = function (evt) {
     for(var i = todos.length - 1; i >= 0; i--) {
       if(todos[i].completed) {
-        component.removeTodo(todos[i]);
+        listComponent.removeTodo(todos[i]);
       }
     }
   };
 
-  var focus = function (element) {
-    element.focus();
-  };
+  // public interface (accessible from both app and todoComponent)
 
-  var component = {
-
-    // public interface (accessible from both app and todoComponent)
-
+  var listComponent = {
     mode: mode,
-
-    editingTodo: null,
-
+    editingTodo: undefined, // the todoComponent currently being edited
     removeTodo: function (todo) {
       model.remove(todo.id, function () {
         todos.splice(todos.indexOf(todo), 1);
@@ -104,7 +107,7 @@ window.todoListComponent = function (mode, model) {
     },
 
     editTodo: function (todo) {
-      component.editingTodo = todo;
+      listComponent.editingTodo = todo;
     },
 
     todoCompletedUpdated: function (todo, completed) {
@@ -124,20 +127,27 @@ window.todoListComponent = function (mode, model) {
       model.update(todo.id, { title: todo.title, completed: todo.completed });
     },
 
-    render: function () {
+    renderMaquette: function () {
       var anyTodos = todos.length > 0;
 
-      return h("section#todoapp", {key: mode}, [
+      return h("section#todoapp", {key: listComponent}, [
         h("header#header", [
           h("h1", ["todos"]),
-          h("input#new-todo", { autofocus: true, placeholder: "What needs to be done?", onkeypress: newTodoKeypress, oninput: newTodoInput, value: newTodoTitle, afterCreate: focus })
+          h("input#new-todo", {
+            autofocus: true,
+            placeholder: "What needs to be done?",
+            onkeypress: handleNewTodoKeypress, oninput: handleNewTodoInput,
+            value: newTodoTitle, afterCreate: focus
+          })
         ]),
         anyTodos ? [
           h("section#main", { key: mode }, [
-            h("input#toggle-all", { type: "checkbox", checked: checkedAll, onclick: checkedAllClicked }),
+            h("input#toggle-all", { type: "checkbox", checked: checkedAll, onclick: handleToggleAllClick }),
             h("label", { "for": "toggle-all" }, ["Mark all as complete"]),
             h("ul#todo-list",
-              todos.filter(visibleInMode).map(function (todo) { return todo.render(); })
+              todos.filter(visibleInMode).map(function (todo) {
+                return todo.renderMaquette();
+              })
             )
           ]),
           h("footer#footer", [
@@ -155,16 +165,18 @@ window.todoListComponent = function (mode, model) {
                 h("a", { classes: { selected: mode === "completed" }, href: "#/completed" }, ["Completed"])
               ])
             ]),
-            completedCount > 0 ? h("button#clear-completed", { onclick: clearCompletedClicked }, ["Clear completed (" + completedCount + ")"]) : null
+            completedCount > 0 ? h("button#clear-completed", { onclick: handleClearCompletedClick }, ["Clear completed (" + completedCount + ")"]) : null
           ])
         ] : null
       ]);
     }
   };
 
+  // Initializes the component by reading from the model
+
   model.read(function (data) {
     data.forEach(function (dataItem) {
-      var todo = todoComponent(component, dataItem.id, dataItem.title);
+      var todo = createTodoComponent(listComponent, dataItem.id, dataItem.title);
       todos.push(todo);
       if(dataItem.completed) {
         todo.completed = true;
@@ -176,5 +188,5 @@ window.todoListComponent = function (mode, model) {
     });
   });
 
-  return component;
+  return listComponent;
 };

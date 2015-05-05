@@ -11,7 +11,8 @@ var tag_version = require('gulp-tag-version');
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 
-var BROWSERSYNC_PORT = parseInt(process.env.BROWSERSYNC_PORT) || 3002;
+var BROWSERSYNC_PORT = parseInt(process.env.PORT) || 3002;
+var BROWSERSYNC_HOST = process.env.IP || "127.0.0.1";
 
 gulp.task("compress",  function() {
   gulp.src("src/*.js")
@@ -51,6 +52,7 @@ gulp.task('reload', reload);
 gulp.task('serve', ['default'], function () {
   browserSync({
     port: BROWSERSYNC_PORT,
+    host: host,
     notify: false,
     server: '.'
   });

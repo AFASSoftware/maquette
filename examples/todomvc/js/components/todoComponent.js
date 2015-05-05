@@ -1,62 +1,29 @@
-window.todoComponent = function (todoList, id, title) {
+window.createTodoComponent = function (todoList, id, title) {
 
   'use strict';
 
-  // Think of a component as being a View (the render() function) combined with a ViewModel (the rest).
+  // Think of a component as being a View (the renderMaquette() function) combined with a ViewModel (the rest).
 
   var h = window.maquette.h;
   var ENTER_KEY = 13;
   var ESC_KEY = 27;
 
-  var renderCache = window.maquette.createCache();
+  // State
+
+  var renderCache = window.maquette.createCache(); // We use a cache here just for demonstration purposes, performance is usually not an issue at all.
   var editingTitle = null;
 
-  var remove = function (evt) {
-    evt.preventDefault();
-    todoList.removeTodo(component);
-  };
-
-  var toggleClicked = function (evt) {
-    evt.preventDefault();
-    component.completed = !component.completed;
-    todoList.todoCompletedUpdated(component, component.completed);
-  };
-
-  var labelDoubleClicked = function (evt) {
-    editingTitle = component.title;
-    todoList.editTodo(component);
-    evt.preventDefault();
-  };
-
-  var editInputHandler = function (evt) {
-    editingTitle = evt.target.value;
-  };
+  // Helper functions
 
   var acceptEdit = function () {
-    component.title = editingTitle.trim();
-    if (!component.title) {
+    todoComponent.title = editingTitle.trim();
+    if(!todoComponent.title) {
       todoList.editTodo(null);
-      todoList.removeTodo(component);
+      todoList.removeTodo(todoComponent);
     } else {
-      todoList.todoTitleUpdated(component);
+      todoList.todoTitleUpdated(todoComponent);
       todoList.editTodo(null);
       editingTitle = null;
-    }
-  };
-
-  var editKeyup = function (evt) {
-    if (evt.keyCode == ENTER_KEY) {
-      acceptEdit();
-    }
-    if (evt.keyCode == ESC_KEY) {
-      todoList.editTodo(null);
-      editingTitle = null;
-    }
-  };
-
-  var editBlurred = function (evt) {
-    if (todoList.editingTodo === component) {
-      acceptEdit();
     }
   };
 
@@ -74,27 +41,70 @@ window.todoComponent = function (todoList, id, title) {
     }
   };
 
-  var component = {
+  // Event handlers
+
+  var handleDestroyClick = function (evt) {
+    evt.preventDefault();
+    todoList.removeTodo(todoComponent);
+  };
+
+  var handleToggleClick = function (evt) {
+    evt.preventDefault();
+    todoComponent.completed = !todoComponent.completed;
+    todoList.todoCompletedUpdated(todoComponent, todoComponent.completed);
+  };
+
+  var handleLabelDoubleClick = function (evt) {
+    editingTitle = todoComponent.title;
+    todoList.editTodo(todoComponent);
+    evt.preventDefault();
+  };
+
+  var handleEditInput = function (evt) {
+    editingTitle = evt.target.value;
+  };
+
+  var handleEditKeyUp = function (evt) {
+    if (evt.keyCode == ENTER_KEY) {
+      acceptEdit();
+    }
+    if (evt.keyCode == ESC_KEY) {
+      todoList.editTodo(null);
+      editingTitle = null;
+    }
+  };
+
+  var handleEditBlur = function (evt) {
+    if (todoList.editingTodo === todoComponent) {
+      acceptEdit();
+    }
+  };
+
+  // Public API of this component
+
+  var todoComponent = {
     id: id,
     title: title,
     completed: false,
 
-    render: function () {
-      var editing = todoList.editingTodo === component;
+    renderMaquette: function () {
+      var editing = todoList.editingTodo === todoComponent;
 
-      return renderCache.result([component.completed, component.title, editing], function () {
-        return h("li", { key: id, classes: { completed: component.completed, editing: editing } }, [
-          editing
-            ? h("input.edit", { value: editingTitle, oninput: editInputHandler, onkeyup: editKeyup, onblur: editBlurred, afterCreate: focusEdit })
-            : h("div.view", [
-                h("input.toggle", { type: "checkbox", checked: component.completed, onclick: toggleClicked }),
-                h("label", { ondblclick: labelDoubleClicked }, [component.title]),
-                h("button.destroy", { onclick: remove })
-              ])
+      return renderCache.result([todoComponent.completed, todoComponent.title, editing], function () {
+        return h("li", { key: todoComponent, classes: { completed: todoComponent.completed, editing: editing } }, [
+          editing ? [
+            h("input.edit", { value: editingTitle, oninput: handleEditInput, onkeyup: handleEditKeyUp, onblur: handleEditBlur, afterCreate: focusEdit })
+          ] : [
+            h("div.view", [
+              h("input.toggle", { type: "checkbox", checked: todoComponent.completed, onclick: handleToggleClick }),
+              h("label", { ondblclick: handleLabelDoubleClick }, [todoComponent.title]),
+              h("button.destroy", { onclick: handleDestroyClick })
+            ])
+          ]
         ]);
       });
     }
   };
 
-  return component;
+  return todoComponent;
 };

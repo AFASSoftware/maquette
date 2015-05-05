@@ -21,16 +21,14 @@
 
   // Hyperscript helper functions
 
-  var flattenInto = function (parentSelector, insertions, main, mainIndex, selectorsThusFar) {
+  var flattenInto = function (parentSelector, insertions, main, mainIndex) {
     for(var i = 0; i < insertions.length; i++) {
       var item = insertions[i];
       if(Array.isArray(item)) {
-        mainIndex = flattenInto(parentSelector, item, main, mainIndex, selectorsThusFar);
+        mainIndex = flattenInto(parentSelector, item, main, mainIndex);
       } else {
         if(item !== null && item !== undefined) {
-          if(item.hasOwnProperty("vnodeSelector")) {
-            checkForDuplicateSelectors(parentSelector, item, selectorsThusFar);
-          } else {
+          if(!item.hasOwnProperty("vnodeSelector")) {
             item = toTextVNode(item);
           }
           main.splice(mainIndex, 0, item);
@@ -39,22 +37,6 @@
       }
     }
     return mainIndex;
-  };
-
-  var checkForDuplicateSelectors = function (parentSelector, sameAs, selectorsThusFar) {
-    var selector = sameAs.vnodeSelector;
-    if(selector === "") {
-      return; // textnodes can be safely ignored.
-    }
-    if(sameAs.properties && sameAs.properties.key) {
-      return; // uniqueness of keys is not checked for performance sake
-    }
-    for(var i = 0; i < selectorsThusFar.length; i++) {
-      if(selector === selectorsThusFar[i]) {
-        throw new Error("[" + parentSelector + "] contains indistinguishable child nodes [" + selector + "], please add unique key properties.");
-      }
-    }
-    selectorsThusFar.push(selector);
   };
 
   var toTextVNode = function (data) {
@@ -80,16 +62,14 @@
       }
     }
     var index = 0;
-    var selectorsThusFar = [];
     while(index < children.length) {
       var child = children[index];
       if(child === null || child === undefined) {
         children.splice(index, 1);
       } else if(Array.isArray(child)) {
         children.splice(index, 1);
-        index = flattenInto(parentSelector, child, children, index, selectorsThusFar);
+        index = flattenInto(parentSelector, child, children, index);
       } else if(child.hasOwnProperty("vnodeSelector")) {
-        checkForDuplicateSelectors(parentSelector, child, selectorsThusFar);
         index++;
       } else {
         children[index] = toTextVNode(child);
@@ -313,7 +293,31 @@
     }
   };
 
-  var updateChildren = function (domNode, oldChildren, newChildren, projectionOptions) {
+  var checkDistinguishable = function(childNodes, indexToCheck, parentVNode, operation) {
+    var childNode = childNodes[indexToCheck];
+    if (childNode.vnodeSelector === "") {
+      return; // Text nodes need not be distinguishable
+    }
+    var key = childNode.properties ? childNode.properties.key : undefined;
+    if (!key) { // A key is just assumed to be unique
+      for (var i = 0; i < childNodes.length; i++) {
+        if (i !== indexToCheck) {
+          var node = childNodes[i];
+          if (same(node, childNode)) {
+            if (operation === "added") {
+              throw new Error(parentVNode.vnodeSelector + " had a " + childNode.vnodeSelector + " child " +
+                "added, but there is now more than one. You must add unique key properties to make them distinguishable.");
+            } else {
+              throw new Error(parentVNode.vnodeSelector + " had a " + childNode.vnodeSelector + " child " +
+                "removed, but there were more than one. You must add unique key properties to make them distinguishable.");
+            }
+          }
+        }
+      }
+    }
+  };
+
+  var updateChildren = function (vnode, domNode, oldChildren, newChildren, projectionOptions) {
     if(oldChildren === newChildren) {
       return false;
     }
@@ -337,6 +341,7 @@
           // Remove preceding missing children
           for(i = oldIndex; i < findOldIndex; i++) {
             nodeToRemove(oldChildren[i], transitions);
+            checkDistinguishable(oldChildren, i, vnode, "removed");
           }
           textUpdated = updateDom(oldChildren[findOldIndex], newChild, projectionOptions) || textUpdated;
           oldIndex = findOldIndex + 1;
@@ -344,6 +349,7 @@
           // New child
           createDom(newChild, domNode, (oldIndex < oldChildren.length) ? oldChildren[oldIndex].domNode : undefined, projectionOptions);
           nodeAdded(newChild, transitions);
+          checkDistinguishable(newChildren, newIndex, vnode, "added");
         }
       }
       newIndex++;
@@ -352,6 +358,7 @@
       // Remove child fragments
       for(i = oldIndex; i < oldChildren.length; i++) {
         nodeToRemove(oldChildren[i], transitions);
+        checkDistinguishable(oldChildren, i, vnode, "removed");
       }
     }
     return textUpdated;
@@ -455,7 +462,7 @@
           domNode.textContent = vnode.text;
         }
       }
-      updated = updateChildren(domNode, previous.children, vnode.children, projectionOptions);
+      updated = updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions);
       updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
       if(vnode.properties && vnode.properties.afterUpdate) {
         vnode.properties.afterUpdate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);

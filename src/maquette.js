@@ -365,7 +365,7 @@
   };
 
   var createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
-    var domNode, i;
+    var domNode, i, c, start = 0, type, found;
     var vnodeSelector = vnode.vnodeSelector;
     if(vnodeSelector === "") {
       domNode = vnode.domNode = document.createTextNode(vnode.text);
@@ -375,49 +375,31 @@
         parentNode.appendChild(domNode);
       }
     } else {
-      // parsing the selector
-      var lastStart = 0;
-      var mode;
-      var nextMode = "tag";
-      var found = undefined;
-      var length = vnodeSelector.length;
-      for(i = 0; i < length; i++) {
-        mode = nextMode;
-        if(i === length - 1) {
-          found = lastStart === 0 ? vnodeSelector : vnodeSelector.substr(lastStart);
-        } else {
-          var c = vnodeSelector.charAt(i);
-          if(c === ".") {
-            nextMode = "class";
-            found = vnodeSelector.substring(lastStart, i);
-            lastStart = i + 1;
-          } else if(c === "#") {
-            nextMode = "id";
-            found = vnodeSelector.substring(lastStart, i);
-            lastStart = i + 1;
-          }
-        }
-        if(found !== undefined) {
-          if(mode === "tag") {
-            if(found === "svg") {
+      for (i = 0; i <= vnodeSelector.length; ++i) {
+        c = vnodeSelector.charAt(i);
+        if (i === vnodeSelector.length || c === '.' || c === '#') {
+          type = vnodeSelector.charAt(start - 1);
+          found = vnodeSelector.slice(start, i);
+          if (type === ".") {
+            domNode.classList.add(found);
+          } else if (type === "#") {
+            domNode.id = found;
+          } else {
+            if (found === "svg") {
               projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
             }
-            if(projectionOptions.namespace !== undefined) {
+            if (projectionOptions.namespace !== undefined) {
               domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, found);
             } else {
               domNode = vnode.domNode = document.createElement(found);
             }
-            if(insertBefore !== undefined) {
+            if (insertBefore !== undefined) {
               parentNode.insertBefore(domNode, insertBefore);
             } else {
               parentNode.appendChild(domNode);
             }
-          } else if(mode === "class") {
-            domNode.classList.add(found);
-          } else {
-            domNode.id = found;
           }
-          found = undefined;
+          start = i + 1;
         }
       }
       initPropertiesAndChildren(domNode, vnode, projectionOptions);

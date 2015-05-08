@@ -38,6 +38,28 @@ describe('Maquette', function () {
       expect(projection.domNode.outerHTML).to.equal("<div>1</div>");
     });
 
+    it("should parse the selector", function () {
+
+      require("./jsdom-classlist-polyfill")(window);
+    
+      var projection = maquette.createDom(h("div"));
+      expect(projection.domNode.outerHTML).to.equal("<div></div>");
+
+      projection = maquette.createDom(h("div.class1"));
+      expect(projection.domNode.outerHTML).to.equal("<div class=\"class1\"></div>");
+
+      projection = maquette.createDom(h("div#id"));
+      expect(projection.domNode.outerHTML).to.equal("<div id=\"id\"></div>");
+
+      projection = maquette.createDom(h("div.class1.class2"));
+      expect(projection.domNode.outerHTML).to.equal("<div class=\"class1 class2\"></div>");
+
+      projection = maquette.createDom(h("div.class1.class2#id"));
+      expect(projection.domNode.outerHTML).to.equal("<div class=\"class1 class2\" id=\"id\"></div>");
+
+      projection = maquette.createDom(h("div#id.class1.class2"));
+      expect(projection.domNode.outerHTML).to.equal("<div id=\"id\" class=\"class1 class2\"></div>");
+    });
 
   });
 });

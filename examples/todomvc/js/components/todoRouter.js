@@ -1,32 +1,37 @@
-window.todoRouter = function (model) {
+window.createRouter = function (model) {
+  // This router renders a <main> in which the current page is rendered. The current page is based on the hash (#) part of the url.
 
   'use strict';
 
   var h = window.maquette.h;
 
+  var currentHash = null;
   var currentPage = null;
 
-  var component = {
+  var todoRouter = {
 
-    render: function () {
+    renderMaquette: function () {
       var hash = document.location.hash;
-      var mode;
-      switch (hash) {
-        case "#/active":
-          mode = "active";
-          break;
-        case "#/completed":
-          mode = "completed";
-          break;
-        default:
-          mode = "all";
-      };
-      if(!currentPage || (currentPage.mode !== mode)) {
-        currentPage = todoListComponent(mode, model);
+
+      if(hash !== currentHash) {
+        switch(hash) {
+          case "#/active":
+            currentPage = createListComponent("active", model);
+            break;
+          case "#/completed":
+            currentPage = createListComponent("completed", model);
+            break;
+          default:
+            currentPage = createListComponent("all", model);
+        };
+        currentHash = hash;
       }
-      return h("main", [currentPage.render()]);
+
+      return h("main", [
+        currentPage.renderMaquette()
+      ]);
     }
   };
 
-  return component;
+  return todoRouter;
 };

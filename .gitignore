@@ -1,3 +1,6 @@
+# useful file for debugging a mocha unit test from cloud9, file contents: var Mocha = require("mocha");var mocha = new Mocha();mocha.addFile("test/createDom");mocha.run();
+sandbox.js
+
 bower_components
 node_modules
 coverage

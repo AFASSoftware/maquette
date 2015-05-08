@@ -11,7 +11,7 @@
     Object.keys(base).forEach(function (key) {
       result[key] = base[key];
     });
-    if (overrides) {
+    if(overrides) {
       Object.keys(overrides).forEach(function (key) {
         result[key] = overrides[key];
       });
@@ -21,16 +21,14 @@
 
   // Hyperscript helper functions
 
-  var flattenInto = function (parentSelector, insertions, main, mainIndex, selectorsThusFar) {
-    for (var i = 0; i < insertions.length; i++) {
+  var flattenInto = function (parentSelector, insertions, main, mainIndex) {
+    for(var i = 0; i < insertions.length; i++) {
       var item = insertions[i];
-      if (Array.isArray(item)) {
-        mainIndex = flattenInto(parentSelector, item, main, mainIndex, selectorsThusFar);
+      if(Array.isArray(item)) {
+        mainIndex = flattenInto(parentSelector, item, main, mainIndex);
       } else {
-        if (item !== null && item !== undefined) {
-          if (item.hasOwnProperty("vnodeSelector")) {
-            checkForDuplicateSelectors(parentSelector, item, selectorsThusFar);
-          } else {
+        if(item !== null && item !== undefined) {
+          if(!item.hasOwnProperty("vnodeSelector")) {
             item = toTextVNode(item);
           }
           main.splice(mainIndex, 0, item);
@@ -39,22 +37,6 @@
       }
     }
     return mainIndex;
-  };
-
-  var checkForDuplicateSelectors = function (parentSelector, sameAs, selectorsThusFar) {
-    var selector = sameAs.vnodeSelector;
-    if (selector === "") {
-      return; // textnodes can be safely ignored.
-    }
-    if (sameAs.properties && sameAs.properties.key) {
-      return; // uniqueness of keys is not checked for performance sake
-    }
-    for (var i = 0; i < selectorsThusFar.length; i++) {
-      if (selector === selectorsThusFar[i]) {
-        throw new Error("[" + parentSelector + "] contains indistinguishable child nodes [" + selector + "], please add unique key properties.");
-      }
-    }
-    selectorsThusFar.push(selector);
   };
 
   var toTextVNode = function (data) {
@@ -69,27 +51,25 @@
 
   // removes nulls, flattens embedded arrays
   var flatten = function (parentSelector, children) {
-    if (children === null || children === undefined) {
+    if(children === null || children === undefined) {
       return undefined;
     }
-    if (!Array.isArray(children)) {
-      if (children.hasOwnProperty("vnodeSelector")) {
+    if(!Array.isArray(children)) {
+      if(children.hasOwnProperty("vnodeSelector")) {
         return [children];
       } else {
         return [toTextVNode(children)];
       }
     }
     var index = 0;
-    var selectorsThusFar = [];
-    while (index < children.length) {
+    while(index < children.length) {
       var child = children[index];
-      if (child === null || child === undefined) {
+      if(child === null || child === undefined) {
         children.splice(index, 1);
-      } else if (Array.isArray(child)) {
+      } else if(Array.isArray(child)) {
         children.splice(index, 1);
-        index = flattenInto(parentSelector, child, children, index, selectorsThusFar);
-      } else if (child.hasOwnProperty("vnodeSelector")) {
-        checkForDuplicateSelectors(parentSelector, child, selectorsThusFar);
+        index = flattenInto(parentSelector, child, children, index);
+      } else if(child.hasOwnProperty("vnodeSelector")) {
         index++;
       } else {
         children[index] = toTextVNode(child);
@@ -118,31 +98,42 @@
   };
 
   var setProperties = function (domNode, properties, projectionOptions) {
-    if (!properties) {
+    if(!properties) {
       return;
     }
     var eventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
-    for (var propName in properties) {
+    for(var propName in properties) {
       var propValue = properties[propName];
-      if (propName === "class" || propName === "className" || propName === "classList") {
+      if(propName === "class" || propName === "className" || propName === "classList") {
         throw new Error("Property " + className + " is not supported, use 'classes' instead.");
-      } else if (propName === "classes") {
+      } else if(propName === "classes") {
         // object with string keys and boolean values
-        for (var className in propValue) {
-          if (propValue[className]) {
+        for(var className in propValue) {
+          if(propValue[className]) {
             domNode.classList.add(className);
           }
         }
-      } else if (propName === "key") {
+      } else if(propName === "styles") {
+        // object with string keys and string (!) values
+        for(var styleName in propValue) {
+          var styleValue = propValue[styleName];
+          if(styleValue) {
+            if(typeof styleValue !== "string") {
+              throw new Error("Style values may only be strings");
+            }
+            domNode.style[styleName] = styleValue;
+          }
+        }
+      } else if(propName === "key") {
         continue;
-      } else if (propValue === null || propValue === undefined) {
+      } else if(propValue === null || propValue === undefined) {
         continue;
       } else {
         var type = typeof propValue;
-        if (type === "function") {
-          if (eventHandlerInterceptor && (propName.lastIndexOf("on", 0) === 0)) { // lastIndexOf(,0)===0 -> startsWith
+        if(type === "function") {
+          if(eventHandlerInterceptor && (propName.lastIndexOf("on", 0) === 0)) { // lastIndexOf(,0)===0 -> startsWith
             propValue = eventHandlerInterceptor(propName, propValue, domNode); // intercept eventhandlers
-            if (propName === "oninput") {
+            if(propName === "oninput") {
               (function () {
                 // record the evt.target.value, because IE sometimes does a requestAnimationFrame between changing value and running oninput
                 var oldPropValue = propValue;
@@ -154,7 +145,7 @@
             }
           }
           domNode[propName] = propValue;
-        } else if (type === "string" && propName !== "value") {
+        } else if(type === "string" && propName !== "value") {
           domNode.setAttribute(propName, propValue);
         } else {
           domNode[propName] = propValue;
@@ -164,47 +155,64 @@
   };
 
   var updateProperties = function (domNode, previousProperties, properties, projectionOptions) {
-    if (!properties) {
+    if(!properties) {
       return;
     }
     var propertiesUpdated = false;
-    for (var propName in properties) {
+    for(var propName in properties) {
       // assuming that properties will be nullified instead of missing is by design
       var propValue = properties[propName];
       var previousValue = previousProperties[propName];
-      if (propName === "classes") {
+      if(propName === "classes") {
         var classList = domNode.classList;
-        for (var className in propValue) {
+        for(var className in propValue) {
           var on = !!propValue[className];
           var previousOn = !!previousValue[className];
-          if (on === previousOn) {
+          if(on === previousOn) {
             continue;
           }
           propertiesUpdated = true;
-          if (on) {
+          if(on) {
             classList.add(className);
           } else {
             classList.remove(className);
           }
         }
+      } else if(propName === "styles") {
+        for(var styleName in propValue) {
+          var newStyleValue = propValue[styleName];
+          var oldStyleValue = previousValue[styleName];
+          if(newStyleValue === oldStyleValue) {
+            continue;
+          }
+          propertiesUpdated = true;
+          if(newStyleValue) {
+            if(typeof newStyleValue !== "string") {
+              throw new Error("Style values may only be strings");
+            }
+            domNode.style[styleName] = newStyleValue;
+          } else {
+            domNode.style[styleName] = "";
+          }
+        }
       } else {
-        if (!propValue && typeof previousValue === "string") {
+        if(!propValue && typeof previousValue === "string") {
           propValue = "";
         }
-        if (propName === "value") { // value can be manipulated by the user directly and using event.preventDefault() is not an option
-          if (domNode[propName] !== propValue && domNode["oninput-value"] !== propValue) {
+        if(propName === "value") { // value can be manipulated by the user directly and using event.preventDefault() is not an option
+          if(domNode[propName] !== propValue && domNode["oninput-value"] !== propValue) {
             domNode[propName] = propValue; // Reset the value, even if the virtual DOM did not change
           } // else do not update the domNode, otherwise the cursor position would be changed
           if(propValue !== previousValue) {
             propertiesUpdated = true;
           }
-        } else if (propValue !== previousValue) {
+        } else if(propValue !== previousValue) {
           var type = typeof propValue;
-          if (type === "function") {
+          if(type === "function") {
             throw new Error("Functions may not be updated on subsequent renders (property: " + propName +
               "). Hint: declare event handler functions outside the render() function.");
           }
-          if (type === "string") {
+          if(type === "string") {
             domNode.setAttribute(propName, propValue);
           } else {
             domNode[propName] = propValue;
@@ -217,7 +225,7 @@
   };
 
   var addChildren = function (domNode, children, projectionOptions) {
-    if (!children) {
+    if(!children) {
       return;
     }
     for(var i = 0; i < children.length; i++) {
@@ -226,20 +234,20 @@
   };
 
   var same = function (vnode1, vnode2) {
-    if (vnode1.vnodeSelector !== vnode2.vnodeSelector) {
+    if(vnode1.vnodeSelector !== vnode2.vnodeSelector) {
       return false;
     }
-    if (vnode1.properties && vnode2.properties) {
+    if(vnode1.properties && vnode2.properties) {
       return vnode1.properties.key === vnode2.properties.key;
     }
     return !vnode1.properties && !vnode2.properties;
   };
 
   var findIndexOfChild = function (children, sameAs, start) {
-    if (sameAs.vnodeSelector !== "") {
+    if(sameAs.vnodeSelector !== "") {
       // Never scan for text-nodes
-      for (var i = start; i < children.length; i++) {
-        if (same(children[i], sameAs)) {
+      for(var i = start; i < children.length; i++) {
+        if(same(children[i], sameAs)) {
           return i;
         }
       }
@@ -285,8 +293,32 @@
     }
   };
 
-  var updateChildren = function (domNode, oldChildren, newChildren, projectionOptions) {
-    if (oldChildren === newChildren) {
+  var checkDistinguishable = function(childNodes, indexToCheck, parentVNode, operation) {
+    var childNode = childNodes[indexToCheck];
+    if (childNode.vnodeSelector === "") {
+      return; // Text nodes need not be distinguishable
+    }
+    var key = childNode.properties ? childNode.properties.key : undefined;
+    if (!key) { // A key is just assumed to be unique
+      for (var i = 0; i < childNodes.length; i++) {
+        if (i !== indexToCheck) {
+          var node = childNodes[i];
+          if (same(node, childNode)) {
+            if (operation === "added") {
+              throw new Error(parentVNode.vnodeSelector + " had a " + childNode.vnodeSelector + " child " +
+                "added, but there is now more than one. You must add unique key properties to make them distinguishable.");
+            } else {
+              throw new Error(parentVNode.vnodeSelector + " had a " + childNode.vnodeSelector + " child " +
+                "removed, but there were more than one. You must add unique key properties to make them distinguishable.");
+            }
+          }
+        }
+      }
+    }
+  };
+
+  var updateChildren = function (vnode, domNode, oldChildren, newChildren, projectionOptions) {
+    if(oldChildren === newChildren) {
       return false;
     }
     oldChildren = oldChildren || emptyArray;
@@ -297,18 +329,19 @@
     var newIndex = 0;
     var i;
     var textUpdated = false;
-    while (newIndex < newChildren.length) {
+    while(newIndex < newChildren.length) {
       var oldChild = (oldIndex < oldChildren.length) ? oldChildren[oldIndex] : undefined;
       var newChild = newChildren[newIndex];
-      if (oldChild !== undefined && same(oldChild, newChild)) {
+      if(oldChild !== undefined && same(oldChild, newChild)) {
         textUpdated = updateDom(oldChild, newChild, projectionOptions) || textUpdated;
         oldIndex++;
       } else {
         var findOldIndex = findIndexOfChild(oldChildren, newChild, oldIndex + 1);
-        if (findOldIndex >= 0) {
+        if(findOldIndex >= 0) {
           // Remove preceding missing children
           for(i = oldIndex; i < findOldIndex; i++) {
             nodeToRemove(oldChildren[i], transitions);
+            checkDistinguishable(oldChildren, i, vnode, "removed");
           }
           textUpdated = updateDom(oldChildren[findOldIndex], newChild, projectionOptions) || textUpdated;
           oldIndex = findOldIndex + 1;
@@ -316,21 +349,23 @@
           // New child
           createDom(newChild, domNode, (oldIndex < oldChildren.length) ? oldChildren[oldIndex].domNode : undefined, projectionOptions);
           nodeAdded(newChild, transitions);
+          checkDistinguishable(newChildren, newIndex, vnode, "added");
         }
       }
       newIndex++;
     }
-    if (oldChildren.length > oldIndex) {
+    if(oldChildren.length > oldIndex) {
       // Remove child fragments
       for(i = oldIndex; i < oldChildren.length; i++) {
         nodeToRemove(oldChildren[i], transitions);
+        checkDistinguishable(oldChildren, i, vnode, "removed");
       }
     }
     return textUpdated;
   };
 
   var createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
-    var domNode, i;
+    var domNode, i, c, start = 0, type, found;
     var vnodeSelector = vnode.vnodeSelector;
     if(vnodeSelector === "") {
       domNode = vnode.domNode = document.createTextNode(vnode.text);
@@ -340,49 +375,31 @@
         parentNode.appendChild(domNode);
       }
     } else {
-      // parsing the selector
-      var lastStart = 0;
-      var mode;
-      var nextMode = "tag";
-      var found = undefined;
-      var length = vnodeSelector.length;
-      for(i = 0; i < length; i++) {
-        mode = nextMode;
-        if(i === length - 1) {
-          found = lastStart === 0 ? vnodeSelector : vnodeSelector.substr(lastStart);
-        } else {
-          var c = vnodeSelector.charAt(i);
-          if(c === ".") {
-            nextMode = "class";
-            found = vnodeSelector.substring(lastStart, i);
-            lastStart = i + 1;
-          } else if(c === "#") {
-            nextMode = "id";
-            found = vnodeSelector.substring(lastStart, i);
-            lastStart = i + 1;
-          }
-        }
-        if(found !== undefined) {
-          if(mode === "tag") {
-            if(found === "svg") {
+      for (i = 0; i <= vnodeSelector.length; ++i) {
+        c = vnodeSelector.charAt(i);
+        if (i === vnodeSelector.length || c === '.' || c === '#') {
+          type = vnodeSelector.charAt(start - 1);
+          found = vnodeSelector.slice(start, i);
+          if (type === ".") {
+            domNode.classList.add(found);
+          } else if (type === "#") {
+            domNode.id = found;
+          } else {
+            if (found === "svg") {
               projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
             }
-            if(projectionOptions.namespace !== undefined) {
+            if (projectionOptions.namespace !== undefined) {
               domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, found);
             } else {
               domNode = vnode.domNode = document.createElement(found);
             }
-            if(insertBefore !== undefined) {
+            if (insertBefore !== undefined) {
               parentNode.insertBefore(domNode, insertBefore);
             } else {
               parentNode.appendChild(domNode);
             }
-          } else if(mode === "class") {
-            domNode.classList.add(found);
-          } else {
-            domNode.id = found;
           }
-          found = undefined;
+          start = i + 1;
         }
       }
       initPropertiesAndChildren(domNode, vnode, projectionOptions);
@@ -395,14 +412,14 @@
       domNode.textContent = vnode.text;
     }
     setProperties(domNode, vnode.properties, projectionOptions);
-    if (vnode.properties && vnode.properties.afterCreate) {
+    if(vnode.properties && vnode.properties.afterCreate) {
       vnode.properties.afterCreate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
     }
   };
 
   var updateDom = function (previous, vnode, projectionOptions) {
     var domNode = previous.domNode;
-    if (!domNode) {
+    if(!domNode) {
       throw new Error("previous node was not mounted");
     }
     var textUpdated = false;
@@ -410,8 +427,8 @@
       return textUpdated; // we assume that nothing has changed
     }
     var updated = false;
-    if (vnode.vnodeSelector === "") {
-      if (vnode.text !== previous.text) {
+    if(vnode.vnodeSelector === "") {
+      if(vnode.text !== previous.text) {
         domNode.nodeValue = vnode.text;
         textUpdated = true;
       }
@@ -427,9 +444,9 @@
           domNode.textContent = vnode.text;
         }
       }
-      updated = updateChildren(domNode, previous.children, vnode.children, projectionOptions);
+      updated = updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions);
       updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
-      if (vnode.properties && vnode.properties.afterUpdate) {
+      if(vnode.properties && vnode.properties.afterUpdate) {
         vnode.properties.afterUpdate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
       }
     }
@@ -467,12 +484,12 @@
   };
 
   var createProjection = function (vnode, projectionOptions) {
-    if (!vnode.vnodeSelector) {
+    if(!vnode.vnodeSelector) {
       throw new Error("Invalid vnode argument");
     }
     return {
       update: function (updatedVnode) {
-        if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
+        if(vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
           throw new Error("The selector for the root VNode may not be changed. (consider using mergeDom with one extra level)");
         }
         updateDom(vnode, updatedVnode, projectionOptions);
@@ -484,14 +501,14 @@
 
   var maquette = {
     h: function (selector, properties, children) {
-      if (arguments.length === 2 && typeof selector === "string") {
-        if (Array.isArray(properties)) {
+      if(arguments.length === 2 && typeof selector === "string") {
+        if(Array.isArray(properties)) {
           children = properties;
           properties = undefined;
-        } else if (properties === undefined) {
+        } else if(properties === undefined) {
           throw new Error("undefined is not a valid value for properties, maybe you forgot the comma between } and [ ?");
         }
-      } else if (typeof selector !== "string" || (children && !Array.isArray(children)) || (properties !== undefined && typeof properties !== "object")) {
+      } else if(typeof selector !== "string" || (children && !Array.isArray(children)) || (properties !== undefined && typeof properties !== "object")) {
         throw new Error("Incorrect arguments passed to the h() function. Correct signature: h(string, optional object, optional array)");
       }
       var text = undefined;
@@ -543,7 +560,7 @@
       var destroyed = false;
       var doRender = function () {
         scheduled = undefined;
-        if (!mount) {
+        if(!mount) {
           var timing1 = performance.now();
           var vnode = renderFunction();
           var timing2 = performance.now();
@@ -560,12 +577,12 @@
       scheduled = requestAnimationFrame(doRender);
       var api = {
         scheduleRender: function () {
-          if (!scheduled && !destroyed) {
+          if(!scheduled && !destroyed) {
             scheduled = requestAnimationFrame(doRender);
           }
         },
         destroy: function () {
-          if (scheduled) {
+          if(scheduled) {
             cancelAnimationFrame(scheduled);
             scheduled = undefined;
           }
@@ -584,14 +601,14 @@
           cachedInputs = undefined;
         },
         result: function (inputs, calculation) {
-          if (cachedInputs) {
-            for (var i = 0; i < inputs.length; i++) {
-              if (cachedInputs[i] !== inputs[i]) {
+          if(cachedInputs) {
+            for(var i = 0; i < inputs.length; i++) {
+              if(cachedInputs[i] !== inputs[i]) {
                 cachedOutcome = undefined;
               }
             }
           }
-          if (!cachedOutcome) {
+          if(!cachedOutcome) {
             cachedOutcome = calculation();
             cachedInputs = inputs;
           }
@@ -604,10 +621,10 @@
     stats: stats,
   };
 
-  if (typeof module !== "undefined" && module.exports) {
+  if(typeof module !== "undefined" && module.exports) {
     // Node and other CommonJS-like environments that support module.exports
     module.exports = maquette;
-  } else if (typeof define === "function" && define.amd) {
+  } else if(typeof define === "function" && define.amd) {
     // AMD / RequireJS
     define(function () {
       return maquette;

@@ -6,33 +6,68 @@
     <title>Tutorial</title>
     <link href="../style.css" rel="stylesheet" />
     <link href="tutorial.css" rel="stylesheet" />
-    <script src="bower_components/velocity/velocity.min.js"></script>
-    <script src="bower_components/maquette/dist/maquette.min.js"></script>
-    <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
     <script src="components/markup-matcher.js"></script>
     <script src="components/workbench.js"></script>
     <script src="components/next-button.js"></script>
-    <script src="components/enhancer.js"></script>
     <script>
+    
+      var createEnhancer = function(rootNode) {
+        var parameters = [];
+        var renderFunctions = [];
+        var projections = [];
+        var afterCreate = function(domNode, projectionOptions) {
+          var nodes = rootNode.querySelectorAll("script[type='text/hyperscript']");
+          var functionParameters = ["maquette", "h", "projector"];
+          var parameterValues = [maquette, maquette.h, projector];
+          parameters.forEach(function(p) {
+            functionParameters.push(p.name);
+            parameterValues.push(p.value);
+          });
+          Array.prototype.forEach.call(nodes, function(node, i) {
+            var func = new Function(functionParameters, "return " + node.textContent.trim());
+            var renderFunction = function() {
+              return func.apply(undefined, parameterValues); 
+            }
+            projections.push(maquette.mergeDom(node.parentNode, renderFunction(), projectionOptions));
+            renderFunctions.push(renderFunction);
+          });
+        };
+        var afterUpdate = function() {
+          for (var i=0;i<projections.length;i++) {
+            projections[i].update(renderFunctions[i]());
+          }
+        };
+        var start = function() {
+          return maquette.h("body", {afterCreate: afterCreate, afterUpdate: afterUpdate});
+        };
+        var projector = maquette.createProjector(rootNode || document.body, start, {});
+        
+        return {
+          projector: projector,
+          setParameter: function(name, value) {
+            parameters.push({name: name, value: value});
+          }
+        }
+      };
+      
       document.addEventListener('DOMContentLoaded', function () {
 
         var h = maquette.h;
+        var enhancer = createEnhancer(document.body);
 
-        // Starts the projector, which renders the virtual DOM at the right moments
-        var projector = maquette.createProjector(document.body, function() {return enhancer.renderMaquette();}, {});
+        var markupMatcher = window.createMarkupMatcher(enhancer.projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
 
-        var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
-
-        var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
+        var workbench = createWorkbench(enhancer.projector, "assets/saucer-intro.js", [
           markupMatcher
         ]);
-        var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
+        var nextButton = window.createNextButton(enhancer.projector, workbench.allObjectivesAchieved);
 
-        var enhancer = window.createProgressiveEnhancer({
-          "#next": nextButton.renderMaquette,
-          ".work": workbench.renderMaquette
-        });
-
+        enhancer.setParameter("workbench", workbench);
+        enhancer.setParameter("nextButton", nextButton);
+        
       });
     </script>
   </head>
@@ -44,7 +79,10 @@
         <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
         <ul class="right">
           <li><a href="index.html">Index</a></li>
-          <li><a id="next" href="02-variables-and-properties.html">Next</a></li>
+          <li>
+            <a id="next" href="02-variables-and-properties.html">Next<script type="text/hyperscript">nextButton.renderMaquette()</script>
+            </a>
+          </li>
         </ul>
       </div>
     </nav>
@@ -84,7 +122,11 @@
       The <b>next</b> button on top of the screen will be unlocked once you complete the objectives. Good luck!
     </p>
   </div>
-  <div class="work" style="height:460px"></div>
+  <div class="work" style="height:460px">
+    <script type="text/hyperscript">
+      workbench.renderMaquette()
+    </script>
+  </div>
   {% include analytics.html %}
 </body>
 </html>

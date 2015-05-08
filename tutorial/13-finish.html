@@ -6,9 +6,9 @@
     <title>Tutorial</title>
     <link href="../style.css" rel="stylesheet" />
     <link href="tutorial.css" rel="stylesheet" />
-    <script src="bower_components/velocity/velocity.min.js"></script>
-    <script src="bower_components/maquette/dist/maquette.min.js"></script>
-    <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
     <script src="components/enhancer.js"></script>
     <script src="components/workbench.js"></script>
     <script src="components/next-button.js"></script>
@@ -72,7 +72,7 @@
             }
           },
           renderMaquette: function () {
-            return h("p", ["The add button should add a new row to the remote control. Use the Array.push method to add another row component."]);
+            return h("p", ["The + button should add a new row to the remote control. Use the Array.push method to add another row component."]);
           }
         };
 

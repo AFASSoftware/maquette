@@ -1,4 +1,6 @@
-﻿window.createWorkbench = function (projector, tabs, objectives) {
+---
+---
+window.createWorkbench = function (projector, tabs, objectives) {
 
   if(typeof tabs === "string") {
     tabs = [
@@ -10,7 +12,10 @@
 
   // constants
   var h = maquette.h;
-  var htmlStart = "<!doctype html><html><head><link href='assets/saucer.css' rel='stylesheet' /><script src='bower_components/maquette/dist/maquette.min.js'><" + "/script><script>";
+  var htmlStart = "<!doctype html><html><head><link href='assets/saucer.css' rel='stylesheet' />"
+    + "<script src='http://cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js' crossorigin><"
+    + "/script><script src='http://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js' crossorigin><"
+    + "/script><script>";
   var htmlEnd = "<" + "/script></head><body></body></html>";
 
   var scripts = [];

@@ -1,0 +1,36 @@
+### The 3 rules
+
+Before you are ready to start using maquette, you need to be aware of three rules, which are all easy to follow.
+These rules are there to make sure maquette can render and diff very large pages at 60 frames per second on every device.
+
+##### Do not change event handlers
+
+Changing event handlers, like `onclick` for example, is rarely useful.
+Updating an event handler can especially be costly if you accidentally change them on every render.
+Because this mistake is so easily to made, maquette disallows changing event handlers completely.
+
+##### Always provide the same set of properties
+
+If you render `h("div", {tabIndex:"0"})` and then you want to clear the tabIndex attribute, 
+you need to use `h("div", {tabIndex:undefined})`, `h("div", {tabIndex:null})` or `h("div", {tabIndex:""})`.
+If you use `h("div", {})` the tabIndex will not be cleared. 
+This is because maquette does not sacrifice performance trying to find properties that you left out.
+This makes you responsible to always provide the same set of properties. The same applies to the `classes` and `styles` objects.
+
+##### Distinguishable children
+
+The last rule states that if a node has multiple childnodes with the same selector 
+*and* these childnodes are added or removed dynamically, 
+then they must have unique key properties.
+      
+      
+A key property is typically used as follows: 
+(If you are unfamilliar with the javascript map() function see <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank">this description on MDN</a>)
+
+    h("ul", [
+      items.map(function(item) {
+        return h("li", {key: item.id}, [item.text]);
+      })
+    ])
+
+This rule makes sure that a node is never accidentally morphed into an adjecent node and thereby doing the wrong animation or accidentally triggering a violation of one of the first two rules.

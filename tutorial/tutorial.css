@@ -172,6 +172,7 @@
 .lock {
   position:absolute;
   right: 40px;
+  top:0px;
   color:#444444;
 }
 

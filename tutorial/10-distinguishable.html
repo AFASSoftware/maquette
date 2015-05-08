@@ -23,32 +23,17 @@
   </div>
 
   <div class="instructions container">
-    <h3>The distinguishable rule</h3>
+    
+    {% capture rulesInclude %}{% include rules.md %}{% endcapture %}
+    {{ rulesInclude | markdownify }}
+
+    <h5>Assignment</h5>
     <p>
-      The last concept that we are going to explain in this tutorial is the distinguishable rule.
+      The next assignment demonstrates what goes wrong when a non-distinguishable child node is removed and how maquette helps you fix it.
     </p>
     <p>
-      As you may already know, the maquette library is optimized for speed.
-      It is also able to animate transitions.
-      To make this work, maquette requires you to obide by one simple rule.
-      You must make sure that all childnodes of a node are distinguishable.
-      This is usually straightforward. Nodes are already distinguishable if they have a different selector.
-      If two childnodes have the same selector, they must have a 'key' attribute that is unique among the childnodes.
-      This can be a database-id or an index number.
-    </p>
-    <p>
-      Here is one quick example (If you are unfamilliar with the javascript map() function see <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank">this description on MDN</a>):
-    </p>
-    <pre>
-h("ul", [
-  items.map(function(item) {
-    return h("li", {key: item.id}, [item.text]);
-  })
-])
-    </pre>
-    <p>
-      For your final assignment, we have already added the stealth checkbox to the remote control.
-      The application crashes right now. It is your task to make the application work. Good luck.
+      In this assignment, we have two rows in our remote control. When you press the 'remove' button the top row should be removed.
+      Maquette removes the wrong row and then crashes. It is your task is to make the right thing happen. Good luck.
     </p>
   </div>
   {% include analytics.html %}

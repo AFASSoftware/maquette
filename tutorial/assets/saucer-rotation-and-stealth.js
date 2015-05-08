@@ -1,6 +1,7 @@
-﻿var h = maquette.h;
+var h = maquette.h;
 
 var rotation = 45;
+var rotationVisible = true;
 var stealth = false;
 
 function handleRotationInput(evt) {
@@ -12,22 +13,35 @@ function handleStealthChange(evt) {
   stealth = !stealth;
 }
 
+function handleRemoveClick(evt) {
+  rotationVisible = false;
+}
+
+function slideUp(element, removeElement) {
+  Velocity.animate(element, "slideUp", 1000, "ease-out", removeElement);
+}
+
 function renderMaquette() {
   return h("body", [
     h("div.landscape", [
       h("div.remote", {}, [
-        h("div.row", [
-          "rotation: ",
-          h("input", { type: "text", value: rotation, oninput: handleRotationInput }),
-          "degrees"
-        ]),
-        h("div.row", [
+        rotationVisible ? [
+          h("div.row", {exitAnimation: slideUp}, [
+            "rotation: ",
+            h("input", { type: "text", value: rotation, oninput: handleRotationInput }),
+            "degrees"
+          ])
+        ] : [],
+        h("div.row", {exitAnimation: slideUp}, [
           "stealth: ",
-          h("input", { type: "checkbox", checked: stealth, onchange: handleStealthChange })
-        ])
+          h("input.checkbox", { type: "checkbox", checked: stealth, onchange: handleStealthChange })
+        ]),
+        rotationVisible ? [
+          h("button", {onclick: handleRemoveClick}, ["Remove rotation"])
+        ] : []
       ]),
       h("div.saucer", {
-        style: "transform:rotate(" + rotation + "deg)", classes: { stealth: stealth } 
+        style: "transform:rotate(" + rotation + "deg)", classes: { stealth: stealth }
       }, [
         "Flying saucer"
       ])

@@ -6,9 +6,9 @@
     <title>Tutorial</title>
     <link href="../style.css" rel="stylesheet" />
     <link href="tutorial.css" rel="stylesheet" />
-    <script src="bower_components/velocity/velocity.min.js"></script>
-    <script src="bower_components/maquette/dist/maquette.min.js"></script>
-    <script src="bower_components/ace-builds/src-noconflict/ace.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
     <script src="components/enhancer.js"></script>
     <script src="components/workbench.js"></script>
     <script src="components/next-button.js"></script>
@@ -31,6 +31,10 @@
             if(works) {
               try {
                 var vnode = contentWindow.renderMaquette();
+                if (!vnode.children[0].children[0].children[1]) {
+                  achieved1 = true;
+                  return;
+                }
                 var function1 = vnode.children[0].children[0].children[0].properties;
                 var function2 = vnode.children[0].children[0].children[1].properties;
                 achieved1 = (function1 && function1.key) || (function2 && function2.key);
@@ -39,7 +43,7 @@
             }
           },
           renderMaquette: function () {
-            return h("p", ["Use a key property on one of the function divs"]);
+            return h("p", ["If you press the 'remove rotation' button, the wrong row will be removed. Put a unique key property on one of the function divs and try again."]);
           }
         };
 
@@ -64,7 +68,7 @@
         <ul class="right">
           <li><a href="10-distinguishable.html">Previous</a></li>
           <li><a href="index.html">Index</a></li>
-          <li><a id="next" href="12-finale.html">Next</a></li>
+          <li><a id="next" href="14-done.html">Next</a></li>
         </ul>
       </div>
     </nav>

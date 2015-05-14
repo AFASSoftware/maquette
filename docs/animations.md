@@ -117,3 +117,4 @@ maquette.createProjector(domNode, function() {
 
 {% include live-editor-init.html velocity=true css=true %}
 
+If you want to see a demonstration of what more is possible with animations in maquette, have a look at the [hero-transition demo](http://johan-gorter.github.io/maquette-demo-hero/).

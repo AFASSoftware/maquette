@@ -3,8 +3,31 @@
   "use strict";
 
   // polyfill for window.requestAnimationFrame
-  if(!global.requestAnimationFrame) {
-    global.requestAnimationFrame = global.setTimeout;
+  var haveraf = function(vendor) {
+    return global.requestAnimationFrame && global.cancelAnimationFrame ||
+      (
+        (global.requestAnimationFrame = global[vendor + 'RequestAnimationFrame']) &&
+        (global.cancelAnimationFrame = (global[vendor + 'CancelAnimationFrame'] ||
+                                        global[vendor + 'CancelRequestAnimationFrame']))
+      );
+  };
+
+  if (!haveraf('webkit') && !haveraf('moz') ||
+      /iP(ad|hone|od).*OS 6/.test(global.navigator.userAgent)) { // buggy iOS6
+
+    // Closures
+    var now = Date.now || function() { return +new Date(); };   // pre-es5
+    var lastTime = 0;
+
+    // Polyfills
+    global.requestAnimationFrame = function(callback) {
+      var nowTime = now();
+      var nextTime = Math.max(lastTime + 16, nowTime);
+      return setTimeout(function() {
+          callback(lastTime = nextTime);
+        }, nextTime - nowTime);
+    };
+    global.cancelAnimationFrame = clearTimeout;
   }
 
   // polyfill for DOMTokenList and classList

@@ -617,6 +617,46 @@
       };
       return result;
     },
+    
+    createMapping: function(getSourceKey, createTarget, updateTarget /*, deleteTarget*/) {
+      var keys = [];
+      var results = [];
+      
+      return {
+        results: results,
+        map: function(newSources) {
+          var newKeys = newSources.map(getSourceKey);
+          var oldTargets = results.slice();
+          var oldIndex = 0;
+          for (var i=0;i<newSources.length;i++) {
+            var source = newSources[i];
+            var sourceKey = newKeys[i];
+            if (sourceKey === keys[oldIndex]) {
+              results[i] = oldTargets[oldIndex];
+              updateTarget(source, oldTargets[oldIndex], i);
+              oldIndex++;
+            } else {
+              var found = false;
+              for (var j = 1; j < keys.length; j++) {
+                var searchIndex = (oldIndex + j) % keys.length;
+                if (keys[searchIndex] === sourceKey) {
+                  results[i] = oldTargets[searchIndex];
+                  updateTarget(newSources[i], oldTargets[searchIndex], i);
+                  oldIndex = searchIndex + 1;
+                  found = true;
+                  break;
+                }
+              }
+              if (!found) {
+                results[i] = createTarget(source, i);
+              }
+            }
+          }
+          results.length = newSources.length;
+          keys = newKeys;
+        }
+      };
+    },
 
     stats: stats,
   };

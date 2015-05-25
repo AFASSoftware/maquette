@@ -99,13 +99,10 @@
       </div>
       <div class="col s12 m4">
         <h5>News</h5>
-        <ul>
         {% for post in site.posts %}
-        <li>
-          <b>{{ post.date | date_to_string }}</b> - <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-        </li>
+        <b>{{ post.date | date_to_string }}</b> - <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+        <br />
         {% endfor %}
-        </ul>        
       </div>
     </div>
     

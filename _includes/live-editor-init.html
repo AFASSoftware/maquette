@@ -17,9 +17,9 @@ function enhance() {
 <script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js" async onload="enhance()"></script>
 {% endif %}
 {% if include.css == true %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/maquette/1.6.0/css-transitions.min.js" async onload="enhance()"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/css-transitions.min.js" async onload="enhance()"></script>
 {% endif %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/maquette/1.6.0/maquette.min.js" async onload="enhance()"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js" async onload="enhance()"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js" async onload=" enhance()"></script>
 <script src="/script.js" async onload="enhance()"></script>
 

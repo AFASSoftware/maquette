@@ -27,7 +27,7 @@
       if(Array.isArray(item)) {
         mainIndex = flattenInto(parentSelector, item, main, mainIndex);
       } else {
-        if(item !== null && item !== undefined) {
+        if(item != null) {
           if(!item.hasOwnProperty("vnodeSelector")) {
             item = toTextVNode(item);
           }
@@ -44,14 +44,14 @@
       vnodeSelector: "",
       properties: undefined,
       children: undefined,
-      text: (data === null || data === undefined) ? "" : data.toString(),
+      text: data == null ? "" : data.toString(),
       domNode: null
     };
   };
 
   // removes nulls, flattens embedded arrays
   var flatten = function (parentSelector, children) {
-    if(children === null || children === undefined) {
+    if(children == null) {
       return undefined;
     }
     if(!Array.isArray(children)) {
@@ -64,7 +64,7 @@
     var index = 0;
     while(index < children.length) {
       var child = children[index];
-      if(child === null || child === undefined) {
+      if(child == null) {
         children.splice(index, 1);
       } else if(Array.isArray(child)) {
         children.splice(index, 1);
@@ -81,15 +81,15 @@
 
   // Render helper functions
 
+  var missingTransition = function() {
+    throw new Error("Provide a transitions object to the projectionOptions to do animations");
+  };
+
   var defaultProjectionOptions = {
     namespace: undefined,
     transitions: {
-      enter: function () {
-        throw new Error("Provide a transitions object to the projectionOptions to do animations");
-      },
-      exit: function () {
-        throw new Error("Provide a transitions object to the projectionOptions to do animations");
-      }
+      enter: missingTransition,
+      exit: missingTransition
     }
   };
 
@@ -105,7 +105,7 @@
     for(var propName in properties) {
       var propValue = properties[propName];
       if(propName === "class" || propName === "className" || propName === "classList") {
-        throw new Error("Property " + className + " is not supported, use 'classes' instead.");
+        throw new Error("Property " + propName + " is not supported, use 'classes' instead.");
       } else if(propName === "classes") {
         // object with string keys and boolean values
         for(var className in propValue) {
@@ -126,12 +126,12 @@
         }
       } else if(propName === "key") {
         continue;
-      } else if(propValue === null || propValue === undefined) {
+      } else if(propValue == null) {
         continue;
       } else {
         var type = typeof propValue;
         if(type === "function") {
-          if(eventHandlerInterceptor && (propName.lastIndexOf("on", 0) === 0)) { // lastIndexOf(,0)===0 -> startsWith
+          if(eventHandlerInterceptor && propName.indexOf("on") === 0) { // indexOf(x)===0 -> startsWith
             propValue = eventHandlerInterceptor(propName, propValue, domNode); // intercept eventhandlers
             if(propName === "oninput") {
               (function () {

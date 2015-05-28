@@ -1,0 +1,31 @@
+﻿<!doctype html>
+<html>
+<head>
+  <title>Progressive enhancement demo</title>
+  <script src="../../src/maquette.js"></script>
+  <script src="todoComponent.js"></script>
+  <script src="index.js"></script>
+</head>
+<body>
+  <h1>Enhancement example</h1>
+  <form>
+    <input type="text" id="new-todo-text" /><input id="new-todo-button" name="add" value="add" type="submit" />
+    <ul id="todo-list">
+      <li>TODO item before enhancement</li>
+    </ul>
+  </form>
+  <script type="text/hyperscript">
+    h("p", [
+      "Total of ",
+      h("strong", [todos.length]),
+      " todo's, ",
+      h("strong", [
+        todos.filter(function(todo) {
+          return !todo.isCompleted();
+        }).length
+      ]),
+      " todo's remaining."
+    ])
+  </script>
+</body>
+</html>

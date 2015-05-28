@@ -132,7 +132,7 @@
         var type = typeof propValue;
         if(type === "function") {
           if(eventHandlerInterceptor && (propName.lastIndexOf("on", 0) === 0)) { // lastIndexOf(,0)===0 -> startsWith
-            propValue = eventHandlerInterceptor(propName, propValue, domNode); // intercept eventhandlers
+            propValue = eventHandlerInterceptor(propName, propValue, domNode, properties); // intercept eventhandlers
             if(propName === "oninput") {
               (function () {
                 // record the evt.target.value, because IE sometimes does a requestAnimationFrame between changing value and running oninput
@@ -420,7 +420,7 @@
   var updateDom = function (previous, vnode, projectionOptions) {
     var domNode = previous.domNode;
     if(!domNode) {
-      throw new Error("previous node was not mounted");
+      throw new Error("previous node was not rendered");
     }
     var textUpdated = false;
     if(previous === vnode) {
@@ -551,31 +551,31 @@
       projectionOptions.eventHandlerInterceptor = function (propertyName, functionPropertyArgument) {
         return function () {
           // intercept function calls (event handlers) to do a render afterwards.
-          api.scheduleRender();
+          projector.scheduleRender();
           return functionPropertyArgument.apply(this, arguments);
         };
       };
-      var mount = undefined;
+      var projection = undefined;
       var scheduled;
       var destroyed = false;
       var doRender = function () {
         scheduled = undefined;
-        if(!mount) {
+        if(!projection) {
           var timing1 = performance.now();
           var vnode = renderFunction();
           var timing2 = performance.now();
-          mount = maquette.mergeDom(element, vnode, projectionOptions);
-          stats.createExecuted(timing1, timing2, performance.now(), api);
+          projection = maquette.mergeDom(element, vnode, projectionOptions);
+          stats.createExecuted(timing1, timing2, performance.now(), projector);
         } else {
           var updateTiming1 = performance.now();
           var updatedVnode = renderFunction();
           var updateTiming2 = performance.now();
-          mount.update(updatedVnode);
-          stats.updateExecuted(updateTiming1, updateTiming2, performance.now(), api);
+          projection.update(updatedVnode);
+          stats.updateExecuted(updateTiming1, updateTiming2, performance.now(), projector);
         }
       };
       scheduled = requestAnimationFrame(doRender);
-      var api = {
+      var projector = {
         scheduleRender: function () {
           if(!scheduled && !destroyed) {
             scheduled = requestAnimationFrame(doRender);
@@ -589,7 +589,7 @@
           destroyed = true;
         }
       };
-      return api;
+      return projector;
     },
 
     createCache: function () {
@@ -658,7 +658,74 @@
       };
     },
 
-    stats: stats,
+    createEnhancer: function (projectionOptions) {
+      projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+      projectionOptions.eventHandlerInterceptor = function (propertyName, functionPropertyArgument) {
+        return function () {
+          // intercept function calls (event handlers) to do a render afterwards.
+          enhancer.scheduleRender();
+          return functionPropertyArgument.apply(this, arguments);
+        };
+      };
+      var scheduled;
+      var destroyed = false;
+      var projections = [];
+      var renderFunctions = []; // matches the projections array
+
+      var doRender = function () {
+        scheduled = undefined;
+        for(var i = 0; i < projections.length; i++) {
+          var updatedVnode = renderFunctions[i]();
+          projections[i].update(updatedVnode);
+        }
+      };
+
+      var enhancer = {
+        scheduleRender: function () {
+          if(!scheduled && !destroyed) {
+            scheduled = requestAnimationFrame(doRender);
+          }
+        },
+        destroy: function () {
+          if(scheduled) {
+            cancelAnimationFrame(scheduled);
+            scheduled = undefined;
+          }
+          destroyed = true;
+        },
+        evaluateHyperscript: function (rootNode, parameters) {
+          var nodes = rootNode.querySelectorAll("script[type='text/hyperscript']");
+          var functionParameters = ["maquette", "h", "enhancer"];
+          var parameterValues = [maquette, maquette.h, enhancer];
+          Object.keys(parameters).forEach(function (parameterName) {
+            functionParameters.push(parameterName);
+            parameterValues.push(parameters[parameterName]);
+          });
+          Array.prototype.forEach.call(nodes, function (node) {
+            var func = new Function(functionParameters, "return " + node.textContent.trim());
+            var renderFunction = function () {
+              return func.apply(undefined, parameterValues);
+            };
+            projections.push(maquette.appendToDom(node.parentNode, renderFunction(), projectionOptions));
+            renderFunctions.push(renderFunction);
+          });
+        },
+        merge: function (domNode, renderMaquetteFunction) {
+          projections.push(maquette.mergeDom(domNode, renderMaquetteFunction(), projectionOptions));
+          renderFunctions.push(renderMaquetteFunction);
+        },
+        replace: function (domNode, renderMaquetteFunction) {
+          var vnode = renderMaquetteFunction();
+          createDom(vnode, domNode.parentNode, domNode, projectionOptions);
+          domNode.parentNode.removeChild(domNode);
+          projections.push(createProjection(vnode, projectionOptions));
+          renderFunctions.push(renderMaquetteFunction);
+        }
+      };
+      return enhancer;
+    },
+
+    stats: stats
   };
 
   if(typeof module !== "undefined" && module.exports) {

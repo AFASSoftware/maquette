@@ -457,32 +457,6 @@
     return textUpdated;
   };
 
-  // polyfill for window.performance
-  var performance = (global.performance && global.performance.now ? global.performance : {
-    offset: new Date(),
-    now: function now() {
-      return new Date() - this.offset;
-    }
-  });
-
-  var stats = {
-    lastCreateVDom: null,
-    lastCreateDom: null,
-    lastUpdateVDom: null,
-    lastUpdateDom: null,
-    lastProjector: null,
-    createExecuted: function (timing1, timing2, timing3, projector) {
-      stats.lastProjector = projector;
-      stats.lastCreateVDom = timing2 - timing1;
-      stats.lastCreateDom = timing3 - timing2;
-    },
-    updateExecuted: function (timing1, timing2, timing3, projector) {
-      stats.lastProjector = projector;
-      stats.lastUpdateVDom = timing2 - timing1;
-      stats.lastUpdateDom = timing3 - timing2;
-    }
-  };
-
   var createProjection = function (vnode, projectionOptions) {
     if(!vnode.vnodeSelector) {
       throw new Error("Invalid vnode argument");
@@ -526,70 +500,33 @@
         domNode: null
       };
     },
-
-    createDom: function (vnode, projectionOptions) {
-      projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-      createDom(vnode, document.createElement("div"), undefined, projectionOptions);
-      return createProjection(vnode, projectionOptions);
-    },
-
-    appendToDom: function (parentNode, vnode, projectionOptions) {
-      projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-      createDom(vnode, parentNode, undefined, projectionOptions);
-      return createProjection(vnode, projectionOptions);
-    },
-
-    mergeDom: function (element, vnode, options) {
-      options = applyDefaultProjectionOptions(options);
-      vnode.domNode = element;
-      initPropertiesAndChildren(element, vnode, options);
-      return createProjection(vnode, options);
-    },
-
-    createProjector: function (element, renderFunction, projectionOptions) {
-      projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-      projectionOptions.eventHandlerInterceptor = function (propertyName, functionPropertyArgument) {
-        return function () {
-          // intercept function calls (event handlers) to do a render afterwards.
-          projector.scheduleRender();
-          return functionPropertyArgument.apply(this, arguments);
-        };
-      };
-      var projection = undefined;
-      var scheduled;
-      var destroyed = false;
-      var doRender = function () {
-        scheduled = undefined;
-        if(!projection) {
-          var timing1 = performance.now();
-          var vnode = renderFunction();
-          var timing2 = performance.now();
-          projection = maquette.mergeDom(element, vnode, projectionOptions);
-          stats.createExecuted(timing1, timing2, performance.now(), projector);
-        } else {
-          var updateTiming1 = performance.now();
-          var updatedVnode = renderFunction();
-          var updateTiming2 = performance.now();
-          projection.update(updatedVnode);
-          stats.updateExecuted(updateTiming1, updateTiming2, performance.now(), projector);
-        }
-      };
-      scheduled = requestAnimationFrame(doRender);
-      var projector = {
-        scheduleRender: function () {
-          if(!scheduled && !destroyed) {
-            scheduled = requestAnimationFrame(doRender);
-          }
-        },
-        destroy: function () {
-          if(scheduled) {
-            cancelAnimationFrame(scheduled);
-            scheduled = undefined;
-          }
-          destroyed = true;
-        }
-      };
-      return projector;
+    
+    // Simple low-level functions to manipulate the real DOM
+    dom: {
+      create: function (vnode, projectionOptions) {
+        projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+        createDom(vnode, document.createElement("div"), undefined, projectionOptions);
+        return createProjection(vnode, projectionOptions);
+      },
+  
+      append: function (parentNode, vnode, projectionOptions) {
+        projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+        createDom(vnode, parentNode, undefined, projectionOptions);
+        return createProjection(vnode, projectionOptions);
+      },
+      
+      insertBefore: function(beforeNode, vnode, projectionOptions) {
+        projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+        createDom(vnode, beforeNode.parentNode, beforeNode, projectionOptions);
+        return createProjection(vnode, projectionOptions);
+      },
+  
+      merge: function (element, vnode, options) {
+        options = applyDefaultProjectionOptions(options);
+        vnode.domNode = element;
+        initPropertiesAndChildren(element, vnode, options);
+        return createProjection(vnode, options);
+      }
     },
 
     createCache: function () {
@@ -658,45 +595,56 @@
       };
     },
 
-    createEnhancer: function (projectionOptions) {
+    createProjector: function (projectionOptions) {
       projectionOptions = applyDefaultProjectionOptions(projectionOptions);
       projectionOptions.eventHandlerInterceptor = function (propertyName, functionPropertyArgument) {
         return function () {
           // intercept function calls (event handlers) to do a render afterwards.
-          enhancer.scheduleRender();
+          projector.scheduleRender();
           return functionPropertyArgument.apply(this, arguments);
         };
       };
+      var renderCompleted = true;
       var scheduled;
-      var destroyed = false;
+      var stopped = false;
       var projections = [];
       var renderFunctions = []; // matches the projections array
 
       var doRender = function () {
         scheduled = undefined;
+        if (!renderCompleted) {
+          return; // The last render threw an error, it should be logged in the browser console. 
+        }
+        renderCompleted = false;
         for(var i = 0; i < projections.length; i++) {
           var updatedVnode = renderFunctions[i]();
           projections[i].update(updatedVnode);
         }
+        renderCompleted = true;
       };
 
-      var enhancer = {
+      var projector = {
         scheduleRender: function () {
-          if(!scheduled && !destroyed) {
+          if(!scheduled && !stopped) {
             scheduled = requestAnimationFrame(doRender);
           }
         },
-        destroy: function () {
+        stop: function () {
           if(scheduled) {
             cancelAnimationFrame(scheduled);
             scheduled = undefined;
           }
-          destroyed = true;
+          stopped = true;
+        },
+        resume: function() {
+          stopped = false;
+          renderCompleted = true;
+          projector.scheduleRender();
         },
         evaluateHyperscript: function (rootNode, parameters) {
           var nodes = rootNode.querySelectorAll("script[type='text/hyperscript']");
           var functionParameters = ["maquette", "h", "enhancer"];
-          var parameterValues = [maquette, maquette.h, enhancer];
+          var parameterValues = [maquette, maquette.h, projector];
           Object.keys(parameters).forEach(function (parameterName) {
             functionParameters.push(parameterName);
             parameterValues.push(parameters[parameterName]);
@@ -706,12 +654,19 @@
             var renderFunction = function () {
               return func.apply(undefined, parameterValues);
             };
-            projections.push(maquette.appendToDom(node.parentNode, renderFunction(), projectionOptions));
-            renderFunctions.push(renderFunction);
+            projector.insertBefore(node, renderFunction);
           });
         },
+        append: function (parentNode, renderMaquetteFunction) {
+          projections.push(maquette.dom.append(parentNode, renderMaquetteFunction(), projectionOptions));
+          renderFunctions.push(renderMaquetteFunction);
+        },
+        insertBefore: function (beforeNode, renderMaquetteFunction) {
+          projections.push(maquette.dom.insertBefore(beforeNode, renderMaquetteFunction(), projectionOptions));
+          renderFunctions.push(renderMaquetteFunction);
+        },
         merge: function (domNode, renderMaquetteFunction) {
-          projections.push(maquette.mergeDom(domNode, renderMaquetteFunction(), projectionOptions));
+          projections.push(maquette.dom.merge(domNode, renderMaquetteFunction(), projectionOptions));
           renderFunctions.push(renderMaquetteFunction);
         },
         replace: function (domNode, renderMaquetteFunction) {
@@ -722,10 +677,8 @@
           renderFunctions.push(renderMaquetteFunction);
         }
       };
-      return enhancer;
-    },
-
-    stats: stats
+      return projector;
+    }
   };
 
   if(typeof module !== "undefined" && module.exports) {

@@ -52,7 +52,7 @@ gulp.task('reload', reload);
 gulp.task('serve', ['default'], function () {
   browserSync({
     port: BROWSERSYNC_PORT,
-    host: host,
+    host: BROWSERSYNC_HOST,
     notify: false,
     server: '.'
   });

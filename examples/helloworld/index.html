@@ -29,7 +29,7 @@
       };
 
       // Starts the projector, which renders the virtual DOM at the right moments
-      maquette.createProjector(document.body, render, {});
+      maquette.createProjector().merge(document.body, render);
 
     });
   </script>

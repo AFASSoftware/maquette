@@ -58,3 +58,4 @@ maquette.njsproj
 .ntvs_analysis.dat
 bin
 obj
+.settings

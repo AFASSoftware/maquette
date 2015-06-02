@@ -1,3 +1,4 @@
+/* globals describe,it */
 var maquette = require("../src/maquette.js");
 var assert = require("assert");
 var jsdom = require('mocha-jsdom');
@@ -11,7 +12,7 @@ describe('Maquette', function () {
     jsdom();
 
     it("should create and update single textnodes", function () {
-      var projection = maquette.createDom(h("div", ["text"]));
+      var projection = maquette.dom.create(h("div", ["text"]));
       expect(projection.domNode.outerHTML).to.equal("<div>text</div>");
 
       projection.update(h("div", ["text2"]));
@@ -28,7 +29,7 @@ describe('Maquette', function () {
     });
 
     it("should work correctly with adjacent textnodes", function () {
-      var projection = maquette.createDom(h("div", ["", "1", ""]));
+      var projection = maquette.dom.create(h("div", ["", "1", ""]));
       expect(projection.domNode.outerHTML).to.equal("<div>1</div>");
 
       projection.update(h("div", ["",""]));
@@ -42,22 +43,22 @@ describe('Maquette', function () {
 
       require("./jsdom-classlist-polyfill")(window);
     
-      var projection = maquette.createDom(h("div"));
+      var projection = maquette.dom.create(h("div"));
       expect(projection.domNode.outerHTML).to.equal("<div></div>");
 
-      projection = maquette.createDom(h("div.class1"));
+      projection = maquette.dom.create(h("div.class1"));
       expect(projection.domNode.outerHTML).to.equal("<div class=\"class1\"></div>");
 
-      projection = maquette.createDom(h("div#id"));
+      projection = maquette.dom.create(h("div#id"));
       expect(projection.domNode.outerHTML).to.equal("<div id=\"id\"></div>");
 
-      projection = maquette.createDom(h("div.class1.class2"));
+      projection = maquette.dom.create(h("div.class1.class2"));
       expect(projection.domNode.outerHTML).to.equal("<div class=\"class1 class2\"></div>");
 
-      projection = maquette.createDom(h("div.class1.class2#id"));
+      projection = maquette.dom.create(h("div.class1.class2#id"));
       expect(projection.domNode.outerHTML).to.equal("<div class=\"class1 class2\" id=\"id\"></div>");
 
-      projection = maquette.createDom(h("div#id.class1.class2"));
+      projection = maquette.dom.create(h("div#id.class1.class2"));
       expect(projection.domNode.outerHTML).to.equal("<div id=\"id\" class=\"class1 class2\"></div>");
     });
 

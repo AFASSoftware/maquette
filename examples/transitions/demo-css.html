@@ -3,46 +3,40 @@
 <head>
   <title>Virtual DOM test page</title>
   <style>
+    .item-wrapper {
+      overflow: hidden;
+    }
+
     .item {
       background-color: red;
       width: 300px;
       padding: 10px;
       border: solid 1px black;
     }
-
-    .item-wrapper {
-      overflow: hidden;
-    }
-
-    .removed {
-      opacity: 0.5;
-    }
-
-    .added {
-      background-color: darkRed;
-    }
   </style>
-  <style>
 
+  <style>
     .slideDown {
       -webkit-transition: 0.5s ease-out height;
-	    transition: 0.5s ease-out height;
+      transition: 0.5s ease-out height;
       height: 0;
     }
-    .slideDown.slideDown-active {
-      height: 38.4px;
-    }
+
+      .slideDown.slideDown-active {
+        height: 38.4px;
+      }
 
     .slideUp {
       -webkit-transition: 0.5s ease-out height;
-	    transition: 0.5s ease-out height;
+      transition: 0.5s ease-out height;
       height: 38.4px;
     }
-    .slideUp.slideUp-active {
-      height: 0;
-    }
 
+      .slideUp.slideUp-active {
+        height: 0;
+      }
   </style>
+
   <script src="../../src/maquette.js"></script>
   <script src="../../src/css-transitions.js"></script>
   <script src="../../src/extras/showStats.js"></script>
@@ -51,18 +45,19 @@
 
     document.addEventListener('DOMContentLoaded', function () {
       var items = [];
-      for (var i = 0; i < 20; i++) {
+      for(var i = 0; i < 20; i++) {
         items.push({ title: "Item " + i, visible: i % 2 === 0, id: i });
       }
       var render = function () {
         return h("div#target", {}, items.filter(function (item) { return item.visible; }).map(function (item) {
-          return h("div.item-wrapper", { key: "item-" + item.id, enterAnimation: "slideDown", exitAnimation: "slideUp" }, [
+          return h("div.item-wrapper", { key: item.id, enterAnimation: "slideDown", exitAnimation: "slideUp" }, [
             h("div.item", [item.title])
           ]);
         }));
       };
 
-      var projector = window.maquette.createProjector(document.querySelector("#target"), render, { transitions: window.cssTransitions });
+      var projector = window.maquette.createProjector({ transitions: window.cssTransitions });
+      projector.merge(document.querySelector("#target"), render);
 
       setTimeout(function () {
         items[16].visible = false;

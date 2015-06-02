@@ -3,19 +3,14 @@
 <head>
   <title>Virtual DOM test page</title>
   <style>
+    .item-wrapper {
+      overflow: hidden;
+    }
     .item {
       background-color: red;
       width: 300px;
       padding: 10px;
       border: solid 1px black;
-    }
-
-    .removed {
-      opacity: 0.5;
-    }
-
-    .added {
-      background-color: darkRed;
     }
   </style>
   <script src="../../src/maquette.js"></script>
@@ -26,11 +21,15 @@
     var h = window.maquette.h;
 
     var slideDown = function (element) {
-      Velocity.animate(element, "slideDown");
+      var autoHeight = element.getBoundingClientRect().height;
+      element.style.height = "0";
+      Velocity.animate(element, {height: autoHeight}, function () {
+        element.style.height = "";
+      });
     };
 
     var slideUp = function (element, removeElement) {
-      Velocity.animate(element, "slideUp", removeElement);
+      Velocity.animate(element, {height:0}, removeElement);
     };
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -40,11 +39,15 @@
       }
       var render = function () {
         return h("div#target", {}, items.filter(function (item) { return item.visible; }).map(function (item) {
-          return h("div.item", { key: "item-" + item.id, enterAnimation: slideDown, exitAnimation: slideUp }, [item.title]);
+
+          return h("div.item-wrapper", { key: item.id, enterAnimation: slideDown, exitAnimation: slideUp }, [
+            h("div.item", [item.title])
+          ]);
         }));
       };
 
-      var projector = window.maquette.createProjector(document.querySelector("#target"), render);
+      var projector = window.maquette.createProjector();
+      projector.merge(document.querySelector("#target"), render);
 
       setTimeout(function () {
         items[16].visible = false;

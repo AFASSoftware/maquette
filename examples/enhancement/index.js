@@ -43,11 +43,11 @@
 
   // Put it all in motion
   document.addEventListener('DOMContentLoaded', function () {
-    var enhancer = maquette.createEnhancer();
-    enhancer.merge(document.getElementById("new-todo-text"), enhanceNewTodoText);
-    enhancer.merge(document.getElementById("new-todo-button"), enhanceNewTodoButton);
-    enhancer.replace(document.getElementById("todo-list"), enhanceTodoList);
-    enhancer.evaluateHyperscript(document.body, { todos: todos });
+    var projector = maquette.createProjector();
+    projector.merge(document.getElementById("new-todo-text"), enhanceNewTodoText);
+    projector.merge(document.getElementById("new-todo-button"), enhanceNewTodoButton);
+    projector.replace(document.getElementById("todo-list"), enhanceTodoList);
+    projector.evaluateHyperscript(document.body, { todos: todos });
   });
 
 })();

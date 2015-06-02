@@ -1,4 +1,4 @@
-/* globals describe it */
+/* globals describe,it */
 var expect = require("chai").expect;
 
 var createMapping = require("../src/maquette").createMapping;

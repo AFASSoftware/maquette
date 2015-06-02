@@ -1,3 +1,4 @@
+/* globals describe,it */
 var maquette = require("../src/maquette.js");
 var assert = require("assert");
 

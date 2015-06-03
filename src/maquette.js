@@ -131,7 +131,7 @@
       } else {
         var type = typeof propValue;
         if(type === "function") {
-          if(eventHandlerInterceptor && propName.indexOf("on") === 0) { // indexOf(x)===0 -> startsWith
+          if(eventHandlerInterceptor && (propName.lastIndexOf("on", 0) === 0)) { // lastIndexOf(,0)===0 -> startsWith
             propValue = eventHandlerInterceptor(propName, propValue, domNode); // intercept eventhandlers
             if(propName === "oninput") {
               (function () {

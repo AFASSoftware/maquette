@@ -80,16 +80,16 @@
   };
 
   // Render helper functions
+  
+  var missingTransition = function() {
+    throw new Error("Provide a transitions object to the projectionOptions to do animations");
+  };
 
   var defaultProjectionOptions = {
     namespace: undefined,
     transitions: {
-      enter: function () {
-        throw new Error("Provide a transitions object to the projectionOptions to do animations");
-      },
-      exit: function () {
-        throw new Error("Provide a transitions object to the projectionOptions to do animations");
-      }
+      enter: missingTransition,
+      exit: missingTransition
     }
   };
 
@@ -105,7 +105,7 @@
     for(var propName in properties) {
       var propValue = properties[propName];
       if(propName === "class" || propName === "className" || propName === "classList") {
-        throw new Error("Property " + className + " is not supported, use 'classes' instead.");
+        throw new Error("Property " + propName + " is not supported, use 'classes' instead.");
       } else if(propName === "classes") {
         // object with string keys and boolean values
         for(var className in propValue) {

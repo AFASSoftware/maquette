@@ -546,9 +546,29 @@
 
   /**
    * @callback updateAnimationCallback
-   * @param {Element} element - Element that was was modified in the DOM.
+   * @param {Element} element - Element that was modified in the DOM.
    * @param {Object} properties - The last properties object that was supplied to the {@link module:maquette.h} method
    * @param {Object} previousProperties - The previous properties object that was supplied to the {@link module:maquette.h} method
+   */
+   
+  /**
+   * @callback afterCreateCallback
+   * @param {Element} element - The element that was added to the DOM.
+   * @param {Object} projectionOptions - The projection options that were used see {@link module:maquette.createProjector}.
+   * @param {string} vnodeSelector - The selector passed to the {@link module:maquette.h} function.
+   * @param {Object} properties - The properties passed to the {@link module:maquette.h} function.
+   * @param {VNode[]} children - The children that were created.
+   * @param {Object} properties - The last properties object that was supplied to the {@link module:maquette.h} method
+   * @param {Object} previousProperties - The previous properties object that was supplied to the {@link module:maquette.h} method
+   */
+
+  /**
+   * @callback afterUpdateCallback
+   * @param {Element} element - The element that may have been updated in the DOM.
+   * @param {Object} projectionOptions - The projection options that were used see {@link module:maquette.createProjector}.
+   * @param {string} vnodeSelector - The selector passed to the {@link module:maquette.h} function.
+   * @param {Object} properties - The properties passed to the {@link module:maquette.h} function.
+   * @param {VNode[]} children - The children for this node.
    */
    
   /**
@@ -587,6 +607,8 @@
      * @param {updateAnimationCallback} properties.updateAnimation - The animation to perform when the properties of this node change. 
      * This also includes attributes, styles, css classes. This callback is also invoked when node contains only text and that text changes.
      * {@link http://maquettejs.org/docs/animations.html|More about animations}.
+     * @param {afterCreateCallback} properties.afterCreate - Callback that is executed after this node is added to the DOM. Childnodes and properties have already been applied.
+     * @param {afterUpdateCallback} properties.afterCreate - Callback that is executed every time this node may have been updated. Childnodes and properties have already been updated. 
      * @param {Object[]} [children] - An array of virtual DOM nodes to add as child nodes. 
      * This array may contain nested arrays, `null` or `undefined` values.
      * Nested arrays are flattened, `null` and `undefined` will be skipped.

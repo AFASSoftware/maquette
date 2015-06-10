@@ -1,0 +1,22 @@
+{
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc","closure"]
+  },
+  "source": {
+    "include": ["src/maquette.js"]
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "default" : {
+      "outputSourceFiles": false,
+      "includeDate": false 
+    },
+    "cleverLinks": false,
+    "monospaceLinks": false
+  },
+  "opts": {
+    "package": "./package.json",
+    "destination": "./docs/"
+  }
+}

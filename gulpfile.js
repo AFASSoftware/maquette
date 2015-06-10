@@ -11,8 +11,6 @@ var tag_version = require('gulp-tag-version');
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 
-var jsdoc = require("gulp-jsdoc");
-
 var BROWSERSYNC_PORT = parseInt(process.env.PORT) || 3002;
 var BROWSERSYNC_HOST = process.env.IP || "127.0.0.1";
 

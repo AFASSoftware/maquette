@@ -17,7 +17,7 @@
 
         var h = maquette.h;
 
-        var projector = maquette.createProjector(document.body, function() {return enhancer.renderMaquette();}, {});
+        var projector = maquette.createProjector();
 
         var achieved1 = false;
         var objective1 = {
@@ -31,8 +31,8 @@
                 var vnodeBefore = contentWindow.renderMaquette();
                 contentWindow.stealth = false;
                 var vnodeAfter = contentWindow.renderMaquette();
-                var beforeProperties = vnodeBefore.children[0].children[0].properties;
-                var afterProperties = vnodeAfter.children[0].children[0].properties;
+                var beforeProperties = vnodeBefore.children[0].properties;
+                var afterProperties = vnodeAfter.children[0].properties;
                 achieved1 = beforeProperties.classes && afterProperties.classes && beforeProperties.classes.stealth === true && afterProperties.classes.stealth === false;
               } catch (e) {
               }
@@ -50,10 +50,8 @@
 
         var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
 
-        var enhancer = window.createProgressiveEnhancer({
-          "#next": nextButton.renderMaquette,
-          ".work": workbench.renderMaquette
-        });
+        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
+        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
 
       });
   </script>

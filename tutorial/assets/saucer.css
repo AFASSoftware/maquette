@@ -12,6 +12,7 @@ html {
 body {
   margin:0;padding:0;
   height:100%;
+  display: -webkit-flex;
   display: flex;
   overflow-x: hidden;
 }
@@ -32,9 +33,13 @@ body {
   position:absolute;
   top:0;bottom:0;
   left:0;right:0;
+  display: -webkit-flex;
   display:flex;
+  -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
+  -webkit-align-items:center;
   align-items:center;
+  -webkit-justify-content: space-around;
   justify-content: space-around;
   background: linear-gradient(to bottom, blue 0%, #71B1D5 70%, #7CB71D 70%, #5E8113 100%);
   overflow: hidden;
@@ -119,6 +124,7 @@ body {
   border-radius: 40% 40% 50% 50%/60% 60% 40% 40%;
   transform: rotate(0deg);
   transition: transform 0.5s ease-out, opacity 1s ease-out;
+  z-index: 2;
 }
 
 .saucer.stealth {
@@ -132,7 +138,7 @@ body {
   width: 70px;
   height: 30px;
   border-radius: 50% 50% 0 0 / 90% 90% 0 0;
-  z-index: -1;
+  z-index: 1;
   top:-29px;
   left:65px;  
 }

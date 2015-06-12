@@ -1,12 +1,11 @@
-﻿var h = maquette.h;
+var h = maquette.h;
+var projector = maquette.createProjector();
 
 function renderMaquette() {
-  return h("body", [
-    h("div.landscape", [])
-  ]);
+  return h("div.landscape", []);
 }
 
 // Initializes the projector 
 document.addEventListener('DOMContentLoaded', function () {
-  maquette.createProjector(document.body, renderMaquette);
+  projector.append(document.body, renderMaquette);
 });

@@ -1,4 +1,5 @@
 var h = maquette.h;
+var projector = maquette.createProjector();
 
 var rotation = 45;
 var rotationVisible = true;
@@ -22,34 +23,32 @@ function slideUp(element, removeElement) {
 }
 
 function renderMaquette() {
-  return h("body", [
-    h("div.landscape", [
-      h("div.remote", {}, [
-        rotationVisible ? [
-          h("div.row", {exitAnimation: slideUp}, [
-            "rotation: ",
-            h("input", { type: "text", value: rotation, oninput: handleRotationInput }),
-            "degrees"
-          ])
-        ] : [],
+  return h("div.landscape", [
+    h("div.remote", {}, [
+      rotationVisible ? [
         h("div.row", {exitAnimation: slideUp}, [
-          "stealth: ",
-          h("input.checkbox", { type: "checkbox", checked: stealth, onchange: handleStealthChange })
-        ]),
-        rotationVisible ? [
-          h("button", {onclick: handleRemoveClick}, ["Remove rotation"])
-        ] : []
+          "rotation: ",
+          h("input", { type: "text", value: rotation, oninput: handleRotationInput }),
+          "degrees"
+        ])
+      ] : [],
+      h("div.row", {exitAnimation: slideUp}, [
+        "stealth: ",
+        h("input.checkbox", { type: "checkbox", checked: stealth, onchange: handleStealthChange })
       ]),
-      h("div.saucer", {
-        style: "transform:rotate(" + rotation + "deg)", classes: { stealth: stealth }
-      }, [
-        "Flying saucer"
-      ])
+      rotationVisible ? [
+        h("button", {onclick: handleRemoveClick}, ["Remove rotation"])
+      ] : []
+    ]),
+    h("div.saucer", {
+      style: "transform:rotate(" + rotation + "deg)", classes: { stealth: stealth }
+    }, [
+      "Flying saucer"
     ])
   ]);
 }
 
 // Initializes the projector 
 document.addEventListener('DOMContentLoaded', function () {
-  maquette.createProjector(document.body, renderMaquette);
+  projector.append(document.body, renderMaquette);
 });

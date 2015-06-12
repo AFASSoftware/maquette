@@ -17,7 +17,7 @@
 
         var h = maquette.h;
 
-        var projector = maquette.createProjector(document.body, function() {return enhancer.renderMaquette();}, {});
+        var projector = maquette.createProjector();
 
         var achieved1 = false;
         var objective1 = {
@@ -31,12 +31,12 @@
             if(works) {
               try {
                 var vnode = contentWindow.renderMaquette();
-                if (!vnode.children[0].children[0].children[1]) {
+                if (!vnode.children[0].children[1]) {
                   achieved1 = true;
                   return;
                 }
-                var function1 = vnode.children[0].children[0].children[0].properties;
-                var function2 = vnode.children[0].children[0].children[1].properties;
+                var function1 = vnode.children[0].children[0].properties;
+                var function2 = vnode.children[0].children[1].properties;
                 achieved1 = (function1 && function1.key) || (function2 && function2.key);
               } catch(e) {
               }
@@ -53,10 +53,8 @@
 
         var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
 
-        var enhancer = window.createProgressiveEnhancer({
-          "#next": nextButton.renderMaquette,
-          ".work": workbench.renderMaquette
-        });
+        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
+        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
       });
   </script>
 </head>

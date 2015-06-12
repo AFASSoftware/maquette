@@ -17,7 +17,7 @@
 
         var h = maquette.h;
 
-        var projector = maquette.createProjector(document.body, function() {return enhancer.renderMaquette();}, {});
+        var projector = maquette.createProjector();
 
         var findAll = function (selector, vnodeTree, result) {
           if(!result) {
@@ -137,11 +137,9 @@
 
         var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
 
-        var enhancer = window.createProgressiveEnhancer({
-          "#next": nextButton.renderMaquette,
-          ".work": workbench.renderMaquette
-        });
-      });
+        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
+        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    });
   </script>
 </head>
 <body>
@@ -150,7 +148,7 @@
       <div class="nav-wrapper container">
         <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
         <ul class="right">
-          <li><a href="10-distinguishable.html">Previous</a></li>
+          <li><a href="14-done.html">Previous</a></li>
           <li><a href="index.html">Index</a></li>
           <li><a id="next" href="14-done.html">Next</a></li>
         </ul>

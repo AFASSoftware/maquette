@@ -1,10 +1,10 @@
-﻿var h = maquette.h;
+var h = maquette.h;
+var projector = maquette.createProjector();
 
 var rotation = 0;
 var x = -150;
 var y = 0;
 var startDate = new Date().getTime();
-var projector;
 
 function handleRotationInput(evt) {
   rotation = evt.target.value;
@@ -18,23 +18,21 @@ function tick() {
 }
 
 function renderMaquette() {
-  return h("body", [
-    h("div.landscape", [
-      h("div.remote", {}, [
-        h("div.row", [
-          "rotation: ",
-          h("input.slider", { type: "range", min:"-45", max:"45", value: rotation, oninput: handleRotationInput, onchange: handleRotationInput })
-        ])
-      ]),
-      h("div.planet", [
-        h("div.saucer", { style: "transform:translate(" + x + "px," + y + "px) rotate(" + rotation + "deg)" }, ["Flying saucer"])
+  return h("div.landscape", [
+    h("div.remote", {}, [
+      h("div.row", [
+        "rotation: ",
+        h("input.slider", { type: "range", min:"-45", max:"45", value: rotation, oninput: handleRotationInput, onchange: handleRotationInput })
       ])
+    ]),
+    h("div.planet", [
+      h("div.saucer", { style: "transform:translate(" + x + "px," + y + "px) rotate(" + rotation + "deg)" }, ["Flying saucer"])
     ])
   ]);
 }
 
 // Initializes the projector 
 document.addEventListener('DOMContentLoaded', function () {
-  projector = maquette.createProjector(document.body, renderMaquette);
+  projector.append(document.body, renderMaquette);
   tick();
 });

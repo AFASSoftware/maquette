@@ -121,12 +121,16 @@ window.createWorkbench = function (projector, tabs, objectives) {
 
   }, 500);
 
-  var iframeBodyObserver = new MutationObserver(function (mutations) {
-    console.log("MutationObserver fired");
+  var reportSceneUpdates = function() {
     objectives.forEach(function (objective) {
       objective.onSceneUpdate(contentWindow);
     });
     projector.scheduleRender();
+  };
+  
+  var iframeBodyObserver = new MutationObserver(function (mutations) {
+    console.log("MutationObserver fired");
+    reportSceneUpdates();
   });
 
   var iframeLoaded = function (evt) {
@@ -134,6 +138,7 @@ window.createWorkbench = function (projector, tabs, objectives) {
     contentWindow = evt.target.contentWindow;
     iframeBodyObserver.disconnect();
     iframeBodyObserver.observe(evt.target.contentWindow.document.body, { childList: true, attributes: true, characterData: true, subtree: true });
+    reportSceneUpdates();
   };
 
   var lastScrdoc;

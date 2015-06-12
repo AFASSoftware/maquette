@@ -22,7 +22,7 @@
 
         var h = maquette.h;
 
-        var projector = maquette.createProjector(document.body, function() {return enhancer.renderMaquette();}, {});
+        var projector = maquette.createProjector();
 
         var achieved1 = false;
         var objective1 = {
@@ -36,7 +36,7 @@
             try {
               achieved1 = false;
               var vnode = contentWindow.renderMaquette();
-              var input = vnode.children[0].children[0].children[0].children[1];
+              var input = vnode.children[0].children[0].children[1];
               achieved1 = input.properties.value == contentWindow.rotation;
             } catch (e) {
             }
@@ -57,7 +57,7 @@
             try {
               achieved2 = false;
               var vnode = contentWindow.renderMaquette();
-              var input = vnode.children[0].children[0].children[0].children[1];
+              var input = vnode.children[0].children[0].children[1];
               achieved2 = contentWindow.handleRotationInput && (input.properties.oninput === contentWindow.handleRotationInput);
             } catch (e) {
             }
@@ -93,10 +93,8 @@
 
         var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
 
-        var enhancer = window.createProgressiveEnhancer({
-          "#next": nextButton.renderMaquette,
-          ".work": workbench.renderMaquette
-        });
+        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
+        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
       });
     </script>
   </head>

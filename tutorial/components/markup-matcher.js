@@ -1,4 +1,4 @@
-﻿window.createMarkupMatcher = function (projector, desiredMarkup) {
+window.createMarkupMatcher = function (projector, desiredMarkup) {
 
   // constants
   var h = maquette.h;

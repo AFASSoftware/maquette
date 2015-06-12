@@ -5,20 +5,27 @@
 .work {
   height: calc(100vh - 64px);
   min-height: 400px;
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: stretch;
   align-items: stretch;
+  -webkit-flex-wrap:wrap;
   flex-wrap:wrap;
   position: relative;
 }
 
 .work > .input {
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
   flex-direction: column;
+  -webkit-flex: 1 0 400px;
   flex: 1 0 400px;
 }
 
 .input > .tabs {
   background-color: black;
+  display: -webkit-flex;
   display: flex;
   position: relative;
   height: 25px;
@@ -59,6 +66,7 @@
 }
 
 .input > .editor {
+  -webkit-flex-grow: 1;
   flex-grow: 1;
   min-height: 300px;
 }
@@ -66,9 +74,12 @@
 /* Workbench */
 
 .work > .result {
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
   flex-direction: column;
   min-height: 400px;
+  -webkit-flex: 1 0 400px;
   flex: 1 0 400px;
   background-color: black;
   color: #DDDDDD;
@@ -76,6 +87,7 @@
 }
 
 .result > .header {
+  -webkit-flex: 0 0 25px;
   flex: 0 0 25px;
   padding-left: 20px;
   font-weight: bold;
@@ -83,6 +95,7 @@
 }
 
 .result > .preview {
+  -webkit-flex: 1 0 300px;
   flex: 1 0 300px;
   position: relative;
 }
@@ -110,6 +123,7 @@
 .objectives {
   padding: 10px 10px 105px 10px;
   max-width: 500px;
+  -webkit-flex-shrink: 0;
   flex-shrink: 0;
 }
 

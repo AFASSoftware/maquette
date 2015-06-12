@@ -14,72 +14,21 @@
     <script src="components/next-button.js"></script>
     <script>
     
-      var createEnhancer = function(rootNode) {
-        var parameters = [];
-        var renderFunctions = [];
-        var projections = [];
-        
-        var afterCreate = function(domNode, projectionOptions) {
-          var nodes = rootNode.querySelectorAll("script[type='text/hyperscript']");
-          var functionParameters = ["maquette", "h", "projector"];
-          var parameterValues = [maquette, maquette.h, projector];
-          parameters.forEach(function(p) {
-            functionParameters.push(p.name);
-            parameterValues.push(p.value);
-          });
-          Array.prototype.forEach.call(nodes, function(node, i) {
-            var func = new Function(functionParameters, "return " + node.textContent.trim());
-            var renderFunction = function() {
-              return func.apply(undefined, parameterValues); 
-            }
-            projections.push(maquette.mergeDom(node.parentNode, renderFunction(), projectionOptions));
-            renderFunctions.push(renderFunction);
-          });
-        };
-        
-        var afterUpdate = function() {
-          for (var i=0;i<projections.length;i++) {
-            projections[i].update(renderFunctions[i]());
-          }
-        };
-        
-        var start = function() {
-          return maquette.h("body", {afterCreate: afterCreate, afterUpdate: afterUpdate});
-        };
-        var projector = maquette.createProjector(rootNode || document.body, start, {});
-        
-        return {
-          projector: projector,
-          setParameter: function(name, value) {
-            parameters.push({name: name, value: value});
-          },
-          evaluateScripts: function(rootNode, scriptParameters) {
-            
-          },
-          merge: function(domNode, renderMaquetteFunction) {
-            
-          },
-          append: function(domNode, renderMaquetteFunction) {
-            
-          }
-        };
-      };
-      
+
       document.addEventListener('DOMContentLoaded', function () {
 
         var h = maquette.h;
-        var enhancer = createEnhancer(document.body);
+        var projector = maquette.createProjector();
 
-        var markupMatcher = window.createMarkupMatcher(enhancer.projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
+        var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
 
-        var workbench = createWorkbench(enhancer.projector, "assets/saucer-intro.js", [
+        var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
           markupMatcher
         ]);
-        var nextButton = window.createNextButton(enhancer.projector, workbench.allObjectivesAchieved);
+        var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
 
-        enhancer.evaluateScripts({workbench:workbench});
-        enhancer.merge(document.getElementById("next"), nextButton.renderMaquette);
-
+        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
+        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
       });
     </script>
   </head>
@@ -117,11 +66,10 @@
     <p>
       Because maquette allows you to make the browser DOM reflect the onderlying data, it does not use HTML.
       Maquette uses a notation called 'hyperscript'.
-      This is essentially just a javascript function which returns a tree of virtual DOM nodes.
+      This is essentially just a javascript function <code>h()</code>, which returns a tree of virtual DOM nodes.
     </p>
     <p>
-      Virtual DOM nodes are created using the <code>h()</code> function.
-      The first parameter of this function is a CSS selector string, like <code>"div.landscape"</code>,
+      The first parameter of the <code>h()</code> function is a CSS selector string, like <code>"div.landscape"</code>,
       which results in <code>&lt;div class="landscape"&gt;</code>.
       The last parameter is an array of contents. This may contain strings for text and virtual DOM nodes for childnodes.
     </p>
@@ -134,9 +82,6 @@
     </p>
   </div>
   <div class="work" style="height:460px">
-    <script type="text/hyperscript">
-      workbench.renderMaquette()
-    </script>
   </div>
   {% include analytics.html %}
 </body>

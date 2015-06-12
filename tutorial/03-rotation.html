@@ -22,7 +22,7 @@
 
         var h = maquette.h;
 
-        var projector = maquette.createProjector(document.body, function() {return enhancer.renderMaquette();}, {});
+        var projector = maquette.createProjector();
 
         var hasStyleAttribute = false;
         var usesRotation = false;
@@ -40,13 +40,13 @@
             var oldRotation = contentWindow.rotation;
             try {
               var vnode = contentWindow.renderMaquette();
-              var saucer = vnode.children[0].children[0];
+              var saucer = vnode.children[0];
               var style = saucer.properties.style;
               hasStyleAttribute = typeof style === "string";
               if (hasStyleAttribute) {
                 rotationOk = style === "transform:rotate(45deg)";
                 contentWindow.rotation = 615243;
-                style = contentWindow.renderMaquette().children[0].children[0].properties.style;
+                style = contentWindow.renderMaquette().children[0].properties.style;
                 usesRotation = style.indexOf("615243") !== -1;
                 contentWindow.rotation = oldRotation;
               }
@@ -69,10 +69,8 @@
         
         var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
 
-        var enhancer = window.createProgressiveEnhancer({
-          "#next": nextButton.renderMaquette,
-          ".work": workbench.renderMaquette
-        });
+        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
+        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
 
       });
     </script>

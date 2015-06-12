@@ -21,8 +21,8 @@
       document.addEventListener('DOMContentLoaded', function () {
 
         var h = maquette.h;
-
-        var projector = maquette.createProjector(document.body, function() {return enhancer.renderMaquette();}, {});
+        
+        var projector = maquette.createProjector();
 
         var changeCount = 0;
         var lastRotation = 0;
@@ -77,10 +77,8 @@
 
         var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
 
-        var enhancer = window.createProgressiveEnhancer({
-          "#next": nextButton.renderMaquette,
-          ".work": workbench.renderMaquette
-        });
+        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
+        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
         
       });
     </script>

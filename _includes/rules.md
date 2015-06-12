@@ -7,7 +7,7 @@ These rules are there to make sure maquette can generally render and diff very l
 
 Changing event handlers, like `onclick` for example, is rarely useful.
 Updating an event handler is costly if you accidentally change them on every render.
-Because this mistake that is so easily to made, maquette disallows changing event handlers completely.
+Because this mistake that is so easy to make, maquette disallows changing event handlers completely.
 
 ##### Rule #2 Always provide the same set of properties
 

@@ -48,7 +48,7 @@ var remove = function(evt) {
   itemNrs.pop();
 };
 
-maquette.createProjector(domNode, function() {
+projector.append(domNode, function() {
   return h("body", [
     itemNrs.map(function(itemNr) {
       return h("div.demo-block-item", {
@@ -103,7 +103,10 @@ var remove = function(evt) {
   itemNrs.pop();
 };
 
-maquette.createProjector(domNode, function() {
+// We need a projector that is configured to do CSS transitions
+var projector = maquette.createProjector({transitions: cssTransitions});
+
+projector.append(domNode, function() {
   return h("body", [
     itemNrs.map(function(itemNr) {
       return h("div.demo-block-item", {
@@ -113,7 +116,7 @@ maquette.createProjector(domNode, function() {
     h("button", {key: 0, onclick: add}, ["+"]),
     h("button", {key: 1, onclick: remove}, ["-"])
   ]);
-}, {transitions: cssTransitions});{% include live-editor-end.html %}
+});{% include live-editor-end.html %}
 
 {% include live-editor-init.html velocity=true css=true %}
 

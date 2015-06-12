@@ -1,37 +1,4 @@
-﻿// Soon to be moved into maquette itself
-window.maquetteEnhance = function (domNode, renderFunctionsByQuerySelector, projectionOptions) {
-  var renderFunctions = [];
-  var projections = [];
-
-  var afterCreate = function (afterCreatedomNode, afterCreateProjectionOptions) {
-    Object.keys(renderFunctionsByQuerySelector).forEach(function (querySelector) {
-      var target = afterCreatedomNode.querySelector(querySelector);
-      if(!target) {
-        throw new Error("Could not find: " + querySelector);
-      }
-      var renderFunction = renderFunctionsByQuerySelector[querySelector];
-      renderFunctions.push(renderFunction);
-      projections.push(maquette.mergeDom(target, renderFunction(), afterCreateProjectionOptions));
-    });
-  };
-
-  var afterUpdate = function () {
-    for(var i = 0; i < renderFunctions.length; i++) {
-      projections[i].update(renderFunctions[i]());
-    }
-  };
-
-  var renderMaquette = function () {
-    return maquette.h("body", { // body is actually just a placeholder, it will be ignored by maquette.mergeDom
-      afterCreate: afterCreate,
-      afterUpdate: afterUpdate
-    });
-  };
-
-  return maquette.createProjector(domNode, renderMaquette, projectionOptions);
-};
-
-
+/* global maquette ace */
 window.createLiveEditor = function (projector) { // projector can also be injected later
 
   var h = maquette.h;
@@ -54,7 +21,7 @@ window.createLiveEditor = function (projector) { // projector can also be inject
     var script = editor.getValue();
     var func;
     try {
-      func = new Function("maquette", "h", "domNode", script);
+      func = new Function("maquette", "h", "projector", "domNode", script);
       error = "";
     } catch(e) {
       error = e.message;
@@ -62,7 +29,7 @@ window.createLiveEditor = function (projector) { // projector can also be inject
     if(func) {
       resultDomNode.innerHTML = "";
       try {
-        func(maquette, maquette.h, resultDomNode);
+        func(maquette, maquette.h, maquette.createProjector(), resultDomNode);
       } catch(e) {
         error = "" + e;
       }
@@ -70,10 +37,12 @@ window.createLiveEditor = function (projector) { // projector can also be inject
     if(error) {
       resultDomNode.innerHTML = error;
     }
-    liveEditor.projector.scheduleRender(); // (actually only for the 'error' css class on resultDomNode)
+    projector.scheduleRender(); // (actually only for the 'error' css class on resultDomNode)
   };
 
   var createAce = function (textArea) {
+    var content = textArea.textContent;
+    var value = textArea.value;
     editor = ace.edit(textArea);
     editor.setOptions({minLines: 5, maxLines: 50});
     editor.setTheme("ace/theme/monokai");
@@ -85,6 +54,11 @@ window.createLiveEditor = function (projector) { // projector can also be inject
     editor.setBehavioursEnabled(true);
 //    editor.renderer.setShowGutter(false);
     editor.getSession().on("change", throttleValidateScript);
+    if (content && value.charCodeAt(0)===1) {
+      // Happens sometimes in chrome while navigatiing back
+      editor.setValue(content, 0);
+      editor.clearSelection();
+    }
   };
 
   var registerResultDomNode = function (domNode) {
@@ -93,18 +67,11 @@ window.createLiveEditor = function (projector) { // projector can also be inject
   };
 
   var liveEditor = {
-    projector: projector,
     renderEditor: function () {
       return h("textarea", { afterCreate: createAce });
     },
     renderResult: function () {
       return h("div.result", { afterCreate: registerResultDomNode, classes: { error: !!error } }); // Contents is supplied using resultDomNode
-    },
-    renderMaquette: function () {
-      return h("live-editor", { key: liveEditor }, [
-        liveEditor.renderEditor(),
-        liveEditor.renderResult()
-      ]);
     }
   };
 

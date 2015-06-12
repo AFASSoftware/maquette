@@ -128,8 +128,8 @@ function renderMaquette() {
   ]);
 }
 
-// Starts the projector, which updates the real DOM at just the right moments
-maquette.createProjector(domNode, renderMaquette);</textarea></code>
+// Project the renderMaquette function to the DOM and update the DOM when needed
+projector.append(domNode, renderMaquette);</textarea></code>
         <div id="live-editor-message"></div>
       </div>
       <div class="col s12 m4">
@@ -175,12 +175,10 @@ maquette.createProjector(domNode, renderMaquette);</textarea></code>
   <script>
     function enhance() {
       if(window.maquette && window.createLiveEditor && window.ace) {
-        var liveEditor = createLiveEditor();
-        var projector = maquetteEnhance(document.body, {
-          "#live-editor": liveEditor.renderEditor,
-          "#live-editor-result": liveEditor.renderResult
-        }, {});
-        liveEditor.projector = projector;
+        var projector = maquette.createProjector(); // each editor has its own projector
+        var liveEditor = createLiveEditor(projector);
+        projector.merge(document.querySelector("#live-editor"), liveEditor.renderEditor);
+        projector.merge(document.querySelector("#live-editor-result"), liveEditor.renderResult);
       }
     }
   </script>

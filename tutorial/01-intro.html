@@ -18,6 +18,7 @@
         var parameters = [];
         var renderFunctions = [];
         var projections = [];
+        
         var afterCreate = function(domNode, projectionOptions) {
           var nodes = rootNode.querySelectorAll("script[type='text/hyperscript']");
           var functionParameters = ["maquette", "h", "projector"];
@@ -35,11 +36,13 @@
             renderFunctions.push(renderFunction);
           });
         };
+        
         var afterUpdate = function() {
           for (var i=0;i<projections.length;i++) {
             projections[i].update(renderFunctions[i]());
           }
         };
+        
         var start = function() {
           return maquette.h("body", {afterCreate: afterCreate, afterUpdate: afterUpdate});
         };
@@ -49,8 +52,17 @@
           projector: projector,
           setParameter: function(name, value) {
             parameters.push({name: name, value: value});
+          },
+          evaluateScripts: function(rootNode, scriptParameters) {
+            
+          },
+          merge: function(domNode, renderMaquetteFunction) {
+            
+          },
+          append: function(domNode, renderMaquetteFunction) {
+            
           }
-        }
+        };
       };
       
       document.addEventListener('DOMContentLoaded', function () {
@@ -65,9 +77,9 @@
         ]);
         var nextButton = window.createNextButton(enhancer.projector, workbench.allObjectivesAchieved);
 
-        enhancer.setParameter("workbench", workbench);
-        enhancer.setParameter("nextButton", nextButton);
-        
+        enhancer.evaluateScripts({workbench:workbench});
+        enhancer.merge(document.getElementById("next"), nextButton.renderMaquette);
+
       });
     </script>
   </head>
@@ -80,8 +92,7 @@
         <ul class="right">
           <li><a href="index.html">Index</a></li>
           <li>
-            <a id="next" href="02-variables-and-properties.html">Next<script type="text/hyperscript">nextButton.renderMaquette()</script>
-            </a>
+            <a id="next" href="02-variables-and-properties.html">Next</a>
           </li>
         </ul>
       </div>

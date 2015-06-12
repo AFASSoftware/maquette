@@ -20,7 +20,7 @@ function renderMaquette() {
   ]);
 }
 
-maquette.createProjector(domNode, renderMaquette);
+projector.append(domNode, renderMaquette);
 {% include live-editor-end.html %}
 
 It does get a little more complex if your items need to maintain state or event handlers. 
@@ -55,7 +55,7 @@ function renderMaquette() {
   ]);
 }
 
-maquette.createProjector(domNode, renderMaquette);
+projector.append(domNode, renderMaquette);
 {% include live-editor-end.html %}
 
 There is one more advanced usecase. What if your items maintain state or event handlers but the underlying data can also get updated?

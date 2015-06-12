@@ -3,12 +3,11 @@ function enhance() {
   if(window.maquette && window.createLiveEditor && window.ace {% if include.velocity == true %} && window.Velocity {% endif %} {% if include.velocity == true %} && window.cssTransitions {% endif %}) {
     var editors = document.querySelectorAll(".live-editor")
     for (var i=0;i<editors.length;i++) {
-      var liveEditor = createLiveEditor();
-      var projector = maquetteEnhance(editors[i], {
-        ".live-editor-editor": liveEditor.renderEditor,
-        ".live-editor-result": liveEditor.renderResult
-      }, {});
-      liveEditor.projector = projector;
+      var projector = maquette.createProjector(); // each editor has its own projector
+      var editorElement = editors[i];
+      var liveEditor = createLiveEditor(projector);
+      projector.merge(editorElement.querySelector(".live-editor-editor"), liveEditor.renderEditor);
+      projector.merge(editorElement.querySelector(".live-editor-result"), liveEditor.renderResult);
     }
   }
 }

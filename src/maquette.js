@@ -713,7 +713,7 @@
       /**
        * Merges a new DOM node which is generated from a {@link VNode} with an existing DOM Node.
        * This means that the virtual DOM and real DOM have one overlapping element. 
-       * Therefore the selector for the root {VNode} will be ignored, but its properties and children will be applied to the Element provided 
+       * Therefore the selector for the root {@link VNode} will be ignored, but its properties and children will be applied to the Element provided 
        * This is a low-level method. Users wil typically use a {@link Projector} instead. 
        * @memberof MaquetteDom#
        * @param {Element} domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.  
@@ -950,7 +950,7 @@
         /**
          * Merges a new DOM node using the result from the provided `renderMaquetteFunction` with an existing DOM Node.
          * This means that the virtual DOM and real DOM have one overlapping element. 
-         * Therefore the selector for the root {VNode} will be ignored, but its properties and children will be applied to the Element provided
+         * Therefore the selector for the root {@link VNode} will be ignored, but its properties and children will be applied to the Element provided
          * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
          * @param {Element} domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.  
          * @param {function} renderMaquetteFunction - Function with zero arguments that returns a {@link VNode} tree.

@@ -1,0 +1,58 @@
+.homepage {
+  > header {
+    > h1 {
+      text-align: center;
+      font-size: 56px;
+      line-height: 80px;
+    }
+    > p {
+      text-align: center;
+      font-size: 24px;
+      line-height: 40px;
+      padding: 16px 0 24px 0;
+    }
+  }
+  
+  .teasers {
+    @include flexbox();
+    @include justify-content(space-around);
+    @include flex-wrap(wrap);
+    margin: 0 (-$gutter-width/2);
+    padding-bottom: 20px;
+    
+    > aside {
+      max-width: $column-width + $gutter-width;
+      @include flex(1 0 250px);
+      padding: 0 $gutter-width/2;
+      text-align: center;
+      
+      > svg {
+        width: 40px;
+        height: 40px;
+      }
+      > p {
+        text-align: left;
+      }
+    }
+  }
+  
+  .get-started {
+    .button {
+      text-decoration:none;
+      display:inline-block;
+      background-color: $primary-color;
+      color: white;
+      padding: 0 16px;
+      line-height: 32px;
+      font-size: 16px;
+      
+      &:hover {
+        background-color: lighten($primary-color, 30%);
+      }
+  
+      &:active {
+        background-color: lighten($primary-color, 15%);
+      }
+    }
+  }
+}

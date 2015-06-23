@@ -1,0 +1,300 @@
+/* 
+ * Normalizes and provides basic styles for all HTML elements. Also sets border-box as the default.
+ * Inspired by en copied from:
+ *  https://github.com/necolas/normalize.css/blob/master/normalize.css (without the IE <10 fixes and html elements that are unlikely to be used)
+ *  https://github.com/yui/yui3/blob/master/src/cssreset/css/cssreset.css
+ */
+
+* {
+  /* border-box (meaning height and width INCLUDES padding and border) makes styling and animation a lot easier */
+  /* We will apply border-box manually to *:before and *:after manually for now, in order not to pollute the styles tab in devtools too much */
+  @include border-box();
+}
+
+/**
+ * 2. Prevent iOS text size adjust after orientation change, without disabling user zoom.
+ */
+html {
+  font: normal normal normal  #{$text-font-size}/#{$text-line-height} $font-family;
+  -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  height: 100%;
+  overflow-y: scroll; /* scrollbar remains visible at all times to prevent the centered content from making small steps left and right */
+}
+
+body {
+  margin : 0;
+  background-color: white;
+  color: black;
+  height: 100%;
+}
+
+/* IE 10 workaround */
+::-ms-clear {display: none;} 
+
+svg {
+  /* A nice default for svg, when used as an icon */
+  width: #{$text-font-size};
+  height: #{$text-font-size};
+  stroke: $primary-color;
+  fill: $primary-color;
+  stroke-width: 0;
+}
+
+h1, h2, h3 {
+  color: $heading-color;
+  font-family:$heading-font-family;
+  margin:16px 0 5px 0;
+  font-weight: 700;
+}
+
+h1 {
+  font-size:$heading1-font-size;
+  line-height:$heading1-line-height;
+  min-height:$heading1-line-height;
+}
+h2 {
+  font-size:$heading2-font-size;
+  line-height:$heading2-line-height;
+  min-height:$heading2-line-height;
+  font-weight:normal;
+}
+h3 {
+  font-size:$heading3-font-size;
+  line-height:$heading3-line-height;
+  min-height:$heading3-line-height;
+  font-weight:normal;
+}
+b, strong {
+	font-weight:bold; 
+}
+i, em {
+	font-style:italic;
+}
+ol {
+	margin: 0 0 0 10px;
+	list-style: decimal outside;	
+}
+ul {
+	margin: 0 0 0 10px;
+	list-style: disc outside;
+}
+th,td {
+  border: solid 1px black;
+  padding:4px;
+}
+th {
+	font-weight:bold;
+}
+p,fieldset,table,pre {
+	margin-top:8px;
+	margin-bottom:8px;
+}
+input[type=text],input[type=password],textarea{
+  width:160px;
+}
+input[type="text"], input[type="email"], input[type="search"], input[type="password"] {
+  -webkit-appearance: none; // remove top shadow in safari
+}
+textarea {
+  resize: none;
+}
+mark {
+  background-color: transparent;
+}
+
+// Links
+
+a {
+  background: transparent;
+  color:black;
+}
+
+a:visited {
+  color:black;
+}
+
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+a:focus {
+    outline: #888888 thin dotted;
+}
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+a:active,
+a:hover {
+    outline: 0;
+}
+
+// Tables
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+td, th {
+  border: solid 1px #EDEDEF;
+  text-align: left;
+  padding: 2px 4px;
+}
+
+button {
+  background-color: #E0E0E0;
+  border: solid 1px black;
+  cursor:pointer;
+}
+
+// Text oddities
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+
+small {
+  font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sup {
+  top: -0.5em;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+img {
+  border: 0;
+}
+
+pre {
+  overflow: auto;
+}
+
+/**
+ * Address odd `em`-unit font size rendering in all browsers.
+ */
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: #{$text-font-size};
+}
+
+// Forms
+
+/**
+ * 1. Correct color not being inherited.
+ *    Known issue: affects color of disabled elements.
+ * 2. Correct font properties not being inherited.
+ * 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome.
+ */
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit; /* 1 */
+  font: inherit; /* 2 */
+  margin: 0; /* 3 */
+}
+
+button {
+  overflow: hidden;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Firefox, IE 8+, and Opera
+ * Correct `select` style inheritance in Firefox.
+ */
+
+button,
+select {
+  text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ */
+
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button; /* 2 */
+  cursor: pointer; /* 3 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+
+button[disabled],
+html input[disabled] {
+  cursor: default;
+}
+
+/**
+ * Remove inner padding and border in Firefox 4+.
+ */
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/**
+ * Address Firefox 4+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+
+input {
+  line-height: normal;
+}
+
+/**
+ * It's recommended that you don't attempt to style these elements.
+ * Firefox's implementation doesn't respect box-sizing, padding, or width.
+ *
+ * 1. Address box sizing set to `content-box` in IE 8/9/10.
+ * 2. Remove excess padding in IE 8/9/10.
+ */
+
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+
+/**
+ * Fix the cursor style for Chrome's increment/decrement buttons. For certain
+ * `font-size` values of the `input`, it causes the cursor style of the
+ * decrement button to change from `default` to `text`.
+ */
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+

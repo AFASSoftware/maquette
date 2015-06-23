@@ -1,0 +1,22 @@
+/* 
+ * This SCSS file only contains utility mixins. It will not result in any changes in styling.
+ */
+@mixin border-box() {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+@mixin transform($transform) {
+  -webkit-transform: $transform;
+     -moz-transform: $transform;
+      -ms-transform: $transform;
+          transform: $transform;
+}
+
+@mixin transform-origin($transform) {
+  -webkit-transform-origin: $transform;
+     -moz-transform-origin: $transform;
+      -ms-transform-origin: $transform;
+          transform-origin: $transform;
+}

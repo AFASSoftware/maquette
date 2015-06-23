@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Different approach to stateful components
+title: Other approach stateful components
 ---
 
 ### Different approach to stateful components

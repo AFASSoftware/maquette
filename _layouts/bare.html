@@ -1,0 +1,61 @@
+---
+---
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/minimal.css" rel="stylesheet" />
+  <title>{{ page.title }}</title>
+</head>
+<body>
+
+ {{ content }}
+
+  <aside class="top-bar">
+    <nav>
+      <a class="logo" href="/">Maquette</a>
+      <div class="tiny-menu menu">
+        <a href="#full-menu">Menu</a>
+      </div>
+      <div class="normal-menu menu">
+        <a href="/menu.html">Documentation</a>
+        <a href="/download.html">Download</a>
+        <a href="/support.html">Support</a>
+        <a href="https://github.com/AFASSoftware/maquette">Github</a>
+      </div>
+    </nav>
+  </aside>
+  
+  <footer>
+    Created at <a href="http://www.afas.nl">AFAS Software</a> (Dutch site)
+  </footer>
+  
+  {%if page.liveEditors %}
+  <script>
+  function enhance() {
+    if(window.maquette && window.createLiveEditor && window.ace {% if page.liveEditorsVelocity %} && window.Velocity {% endif %} {% if page.liveEditorsCss %} && window.cssTransitions {% endif %}) {
+      var editors = document.querySelectorAll(".live-editor")
+      for (var i=0;i<editors.length;i++) {
+        var projector = maquette.createProjector(); // each editor has its own projector
+        var editorElement = editors[i];
+        var liveEditor = createLiveEditor(projector);
+        projector.merge(editorElement.querySelector(".live-editor-editor"), liveEditor.renderEditor);
+        projector.merge(editorElement.querySelector(".live-editor-result"), liveEditor.renderResult);
+      }
+    }
+  }
+  </script>
+    {% if page.liveEditorsVelocity %}
+  <script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js" async onload="enhance()"></script>
+    {% endif %}
+    {% if page.liveEditorsCss %}
+  <script src="//cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/css-transitions.min.js" async onload="enhance()"></script>
+    {% endif %}
+  <script src="//cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js" async onload="enhance()"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js" async onload=" enhance()"></script>
+  <script src="/script.js" async onload="enhance()"></script>
+  {% endif %}
+  
+  {% include analytics.html %}
+</body>
+</html>

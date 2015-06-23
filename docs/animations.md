@@ -1,6 +1,9 @@
 ---
 layout: default
 title: Animations
+liveEditors: true
+liveEditorsCss: true
+liveEditorsVelocity: true
 ---
 
 ### Animations
@@ -49,7 +52,7 @@ var remove = function(evt) {
 };
 
 projector.append(domNode, function() {
-  return h("body", [
+  return h("div", [
     itemNrs.map(function(itemNr) {
       return h("div.demo-block-item", {
         key:itemNr, enterAnimation: itemEnter, exitAnimation: itemExit
@@ -107,7 +110,7 @@ var remove = function(evt) {
 var projector = maquette.createProjector({transitions: cssTransitions});
 
 projector.append(domNode, function() {
-  return h("body", [
+  return h("div", [
     itemNrs.map(function(itemNr) {
       return h("div.demo-block-item", {
         key:itemNr, enterAnimation: "slideDown", exitAnimation: "slideUp"
@@ -118,6 +121,5 @@ projector.append(domNode, function() {
   ]);
 });{% include live-editor-end.html %}
 
-{% include live-editor-init.html velocity=true css=true %}
 
 If you want to see a demonstration of what more is possible with animations in maquette, have a look at the [hero-transition demo](http://johan-gorter.github.io/maquette-demo-hero/).

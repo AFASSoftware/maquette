@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Component approach
+liveEditors: true
 ---
 Maquette itself is not a framework. 
 This means it does not force you to structure your application in a certain way.
@@ -44,8 +45,12 @@ Let us go one step further and create a function that can produce configurable b
   };
 };
 
-var rotateButton = createButton("skew", function(){ domNode.style.transform = "skewX(15deg)"; });
-var undoButton = createButton("straight", function(){ domNode.style.transform = ""; });
+var rotateButton = createButton("skew", function() { 
+  domNode.style.transform = "skewX(15deg)";
+});
+var undoButton = createButton("straight", function() { 
+  domNode.style.transform = ""; 
+});
 
 projector.append(domNode, function() { 
   return h("div", [
@@ -129,5 +134,4 @@ This technique is also used by other frameworks, like polymer. This makes stylin
 Browsers will just use an HTMLUnknown element which essentially just works just like a &lt;span&gt;. 
 We really like this approach, but you can decide for yourself if you also want to use this.
 
-{% include live-editor-init.html %}
 

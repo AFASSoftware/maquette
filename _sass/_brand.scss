@@ -1,0 +1,20 @@
+$font-family: sans-serif;
+$text-font-size: 14px;
+$text-line-height: 24px;
+
+$primary-color: indigo;
+$white: #EEEEEE;
+
+$heading-font-family: sans-serif;
+$heading-color: indigo;
+
+$heading1-font-size: 32px;
+$heading1-line-height: 48px;
+$heading2-font-size: 24px;
+$heading2-line-height: 32px;
+$heading3-font-size: 20px;
+$heading3-line-height: 24px;
+
+$card-width: 1040px;
+$gutter-width: 10px;
+$column-width: ($card-width - 2 * $gutter-width) / 3;

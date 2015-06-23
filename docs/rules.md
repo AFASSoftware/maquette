@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Rules
+title: Three rules
 ---
 
 {% include rules.md %}

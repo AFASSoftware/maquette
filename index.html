@@ -1,190 +1,124 @@
 ---
+layout: bare
+title: Maquette
+liveEditors: true
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="../style.css" rel="stylesheet" />
-  <title>Maquette</title>
-</head>
-<body>
-
-  <div class="navbar-fixed">
-    <nav class="light-blue lighten-1" role="navigation">
-      <div class="nav-wrapper container">
-        <a id="logo-container" href="/" class="brand-logo">Maquette</a>
-        <ul class="right">
-          <li><a href="docs.html">Docs</a></li>
-          <li><a href="download.html">Download</a></li>
-          <li><a href="support.html">Support</a></li>
-        </ul>
-        <div class="right" style="padding-top:9px;">
-          <a href="https://twitter.com/share" class="twitter-share-button" data-size="large" data-count="none">Tweet</a>
-          <iframe src="https://ghbtns.com/github-btn.html?user=johan-gorter&repo=maquette&type=star&count=false&size=large" 
-                  frameborder="0" scrolling="0" width="80px" height="30px"style="transform: translateY(0.9px) scaleY(0.93);"></iframe>
-        </div>
-      </div>
-    </nav>
-  </div>
-  
-  <div class="section no-pad-bot" id="index-banner">
-    <div class="container">
-      <br><br>
-      <h1 class="header center orange-text">Maquette</h1>
-      <div class="row center">
-        <h5 class="header col s12 light">Minimalistic Virtual DOM library with support for animated transitions</h5>
-      </div>
-      <br>
-      <br>
-    </div>
-  </div>
-
-  <div class="container">
-
-    <div class="row">
-      <div class="col s12 m4">
-        <div class="icon-block">
-          <h2 class="center light-blue-text"><i class="mdi-image-movie-creation"><!--mdi-action-theaters--></i></h2>
-          <h5 class="center">Animated transitions</h5>
-
-          <p class="light">
-            Maquette can use animations to make changes to the user interface. 
-            All you have to do is specify the desired animation for entering and exiting and render only visible elements.
-            Maquette takes care of the rest.
+  <main>
+    <article class="homepage">
+      <header>
+        <h1>Maquette</h1>
+        <p class="subtitle">Minimalistic Virtual DOM library with support for animated transitions</p>
+      </header>
+      <div class="teasers">
+        <aside>
+          <svg viewBox="0 0 32 32"><path d="M27.188,4.875v1.094h-4.5V4.875H8.062v1.094h-4.5V4.875h-1v21.25h1v-1.094h4.5v1.094h14.625v-1.094h4.5v1.094h1.25V4.875H27.188zM8.062,23.719h-4.5v-3.125h4.5V23.719zM8.062,19.281h-4.5v-3.125h4.5V19.281zM8.062,14.844h-4.5v-3.125h4.5V14.844zM8.062,10.406h-4.5V7.281h4.5V10.406zM11.247,20.59V9.754l9.382,5.418L11.247,20.59zM27.188,23.719h-4.5v-3.125h4.5V23.719zM27.188,19.281h-4.5v-3.125h4.5V19.281zM27.188,14.844h-4.5v-3.125h4.5V14.844zM27.188,10.406h-4.5V7.281h4.5V10.406z"></path></svg>
+          <h2>Animated transitions</h2>
+          <p>
+            Maquette enables you to use animations when making changes to the user interface. 
+            All you have to do is render the elements that should currently be visible.
+            Maquette will then run the animations that you specified to make the neccessary adjustments.
           </p>
-        </div>
-      </div>
-
-      <div class="col s12 m4">
-        <div class="icon-block">
-          <h2 class="center light-blue-text"><i class="mdi-image-flash-on"></i></h2>
-          <h5 class="center">Fast</h5>
-
-          <p class="light">
-            Maquette was built up from the ground with performance in mind. 
-            This has resulted in an implementation that can easily render and diff thousands of nodes within a single frame. 
+        </aside>
+        <aside>
+          <svg viewBox="0 0 32 32"><path d="M19.671,8.11l-2.777,2.777l-3.837-0.861c0.362-0.505,0.916-1.683,0.464-2.135c-0.518-0.517-1.979,0.278-2.305,0.604l-0.913,0.913L7.614,8.804l-2.021,2.021l2.232,1.061l-0.082,0.082l1.701,1.701l0.688-0.687l3.164,1.504L9.571,18.21H6.413l-1.137,1.138l3.6,0.948l1.83,1.83l0.947,3.598l1.137-1.137V21.43l3.725-3.725l1.504,3.164l-0.687,0.687l1.702,1.701l0.081-0.081l1.062,2.231l2.02-2.02l-0.604-2.689l0.912-0.912c0.326-0.326,1.121-1.789,0.604-2.306c-0.452-0.452-1.63,0.101-2.135,0.464l-0.861-3.838l2.777-2.777c0.947-0.947,3.599-4.862,2.62-5.839C24.533,4.512,20.618,7.163,19.671,8.11z"></path></svg>
+          <h2>Fast</h2>
+          <p>
+            Maquette was built with performance in mind. 
+            This has resulted in an implementation that can easily render and diff thousands of nodes within a single frame.
           </p>
-        </div>
-      </div>
-
-      <div class="col s12 m4">
-        <div class="icon-block">
-          <h2 class="center light-blue-text"><i class="mdi-navigation-fullscreen-exit"></i></h2>
-          <h5 class="center">Ultra lightweight</h5>
-
-          <p class="light">
-            Maquette is a pure and simple library which is only 2.4Kb gzipped. Compare this to React (36Kb) or JQuery (29Kb).
+        </aside>
+        <aside>
+          <svg viewBox="0 0 32 32"><path d="M24.485,2c0,8-18,4-18,20c0,6,2,8,2,8h2c0,0-3-2-3-8c0-4,9-8,9-8s-7.981,4.328-7.981,8.436C21.239,24.431,28.288,9.606,24.485,2z"></path></svg>
+          <h2>Ultra lightweight</h2>
+          <p>
+            Maquette is a pure and simple library which is only 3Kb gzipped. Compare this to React (36Kb) or JQuery (29Kb).
           </p>
+        </aside>
+      </div>
+      
+      <div class="row">
+        <section class="col-2">
+          <h2>Why virtual DOM</h2>
+          <p>
+            Anyone who ever created a complex user interface knows it is hard to keep it synchronized with underlying data.
+            In web applications this involves creating the right DOM tree representing the data 
+            and then updating the DOM whenever the data changes.
+          </p>
+          <p>
+            Virtual DOM is a technique which automatically updates the DOM for you.
+            All you have to do is provide a function which renders the desired 'virtual' DOM representing the current data.
+            Maquette will update the real DOM, using animated transitions if desired.
+          </p>
+          <p>
+            The code below is a small live demonstration of how maquette simplifies web development. 
+            Focus on the <code>you</code> variable to find out how it works.
+          </p>        
+        </section>
+        <aside class="col-1">
+          <h2>News</h2>
+          <p>
+          {% for post in site.posts %}
+          <b>{{ post.date | date_to_string }}</b> - <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+          <br />
+          {% endfor %}
+          </p>
+        </aside>
+      </div>
+      
+      <div class="row live-editor">
+        <div class="col-2">
+          <h2>Live editor</h2>
+          <code><textarea class="live-editor-editor" rows="20" cols="90" spellcheck="false"
+          style="height:310px;line-height:16px;font-size:12px">var you = ""; // A piece of data
+  
+  // An ordinary event handler
+  function handleNameInput(evt) {
+    you = evt.target.value;
+  }
+  
+  // This function uses the 'hyperscript' notation to create the virtual DOM. 
+  // The 'you' variable is used twice here
+  function renderMaquette() {
+    return h("p#live-editor-result", [
+      h("input", { 
+        type: "text", placeholder: "What is your name?", value: you, oninput: handleNameInput 
+      }),
+      h("p.output", ["Hello " + (you || "you") + "!"])
+    ]);
+  }
+  
+  // Project the renderMaquette function to the DOM and update the DOM when needed
+  projector.append(domNode, renderMaquette);</textarea></code>
+        </div>
+        <div class="col-1">
+          <h2>Result</h2>
+          <div class="live-editor-result"></div>
         </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col s12 m8">
-        <h5>Why virtual DOM</h5>
+      <div class="get-started">
+        <h2>Get started</h2>
         <p>
-          Anyone who ever created a complex user interface knows it is hard to keep it synchronized with underlying data.
-          In web applications this involves creating the right DOM tree representing the data 
-          and then updating the DOM whenever the data changes.
+          Are you ready to get started? <br />
+          We have created a fun tutorial which will teach you everything you need to know. 
         </p>
-        <p>
-          Virtual DOM is a technique which automatically updates the DOM for you.
-          All you have to do is provide a function which renders the desired 'virtual' DOM representing the current data.
-          Maquette will update the real DOM, using animated transitions if desired.
-        </p>
-        <p>
-          The code below is a small live demonstration of how maquette simplifies web development. 
-          Focus on the <code>you</code> variable to find out how it works.
-        </p>
-      </div>
-      <div class="col s12 m4">
-        <h5>News</h5>
-        {% for post in site.posts %}
-        <b>{{ post.date | date_to_string }}</b> - <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-        <br />
-        {% endfor %}
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="col s12 m8">
-        <h5>Live editor</h5>
-        <code><textarea id="live-editor" rows="20" cols="90" spellcheck="false"
-        style="height:310px;line-height:16px;font-size:12px">var you = ""; // A piece of data
-
-// An ordinary event handler
-function handleNameInput(evt) {
-  you = evt.target.value;
-}
-
-// This function uses the 'hyperscript' notation to create the virtual DOM. 
-// The 'you' variable is used twice here
-function renderMaquette() {
-  return h("p#live-editor-result", [
-    h("input", { 
-      type: "text", placeholder: "What is your name?", value: you, oninput: handleNameInput 
-    }),
-    h("p.output", ["Hello " + (you || "you") + "!"])
-  ]);
-}
-
-// Project the renderMaquette function to the DOM and update the DOM when needed
-projector.append(domNode, renderMaquette);</textarea></code>
-        <div id="live-editor-message"></div>
-      </div>
-      <div class="col s12 m4">
-        <h5>Result</h5>
-        <div id="live-editor-result"></div>
-      </div>
-    </div>
-
-    <h5 class="center">Get started</h5>
-    <p class="center">
-      Are you ready to get started? <br />
-      We have created a fun tutorial which will teach you everything you need to know. 
-    </p>
-
-    <br />
-    <div class="row center">
-      <a href="/tutorial/01-intro.html" class="btn-large waves-effect waves-light orange">Learn maquette</a>
-    </div>
-    
-    <h5>Credits</h5>
-    <p>
-      We are grateful for the following projects which inspired maquette:
-    </p>
-
-    <ul>
-      <li><strong><a href="http://facebook.github.io/react/">React</a></strong> for inventing the virtual DOM technology.</li>
-      <li><strong><a href="http://lhorie.github.io/mithril/">Mithril</a></strong> for showing how simple and lightweight a virtual DOM can be.</li>
-      <li><strong><a href="https://github.com/Raynos/mercury">Mercury</a></strong> for exploring several techniques and optimizations.</li>
-    </ul>
-    
-  </div>
+        <a href="/tutorial/01-intro.html" class="button">Learn maquette</a>
+      </div>      
+      
+      <h2>Credits</h2>
+      <p>
+        We are grateful for the following projects which inspired maquette:
+      </p>
   
-  
-  
-  <footer class="page-footer orange">
-    <div class="container">
-      Created at <a class="orange-text text-lighten-3" href="http://www.afas.nl">AFAS Software</a> (Dutch site)
-    </div>
-    <br />
-  </footer>  
+      <ul>
+        <li><strong><a href="http://facebook.github.io/react/">React</a></strong> for inventing the virtual DOM technology.</li>
+        <li><strong><a href="http://lhorie.github.io/mithril/">Mithril</a></strong> for showing how simple and lightweight a virtual DOM can be.</li>
+        <li><strong><a href="https://github.com/Raynos/mercury">Mercury</a></strong> for exploring several techniques and optimizations.</li>
+      </ul>
+      
+    </article>
+  </main>
 
-  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-  <script>
-    function enhance() {
-      if(window.maquette && window.createLiveEditor && window.ace) {
-        var projector = maquette.createProjector(); // each editor has its own projector
-        var liveEditor = createLiveEditor(projector);
-        projector.merge(document.querySelector("#live-editor"), liveEditor.renderEditor);
-        projector.merge(document.querySelector("#live-editor-result"), liveEditor.renderResult);
-      }
-    }
-  </script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js" async onload="enhance()"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js" async onload=" enhance()"></script>
-  <script src="/script.js" async onload="enhance()"></script>
-  {% include analytics.html %}
-</body>
-</html>
+  <aside class="full-menu">
+    {% include menu.html %}
+  </aside>

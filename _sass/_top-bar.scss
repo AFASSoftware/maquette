@@ -1,0 +1,53 @@
+.top-bar {
+  position: fixed;
+  z-index: 100;
+  top:0;
+  left:0;
+  right:0;
+  height: 40px;
+  @include flexbox();
+  @include justify-content(center);
+  background-color: $heading-color;
+  color: $white;
+
+  a {
+    color:$white;
+    text-decoration: none;
+    
+    
+    &:hover, &:active {
+      text-decoration: underline;
+    }
+  }
+  
+  > nav {
+    width: $card-width;
+    max-width: 96%;
+    line-height: 40px;
+    font-size: 18px;
+    @include flexbox();
+    @include justify-content(space-between);
+    @include align-items(baseline);
+    
+    > .menu {
+
+      > a {
+        display: block;
+        font-size: 14px;
+        line-height: 36px;
+        color: $white;
+        padding-left:32px;
+      }
+    }
+  }
+}
+
+@media(max-width:767px){
+  .normal-menu { display:none; }
+  .tiny-menu { display:flex };
+}
+
+@media(min-width:768px){
+  .tiny-menu { display:none; }
+  .normal-menu { display:flex; }
+}

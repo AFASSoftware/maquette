@@ -38,16 +38,16 @@ liveEditors: true
       
       <div class="row">
         <section class="col-2">
-          <h2>Why virtual DOM</h2>
+          <h2>Why Maquette</h2>
           <p>
-            Anyone who ever created a complex user interface knows it is hard to keep it synchronized with underlying data.
+            Anyone who ever created a complex web application user interface knows it is hard to keep it synchronized with underlying data.
             In web applications this involves creating the right DOM tree representing the data 
             and then updating the DOM whenever the data changes.
           </p>
           <p>
-            Virtual DOM is a technique which automatically updates the DOM for you.
-            All you have to do is provide a function which renders the desired 'virtual' DOM representing the current data.
-            Maquette will update the real DOM, using animated transitions if desired.
+            Maquette uses a technique called <strong>virtual DOM</strong> to automatically update the DOM for you.
+            All you have to do is provide a function which renders the desired 'virtual' representation of the DOM using the current data.
+            Maquette will take care of updating the real DOM, using animated transitions if desired.
           </p>
           <p>
             The code below is a small live demonstration of how maquette simplifies web development. 
@@ -79,7 +79,7 @@ liveEditors: true
   // This function uses the 'hyperscript' notation to create the virtual DOM. 
   // The 'you' variable is used twice here
   function renderMaquette() {
-    return h("p#live-editor-result", [
+    return h("div", [
       h("input", { 
         type: "text", placeholder: "What is your name?", value: you, oninput: handleNameInput 
       }),
@@ -99,10 +99,10 @@ liveEditors: true
       <div class="get-started">
         <h2>Get started</h2>
         <p>
-          Are you ready to get started? <br />
+          Are you ready to get started with maquette? <br />
           We have created a fun tutorial which will teach you everything you need to know. 
         </p>
-        <a href="/tutorial/01-intro.html" class="button">Learn maquette</a>
+        <a href="/tutorial/01-intro.html" class="button">Start the tutorial</a>
       </div>      
       
       <h2>Credits</h2>

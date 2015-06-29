@@ -30,24 +30,23 @@
     @include align-items(baseline);
     
     > .menu {
+      display:flex;
 
       > a {
         display: block;
         font-size: 14px;
         line-height: 36px;
         color: $white;
-        padding-left:32px;
+        margin-left:32px;
       }
     }
   }
 }
 
 @media(max-width:767px){
-  .normal-menu { display:none; }
-  .tiny-menu { display:flex };
+  .top-bar > nav > .normal-menu { display:none; }
 }
 
 @media(min-width:768px){
-  .tiny-menu { display:none; }
-  .normal-menu { display:flex; }
+  .top-bar > nav > .tiny-menu { display:none; }
 }

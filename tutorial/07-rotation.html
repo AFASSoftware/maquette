@@ -1,104 +1,71 @@
 ---
+layout: tutorial
+workbench: true
 ---
-<!doctype html>
-<html>
-  <head>
-    <title>Tutorial</title>
-    <link href="../style.css" rel="stylesheet" />
-    <link href="tutorial.css" rel="stylesheet" />
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
-    <script src="components/enhancer.js"></script>
-    <script src="components/workbench.js"></script>
-    <script src="components/next-button.js"></script>
-    <style>
-      li.complete {
-        background-color: green;
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    var h = maquette.h;
+    
+    var projector = maquette.createProjector();
+
+    var changeCount = 0;
+    var lastRotation = 0;
+    var objective1 = {
+      title: "Analyze the problem",
+      isAchieved: function () {
+        return changeCount > 40;
+      },
+      onSceneUpdate: function (contentWindow) {
+        var rotation = contentWindow.rotation;
+        if(rotation && rotation !== lastRotation) {
+          lastRotation = rotation;
+          changeCount++;
+        }
+      },
+      renderMaquette: function () {
+        return h("p", ["Move the rotation slider up and down to get a feeling of what is wrong."]);
       }
-    </style>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
+    };
 
-        var h = maquette.h;
-        
-        var projector = maquette.createProjector();
-
-        var changeCount = 0;
-        var lastRotation = 0;
-        var objective1 = {
-          title: "Analyze the problem",
-          isAchieved: function () {
-            return changeCount > 40;
-          },
-          onSceneUpdate: function (contentWindow) {
-            var rotation = contentWindow.rotation;
-            if(rotation && rotation !== lastRotation) {
-              lastRotation = rotation;
-              changeCount++;
-            }
-          },
-          renderMaquette: function () {
-            return h("p", ["Move the rotation slider up and down to get a feeling of what is wrong."]);
-          }
-        };
-
-        var achieved2 = false;
-        var objective2 = {
-          title: "Fix the problem",
-          isAchieved: function () {
-            return achieved2;
-          },
-          onSceneUpdate: function (contentWindow) {
-            var oldProjector = contentWindow.projector;
-            var tick = contentWindow.tick;
-            if(oldProjector && tick && !achieved2) {
-              try {
-                contentWindow.projector = {
-                  scheduleRender: function () {
-                    achieved2 = true;
-                  }
-                };
-                tick();
-              } catch(e) {
+    var achieved2 = false;
+    var objective2 = {
+      title: "Fix the problem",
+      isAchieved: function () {
+        return achieved2;
+      },
+      onSceneUpdate: function (contentWindow) {
+        var oldProjector = contentWindow.projector;
+        var tick = contentWindow.tick;
+        if(oldProjector && tick && !achieved2) {
+          try {
+            contentWindow.projector = {
+              scheduleRender: function () {
+                achieved2 = true;
               }
-              contentWindow.projector = oldProjector;
-            }
-          },
-          renderMaquette: function () {
-            return h("p", ["Make sure the projectector schedules a render after each update to the data."]);
+            };
+            tick();
+          } catch(e) {
           }
-        };
+          contentWindow.projector = oldProjector;
+        }
+      },
+      renderMaquette: function () {
+        return h("p", ["Make sure the projectector schedules a render after each update to the data."]);
+      }
+    };
 
-        var workbench = createWorkbench(projector, "assets/saucer-orbit.js", [
-          objective1,
-          objective2
-        ]);
+    var workbench = createWorkbench(projector, "assets/saucer-orbit.js", [
+      objective1,
+      objective2
+    ]);
 
-        var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
+    var navigation = window.createNavigation(projector, workbench.allObjectivesAchieved);
 
-        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
-        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
-        
-      });
-    </script>
-  </head>
-  <body>
+    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+  });
+</script>
 
-    <div class="navbar-fixed">
-      <nav class="light-blue lighten-1" role="navigation">
-        <div class="nav-wrapper container">
-          <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
-          <ul class="right">
-            <li><a href="06-how-it-works.html">Previous</a></li>
-            <li><a href="index.html">Index</a></li>
-            <li><a id="next" href="08-classes.html">Next</a></li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-
-    <div class="work"></div>
-    {% include analytics.html %}
-  </body>
-</html>
+<div class="work"></div>

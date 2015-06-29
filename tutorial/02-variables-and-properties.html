@@ -1,50 +1,44 @@
 ---
+layout: tutorial
 ---
-<!doctype html>
-<html>
-  <head>
-    <title>Tutorial</title>
-    <link href="../style.css" rel="stylesheet" />
-    <link href="tutorial.css" rel="stylesheet" />
-  </head>
-<body>
 
-  <div class="navbar-fixed">
-    <nav class="light-blue lighten-1" role="navigation">
-      <div class="nav-wrapper container">
-        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
-        <ul class="right">
-          <li><a href="01-intro.html">Previous</a></li>
-          <li><a href="index.html">Index</a></li>
-          <li><a id="next" href="03-rotation.html">Next</a></li>
-        </ul>
-      </div>
-    </nav>
-  </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
 
-  <div class="instructions container">
-    <h3>Variables and properties</h3>
+    var projector = maquette.createProjector();
+
+    var navigation = window.createNavigation(projector);
+
+    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+  });
+</script>
+
+<main>
+  <article>
+    <h1>Variables and properties</h1>
     <p>
       In your next assignment, you are going to apply a variable rotation to the flying saucer.
       Because hyperscript is a pure JavaScript function, you have easy access to variables while rendering markup.
       In our application we are going to use the <code>style</code> attribute to control the flying saucer.
-      Attributes can be set on virtual DOM nodes using the <code>properties</code> parameter on the <code>h()</code> function. 
+      Attributes can be set on virtual DOM nodes using the <code>properties</code> parameter of the <code>h()</code> function. 
       The full signature of the <code>h()</code> function is:
     </p>
+    
     <pre>function h(selector, properties, children) // returns a virtual node object</pre>
 
-    <h5>Parameters</h5>
+    <h2>Parameters</h2>
     <ul>
       <li><b>selector</b> CSS selector containing the tagname, id and fixed css classnames</li>
       <li><b>properties</b> Object literal containing element attributes and some other special properties.</li>
       <li><b>children</b> Array of childnodes and text strings</li>
     </ul>
-    <h5>Example:</h5>
+    
+    <h2>Example:</h2>
 
     <pre>h("a", {href: "/"}, ["Home"])</pre>
     
     <p>
-      The objective of your next assignment is to set the <code>style</code> attribute to <code>"transform:45deg"</code>. 
+      The objective of your next assignment is to set the <code>style</code> attribute to <code>"transform:rotate(45deg)"</code>. 
       You must use the provided variable rotation to construct the value.
     </p>
     <p>

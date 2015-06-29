@@ -1,96 +1,63 @@
 ---
+layout: tutorial
+workbench: true
 ---
-<!doctype html>
-<html>
-  <head>
-    <title>Tutorial</title>
-    <link href="../style.css" rel="stylesheet" />
-    <link href="tutorial.css" rel="stylesheet" />
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
-    <script src="components/enhancer.js"></script>
-    <script src="components/workbench.js"></script>
-    <script src="components/next-button.js"></script>
-    <style>
-      li.complete {
-        background-color: green;
-      }
-    </style>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
 
-        var h = maquette.h;
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
 
-        var projector = maquette.createProjector();
+    var h = maquette.h;
 
-        var hasStyleAttribute = false;
-        var usesRotation = false;
-        var rotationOk = false;
+    var projector = maquette.createProjector();
 
-        var objective = {
-          title: "Render the DOM",
-          isAchieved: function () {
-            return hasStyleAttribute && usesRotation && rotationOk;
-          },
-          onSceneUpdate: function (contentWindow) {
-            hasStyleAttribute = false;
-            usesRotation = false;
-            rotationOk = false;
-            var oldRotation = contentWindow.rotation;
-            try {
-              var vnode = contentWindow.renderMaquette();
-              var saucer = vnode.children[0];
-              var style = saucer.properties.style;
-              hasStyleAttribute = typeof style === "string";
-              if (hasStyleAttribute) {
-                rotationOk = style === "transform:rotate(45deg)";
-                contentWindow.rotation = 615243;
-                style = contentWindow.renderMaquette().children[0].properties.style;
-                usesRotation = style.indexOf("615243") !== -1;
-                contentWindow.rotation = oldRotation;
-              }
-            } catch(e) {
-              contentWindow.rotation = oldRotation;
-            }
-          },
-          renderMaquette: function () {
-            return h("ul", [
-              h("li", { key: 1, classes: { complete: hasStyleAttribute } }, ["The saucer has a style attribute"]),
-              h("li", { key: 2, classes: { complete: rotationOk } }, ["The style attribute equals ", h("code", ["transform:rotate(45deg)"])]),
-              h("li", { key: 3, classes: { complete: usesRotation } }, ["The style attribute uses the rotation variable"])
-          ]);
+    var hasStyleAttribute = false;
+    var usesRotation = false;
+    var rotationOk = false;
+
+    var objective = {
+      title: "Render the DOM",
+      isAchieved: function () {
+        return hasStyleAttribute && usesRotation && rotationOk;
+      },
+      onSceneUpdate: function (contentWindow) {
+        hasStyleAttribute = false;
+        usesRotation = false;
+        rotationOk = false;
+        var oldRotation = contentWindow.rotation;
+        try {
+          var vnode = contentWindow.renderMaquette();
+          var saucer = vnode.children[0];
+          var style = saucer.properties.style;
+          hasStyleAttribute = typeof style === "string";
+          if (hasStyleAttribute) {
+            rotationOk = style === "transform:rotate(45deg)";
+            contentWindow.rotation = 615243;
+            style = contentWindow.renderMaquette().children[0].properties.style;
+            usesRotation = style.indexOf("615243") !== -1;
+            contentWindow.rotation = oldRotation;
           }
-        };
+        } catch(e) {
+          contentWindow.rotation = oldRotation;
+        }
+      },
+      renderMaquette: function () {
+        return h("ul", [
+          h("li", { key: 1, classes: { complete: hasStyleAttribute } }, ["The saucer has a style attribute"]),
+          h("li", { key: 2, classes: { complete: rotationOk } }, ["The style attribute equals ", h("code", ["transform:rotate(45deg)"])]),
+          h("li", { key: 3, classes: { complete: usesRotation } }, ["The style attribute uses the rotation variable"])
+      ]);
+      }
+    };
 
-        var workbench = createWorkbench(projector, "assets/saucer-rotation.js", [
-          objective
-        ]);
-        
-        var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
+    var workbench = createWorkbench(projector, "assets/saucer-rotation.js", [
+      objective
+    ]);
+    
+    var navigation = window.createNavigation(projector, workbench.allObjectivesAchieved);
 
-        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
-        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+  });
+</script>
 
-      });
-    </script>
-  </head>
-  <body>
-
-    <div class="navbar-fixed">
-      <nav class="light-blue lighten-1" role="navigation">
-        <div class="nav-wrapper container">
-          <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
-          <ul class="right">
-            <li><a href="02-variables-and-properties.html">Previous</a></li>
-            <li><a href="index.html">Index</a></li>
-            <li><a id="next" href="04-input.html">Next</a></li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-
-    <div class="work"></div>
-    {% include analytics.html %}
-  </body>
-</html>
+<div class="work"></div>

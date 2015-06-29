@@ -1,161 +1,35 @@
 ---
+layout: tutorial
 ---
-<!doctype html>
-<html>
-  <head>
-    <title>Tutorial</title>
-    <link href="../style.css" rel="stylesheet" />
-    <link href="tutorial.css" rel="stylesheet" />
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
-    <script src="components/enhancer.js"></script>
-    <script src="components/workbench.js"></script>
-    <script src="components/next-button.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
 
-        var h = maquette.h;
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
 
-        var projector = maquette.createProjector();
+    var projector = maquette.createProjector();
 
-        var findAll = function (selector, vnodeTree, result) {
-          if(!result) {
-            result = [];
-          }
-          if(vnodeTree.vnodeSelector === selector) {
-            result.push(vnodeTree);
-          }
-          if(vnodeTree.children) {
-            vnodeTree.children.forEach(function (child) {
-              findAll(selector, child, result);
-            });
-          }
-          return result;
-        };
+    var navigation = window.createNavigation(projector);
 
-        var remoteFillValues = function (remote) {
-          var vnode = remote.renderMaquette();
-          // Put values into every input
-          findAll("input", vnode).forEach(function (input) {
-            input.properties.oninput({ target: { value: "dummyValue" } });
-          });
-        };
+    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+  });
+</script>
 
-        var remoteAddRow = function (remote) {
-          var vnode = remote.renderMaquette();
-          var button = findAll("button.add", vnode)[0];
-          button.properties.onclick({ preventDefault: function () { } });
-        };
-
-        var achieved1 = false;
-        var objective1 = {
-          title: "Adding rows",
-          isAchieved: function () {
-            return achieved1;
-          },
-          onSceneUpdate: function (contentWindow) {
-            achieved1 = false;
-            var works = contentWindow.document.body && contentWindow.document.body.firstChild && !contentWindow.lastError;
-            if(works) {
-              try {
-                var remote = contentWindow.createRemote();
-                remoteFillValues(remote);
-                var vnode = remote.renderMaquette();
-                var rowsBefore = findAll("div.row", vnode);
-                remoteAddRow(remote);
-                vnode = remote.renderMaquette();
-                var rowsAfter = findAll("div.row", vnode);
-                achieved1 = rowsAfter.length === rowsBefore.length + 1;
-              } catch(e) {
-              }
-            }
-          },
-          renderMaquette: function () {
-            return h("p", ["The + button should add a new row to the remote control. Use the Array.push method to add another row component."]);
-          }
-        };
-
-        var foundSelf = true;
-        var achieved2 = false;
-        var objective2 = {
-          title: "Prevent duplicate transforms",
-          isAchieved: function () {
-            return achieved2;
-          },
-          onSceneUpdate: function (contentWindow) {
-            achieved2 = false;
-            var works = contentWindow.document.body && contentWindow.document.body.firstChild && !contentWindow.lastError;
-            if(works) {
-              try {
-                var remote = contentWindow.createRemote();
-                remoteFillValues(remote);
-                remoteAddRow(remote);
-                var vnode = remote.renderMaquette();
-                var dropdowns = findAll("select", vnode);
-                var achieved = true;
-                var optionCount = 0;
-                foundSelf = false;
-                findAll("option", dropdowns[0]).forEach(function (option) {
-                  optionCount++;
-                  if(option.properties.value === dropdowns[1].properties.value) {
-                    achieved = false;
-                  }
-                  if(option.properties.value === dropdowns[0].properties.value) {
-                    foundSelf = true;
-                  }
-                });
-                findAll("option", dropdowns[1]).forEach(function (option) {
-                  optionCount++;
-                  if(option.properties.value === dropdowns[0].properties.value) {
-                    achieved = false;
-                  }
-                });
-                achieved2 = achieved && foundSelf && (optionCount > 2);
-              } catch(e) {
-              }
-            }
-          },
-          renderMaquette: function () {
-            return h("div", [
-              h("p", ["It is now possible to add the same transform function twice. " +
-              "Filter the option elements in remote-row.js using Array.filter and remote.hasTransform to allow only unused transforms."]),
-              foundSelf ? [] : [
-                h("b", ["Hint: do not filter out the currently selected transform. "])
-              ]
-            ]);
-          }
-        };
-
-        var workbench = createWorkbench(projector, [
-          { name: "saucer.html", url: "assets/saucer-final.html" },
-          { name: "saucer.css", url: "assets/saucer.css" },
-          { name: "saucer.js", url: "assets/saucer-final.js" },
-          { name: "remote.js", url : "assets/saucer-final-remote.js" },
-          { name: "remote-row.js", url : "assets/saucer-final-remote-row.js" }
-        ], [ objective1, objective2 ]);
-
-        var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
-
-        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
-        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
-    });
-  </script>
-</head>
-<body>
-  <div class="navbar-fixed">
-    <nav class="light-blue lighten-1" role="navigation">
-      <div class="nav-wrapper container">
-        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
-        <ul class="right">
-          <li><a href="14-done.html">Previous</a></li>
-          <li><a href="index.html">Index</a></li>
-          <li><a id="next" href="14-done.html">Next</a></li>
-        </ul>
-      </div>
-    </nav>
-  </div>
-
-  <div class="work"></div>
-  {% include analytics.html %}
-</body></html>
+<main>
+  <article>
+    <h1>The grande finale</h1>
+    <p>
+      By now you know everything you need to know about the maquette API.
+    </p>
+    <p>
+      We still want to show you how maquette makes developing a larger web application straightforward.
+      In this last exercise you must complete the remote control by adding support for the available CSS transforms.
+    </p>
+    <p>
+      You will notice we split the code into "components" for you.
+      A component in maquette is simply an object which exposes a renderMaquette function.
+      The component files are integrated using window globals, but you could also be using requirejs or browserify.
+    </p>
+    <p>
+      Good luck finishing the last objectives.
+    </p>
+  </article>
+</main>

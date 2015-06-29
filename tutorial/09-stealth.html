@@ -1,76 +1,49 @@
 ---
+layout: tutorial
+workbench: true
 ---
-<!doctype html>
-<html>
-  <head>
-    <title>Tutorial</title>
-    <link href="../style.css" rel="stylesheet" />
-    <link href="tutorial.css" rel="stylesheet" />
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
-    <script src="components/enhancer.js"></script>
-    <script src="components/workbench.js"></script>
-    <script src="components/next-button.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
 
-        var h = maquette.h;
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
 
-        var projector = maquette.createProjector();
+    var h = maquette.h;
 
-        var achieved1 = false;
-        var objective1 = {
-          title: "Apply the stealth variable",
-          isAchieved: function () {
-            return achieved1;
-          },
-          onSceneUpdate: function (contentWindow) {
-            if(contentWindow.stealth === true && contentWindow.renderMaquette) {
-              try {
-                var vnodeBefore = contentWindow.renderMaquette();
-                contentWindow.stealth = false;
-                var vnodeAfter = contentWindow.renderMaquette();
-                var beforeProperties = vnodeBefore.children[0].properties;
-                var afterProperties = vnodeAfter.children[0].properties;
-                achieved1 = beforeProperties.classes && afterProperties.classes && beforeProperties.classes.stealth === true && afterProperties.classes.stealth === false;
-              } catch (e) {
-              }
-              contentWindow.stealth = true;
-            }
-          },
-          renderMaquette: function () {
-            return h("p", ["Add the CSS class 'stealth' to the saucer conditionally, based on the 'stealth' variable."]);
+    var projector = maquette.createProjector();
+
+    var achieved1 = false;
+    var objective1 = {
+      title: "Apply the stealth variable",
+      isAchieved: function () {
+        return achieved1;
+      },
+      onSceneUpdate: function (contentWindow) {
+        if(contentWindow.stealth === true && contentWindow.renderMaquette) {
+          try {
+            var vnodeBefore = contentWindow.renderMaquette();
+            contentWindow.stealth = false;
+            var vnodeAfter = contentWindow.renderMaquette();
+            var beforeProperties = vnodeBefore.children[0].properties;
+            var afterProperties = vnodeAfter.children[0].properties;
+            achieved1 = beforeProperties.classes && afterProperties.classes && beforeProperties.classes.stealth === true && afterProperties.classes.stealth === false;
+          } catch (e) {
           }
-        };
+          contentWindow.stealth = true;
+        }
+      },
+      renderMaquette: function () {
+        return h("p", ["Add the CSS class 'stealth' to the saucer conditionally, based on the 'stealth' variable."]);
+      }
+    };
 
-        var workbench = createWorkbench(projector, "assets/saucer-stealth.js", [
-          objective1
-        ]);
+    var workbench = createWorkbench(projector, "assets/saucer-stealth.js", [
+      objective1
+    ]);
 
-        var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
+    var navigation = window.createNavigation(projector, workbench.allObjectivesAchieved);
 
-        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
-        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+  });
+</script>
 
-      });
-  </script>
-</head>
-<body>
-  <div class="navbar-fixed">
-    <nav class="light-blue lighten-1" role="navigation">
-      <div class="nav-wrapper container">
-        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
-        <ul class="right">
-          <li><a href="08-classes.html">Previous</a></li>
-          <li><a href="index.html">Index</a></li>
-          <li><a id="next" href="10-distinguishable.html">Next</a></li>
-        </ul>
-      </div>
-    </nav>
-  </div>
-
-  <div class="work"></div>
-  {% include analytics.html %}
-</body>
-</html>
+<div class="work"></div>

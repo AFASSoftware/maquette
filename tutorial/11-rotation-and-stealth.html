@@ -1,77 +1,52 @@
 ---
+layout: tutorial
+workbench: true
 ---
-<!doctype html>
-<html>
-  <head>
-    <title>Tutorial</title>
-    <link href="../style.css" rel="stylesheet" />
-    <link href="tutorial.css" rel="stylesheet" />
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
-    <script src="components/enhancer.js"></script>
-    <script src="components/workbench.js"></script>
-    <script src="components/next-button.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
 
-        var h = maquette.h;
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
 
-        var projector = maquette.createProjector();
+    var h = maquette.h;
 
-        var achieved1 = false;
-        var objective1 = {
-          title: "Fix the crash",
-          isAchieved: function () {
-            return achieved1;
-          },
-          onSceneUpdate: function (contentWindow) {
-            achieved1 = false;
-            var works = contentWindow.document.body && contentWindow.document.body.firstChild && !contentWindow.lastError;
-            if(works) {
-              try {
-                var vnode = contentWindow.renderMaquette();
-                if (!vnode.children[0].children[1]) {
-                  achieved1 = true;
-                  return;
-                }
-                var function1 = vnode.children[0].children[0].properties;
-                var function2 = vnode.children[0].children[1].properties;
-                achieved1 = (function1 && function1.key) || (function2 && function2.key);
-              } catch(e) {
-              }
+    var projector = maquette.createProjector();
+
+    var achieved1 = false;
+    var objective1 = {
+      title: "Fix the crash",
+      isAchieved: function () {
+        return achieved1;
+      },
+      onSceneUpdate: function (contentWindow) {
+        achieved1 = false;
+        var works = contentWindow.document.body && contentWindow.document.body.firstChild && !contentWindow.lastError;
+        if(works) {
+          try {
+            var vnode = contentWindow.renderMaquette();
+            if (!vnode.children[0].children[1]) {
+              achieved1 = true;
+              return;
             }
-          },
-          renderMaquette: function () {
-            return h("p", ["If you press the 'remove rotation' button, the wrong row will be removed. Put a unique key property on one of the function divs and try again."]);
+            var function1 = vnode.children[0].children[0].properties;
+            var function2 = vnode.children[0].children[1].properties;
+            achieved1 = (function1 && function1.key) || (function2 && function2.key);
+          } catch(e) {
           }
-        };
+        }
+      },
+      renderMaquette: function () {
+        return h("p", ["If you press the 'remove rotation' button, the wrong row will be removed. Put a unique key property on one of the function divs and try again."]);
+      }
+    };
 
-        var workbench = createWorkbench(projector, "assets/saucer-rotation-and-stealth.js", [
-          objective1
-        ]);
+    var workbench = createWorkbench(projector, "assets/saucer-rotation-and-stealth.js", [
+      objective1
+    ]);
 
-        var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
+    var navigation = window.createNavigation(projector, workbench.allObjectivesAchieved);
 
-        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
-        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
-      });
-  </script>
-</head>
-<body>
-  <div class="navbar-fixed">
-    <nav class="light-blue lighten-1" role="navigation">
-      <div class="nav-wrapper container">
-        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
-        <ul class="right">
-          <li><a href="10-distinguishable.html">Previous</a></li>
-          <li><a href="index.html">Index</a></li>
-          <li><a id="next" href="14-done.html">Next</a></li>
-        </ul>
-      </div>
-    </nav>
-  </div>
+    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+  });
+</script>
 
-  <div class="work"></div>
-  {% include analytics.html %}
-</body></html>
+<div class="work"></div>

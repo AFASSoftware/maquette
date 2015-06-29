@@ -3,7 +3,7 @@
 }
 
 .work {
-  height: calc(100vh - 64px);
+  height: calc(100vh - 40px);
   min-height: 400px;
   display: -webkit-flex;
   display: flex;
@@ -183,10 +183,18 @@
   overflow: hidden;
 }
 
-.lock {
+.locked {
+  position: relative;
+}
+.locked > svg {
   position:absolute;
-  right: 40px;
-  top:0px;
-  color:#444444;
+  right: -14px;
+  top:16px;
+  fill:goldenrod;
+  height: 56px;
+  width: 56px;
 }
 
+.complete {
+  background-color: green;
+}

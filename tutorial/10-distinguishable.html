@@ -1,42 +1,33 @@
 ---
+layout: tutorial
 ---
-<!doctype html>
-<html>
-  <head>
-    <title>Tutorial</title>
-    <link href="../style.css" rel="stylesheet" />
-    <link href="tutorial.css" rel="stylesheet" />
-  </head>
-<body>
 
-  <div class="navbar-fixed">
-    <nav class="light-blue lighten-1" role="navigation">
-      <div class="nav-wrapper container">
-        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
-        <ul class="right">
-          <li><a href="9-stealth.html">Previous</a></li>
-          <li><a href="index.html">Index</a></li>
-          <li><a id="next" href="11-rotation-and-stealth.html">Next</a></li>
-        </ul>
-      </div>
-    </nav>
-  </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
 
-  <div class="instructions container">
+    var projector = maquette.createProjector();
+
+    var navigation = window.createNavigation(projector);
+
+    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+  });
+</script>
+
+<main>
+  <article>
     
     {% capture rulesInclude %}{% include rules.md %}{% endcapture %}
     {{ rulesInclude | markdownify }}
-
-    <h5>Assignment</h5>
+    
+    <h2>Assignment</h2>
     <p>
       The next assignment demonstrates what goes wrong when a non-distinguishable child node is removed and how maquette helps you fix it.
     </p>
     <p>
-      In this assignment, we have two rows in our remote control. When you press the 'remove' button the top row should be removed.
-      Maquette removes the wrong row and then crashes. It is your task is to make the right thing happen. Good luck.
+      In this assignment, we have two rows in our remote control. 
+      When you press the 'remove' button the top row should be removed. 
+      Maquette removes the wrong row and then crashes. Your task is to make sure the right thing happens. Good luck.
     </p>
-  </div>
-  {% include analytics.html %}
-</body>
-</html>
 
+  </article>
+</main>

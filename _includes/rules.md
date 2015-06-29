@@ -1,23 +1,23 @@
-### The 3 rules
+# The 3 rules
 
 Before you are ready to start using maquette, you need to be aware of three rules, which are all easy to follow.
 These rules are there to make sure maquette can generally render and diff very large pages at 60 frames per second on every device.
 
-##### Rule #1 Do not change event handlers
+## Rule #1 Do not change event handlers
 
 Changing event handlers, like `onclick` for example, is rarely useful.
 Updating an event handler is costly if you accidentally change them on every render.
 Because this mistake that is so easy to make, maquette disallows changing event handlers completely.
 
-##### Rule #2 Always provide the same set of properties
+## Rule #2 Always provide the same set of properties
 
 If you render `h("div", {tabIndex:"0"})` and then you want to clear the tabIndex attribute, 
-you need to use `h("div", {tabIndex:undefined})`, `h("div", {tabIndex:null})` or `h("div", {tabIndex:""})`.
-If you use `h("div", {})` the tabIndex will not be cleared. 
-This is because maquette does not sacrifice performance trying to find properties that you left out.
-This makes you responsible to always provide the same set of properties. The same applies to the `classes` and `styles` objects.
+you need to use either `h("div", {tabIndex:undefined})`, `h("div", {tabIndex:null})` or `h("div", {tabIndex:""})`.
+If you use `h("div", {})` maquette will not clear the tabIndex attribute. 
+This is because maquette does not sacrifice performance searching for properties that you left out.
+This makes you responsible to always provide the same set of properties. The same principe applies to the nested `classes` and `styles` objects.
 
-##### Rule #3 Distinguishable children
+## Rule #3 Distinguishable children
 
 The last rule states that if a node has multiple childnodes with the same selector 
 *and* these childnodes are added or removed dynamically, 

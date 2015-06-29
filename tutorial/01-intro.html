@@ -1,88 +1,74 @@
 ---
+layout: tutorial
+workbench: true
 ---
-<!doctype html>
-<html>
-  <head>
-    <title>Tutorial</title>
-    <link href="../style.css" rel="stylesheet" />
-    <link href="tutorial.css" rel="stylesheet" />
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
-    <script src="components/markup-matcher.js"></script>
-    <script src="components/workbench.js"></script>
-    <script src="components/next-button.js"></script>
-    <script>
-    
 
-      document.addEventListener('DOMContentLoaded', function () {
 
-        var h = maquette.h;
-        var projector = maquette.createProjector();
+<script src="/tutorial/components/markup-matcher.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
 
-        var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
+    var h = maquette.h;
+    var projector = maquette.createProjector();
 
-        var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
-          markupMatcher
-        ]);
-        var nextButton = window.createNextButton(projector, workbench.allObjectivesAchieved);
+    var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
 
-        projector.merge(document.getElementById("next"), nextButton.renderMaquette);
-        projector.merge(document.querySelector(".work"), workbench.renderMaquette);
-      });
-    </script>
-  </head>
-<body>
+    var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
+      markupMatcher
+    ]);
+    var navigation = window.createNavigation(projector, workbench.allObjectivesAchieved);
 
-  <div class="navbar-fixed">
-    <nav class="light-blue lighten-1" role="navigation">
-      <div class="nav-wrapper container">
-        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
-        <ul class="right">
-          <li><a href="index.html">Index</a></li>
-          <li>
-            <a id="next" href="02-variables-and-properties.html">Next</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </div>
+    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+  });
+</script>
 
-  <div class="instructions container">
+<main>
+  <article>
+    <h1>
+      The maquette tutorial
+    </h1>
     <p>
-      In this tutorial we will make you familliar with the virtual DOM technique and the maquette library.
+      This tutorial will teach you how to use the maquette library.
       The application we are building in this tutorial is a remote control for a flying saucer.
-      This tutorial is made for people who are familiar with HTML and Javascript.
+      This tutorial is made for people who are already familiar with HTML and Javascript.
     </p>
 
-    <h5>
-      Get started
-    </h5>
+    <h2>
+      Objective
+    </h2>
     <p>
       In this first exercise you will create the flying saucer we are going to control.
       Thanks to some alien piece of CSS, all that is needed to create the the flying saucer is the following markup:
       <code>&lt;div class="saucer" /&gt;</code>
     </p>
+
+    <h2>
+      Hyperscript 101
+    </h2>
     <p>
-      Because maquette allows you to make the browser DOM reflect the onderlying data, it does not use HTML.
-      Maquette uses a notation called 'hyperscript'.
-      This is essentially just a javascript function <code>h()</code>, which returns a tree of virtual DOM nodes.
+      Because maquette allows you to use data to create the right browser DOM, it does not use HTML.
+      Maquette uses a notation called <strong>hyperscript</strong>.
+      Hyperscript is essentially just a javascript function, <code>h()</code>, which creates a virtual DOM node.
     </p>
     <p>
       The first parameter of the <code>h()</code> function is a CSS selector string, like <code>"div.landscape"</code>,
       which results in <code>&lt;div class="landscape"&gt;</code>.
-      The last parameter is an array of contents. This may contain strings for text and virtual DOM nodes for childnodes.
+      The last parameter is an array of contents. It may contain strings, which represent text, and other virtual DOM nodes, which represent childnodes.
     </p>
 
+    <h2>
+      The workbench
+    </h2>
     <p>
       In the workbench below you can edit the sourcefiles for this exercise.
       In order to create the flying saucer, you need to complement the <code>renderMaquette()</code> function.
       In the top-right of the workbench you can see your progress. 
       The <b>next</b> button on top of the screen will be unlocked once you complete the objectives. Good luck!
     </p>
-  </div>
-  <div class="work" style="height:460px">
-  </div>
-  {% include analytics.html %}
-</body>
-</html>
+
+  </article>
+</main>
+
+<div class="work" style="height:460px">
+</div>

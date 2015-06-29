@@ -1,0 +1,136 @@
+---
+layout: tutorial
+workbench: true
+---
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    var h = maquette.h;
+
+    var projector = maquette.createProjector();
+
+    var findAll = function (selector, vnodeTree, result) {
+      if(!result) {
+        result = [];
+      }
+      if(vnodeTree.vnodeSelector === selector) {
+        result.push(vnodeTree);
+      }
+      if(vnodeTree.children) {
+        vnodeTree.children.forEach(function (child) {
+          findAll(selector, child, result);
+        });
+      }
+      return result;
+    };
+
+    var remoteFillValues = function (remote) {
+      var vnode = remote.renderMaquette();
+      // Put values into every input
+      findAll("input", vnode).forEach(function (input) {
+        input.properties.oninput({ target: { value: "dummyValue" } });
+      });
+    };
+
+    var remoteAddRow = function (remote) {
+      var vnode = remote.renderMaquette();
+      var button = findAll("button.add", vnode)[0];
+      button.properties.onclick({ preventDefault: function () { } });
+    };
+
+    var achieved1 = false;
+    var objective1 = {
+      title: "Adding rows",
+      isAchieved: function () {
+        return achieved1;
+      },
+      onSceneUpdate: function (contentWindow) {
+        achieved1 = false;
+        var works = contentWindow.document.body && contentWindow.document.body.firstChild && !contentWindow.lastError;
+        if(works) {
+          try {
+            var remote = contentWindow.createRemote();
+            remoteFillValues(remote);
+            var vnode = remote.renderMaquette();
+            var rowsBefore = findAll("div.row", vnode);
+            remoteAddRow(remote);
+            vnode = remote.renderMaquette();
+            var rowsAfter = findAll("div.row", vnode);
+            achieved1 = rowsAfter.length === rowsBefore.length + 1;
+          } catch(e) {
+          }
+        }
+      },
+      renderMaquette: function () {
+        return h("p", ["The + button should add a new row to the remote control. Use the Array.push method to add another row component."]);
+      }
+    };
+
+    var foundSelf = true;
+    var achieved2 = false;
+    var objective2 = {
+      title: "Prevent duplicate transforms",
+      isAchieved: function () {
+        return achieved2;
+      },
+      onSceneUpdate: function (contentWindow) {
+        achieved2 = false;
+        var works = contentWindow.document.body && contentWindow.document.body.firstChild && !contentWindow.lastError;
+        if(works) {
+          try {
+            var remote = contentWindow.createRemote();
+            remoteFillValues(remote);
+            remoteAddRow(remote);
+            var vnode = remote.renderMaquette();
+            var dropdowns = findAll("select", vnode);
+            var achieved = true;
+            var optionCount = 0;
+            foundSelf = false;
+            findAll("option", dropdowns[0]).forEach(function (option) {
+              optionCount++;
+              if(option.properties.value === dropdowns[1].properties.value) {
+                achieved = false;
+              }
+              if(option.properties.value === dropdowns[0].properties.value) {
+                foundSelf = true;
+              }
+            });
+            findAll("option", dropdowns[1]).forEach(function (option) {
+              optionCount++;
+              if(option.properties.value === dropdowns[0].properties.value) {
+                achieved = false;
+              }
+            });
+            achieved2 = achieved && foundSelf && (optionCount > 2);
+          } catch(e) {
+          }
+        }
+      },
+      renderMaquette: function () {
+        return h("div", [
+          h("p", ["It is now possible to add the same transform function twice. " +
+          "Filter the option elements in remote-row.js using Array.filter and remote.hasTransform to allow only unused transforms."]),
+          foundSelf ? [] : [
+            h("b", ["Hint: do not filter out the currently selected transform. "])
+          ]
+        ]);
+      }
+    };
+
+    var workbench = createWorkbench(projector, [
+      { name: "saucer.html", url: "assets/saucer-final.html" },
+      { name: "saucer.css", url: "assets/saucer.css" },
+      { name: "saucer.js", url: "assets/saucer-final.js" },
+      { name: "remote.js", url : "assets/saucer-final-remote.js" },
+      { name: "remote-row.js", url : "assets/saucer-final-remote-row.js" }
+    ], [ objective1, objective2 ]);
+
+    var navigation = window.createNavigation(projector, workbench.allObjectivesAchieved);
+
+    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+  });
+</script>
+
+<div class="work"></div>

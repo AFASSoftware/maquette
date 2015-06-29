@@ -7,10 +7,11 @@
 
 @import "top-bar";
 @import "homepage";
+@import "live-editor";
 
 body {
   min-height: 100vh;
-  padding-top: 48px; // Leave room for the topbar
+  padding-top: 40px; // Leave room for the topbar
   @include flexbox();
   @include flex-direction(column);
   
@@ -24,7 +25,7 @@ main {
   @include flex-grow(1);
   @include flexbox();
   @include justify-content(center);
-  padding: 10px 0 50px 0;
+  padding: 16px 0 48px 0;
   
   > article {
     width: $card-width;
@@ -133,72 +134,5 @@ body > footer {
   > footer {
     padding-top:40px;
     color: #AAAAAA;
-  }
-}
-
-.live-editor {
-
-  pre {
-    margin: 0;
-  }
-  
-  .live-editor-result {
-    border: solid 1px lightGray;
-    background-color: lightGray;
-    padding: 7px;
-    min-height: 200px;
-    position: relative;
-    
-    &.error {
-      border: solid 1px red;
-      color: red;
-    }
-    
-    > input {
-      border: solid 1px #444444 !important;
-      box-shadow: none !important;
-      padding: 7px;
-      line-height:1.5;
-      height: auto;
-      width: calc(100% - 14px);
-      background-color:white;
-    }
-    
-    textarea {
-      width: 100%;
-    }
-  }
-  
-  .demo-block-item {
-    display:block;
-    text-align: center;
-    background-color: yellow;
-    border: solid 1px black;
-    line-height: 30px;
-    width: 200px;
-    overflow:hidden;
-    padding: 0 10px;
-    
-    
-    &.slideDown {
-      -webkit-transition: 0.4s ease-out height;
-      transition: 0.4s ease-out height;
-      height: 0;
-    }
-      
-    &.slideDown.slideDown-active {
-      height: 30px;
-    }
-    
-    &.slideUp {
-      -webkit-transition: 0.4s ease-out height;
-      transition: 0.4s ease-out height;
-      height: 30px;
-    }
-      
-    &.slideUp.slideUp-active {
-      height: 0px;
-    }
-    
   }
 }

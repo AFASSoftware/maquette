@@ -1,0 +1,33 @@
+---
+---
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/minimal.css" rel="stylesheet" />
+  <link href="/tutorial/tutorial.css" rel="stylesheet" />
+  <title>Maquette tutorial</title>
+</head>
+<body>
+
+  <aside class="top-bar">
+    <nav>
+      <a class="logo" href="/tutorial/index.html">Maquette tutorial</a>
+      <div class="menu">
+      </div>
+    </nav>
+  </aside>
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js"></script>
+  <script src="/tutorial/components/navigation.js"></script>
+  {%if page.workbench %}
+  <script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
+  <script src="/tutorial/components/workbench.js"></script>
+  {% endif %}
+
+  {{ content }}
+
+  {% include analytics.html %}
+</body>
+</html>

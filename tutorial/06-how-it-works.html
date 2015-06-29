@@ -1,29 +1,21 @@
 ---
+layout: tutorial
 ---
-<!doctype html>
-<html>
-  <head>
-    <title>Tutorial</title>
-    <link href="../style.css" rel="stylesheet" />
-    <link href="tutorial.css" rel="stylesheet" />
-  </head>
-<body>
 
-  <div class="navbar-fixed">
-    <nav class="light-blue lighten-1" role="navigation">
-      <div class="nav-wrapper container">
-        <a id="logo-container" href="/" class="brand-logo">Maquette - Tutorial</a>
-        <ul class="right">
-          <li><a href="05-rotation-input.html">Previous</a></li>
-          <li><a href="index.html">Index</a></li>
-          <li><a id="next" href="07-rotation.html">Next</a></li>
-        </ul>
-      </div>
-    </nav>
-  </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
 
-  <div class="instructions container">
-    <h3>How it works</h3>
+    var projector = maquette.createProjector();
+
+    var navigation = window.createNavigation(projector);
+
+    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+  });
+</script>
+
+<main>
+  <article>
+    <h1>How it works</h1>
     <p>
       You might now be concerned about how often the renderMaquette function is executed.
       Let me reassure you, it is only executed whenever the virtual DOM might have changed, not 60 times per second.
@@ -60,7 +52,5 @@
     <p>
       Press next to start. Good luck.
     </p>
-  </div>
-  {% include analytics.html %}
-</body>
-</html>
+  </article>
+</main>

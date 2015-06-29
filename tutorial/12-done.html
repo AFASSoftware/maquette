@@ -1,0 +1,48 @@
+---
+layout: tutorial
+---
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    var projector = maquette.createProjector();
+
+    var navigation = window.createNavigation(projector);
+
+    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+  });
+</script>
+
+<main>
+  <article>
+    <h1>Congratulations</h1>
+    <h2>You completed the maquette tutorial!</h2>
+    <a href="https://twitter.com/share" class="twitter-share-button" 
+       data-url="http://maquettejs.org/tutorial/01-intro.html" 
+       data-text="I completed the maquette virtual DOM tutorial" 
+       data-size="large" data-count="none" data-hashtags="maquettejs">Tweet</a>
+    </p>
+      You now have enough knowledge about maquette to build your own application!
+      If you need any help, the maquette API is documented <a href="{{ site.api_url }}">here</a>.
+      By the way, did you know: 
+    </p>
+    <ol>
+      <li>The maquette library is only 1000 lines of code?</li>
+      <li>This tutorial was written using maquette?</li>
+    </ol>
+    <h2>
+      What to do next?
+    </h2>
+    <ol>
+      <li><a href="13-finish.html">Finish the remote in our bonus level and learn about components</a></li>
+      <li><a href="/docs/animations.html">Find out how animations work</a></li>
+      <li><a href="/docs/component-approach.html">Learn more about using components</a></li>
+    </ol>
+    <p>
+      Back to the <a href="/">maquette homepage</a>.
+    </p>
+
+  </article>
+</main>
+
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>

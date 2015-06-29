@@ -41,6 +41,7 @@
         var liveEditor = createLiveEditor(projector);
         projector.merge(editorElement.querySelector(".live-editor-editor"), liveEditor.renderEditor);
         projector.merge(editorElement.querySelector(".live-editor-result"), liveEditor.renderResult);
+        projector.append(editorElement.querySelector(".col-2"), liveEditor.renderExtras);
       }
     }
   }

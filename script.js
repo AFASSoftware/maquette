@@ -1,5 +1,7 @@
+---
+---
 /* global maquette ace */
-window.createLiveEditor = function (projector) { // projector can also be injected later
+window.createLiveEditor = function (projector) {
 
   var h = maquette.h;
 
@@ -52,10 +54,10 @@ window.createLiveEditor = function (projector) { // projector can also be inject
     editor.setHighlightActiveLine(false);
     editor.setShowPrintMargin(false);
     editor.setBehavioursEnabled(true);
-//    editor.renderer.setShowGutter(false);
+    // editor.renderer.setShowGutter(false);
     editor.getSession().on("change", throttleValidateScript);
     if (content && value.charCodeAt(0)===1) {
-      // Happens sometimes in chrome while navigatiing back
+      // Happens sometimes in chrome while navigatiing using browser back
       editor.setValue(content, 0);
       editor.clearSelection();
     }
@@ -65,6 +67,22 @@ window.createLiveEditor = function (projector) { // projector can also be inject
     resultDomNode = domNode;
     validateScript();
   };
+  
+  var handleEditOnCodepen = function() {
+    maquette.dom.create(h("form", {action: "http://codepen.io/pen/define/", method: "POST", target:"_blank"}, [
+      h("input", {name: "data", value: JSON.stringify({
+        title: "New pen using maquette", 
+        js: "document.addEventListener('DOMContentLoaded', function () {\n" + 
+        "  var h = maquette.h;\n" + 
+        "  var domNode = document.body;\n" + 
+        "  var projector = maquette.createProjector();\n\n" + 
+        editor.getValue() +
+        "\n\n});",
+        js_external: "//cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js",
+        css_external: "//maquettejs.org/demo.css"
+      })})
+    ])).domNode.submit();
+  };
 
   var liveEditor = {
     renderEditor: function () {
@@ -72,6 +90,11 @@ window.createLiveEditor = function (projector) { // projector can also be inject
     },
     renderResult: function () {
       return h("div.result", { afterCreate: registerResultDomNode, classes: { error: !!error } }); // Contents is supplied using resultDomNode
+    },
+    renderExtras: function() {
+      return h("div.extras", [
+        h("a.codepen", {href:"#", onclick: handleEditOnCodepen}, ["Edit on codepen"])
+      ]);
     }
   };
 

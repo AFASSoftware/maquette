@@ -21,37 +21,19 @@
       width: 100%;
     }
   }
-  
-  .demo-block-item {
-    display:block;
-    text-align: center;
-    background-color: yellow;
-    border: solid 1px black;
-    line-height: 30px;
-    width: 200px;
-    overflow:hidden;
-    padding: 0 10px;
-    
-    
-    &.slideDown {
-      -webkit-transition: 0.4s ease-out height;
-      transition: 0.4s ease-out height;
-      height: 0;
+
+  > .col-2 {
+    position:relative;
+    > .extras {
+      position:absolute;
+      right:0;
+      bottom:0;
+      font-size:12px;
+      line-height:1;
+      padding: 2px 24px 2px 2px;
+      > a {
+        color:white;
+      }
     }
-      
-    &.slideDown.slideDown-active {
-      height: 30px;
-    }
-    
-    &.slideUp {
-      -webkit-transition: 0.4s ease-out height;
-      transition: 0.4s ease-out height;
-      height: 30px;
-    }
-      
-    &.slideUp.slideUp-active {
-      height: 0px;
-    }
-    
   }
 }

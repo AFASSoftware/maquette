@@ -78,7 +78,9 @@ window.createLiveEditor = function (projector) {
         "  var projector = maquette.createProjector();\n\n" + 
         editor.getValue() +
         "\n\n});",
-        js_external: "//cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js",
+        js_external: "//cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js;" +
+        "//cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/css-transitions.min.js;" +
+        "//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js",
         css_external: "//maquettejs.org/demo.css"
       })})
     ])).domNode.submit();

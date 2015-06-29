@@ -1,3 +1,10 @@
 ---
 ---
+
+@import "utils";
+
+* {
+  @include border-box();
+}
+
 @import "demo";

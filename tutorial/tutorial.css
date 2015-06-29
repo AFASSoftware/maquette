@@ -29,6 +29,7 @@
   display: flex;
   position: relative;
   height: 25px;
+  padding-left: 44px;
   padding-right: 50px; /* Space for the reset button */
 }
 

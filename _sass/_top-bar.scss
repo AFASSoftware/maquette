@@ -29,6 +29,12 @@
     @include justify-content(space-between);
     @include align-items(baseline);
     
+    &.full-width {
+      width: 100%;
+      max-width: 100%;
+      padding: 0 8px;
+    }
+    
     > .menu {
       display:flex;
 

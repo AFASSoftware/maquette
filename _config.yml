@@ -2,4 +2,4 @@ baseurl: ""
 google_analytics_key: "UA-58254103-1"
 maquette_version: "2.0.0"
 api_url: "/docs/jsdoc/module-maquette.html"
-
+encoding: "utf-8"

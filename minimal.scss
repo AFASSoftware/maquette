@@ -52,6 +52,29 @@ main {
   }
 }
 
+.button {
+  text-decoration:none;
+  display:inline-block;
+  background-color: $primary-color;
+  color: $white;
+  padding: 0 16px;
+  line-height: 32px;
+  font-size: 16px;
+
+  &:visited {
+    color:$white;
+  }
+  
+  &:hover {
+    background-color: lighten($primary-color, 30%);
+  }
+
+  &:active {
+    background-color: lighten($primary-color, 15%);
+  }
+}
+
+
 body > footer {
   background-color: #272822;
   color: #AAAAAA;

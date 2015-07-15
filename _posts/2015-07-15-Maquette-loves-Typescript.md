@@ -31,6 +31,7 @@ We have put the code on GitHub for everyone to review and comment on.
 
 We hope you are just as impressed as we are.
 
+<br />
 <blockquote class="twitter-tweet" lang="nl"><p lang="en" dir="ltr">Use <a href="https://twitter.com/hashtag/maquettejs?src=hash">#maquettejs</a> with <a href="https://twitter.com/hashtag/TypeScript?src=hash">#TypeScript</a> to create a fully type-safe Virtual DOM experience: <a href="http://t.co/F20VZLZZvD">http://t.co/F20VZLZZvD</a></p>&mdash; Johan Gorter (@JohanGorter) <a href="https://twitter.com/JohanGorter/status/621426593777491968">15 juli 2015</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 

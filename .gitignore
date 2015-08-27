@@ -28,6 +28,10 @@ $RECYCLE.BIN/
 # Visual Studio
 Web.config
 
+# IntelliJ IDEA
+/.idea
+/*.iml
+
 # OSX
 
 .DS_Store

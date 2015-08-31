@@ -203,6 +203,7 @@
         if(propName === "value") { // value can be manipulated by the user directly and using event.preventDefault() is not an option
           if(domNode[propName] !== propValue && domNode["oninput-value"] !== propValue) {
             domNode[propName] = propValue; // Reset the value, even if the virtual DOM did not change
+            domNode["oninput-value"] = undefined;
           } // else do not update the domNode, otherwise the cursor position would be changed
           if(propValue !== previousValue) {
             propertiesUpdated = true;

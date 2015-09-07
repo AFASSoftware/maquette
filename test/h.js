@@ -71,5 +71,9 @@ describe('Maquette', function () {
       ]);
       
     });
+    
+    it("Should render a number as text", function(){
+      assert.deepEqual(h("div", 1), {vnodeSelector:"div", properties:undefined, text: undefined, children:[toTextVNode("1")], domNode: null});
+    });
   });
 });

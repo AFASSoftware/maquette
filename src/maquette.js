@@ -589,7 +589,7 @@
         throw new Error();
       }
       var childIndex = 1;
-      if (properties && !properties.hasOwnProperty("vnodeSelector") && !Array.isArray(properties) && typeof properties !== "string") {
+      if (properties && !properties.hasOwnProperty("vnodeSelector") && !Array.isArray(properties) && typeof properties === "object") {
         childIndex = 2;
       } else {
         // Optional properties argument was omitted

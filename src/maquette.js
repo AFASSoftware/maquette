@@ -22,22 +22,20 @@
 
   // Hyperscript helper functions
 
-  var flattenInto = function (parentSelector, insertions, main, mainIndex) {
+  var appendChildren = function (parentSelector, insertions, main) {
     for(var i = 0; i < insertions.length; i++) {
       var item = insertions[i];
       if(Array.isArray(item)) {
-        mainIndex = flattenInto(parentSelector, item, main, mainIndex);
+        appendChildren(parentSelector, item, main);
       } else {
         if(item !== null && item !== undefined) {
           if(!item.hasOwnProperty("vnodeSelector")) {
             item = toTextVNode(item);
           }
-          main.splice(mainIndex, 0, item);
-          mainIndex++;
+          main.push(item);
         }
       }
     }
-    return mainIndex;
   };
 
   var toTextVNode = function (data) {
@@ -48,36 +46,6 @@
       text: (data === null || data === undefined) ? "" : data.toString(),
       domNode: null
     };
-  };
-
-  // removes nulls, flattens embedded arrays
-  var flatten = function (parentSelector, children) {
-    if(children === null || children === undefined) {
-      return undefined;
-    }
-    if(!Array.isArray(children)) {
-      if(children.hasOwnProperty("vnodeSelector")) {
-        return [children];
-      } else {
-        return [toTextVNode(children)];
-      }
-    }
-    var index = 0;
-    while(index < children.length) {
-      var child = children[index];
-      if(child === null || child === undefined) {
-        children.splice(index, 1);
-      } else if(Array.isArray(child)) {
-        children.splice(index, 1);
-        index = flattenInto(parentSelector, child, children, index);
-      } else if(child.hasOwnProperty("vnodeSelector")) {
-        index++;
-      } else {
-        children[index] = toTextVNode(child);
-        index++;
-      }
-    }
-    return children;
   };
 
   // Render helper functions
@@ -616,23 +584,43 @@
      * 
      * @returns {VNode} A VNode object, used to render a real DOM later. NOTE: There are {@link http://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
      */
-    h: function (selector, properties, children) {
-      if(arguments.length === 2 && typeof selector === "string") {
-        if(Array.isArray(properties)) {
-          children = properties;
-          properties = undefined;
-        } else if(properties === undefined) {
-          throw new Error("undefined is not a valid value for properties, maybe you forgot the comma between } and [ ?");
-        }
-      } else if(typeof selector !== "string" || (children && !Array.isArray(children)) || (properties !== undefined && typeof properties !== "object")) {
-        throw new Error("Incorrect arguments passed to the h() function. Correct signature: h(string, optional object, optional array)");
+    h: function (selector, properties, childrenArgs) {
+      if (typeof selector !== "string") {
+        throw new Error();
+      }
+      var childIndex = 1;
+      if (properties && !properties.hasOwnProperty("vnodeSelector") && !Array.isArray(properties) && typeof properties !== "string") {
+        childIndex = 2;
+      } else {
+        // Optional properties argument was omitted
+        properties = undefined;
       }
       var text = undefined;
-      if(children && children.length === 1 && typeof children[0] === "string") {
-        text = children[0];
-        children = undefined;
-      } else {
-        children = flatten(selector, children);
+      var children = undefined;
+      var argsLength = arguments.length;
+      // Recognize a common special case where there is only a single text node
+      if(argsLength === childIndex + 1) {
+        var onlyChild = arguments[childIndex];
+        if (typeof onlyChild === "string") {
+          text = onlyChild;
+        } else if (onlyChild.length === 1 && typeof onlyChild[0] === "string") {
+          text = onlyChild[0];
+        }
+      } 
+      if (text === undefined) {
+        children = [];
+        for (;childIndex<arguments.length;childIndex++) {
+          var child = arguments[childIndex];
+          if(child === null || child === undefined) {
+            continue;
+          } else if(Array.isArray(child)) {
+            appendChildren(selector, child, children);
+          } else if(child.hasOwnProperty("vnodeSelector")) {
+            children.push(child);
+          } else {
+            children.push(toTextVNode(child));
+          }
+        }
       }
       return {
         /** 

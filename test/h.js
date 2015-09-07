@@ -29,6 +29,7 @@ describe('Maquette', function () {
         [h("button", ["click me"])],
         [[[["deep"], null], "here"]]
       ]);
+      
       assert.deepEqual(vnode.children, [
         toTextVNode("text"),
         toTextVNode("nested text"),
@@ -37,15 +38,38 @@ describe('Maquette', function () {
         toTextVNode("deep"),
         toTextVNode("here")
       ]);
+      
     });
     
-    it('should notice a common pitfall with a missing comma', function() {
-      try {
-        h("div", {classes:{}} ["text"])
-        assert.fail("there was no error");
-      } catch(e) {
-        assert.ok(e.message.indexOf("forgot the comma") !== -1, "errormessage was right");
-      }
+    it("Should be very flexible when accepting arguments", function() {
+      
+      var vnode = h("div", 
+        "text", 
+        h("span", [
+          [
+            "in array"
+          ]
+        ]),
+        h("img", {src: "x.png"}),
+        "text2",
+        undefined,
+        null,
+        [
+          undefined,
+          h("button", "click me"),
+          h("button", undefined, "click me")
+        ]
+      );
+      
+      assert.deepEqual(vnode.children, [
+        toTextVNode("text"),
+        h("span", "in array", undefined),
+        h("img", {src:"x.png"}),
+        toTextVNode("text2"),
+        h("button", "click me"),
+        h("button", "click me", undefined)
+      ]);
+      
     });
   });
 });

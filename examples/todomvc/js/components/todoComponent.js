@@ -91,17 +91,17 @@ window.createTodoComponent = function (todoList, id, title) {
       var editing = todoList.editingTodo === todoComponent;
 
       return renderCache.result([todoComponent.completed, todoComponent.title, editing], function () {
-        return h("li", { key: todoComponent, classes: { completed: todoComponent.completed, editing: editing } }, [
+        return h("li", { key: todoComponent, classes: { completed: todoComponent.completed, editing: editing } },
           editing ? [
             h("input.edit", { value: editingTitle, oninput: handleEditInput, onkeyup: handleEditKeyUp, onblur: handleEditBlur, afterCreate: focusEdit })
           ] : [
-            h("div.view", [
+            h("div.view",
               h("input.toggle", { type: "checkbox", checked: todoComponent.completed, onclick: handleToggleClick }),
-              h("label", { ondblclick: handleLabelDoubleClick }, [todoComponent.title]),
+              h("label", { ondblclick: handleLabelDoubleClick }, todoComponent.title),
               h("button.destroy", { onclick: handleDestroyClick })
-            ])
+            )
           ]
-        ]);
+        );
       });
     }
   };

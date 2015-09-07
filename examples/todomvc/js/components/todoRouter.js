@@ -23,7 +23,7 @@ window.createRouter = function (model) {
             break;
           default:
             currentPage = createListComponent("all", model);
-        };
+        }
         currentHash = hash;
       }
 

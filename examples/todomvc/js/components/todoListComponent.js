@@ -130,45 +130,45 @@ window.createListComponent = function (mode, model) {
     renderMaquette: function () {
       var anyTodos = todos.length > 0;
 
-      return h("section#todoapp", {key: listComponent}, [
-        h("header#header", [
-          h("h1", ["todos"]),
+      return h("section#todoapp", {key: listComponent},
+        h("header#header",
+          h("h1", "todos"),
           h("input#new-todo", {
             autofocus: true,
             placeholder: "What needs to be done?",
             onkeypress: handleNewTodoKeypress, oninput: handleNewTodoInput,
             value: newTodoTitle, afterCreate: focus
           })
-        ]),
+        ),
         anyTodos ? [
-          h("section#main", { key: mode }, [
+          h("section#main", { key: mode },
             h("input#toggle-all", { type: "checkbox", checked: checkedAll, onclick: handleToggleAllClick }),
-            h("label", { "for": "toggle-all" }, ["Mark all as complete"]),
+            h("label", { "for": "toggle-all" }, "Mark all as complete"),
             h("ul#todo-list",
               todos.filter(visibleInMode).map(function (todo) {
                 return todo.renderMaquette();
               })
             )
-          ]),
-          h("footer#footer", [
-            h("span#todo-count", {}, [
-              h("strong", [itemsLeft]), itemsLeft === 1 ? " item left" : " items left"
-            ]),
-            h("ul#filters", {}, [
-              h("li", { key: "all" }, [
-                h("a", { classes: {selected: mode === "all"}, href: "#/all" }, ["All"])
-              ]),
-              h("li", { key: "active" }, [
-                h("a", { classes: { selected: mode === "active" }, href: "#/active" }, ["Active"])
-              ]),
-              h("li", { key: "completed" }, [
-                h("a", { classes: { selected: mode === "completed" }, href: "#/completed" }, ["Completed"])
-              ])
-            ]),
-            completedCount > 0 ? h("button#clear-completed", { onclick: handleClearCompletedClick }, ["Clear completed (" + completedCount + ")"]) : null
-          ])
+          ),
+          h("footer#footer",
+            h("span#todo-count", {},
+              h("strong", itemsLeft), itemsLeft === 1 ? " item left" : " items left"
+            ),
+            h("ul#filters", {},
+              h("li", { key: "all" },
+                h("a", { classes: {selected: mode === "all"}, href: "#/all" }, "All")
+              ),
+              h("li", { key: "active" },
+                h("a", { classes: { selected: mode === "active" }, href: "#/active" }, "Active")
+              ),
+              h("li", { key: "completed" },
+                h("a", { classes: { selected: mode === "completed" }, href: "#/completed" }, "Completed")
+              )
+            ),
+            completedCount > 0 ? h("button#clear-completed", { onclick: handleClearCompletedClick }, "Clear completed (" + completedCount + ")") : null
+          )
         ] : null
-      ]);
+      );
     }
   };
 

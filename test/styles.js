@@ -36,6 +36,16 @@ describe('Maquette', function () {
       projection.update(h("div", { styles: { height: null } }));
       expect(projection.domNode.outerHTML).to.equal("<div style=\"\"></div>");
     });
-
+    
+    it("should use the provided styleApplyer", function() {
+      var styleApplyer = function(domNode, styleName, value) {
+        // Useless styleApplyer which transforms height to minHeight
+        domNode.style["min" + styleName.substr(0,1).toUpperCase() + styleName.substr(1)] = value;
+      }
+      var projection = maquette.dom.create(h("div", { styles: { height: "20px" } }), {styleApplyer: styleApplyer});
+      expect(projection.domNode.outerHTML).to.equal("<div style=\"min-height: 20px;\"></div>");
+      projection.update(h("div", { styles: { height: "30px" } }));
+      expect(projection.domNode.outerHTML).to.equal("<div style=\"min-height: 30px;\"></div>");
+    });
   });
 });

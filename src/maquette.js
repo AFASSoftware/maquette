@@ -56,6 +56,11 @@
 
   var defaultProjectionOptions = {
     namespace: undefined,
+    eventHandlerInterceptor: undefined,
+    styleApplyer: function(domNode, styleName, value) {
+      // Provides a hook to add vendor prefixes for browsers that still need it.
+      domNode.style[styleName] = value;
+    },
     transitions: {
       enter: missingTransition,
       exit: missingTransition
@@ -90,7 +95,7 @@
             if(typeof styleValue !== "string") {
               throw new Error("Style values may only be strings");
             }
-            domNode.style[styleName] = styleValue;
+            projectionOptions.styleApplyer(domNode, styleName, styleValue);
           }
         }
       } else if(propName === "key") {
@@ -159,9 +164,9 @@
             if(typeof newStyleValue !== "string") {
               throw new Error("Style values may only be strings");
             }
-            domNode.style[styleName] = newStyleValue;
+            projectionOptions.styleApplyer(domNode, styleName, newStyleValue);
           } else {
-            domNode.style[styleName] = "";
+            projectionOptions.styleApplyer(domNode, styleName, "");
           }
         }
       } else {

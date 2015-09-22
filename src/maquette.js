@@ -190,7 +190,9 @@
           if(type === "string") {
             domNode.setAttribute(propName, propValue);
           } else {
-            domNode[propName] = propValue;
+            if(domNode[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop
+              domNode[propName] = propValue;
+            }
           }
           propertiesUpdated = true;
         }

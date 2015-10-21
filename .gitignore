@@ -64,5 +64,5 @@ bin
 obj
 
 # Other
-.settings
+.vscode
 docs

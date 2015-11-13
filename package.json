@@ -8,18 +8,18 @@
     "animation",
     "transitions"
   ],
-  "version": "2.1.2",
+  "version": "2.1.3",
   "author": "Johan Gorter <johan@johangorter.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/AFASSoftware/maquette"
   },
-  "main": "dist/maquette.min.js",
+  "main": "src/maquette.js",
   "scripts": {
     "test": "mocha && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js",
     "coverage": "node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha"
   },
-  "licenses": [
+  "license": [
     {
       "type": "MIT",
       "url": "http://opensource.org/licenses/MIT"
@@ -42,8 +42,8 @@
     "inquirer": "^0.8.0",
     "istanbul": "^0.3.13",
     "jsdoc": "^3.3.0",
-    "jsdom": "^3.1.0",
-    "mocha": "^2.1.0",
-    "mocha-jsdom": "^0.2.0"
+    "jsdom": "^7.0.2",
+    "mocha": "^2.3.3",
+    "mocha-jsdom": "^1.0.0"
   }
 }

@@ -8,6 +8,6 @@ addons:
 
 language: node_js
 node_js:
-  - "0.12"
+  - "4.1"
 
 before_install: npm install -g grunt-cli bower

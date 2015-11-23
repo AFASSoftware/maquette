@@ -584,7 +584,7 @@
      * This also includes attributes, styles, css classes. This callback is also invoked when node contains only text and that text changes.
      * {@link http://maquettejs.org/docs/animations.html|More about animations}.
      * @param {afterCreateCallback} properties.afterCreate - Callback that is executed after this node is added to the DOM. Childnodes and properties have already been applied.
-     * @param {afterUpdateCallback} properties.afterCreate - Callback that is executed every time this node may have been updated. Childnodes and properties have already been updated. 
+     * @param {afterUpdateCallback} properties.afterUpdate - Callback that is executed every time this node may have been updated. Childnodes and properties have already been updated. 
      * @param {Object[]} [children] - An array of virtual DOM nodes to add as child nodes. 
      * This array may contain nested arrays, `null` or `undefined` values.
      * Nested arrays are flattened, `null` and `undefined` will be skipped.

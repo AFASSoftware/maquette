@@ -300,14 +300,16 @@
     }
     oldChildren = oldChildren || emptyArray;
     newChildren = newChildren || emptyArray;
+    var oldChildrenLength = oldChildren.length;
+    var newChildrenLength = newChildren.length;
     var transitions = projectionOptions.transitions;
 
     var oldIndex = 0;
     var newIndex = 0;
     var i;
     var textUpdated = false;
-    while(newIndex < newChildren.length) {
-      var oldChild = (oldIndex < oldChildren.length) ? oldChildren[oldIndex] : undefined;
+    while(newIndex < newChildrenLength) {
+      var oldChild = (oldIndex < oldChildrenLength) ? oldChildren[oldIndex] : undefined;
       var newChild = newChildren[newIndex];
       if(oldChild !== undefined && same(oldChild, newChild)) {
         textUpdated = updateDom(oldChild, newChild, projectionOptions) || textUpdated;
@@ -324,16 +326,16 @@
           oldIndex = findOldIndex + 1;
         } else {
           // New child
-          createDom(newChild, domNode, (oldIndex < oldChildren.length) ? oldChildren[oldIndex].domNode : undefined, projectionOptions);
+          createDom(newChild, domNode, (oldIndex < oldChildrenLength) ? oldChildren[oldIndex].domNode : undefined, projectionOptions);
           nodeAdded(newChild, transitions);
           checkDistinguishable(newChildren, newIndex, vnode, "added");
         }
       }
       newIndex++;
     }
-    if(oldChildren.length > oldIndex) {
+    if(oldChildrenLength > oldIndex) {
       // Remove child fragments
-      for(i = oldIndex; i < oldChildren.length; i++) {
+      for(i = oldIndex; i < oldChildrenLength; i++) {
         nodeToRemove(oldChildren[i], transitions);
         checkDistinguishable(oldChildren, i, vnode, "removed");
       }
@@ -410,7 +412,7 @@
         textUpdated = true;
       }
     } else {
-      if(vnode.vnodeSelector.substr(0, 3) === "svg") {
+      if(vnode.vnodeSelector.lastIndexOf("svg", 0) === 0) { // lastIndexOf(needle,0)===0 means StartsWith
         projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
       }
       if(previous.text !== vnode.text) {
@@ -514,7 +516,7 @@
   /**
    * @callback exitAnimationCallback
    * @param {Element} element - Element that ought to be removed from to the DOM.
-   * @param {function} removeElement - Function that removes the element from the DOM. 
+   * @param {function(Element)} removeElement - Function that removes the element from the DOM. 
    * This argument is supplied purely for convenience. 
    * You may use this function to remove the element when the animation is done.
    * @param {Object} properties - The properties object that was supplied to the {@link module:maquette.h} method that rendered this {@link VNode} the previous time.

@@ -414,14 +414,14 @@
         projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
       }
       if(previous.text !== vnode.text) {
-        textUpdated = true;
+        updated = true;
         if(vnode.text === undefined) {
           domNode.removeChild(domNode.firstChild); // the only textnode presumably
         } else {
           domNode.textContent = vnode.text;
         }
       }
-      updated = updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions);
+      updated = updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions) || updated;
       updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
       if(vnode.properties && vnode.properties.afterUpdate) {
         vnode.properties.afterUpdate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);

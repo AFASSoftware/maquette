@@ -15,16 +15,12 @@
     "url": "https://github.com/AFASSoftware/maquette"
   },
   "main": "src/maquette.js",
+  "typings": "maquette.d.ts",
   "scripts": {
     "test": "mocha && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js",
     "coverage": "node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha"
   },
-  "license": [
-    {
-      "type": "MIT",
-      "url": "http://opensource.org/licenses/MIT"
-    }
-  ],
+  "license": "MIT",
   "devDependencies": {
     "Set": "^0.4.1",
     "browser-sync": "^2.5.2",

@@ -65,7 +65,7 @@ export interface VNodeProperties {
   srcset?: string;
   
   // Everything else (uncommon or custom properties and attributes)
-  [index: string]: Object;
+  [index: string]: any;
 }
 
 export interface ProjectionOptions {

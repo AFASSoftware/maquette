@@ -1,10 +1,67 @@
+.main-area {
+  display:flex;
+  flex-wrap: wrap;
+}
+
+.main-area > main {
+  flex: 1 0 80%;
+}
+
+.main-area > .work {
+  flex: 1 0 800px;
+}
+
+.menu {
+  margin: 10px;
+  padding-top: 10px;
+  flex: 0 0 280px;
+  align-items: flex-start;
+  display:flex;
+  bottom: 0px;
+  border-top: solid 1px #D8D8D8;
+}
+
+.menu a {
+  padding:5px 15px;
+  margin-right:10px;
+  color:white;
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  border: solid 1px #D8D8D8;
+  background:indigo;
+}
+
+.menu > a.locked {
+  opacity: .5;
+  background: #E3E6E6;
+  color: grey;
+  position: relative;
+}
+
+.menu > a.unlocked {
+  position: relative;
+  background: #43A047;
+}
+
+.menu > a.secondary {
+  background: #E3E6E6;
+  color: #444444;
+}
+
+
+.menu > a > svg {
+  position:absolute; /* may disappear using an animation without the button itself being changed */
+  fill: indigo;
+  left: 0px;
+  top:10px;
+}
+
 .instructions {
   flex-shrink: 0;
 }
 
 .work {
   height: calc(100vh - 40px);
-  min-height: 400px;
+  min-height: 300px;
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: stretch;
@@ -12,6 +69,8 @@
   -webkit-flex-wrap:wrap;
   flex-wrap:wrap;
   position: relative;
+  padding-bottom:5px;
+  background: #F6F7F7;
 }
 
 .work > .input {
@@ -21,45 +80,40 @@
   flex-direction: column;
   -webkit-flex: 1 0 400px;
   flex: 1 0 400px;
+  padding: 0 5px;
 }
 
 .input > .tabs {
-  background-color: black;
   display: -webkit-flex;
   display: flex;
-  position: relative;
-  height: 25px;
-  padding-left: 44px;
-  padding-right: 50px; /* Space for the reset button */
 }
 
 .input > .tabs > .tab {
-  padding: 2px 15px;
-  background-color: black;
-  border: solid 1px #888888;
+  padding: 5px 15px;
+  background-color: #ECEFEF;
+  border: solid 1px #D8D8D8;
   color: #AAAAAA;
   border-bottom: none;
-  border-radius: 8px 8px 0 0;
-  margin: 3px 3px 0 3px;
+  margin: 3px 3px 0px 0px;
   outline: 0;
   cursor: pointer;
 }
 
 .input > .tabs > .tab.active {
-  background-color: rgb(39, 40, 34);
-  color: white;
+  background-color: white;
+  color: #676767;
   cursor: default;
+  position: relative;
+  border-bottom:1px solid white;
+  bottom: -1px;
+  z-index:22;
 }
 
 .input > .tabs > .reset {
-  position: absolute;
-  top: 4px;
-  right: 6px;
+  padding: 6px 10px 2px 10px;
   line-height: 16px;
-  padding: 2px 5px;
-  border-radius: 3px;
-  margin: 0;
   border: none;
+  background-color: transparent;
 }
 
 .input > .tabs > .reset:disabled {
@@ -70,16 +124,20 @@
   -webkit-flex-grow: 1;
   flex-grow: 1;
   min-height: 300px;
+  border: solid 1px #D8D8D8;
 }
-
+.input > .editor .ace_gutter{
+  /* background-color: #ECEFEF; */
+}
 /* Workbench */
+
 
 .work > .result {
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
   flex-direction: column;
-  min-height: 400px;
+  min-height: 300px;
   -webkit-flex: 1 0 400px;
   flex: 1 0 400px;
   background-color: black;
@@ -109,7 +167,7 @@
 }
 
 .markup-matcher > pre > .ok {
-  background-color: darkgreen;
+  background-color: #43A047;
 }
 
 .markup-matcher > pre > .wrong {
@@ -122,53 +180,69 @@
 }
 
 .objectives {
-  padding: 10px 10px 105px 10px;
-  max-width: 500px;
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
+  -webkit-flex: 0 0 300px;
+  flex: 0 0 300px;
+  max-width: 350px;
+}
+.objectives .header{
+  margin: 10px;
+  font-size: 21px;
+  font-weight: 100;
+  border-bottom: 1px solid rgb(221, 221, 221);
+  padding-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .objective {
-  position: relative;
+  margin: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  border: solid 1px #D8D8D8;
+  transition:2s ease opacity;
+}
+.objective ul {
+  padding-left:20px;
+  margin: 0px;
+}
+.objective code {
+  color: #4B0082;
 }
 
 .objective > header {
-  padding: 0 10px;
+  padding: 10px;
   display: block;
-  height: 20px;
-  background-color: #AAAAAA;
+  background-color: #E3E6E6;
   color: black;
-  border-radius: 10px;
+  transition:2s ease background;
 }
 
 .objective > header > .result {
-  position: absolute;
-  right: 8px;
-  height: 20px;
+  margin-right: 5px;
   line-height: 20px;
   font-weight: bold;
   font-size: 18px;
 }
 
 .objective.future {
-  top: 100px;
+  opacity: 0.5;
+  color: black;
 }
-
+.objective.current header {
+  font-weight: bold;
+  color: #4B0082;
+}
+.objective.achieved {
+  border-color:#288A2B;
+}
 .objective.achieved > header {
-  background-color: darkgreen;
-  color: #CCCCCC;
+  background-color: #43A047;
+  color: #E1F0E1;
 }
 
 .objective > .detail {
-  display: block;
-  position: absolute;
-  height: 100px;
-  border: solid 1px #AAAAAA;
-  border-top: none;
-  left: 11px;
-  right: 11px;
-  padding: 2px 5px;
-  border-radius: 0 0 5px 5px;
+  padding: 10px;
+  background: #fff;
 }
 
 .objective > .detail > p {
@@ -182,18 +256,7 @@
 .objective > .detail > code > pre {
   margin: 5px 0;
   overflow: hidden;
-}
-
-.locked {
-  position: relative;
-}
-.locked > svg {
-  position:absolute;
-  right: -14px;
-  top:16px;
-  fill:goldenrod;
-  height: 56px;
-  width: 56px;
+  font-size:12px;
 }
 
 .complete {

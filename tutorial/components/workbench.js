@@ -1,6 +1,6 @@
 ---
 ---
-window.createWorkbench = function (projector, tabs, objectives) {
+window.createWorkbench = function (projector, tabs, objectives, navigation) {
 
   if(typeof tabs === "string") {
     tabs = [
@@ -268,6 +268,29 @@ window.createWorkbench = function (projector, tabs, objectives) {
       var html = htmlStart + lastValidScript + htmlEnd;
 
       return h("div.work", [
+        h("div.objectives", [
+          h("div.header", ["Objectives"]),
+          objectives.map(function (objective, index) {
+            var current = !currentObjectiveHad && !objective.isAchieved();
+            if(current) {
+              currentObjectiveHad = true;
+            }
+            return h("section.objective", { key: index, classes: {achieved: objective.isAchieved(), current: current, "future": !current && currentObjectiveHad} }, [
+              h("header", [
+                objective.isAchieved() ? h("span.result.achieved", ["\u2713"]) : [],
+                h("span", ["" + (index + 1) + ". " + objective.title])
+              ]),
+              (current || index === objectives.length-1) ? [
+                h("div.detail", [
+                  objective.renderMaquette()
+                ])
+              ] : []
+            ]);
+          }),
+          h("div.objectives-menu", [
+            navigation.renderMaquette()
+          ])
+        ]),
         h("div.input", [
           h("div.tabs", [
             tabs.map(function (scriptTab, index) {
@@ -279,26 +302,6 @@ window.createWorkbench = function (projector, tabs, objectives) {
 //          h("div.parseError", [parseError])
         ]),
         h("div.result", [
-          h("div.header", ["Objectives"]),
-          h("div.objectives",
-            objectives.map(function (objective, index) {
-              var current = !currentObjectiveHad && !objective.isAchieved();
-              if(current) {
-                currentObjectiveHad = true;
-              }
-              return h("section.objective", { key: index, classes: {achieved: objective.isAchieved(), current: current, "future": !current && currentObjectiveHad} }, [
-                h("header", [
-                  h("span", ["" + (index + 1) + ". " + objective.title]),
-                  objective.isAchieved() ? h("span.result.achieved", ["\u2713"]) : []
-                ]),
-                current ? [
-                  h("div.detail", [
-                    objective.renderMaquette()
-                  ])
-                ] : []
-              ]);
-            })
-          ),
           h("div.preview", [
             lastValidScript ? [
               h("iframe", { srcdoc: html, onload: iframeLoaded, afterCreate: applySrcdoc, afterUpdate: applySrcdoc })

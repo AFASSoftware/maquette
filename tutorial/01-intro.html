@@ -11,14 +11,18 @@ workbench: true
     var h = maquette.h;
     var projector = maquette.createProjector();
 
-    var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Flying saucer</div>\n</div>');
+    var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Greetings</div>\n</div>');
+
+    var getallObjectivesAchieved = function () {
+      return workbench.allObjectivesAchieved();
+    };
+    
+    var navigation = window.createNavigation(projector, getallObjectivesAchieved);
 
     var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
       markupMatcher
-    ]);
-    var navigation = window.createNavigation(projector, workbench.allObjectivesAchieved);
+    ], navigation);
 
-    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
     projector.merge(document.querySelector(".work"), workbench.renderMaquette);
   });
 </script>
@@ -40,7 +44,7 @@ workbench: true
     <p>
       In this first exercise you will create the flying saucer we are going to control.
       Thanks to some alien piece of CSS, all that is needed to create the the flying saucer is the following markup:
-      <code>&lt;div class="saucer" /&gt;</code>
+      <code>&lt;div class="saucer" /&gt;Greetings&lt;/div&gt;</code>
     </p>
 
     <h2>
@@ -54,7 +58,7 @@ workbench: true
     <p>
       The first parameter of the <code>h()</code> function is a CSS selector string, like <code>"div.landscape"</code>,
       which results in <code>&lt;div class="landscape"&gt;</code>.
-      The last parameter is an array of contents. It may contain strings, which represent text, and other virtual DOM nodes, which represent childnodes.
+      The final parameters represent the content. Strings become text, and <code>h()</code> calls create childnodes.
     </p>
 
     <h2>
@@ -63,12 +67,11 @@ workbench: true
     <p>
       In the workbench below you can edit the sourcefiles for this exercise.
       In order to create the flying saucer, you need to complement the <code>renderMaquette()</code> function.
-      In the top-right of the workbench you can see your progress. 
-      The <b>next</b> button on top of the screen will be unlocked once you complete the objectives. Good luck!
+      The <b>next</b> button on the left will be unlocked once you complete the objective. Good luck!
     </p>
 
   </article>
 </main>
 
-<div class="work" style="height:460px">
+<div class="work" style="height:350px">
 </div>

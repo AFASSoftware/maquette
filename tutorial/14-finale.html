@@ -118,17 +118,20 @@ workbench: true
       }
     };
 
+    var getallObjectivesAchieved = function () {
+      return workbench.allObjectivesAchieved();
+    };
+    
+    var navigation = window.createNavigation(projector, getallObjectivesAchieved);
+
     var workbench = createWorkbench(projector, [
       { name: "saucer.html", url: "assets/saucer-final.html" },
       { name: "saucer.css", url: "assets/saucer.css" },
       { name: "saucer.js", url: "assets/saucer-final.js" },
       { name: "remote.js", url : "assets/saucer-final-remote.js" },
       { name: "remote-row.js", url : "assets/saucer-final-remote-row.js" }
-    ], [ objective1, objective2 ]);
+    ], [ objective1, objective2 ], navigation);
 
-    var navigation = window.createNavigation(projector, workbench.allObjectivesAchieved);
-
-    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
     projector.merge(document.querySelector(".work"), workbench.renderMaquette);
   });
 </script>

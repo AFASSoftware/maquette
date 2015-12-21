@@ -18,15 +18,15 @@ function tick() {
 }
 
 function renderMaquette() {
-  return h("div.landscape", [
-    h("div.remote", {}, [
-      h("div.row", [
-        "rotation: ",
-        h("input.slider", { type: "range", min:"-45", max:"45", value: rotation, oninput: handleRotationInput, onchange: handleRotationInput })
+  return h('div.landscape', [
+    h('div.remote', {}, [
+      h('div.row', [
+        'rotation: ',
+        h('input.slider', { type: 'range', min:'-45', max:'45', value: rotation, oninput: handleRotationInput, onchange: handleRotationInput })
       ])
     ]),
-    h("div.planet", [
-      h("div.saucer", { style: "transform:translate(" + x + "px," + y + "px) rotate(" + rotation + "deg)" }, ["Flying saucer"])
+    h('div.planet', [
+      h('div.saucer', { style: 'transform:translate(' + x + 'px,' + y + 'px) rotate(' + rotation + 'deg)' })
     ])
   ]);
 }

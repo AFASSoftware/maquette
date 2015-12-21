@@ -49,13 +49,16 @@ workbench: true
       }
     };
 
+    var getallObjectivesAchieved = function () {
+      return workbench.allObjectivesAchieved();
+    };
+    
+    var navigation = window.createNavigation(projector, getallObjectivesAchieved);
+
     var workbench = createWorkbench(projector, "assets/saucer-rotation.js", [
       objective
-    ]);
-    
-    var navigation = window.createNavigation(projector, workbench.allObjectivesAchieved);
+    ], navigation);
 
-    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
     projector.merge(document.querySelector(".work"), workbench.renderMaquette);
   });
 </script>

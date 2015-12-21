@@ -2,7 +2,9 @@ var h = maquette.h;
 var projector = maquette.createProjector();
 
 function renderMaquette() {
-  return h("div.landscape", []);
+  return h('div.landscape', [
+    /* childnodes can be inserted here */
+  ]);
 }
 
 // Initializes the projector 

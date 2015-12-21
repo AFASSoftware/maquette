@@ -8,17 +8,15 @@ function handleRotationInput(evt) {
 }
 
 function renderMaquette() {
-  return h("div.landscape", [
-    h("div.remote", {}, [
-      h("div.row", [
-        "rotation: ",
-        h("input", { type: "text" }),
-        "degrees"
+  return h('div.landscape', [
+    h('div.remote', {}, [
+      h('div.row', [
+        'rotation: ',
+        h('input', { type: 'text' }),
+        'degrees'
       ])
     ]),
-    h("div.saucer", { style: "transform:rotate(" + rotation + "deg)" }, [
-      "Flying saucer"
-    ])
+    h('div.saucer', { style: 'transform:rotate(' + rotation + 'deg)' })
   ]);
 }
 

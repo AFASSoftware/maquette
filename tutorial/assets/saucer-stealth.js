@@ -4,8 +4,8 @@ var projector = maquette.createProjector();
 var stealth = true;
 
 function renderMaquette() {
-  return h("div.landscape", [
-    h("div.saucer", { }, ["Flying saucer"])
+  return h('div.landscape', [
+    h('div.saucer', { })
   ]);
 }
 

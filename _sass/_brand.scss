@@ -1,11 +1,13 @@
-$font-family: sans-serif;
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,300);
+
+$font-family: 'Open Sans', sans-serif;
 $text-font-size: 14px;
 $text-line-height: 24px;
 
 $primary-color: indigo;
 $white: #EEEEEE;
 
-$heading-font-family: sans-serif;
+$heading-font-family: 'Open Sans', sans-serif;
 $heading-color: indigo;
 
 $heading1-font-size: 32px;

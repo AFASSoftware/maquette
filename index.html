@@ -38,7 +38,7 @@ liveEditors: true
         <div class="col-2">
           <h2>Live demonstration</h2>
           <code><textarea class="live-editor-editor" rows="20" cols="90" spellcheck="false"
-          style="height:310px;line-height:16px;font-size:12px">var you = ""; // Piece of data
+          style="height:310px;line-height:16px;font-size:12px">var you = ''; // Piece of data
   
 // Plain event handler
 function handleNameInput(evt) {
@@ -46,13 +46,12 @@ function handleNameInput(evt) {
 }
   
 // This function uses the 'hyperscript' notation to create the virtual DOM. 
-// The 'you' variable is used twice here
 function renderMaquette() {
-  return h("div", [
-    h("input", { 
-      type: "text", placeholder: "What is your name?", value: you, oninput: handleNameInput 
+  return h('div', [
+    h('input', { 
+      type: 'text', placeholder: 'What is your name?', value: you, oninput: handleNameInput 
     }),
-    h("p.output", ["Hello " + (you || "you") + "!"])
+    h('p.output', ['Hello ' + (you || 'you') + '!'])
   ]);
 }
   

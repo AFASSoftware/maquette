@@ -4,12 +4,9 @@ layout: tutorial
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-
     var projector = maquette.createProjector();
-
     var navigation = window.createNavigation(projector);
-
-    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
+    projector.insertBefore(document.querySelector("main"), navigation.renderMaquette);
   });
 </script>
 

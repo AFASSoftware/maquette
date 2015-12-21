@@ -4,13 +4,11 @@ var projector = maquette.createProjector();
 var remote = createRemote(); // createRemote is defined in remote.js
 
 function renderMaquette() {
-  return h("div.landscape", [
+  return h('div.landscape', [
     remote.renderMaquette(),
-    h("div.saucer", {
-      style: "transform:" + remote.getSaucerStyle()
-    }, [
-      "Flying saucer"
-    ])
+    h('div.saucer', {
+      style: 'transform:' + remote.getSaucerStyle()
+    })
   ]);
 }
 

@@ -12,7 +12,7 @@
 
     var remote = {
       getSaucerStyle: function () {
-        return rowComponents.map(function (f) { return f.getSaucerStyle(); }).join(" ");
+        return rowComponents.map(function (f) { return f.getSaucerStyle(); }).join(' ');
       },
       hasTransform: function (transform) {
         return rowComponents.some(function (f) {
@@ -20,7 +20,7 @@
         });
       },
       renderMaquette: function () {
-        return h("div.remote", {}, [
+        return h('div.remote', {}, [
           rowComponents.map(function (f) {
             return f.renderMaquette();
           }),
@@ -29,14 +29,14 @@
           }) || rowComponents.length == 7 ? [
             // Do not show the add button when there are still empty rows
           ] : [
-            h("button.add", { onclick: handleAddClick }, ["+"])
+            h('button.add', { onclick: handleAddClick }, ['+'])
           ]
         ]);
       }
     };
 
     // Initialize with one row
-    rowComponents.push(createRemoteRow(remote, "rotate", "0"));
+    rowComponents.push(createRemoteRow(remote, 'rotate', '0'));
 
     return remote;
   };

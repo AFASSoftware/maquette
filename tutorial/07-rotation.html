@@ -55,15 +55,20 @@ workbench: true
         return h("p", ["Make sure the projectector schedules a render after each update to the data."]);
       }
     };
-
-    var workbench = createWorkbench(projector, "assets/saucer-orbit.js", [
+    
+    var workbench;
+    
+    var getallObjectivesAchieved = function () {
+      return workbench.allObjectivesAchieved();
+    };
+    
+    var navigation = window.createNavigation(projector, getallObjectivesAchieved);
+    
+    workbench = createWorkbench(projector, "assets/saucer-orbit.js", [
       objective1,
       objective2
-    ]);
+    ],navigation);
 
-    var navigation = window.createNavigation(projector, workbench.allObjectivesAchieved);
-
-    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
     projector.merge(document.querySelector(".work"), workbench.renderMaquette);
   });
 </script>

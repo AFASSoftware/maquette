@@ -34,17 +34,20 @@ workbench: true
         }
       },
       renderMaquette: function () {
-        return h("p", ["If you press the 'remove rotation' button, the wrong row will be removed. Put a unique key property on one of the function divs and try again."]);
+        return h("p", ["If you press the 'remove rotation' button, the wrong row will be removed. Put a unique key property on one of the 'row' divs and try again."]);
       }
     };
 
+    var getallObjectivesAchieved = function () {
+      return workbench.allObjectivesAchieved();
+    };
+    
+    var navigation = window.createNavigation(projector, getallObjectivesAchieved);
+
     var workbench = createWorkbench(projector, "assets/saucer-rotation-and-stealth.js", [
       objective1
-    ]);
+    ], navigation);
 
-    var navigation = window.createNavigation(projector, workbench.allObjectivesAchieved);
-
-    projector.merge(document.querySelector(".menu"), navigation.renderMaquette);
     projector.merge(document.querySelector(".work"), workbench.renderMaquette);
   });
 </script>

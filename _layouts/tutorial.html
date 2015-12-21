@@ -14,8 +14,6 @@
   <nav class="top-bar">
     <nav class="full-width">
       <a class="logo" href="/tutorial/index.html">Maquette tutorial</a>
-      <div class="menu">
-      </div>
     </nav>
   </nav>
   
@@ -27,7 +25,11 @@
   <script src="/tutorial/components/workbench.js"></script>
   {% endif %}
 
-  {{ content }}
+  <div class="main-area">
+  
+    {{ content }}
+    
+  </div>
 
   {% include analytics.html %}
 </body>

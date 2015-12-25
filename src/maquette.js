@@ -105,6 +105,10 @@
       } else {
         var type = typeof propValue;
         if(type === "function") {
+          domNode[propName + '-handler'] = propValue;
+          propValue = function () {
+              return domNode[propName + '-handler'].apply(this, arguments);
+          };
           if(eventHandlerInterceptor && (propName.lastIndexOf("on", 0) === 0)) { // lastIndexOf(,0)===0 -> startsWith
             propValue = eventHandlerInterceptor(propName, propValue, domNode, properties); // intercept eventhandlers
             if(propName === "oninput") {
@@ -184,10 +188,12 @@
         } else if(propValue !== previousValue) {
           var type = typeof propValue;
           if(type === "function") {
-            throw new Error("Functions may not be updated on subsequent renders (property: " + propName +
-              "). Hint: declare event handler functions outside the render() function.");
-          }
-          if(type === "string") {
+            if (!projectionOptions.allowUpdateFunction) {
+              throw new Error("Functions may not be updated on subsequent renders (property: " + propName +
+                "). Hint: declare event handler functions outside the render() function or use the allowUpdateFunction in maquette.createProjection().");
+            }
+            domNode[propName + '-handler'] = propValue;
+          } else if(type === "string") {
             domNode.setAttribute(propName, propValue);
           } else {
             if(domNode[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop

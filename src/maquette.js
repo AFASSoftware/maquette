@@ -105,11 +105,14 @@
       } else {
         var type = typeof propValue;
         if(type === "function") {
-          domNode[propName + '-handler'] = propValue;
-          propValue = function () {
-              return domNode[propName + '-handler'].apply(this, arguments);
-          };
           if(eventHandlerInterceptor && (propName.lastIndexOf("on", 0) === 0)) { // lastIndexOf(,0)===0 -> startsWith
+            domNode[propName + '-handler'] = propValue;
+            propValue = (function (propName) {
+                var _this = this;
+                return function () {
+                    return domNode[propName + '-handler'].apply(_this, arguments);
+                }
+            })(propName);
             propValue = eventHandlerInterceptor(propName, propValue, domNode, properties); // intercept eventhandlers
             if(propName === "oninput") {
               (function () {

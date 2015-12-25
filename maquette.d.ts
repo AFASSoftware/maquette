@@ -69,6 +69,7 @@ export interface VNodeProperties {
 }
 
 export interface ProjectionOptions {
+  allowUpdateFunction?: boolean;
   transitions?: {
     enter: (element: Element, properties: VNodeProperties, enterAnimation: string) => void;
     exit: (element: Element, properties: VNodeProperties, exitAnimation: string, removeElement: () => void) => void; 

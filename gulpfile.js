@@ -2,17 +2,61 @@ var gulp=require("gulp");
 var uglify=require("gulp-uglify");
 var rename = require('gulp-rename');
 var del = require('del');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var sourcemaps = require('gulp-sourcemaps');
+var merge = require('merge2');
 
 var git = require('gulp-git');
 var bump = require('gulp-bump');
 var filter = require('gulp-filter');
 var tag_version = require('gulp-tag-version');
 
+var browserify = require('browserify');
+var tsify = require('tsify');
+var gutil = require("gulp-util");
+
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 
 var BROWSERSYNC_PORT = parseInt(process.env.PORT) || 3002;
 var BROWSERSYNC_HOST = process.env.IP || "127.0.0.1";
+
+gulp.task('bundle', function() {
+  var configTypescript = require('./tsconfig.json').compilerOptions;
+  configTypescript.typescript = require('typescript');
+
+  var createBundler = function() { 
+    return browserify({
+      basedir: './src',
+      debug: true, // Needed for sourcemaps to get content after uglification 
+      standalone: 'maquette'
+    }).add('maquette.ts').plugin(tsify, configTypescript);
+  };
+
+  // non-minified
+  var normal = createBundler().bundle()
+    .pipe(source('maquette.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({
+      loadMaps: true
+    }))
+    .pipe(sourcemaps.write('./', {}))
+    .pipe(gulp.dest('./dist'));
+  
+  // minified
+  var minified = createBundler().bundle()
+    .pipe(source('maquette.min.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({
+      loadMaps: true
+    }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write('./', {}))
+    .pipe(gulp.dest('./dist'));
+    
+  return merge([normal, minified]);
+});
 
 gulp.task("compress",  function() {
   gulp.src("src/*.js")
@@ -25,7 +69,7 @@ gulp.task('clean', function(cb) {
   del(['dist'], cb);
 });
 
-gulp.task("default", ["compress"]);
+gulp.task("default", ["compress", "bundle"]);
 
 function inc(importance) {
   // get all the files to bump version in

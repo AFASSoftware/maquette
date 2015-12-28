@@ -14,7 +14,7 @@
     "type": "git",
     "url": "https://github.com/AFASSoftware/maquette"
   },
-  "main": "src/maquette.js",
+  "main": "dist/maquette.js",
   "typings": "maquette.d.ts",
   "scripts": {
     "test": "mocha && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "Set": "^0.4.1",
     "browser-sync": "^2.5.2",
+    "browserify": "^12.0.1",
     "chai": "^2.2.0",
     "del": "^1.1.1",
     "gulp": "^3.8.10",
@@ -32,16 +33,24 @@
     "gulp-git": "^0.5.5",
     "gulp-prompt": "^0.1.1",
     "gulp-rename": "^1.2.0",
+    "gulp-sourcemaps": "^1.6.0",
     "gulp-tag-version": "^1.2.1",
     "gulp-uglify": "^1.0.2",
+    "gulp-util": "^3.0.7",
     "ink-docstrap": "^0.5.2",
     "inquirer": "^0.8.0",
     "istanbul": "^0.3.13",
     "jsdoc": "^3.3.0",
     "jsdom": "^7.0.2",
+    "merge2": "0.3.6",
     "mocha": "^2.3.3",
     "mocha-jsdom": "^1.0.0",
     "sinon": "^1.17.2",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "tsify": "^0.13.1",
+    "tslint": "3.2.1",
+    "typescript": "1.7.5",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
   }
 }

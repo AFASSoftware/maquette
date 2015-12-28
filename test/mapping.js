@@ -1,7 +1,7 @@
 /* globals describe,it */
 var expect = require("chai").expect;
 
-var createMapping = require("../src/maquette").createMapping;
+var createMapping = require("../dist/maquette").createMapping;
 
 var addAllPermutations = function(results, result, unusedNumbers, numbersToAdd) {
   if (numbersToAdd === 0) {

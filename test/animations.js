@@ -1,5 +1,5 @@
 /* globals describe,it */
-var maquette = require("../src/maquette.js");
+var maquette = require("../dist/maquette.js");
 var assert = require("assert");
 var jsdom = require('mocha-jsdom');
 var chai = require('chai');

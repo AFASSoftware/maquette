@@ -17,6 +17,16 @@ let extend = function (base, overrides) {
 
 // Hyperscript helper functions
 
+let toTextVNode = function (data) {
+  return {
+    vnodeSelector: "",
+    properties: undefined,
+    children: undefined,
+    text: (data === null || data === undefined) ? "" : data.toString(),
+    domNode: null
+  };
+};
+
 let appendChildren = function (parentSelector, insertions, main) {
   for(let i = 0; i < insertions.length; i++) {
     let item = insertions[i];
@@ -31,16 +41,6 @@ let appendChildren = function (parentSelector, insertions, main) {
       }
     }
   }
-};
-
-let toTextVNode = function (data) {
-  return {
-    vnodeSelector: "",
-    properties: undefined,
-    children: undefined,
-    text: (data === null || data === undefined) ? "" : data.toString(),
-    domNode: null
-  };
 };
 
 // Render helper functions
@@ -338,7 +338,7 @@ let updateChildren = function (vnode, domNode, oldChildren, newChildren, project
   return textUpdated;
 };
 
-let createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
+var createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
   let domNode, i, c, start = 0, type, found;
   let vnodeSelector = vnode.vnodeSelector;
   if(vnodeSelector === "") {
@@ -380,7 +380,7 @@ let createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
   }
 };
 
-let initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
+var initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
   addChildren(domNode, vnode.children, projectionOptions); // children before properties, needed for value property of <select>.
   if(vnode.text) {
     domNode.textContent = vnode.text;
@@ -391,7 +391,7 @@ let initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
   }
 };
 
-let updateDom = function (previous, vnode, projectionOptions) {
+var updateDom = function (previous, vnode, projectionOptions) {
   let domNode = previous.domNode;
   if(!domNode) {
     throw new Error("previous node was not rendered");
@@ -855,7 +855,7 @@ export let createProjector = function (projectionOptions) {
     renderCompleted = true;
   };
 
-  let projector = {
+  var projector = {
     /**
      * Instructs the projector to re-render to the DOM at the next animation-frame using the registered `renderMaquette` functions.
      * This method is automatically called for you when event-handlers that are registered in the {@link VNode}s are invoked.
@@ -888,32 +888,6 @@ export let createProjector = function (projectionOptions) {
       stopped = false;
       renderCompleted = true;
       projector.scheduleRender();
-    },
-    
-    /**
-     * Scans the document for `<script>` tags with `type="text/hyperscript"`.
-     * The content of these scripts are registered as `renderMaquette` functions.
-     * The result of evaluating these functions will be inserted into the DOM after the script.
-     * These scripts can make use of variables that come from the `parameters` parameter.
-     * @param {Element} rootNode - Element to start scanning at, example: `document.body`.
-     * @param {Object} parameters - Variables to expose to the scripts. format: `{var1:value1, var2: value2}`
-     * @memberof Projector#
-     */
-    evaluateHyperscript: function (rootNode, parameters) {
-      let nodes = rootNode.querySelectorAll("script[type='text/hyperscript']");
-      let functionParameters = ["maquette", "h", "enhancer"];
-      let parameterValues = [{h, dom, createCache, createMapping, createProjector}, h, projector];
-      Object.keys(parameters).forEach(function (parameterName) {
-        functionParameters.push(parameterName);
-        parameterValues.push(parameters[parameterName]);
-      });
-      Array.prototype.forEach.call(nodes, function (node) {
-        let func = new Function(...functionParameters, "return " + node.textContent.trim());
-        let renderFunction = function () {
-          return func.apply(undefined, parameterValues);
-        };
-        projector.insertBefore(node, renderFunction);
-      });
     },
     
     /**

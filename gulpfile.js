@@ -12,6 +12,9 @@ var bump = require('gulp-bump');
 var filter = require('gulp-filter');
 var tag_version = require('gulp-tag-version');
 
+var ts = require('gulp-typescript');
+var wrapJS = require("gulp-wrap-js");
+
 var browserify = require('browserify');
 var tsify = require('tsify');
 var gutil = require("gulp-util");
@@ -22,40 +25,68 @@ var reload = browserSync.reload;
 var BROWSERSYNC_PORT = parseInt(process.env.PORT) || 3002;
 var BROWSERSYNC_HOST = process.env.IP || "127.0.0.1";
 
-gulp.task('bundle', function() {
+gulp.task('compile', function() {
   var configTypescript = require('./tsconfig.json').compilerOptions;
   configTypescript.typescript = require('typescript');
+	return gulp.src('src/**/*.ts')
+    .pipe(sourcemaps.init())
+		.pipe(ts(configTypescript))
+    .pipe(sourcemaps.write('./'))
+		.pipe(gulp.dest('build/js'));
+});
 
-  var createBundler = function() { 
-    return browserify({
-      basedir: './src',
-      debug: true, // Needed for sourcemaps to get content after uglification 
-      standalone: 'maquette'
-    }).add('maquette.ts').plugin(tsify, configTypescript);
-  };
-
-  // non-minified
-  var normal = createBundler().bundle()
-    .pipe(source('maquette.js'))
-    .pipe(buffer())
-    .pipe(sourcemaps.init({
-      loadMaps: true
-    }))
-    .pipe(sourcemaps.write('./', {}))
-    .pipe(gulp.dest('./dist'));
+// This seems to be the most lightweight solution to create an UMD wrapper and working sourcemaps 
+var umdTemplate = "(function (root, factory) {" +
+  "\n  if (typeof define === 'function' && define.amd) {" +
+  "\n      // AMD. Register as an anonymous module." +
+  "\n      define(['exports'], factory);" +
+  "\n  } else if (typeof exports === 'object' && typeof exports.nodeName !== 'string') {" +
+  "\n      // CommonJS" +
+  "\n      factory(exports);" +
+  "\n  } else {" +
+  "\n      // Browser globals" +
+  "\n      factory((root.maquette = {}));" +
+  "\n  }" +
+  "\n}(this, function (exports){%= body %}));";
   
-  // minified
-  var minified = createBundler().bundle()
-    .pipe(source('maquette.min.js'))
-    .pipe(buffer())
+gulp.task('dist', ['compile'], function() {
+  return gulp.src('build/js/maquette.js')
     .pipe(sourcemaps.init({
       loadMaps: true
     }))
+    .pipe(wrapJS(umdTemplate))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest("./dist"));
+});
+
+gulp.task('dist-min', ['dist'], function() {
+  return gulp.src('build/js/maquette.js')
+    .pipe(sourcemaps.init({
+      loadMaps: true
+    }))
+    .pipe(wrapJS(umdTemplate))
     .pipe(uglify())
-    .pipe(sourcemaps.write('./', {}))
-    .pipe(gulp.dest('./dist'));
-    
-  return merge([normal, minified]);
+    .pipe(rename({extname: '.min.js'}))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest("./dist"));
+});
+
+gulp.task('check-size', ['dist-min'], function(callback) {
+  var zlib = require('zlib');
+  var fs = require('fs');
+  var input = fs.createReadStream('./dist/maquette.min.js');
+  var stream = input.pipe(zlib.createGzip());
+  var length = 0;
+  stream.on('data', function(chunk) {
+    length += chunk.length;
+  });
+  stream.on('end', function() {
+    console.log('gzipped size in kB:', length/1024);
+    if (length >= 3.05 * 1024) {
+      return callback(new Error('Claim that maquette is only 3.0 kB gzipped no longer holds'));
+    }
+    callback();
+  });
 });
 
 gulp.task("compress",  function() {
@@ -66,10 +97,10 @@ gulp.task("compress",  function() {
 });
 
 gulp.task('clean', function(cb) {
-  del(['dist'], cb);
+  del(['dist', 'build'], cb);
 });
 
-gulp.task("default", ["compress", "bundle"]);
+gulp.task("default", ["compress", "dist-min", 'check-size']);
 
 function inc(importance) {
   // get all the files to bump version in

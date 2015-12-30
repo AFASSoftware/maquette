@@ -4,6 +4,7 @@ sandbox.js
 bower_components
 node_modules
 coverage
+build
 *.log
 
 # Linux gedit temp files

@@ -10,6 +10,8 @@
         factory(root.maquette = {});
     }
 }(this, function (exports) {
+    ;
+    ;
     var NAMESPACE_SVG = 'http://www.w3.org/2000/svg';
     // Utilities
     var emptyArray = [];
@@ -26,6 +28,15 @@
         return result;
     };
     // Hyperscript helper functions
+    var same = function (vnode1, vnode2) {
+        if (vnode1.vnodeSelector !== vnode2.vnodeSelector) {
+            return false;
+        }
+        if (vnode1.properties && vnode2.properties) {
+            return vnode1.properties.key === vnode2.properties.key;
+        }
+        return !vnode1.properties && !vnode2.properties;
+    };
     var toTextVNode = function (data) {
         return {
             vnodeSelector: '',
@@ -54,7 +65,7 @@
     var missingTransition = function () {
         throw new Error('Provide a transitions object to the projectionOptions to do animations');
     };
-    var defaultProjectionOptions = {
+    var DEFAULT_PROJECTION_OPTIONS = {
         namespace: undefined,
         eventHandlerInterceptor: undefined,
         styleApplyer: function (domNode, styleName, value) {
@@ -67,7 +78,7 @@
         }
     };
     var applyDefaultProjectionOptions = function (projectionOptions) {
-        return extend(defaultProjectionOptions, projectionOptions);
+        return extend(DEFAULT_PROJECTION_OPTIONS, projectionOptions);
     };
     var checkStyleValue = function (styleValue) {
         if (typeof styleValue !== 'string') {
@@ -83,7 +94,9 @@
         var propCount = propNames.length;
         for (var i = 0; i < propCount; i++) {
             var propName = propNames[i];
+            /* tslint:disable:no-var-keyword: edge case */
             var propValue = properties[propName];
+            /* tslint:enable:no-var-keyword */
             if (propName === 'class' || propName === 'className' || propName === 'classList') {
                 throw new Error('Property ' + propName + ' is not supported, use classes.');
             } else if (propName === 'classes') {
@@ -218,23 +231,6 @@
         }
         return propertiesUpdated;
     };
-    var addChildren = function (domNode, children, projectionOptions) {
-        if (!children) {
-            return;
-        }
-        for (var i = 0; i < children.length; i++) {
-            createDom(children[i], domNode, undefined, projectionOptions);
-        }
-    };
-    var same = function (vnode1, vnode2) {
-        if (vnode1.vnodeSelector !== vnode2.vnodeSelector) {
-            return false;
-        }
-        if (vnode1.properties && vnode2.properties) {
-            return vnode1.properties.key === vnode2.properties.key;
-        }
-        return !vnode1.properties && !vnode2.properties;
-    };
     var findIndexOfChild = function (children, sameAs, start) {
         if (sameAs.vnodeSelector !== '') {
             // Never scan for text-nodes
@@ -303,6 +299,8 @@
             }
         }
     };
+    var createDom;
+    var updateDom;
     var updateChildren = function (vnode, domNode, oldChildren, newChildren, projectionOptions) {
         if (oldChildren === newChildren) {
             return false;
@@ -350,7 +348,26 @@
         }
         return textUpdated;
     };
-    var createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
+    var addChildren = function (domNode, children, projectionOptions) {
+        if (!children) {
+            return;
+        }
+        for (var i = 0; i < children.length; i++) {
+            createDom(children[i], domNode, undefined, projectionOptions);
+        }
+    };
+    var initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
+        addChildren(domNode, vnode.children, projectionOptions);
+        // children before properties, needed for value property of <select>.
+        if (vnode.text) {
+            domNode.textContent = vnode.text;
+        }
+        setProperties(domNode, vnode.properties, projectionOptions);
+        if (vnode.properties && vnode.properties.afterCreate) {
+            vnode.properties.afterCreate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
+        }
+    };
+    createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
         var domNode, i, c, start = 0, type, found;
         var vnodeSelector = vnode.vnodeSelector;
         if (vnodeSelector === '') {
@@ -391,18 +408,7 @@
             initPropertiesAndChildren(domNode, vnode, projectionOptions);
         }
     };
-    var initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
-        addChildren(domNode, vnode.children, projectionOptions);
-        // children before properties, needed for value property of <select>.
-        if (vnode.text) {
-            domNode.textContent = vnode.text;
-        }
-        setProperties(domNode, vnode.properties, projectionOptions);
-        if (vnode.properties && vnode.properties.afterCreate) {
-            vnode.properties.afterCreate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
-        }
-    };
-    var updateDom = function (previous, vnode, projectionOptions) {
+    updateDom = function (previous, vnode, projectionOptions) {
         var domNode = previous.domNode;
         if (!domNode) {
             throw new Error('previous node was not rendered');
@@ -471,11 +477,6 @@
         };
     };
     // Declaration of interfaces and callbacks, before the @exports maquette
-    /**
- * A virtual representation of a DOM Node. Maquette assumes that {@link VNode} objects are never modified externally.
- * Instances of {@link VNode} can be created using {@link module:maquette.h}.
- * @interface VNode
- */
     /**
  * A CalculationCache object remembers the previous outcome of a calculation along with the inputs.
  * On subsequent calls the previous outcome is returned if the inputs are identical.
@@ -624,30 +625,10 @@
             }
         }
         return {
-            /**
-         * The CSS selector containing tagname, css classnames and id. An empty string is used to denote a text node.
-         * @memberof VNode#
-         */
             vnodeSelector: selector,
-            /**
-         * Object containing attributes, properties, event handlers and more @see module:maquette.h
-         * @memberof VNode#
-         */
             properties: properties,
-            /**
-         * Array of VNodes to be used as children. This array is already flattened.
-         * @memberof VNode#
-         */
             children: children,
-            /**
-         * Used in a special case when a VNode only has one childnode which is a textnode. Only used in combination with children === undefined.
-         * @memberof VNode#
-         */
             text: text,
-            /**
-         * Used by maquette to store the domNode that was produced from this {@link VNode}.
-         * @memberof VNode#
-         */
             domNode: null
         };
     };
@@ -828,6 +809,7 @@
  * @returns {Projector}
  */
     exports.createProjector = function (projectionOptions) {
+        var projector;
         projectionOptions = applyDefaultProjectionOptions(projectionOptions);
         projectionOptions.eventHandlerInterceptor = function (propertyName, functionPropertyArgument) {
             return function () {
@@ -854,7 +836,7 @@
             }
             renderCompleted = true;
         };
-        var projector = {
+        projector = {
             /**
          * Instructs the projector to re-render to the DOM at the next animation-frame using the registered `renderMaquette` functions.
          * This method is automatically called for you when event-handlers that are registered in the {@link VNode}s are invoked.

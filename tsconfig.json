@@ -16,5 +16,10 @@
     "bower_components",
     "browser-tests",
     ".vscode"
+  ],
+  "filesGlob": [
+    "./src/**/*.ts",
+    "./test/**/*.ts",
+    "./typings/**/*.ts"
   ]
 }

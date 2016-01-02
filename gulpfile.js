@@ -35,7 +35,7 @@ gulp.task('compile', function() {
 		.pipe(gulp.dest('build/js'));
 });
 
-// This seems to be the most lightweight solution to create an UMD wrapper and working sourcemaps 
+// This seems to be the most lightweight solution to create an UMD wrapper and working sourcemaps
 var umdTemplate = "(function (root, factory) {" +
   "\n  if (typeof define === 'function' && define.amd) {" +
   "\n      // AMD. Register as an anonymous module." +
@@ -48,7 +48,7 @@ var umdTemplate = "(function (root, factory) {" +
   "\n      factory((root.maquette = {}));" +
   "\n  }" +
   "\n}(this, function (exports){%= body %}));";
-  
+
 gulp.task('dist', ['compile'], function() {
   return gulp.src('build/js/maquette.js')
     .pipe(sourcemaps.init({
@@ -82,8 +82,8 @@ gulp.task('check-size', ['dist-min'], function(callback) {
   });
   stream.on('end', function() {
     console.log('gzipped size in kB:', length/1024);
-    if (length >= 3.05 * 1024) {
-      return callback(new Error('Claim that maquette is only 3.0 kB gzipped no longer holds'));
+    if (length >= 3.5 * 1024) {
+      return callback(new Error('Claim that maquette is only 3 kB gzipped no longer holds'));
     }
     callback();
   });
@@ -131,7 +131,7 @@ gulp.task('serve', ['default'], function () {
     notify: false,
     server: '.'
   });
-    
+
   gulp.watch('./src/**/*', ['compress', 'reload']);
   gulp.watch('./examples/**/*', ['reload']);
   gulp.watch('./browser-tests/**/*', ['reload']);

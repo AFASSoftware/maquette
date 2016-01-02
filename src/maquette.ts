@@ -1,14 +1,16 @@
+const NAMESPACE_SVG = 'http://www.w3.org/2000/svg';
+
 // Utilities
 
 let emptyArray = [];
 
-let extend = function (base, overrides) {
+let extend = function(base, overrides) {
   let result = {};
-  Object.keys(base).forEach(function (key) {
+  Object.keys(base).forEach(function(key) {
     result[key] = base[key];
   });
-  if(overrides) {
-    Object.keys(overrides).forEach(function (key) {
+  if (overrides) {
+    Object.keys(overrides).forEach(function(key) {
       result[key] = overrides[key];
     });
   }
@@ -17,24 +19,24 @@ let extend = function (base, overrides) {
 
 // Hyperscript helper functions
 
-let toTextVNode = function (data) {
+let toTextVNode = function(data) {
   return {
-    vnodeSelector: "",
+    vnodeSelector: '',
     properties: undefined,
     children: undefined,
-    text: (data === null || data === undefined) ? "" : data.toString(),
+    text: (data === null || data === undefined) ? '' : data.toString(),
     domNode: null
   };
 };
 
-let appendChildren = function (parentSelector, insertions, main) {
-  for(let i = 0; i < insertions.length; i++) {
+let appendChildren = function(parentSelector, insertions, main) {
+  for (let i = 0; i < insertions.length; i++) {
     let item = insertions[i];
-    if(Array.isArray(item)) {
+    if (Array.isArray(item)) {
       appendChildren(parentSelector, item, main);
     } else {
-      if(item !== null && item !== undefined) {
-        if(!item.hasOwnProperty("vnodeSelector")) {
+      if (item !== null && item !== undefined) {
+        if (!item.hasOwnProperty('vnodeSelector')) {
           item = toTextVNode(item);
         }
         main.push(item);
@@ -46,7 +48,7 @@ let appendChildren = function (parentSelector, insertions, main) {
 // Render helper functions
 
 let missingTransition = function() {
-  throw new Error("Provide a transitions object to the projectionOptions to do animations");
+  throw new Error('Provide a transitions object to the projectionOptions to do animations');
 };
 
 let defaultProjectionOptions = {
@@ -62,59 +64,71 @@ let defaultProjectionOptions = {
   }
 };
 
-let applyDefaultProjectionOptions = function (projectionOptions) {
+let applyDefaultProjectionOptions = function(projectionOptions) {
   return extend(defaultProjectionOptions, projectionOptions);
 };
 
-let setProperties = function (domNode, properties, projectionOptions) {
-  if(!properties) {
+let checkStyleValue = function(styleValue: Object) {
+  if (typeof styleValue !== 'string') {
+    throw new Error('Style values must be strings');
+  }
+}
+let setProperties = function(domNode, properties, projectionOptions) {
+  if (!properties) {
     return;
   }
   let eventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
-  for(let propName in properties) {
+  let propNames = Object.keys(properties);
+  let propCount = propNames.length;
+  for (let i = 0; i < propCount; i++) {
+    let propName = propNames[i];
     var propValue = properties[propName];
-    if(propName === "class" || propName === "className" || propName === "classList") {
-      throw new Error("Property " + propName + " is not supported, use 'classes' instead.");
-    } else if(propName === "classes") {
+    if (propName === 'class' || propName === 'className' || propName === 'classList') {
+      throw new Error('Property ' + propName + ' is not supported, use classes.');
+    } else if (propName === 'classes') {
       // object with string keys and boolean values
-      for(let className in propValue) {
-        if(propValue[className]) {
+      let classNames = Object.keys(propValue);
+      let classNameCount = classNames.length;
+      for (let j = 0; j < classNameCount; j++) {
+        let className = classNames[j];
+        if (propValue[className]) {
           domNode.classList.add(className);
         }
       }
-    } else if(propName === "styles") {
+    } else if (propName === 'styles') {
       // object with string keys and string (!) values
-      for(let styleName in propValue) {
+      let styleNames = Object.keys(propValue);
+      let styleCount = styleNames.length;
+      for (let j = 0; j < styleCount; j++) {
+        let styleName = styleNames[j];
         let styleValue = propValue[styleName];
-        if(styleValue) {
-          if(typeof styleValue !== "string") {
-            throw new Error("Style values may only be strings");
-          }
+        if (styleValue) {
+          checkStyleValue(styleValue);
           projectionOptions.styleApplyer(domNode, styleName, styleValue);
         }
       }
-    } else if(propName === "key") {
+    } else if (propName === 'key') {
       continue;
-    } else if(propValue === null || propValue === undefined) {
+    } else if (propValue === null || propValue === undefined) {
       continue;
     } else {
       let type = typeof propValue;
-      if(type === "function") {
-        if(eventHandlerInterceptor && (propName.lastIndexOf("on", 0) === 0)) { // lastIndexOf(,0)===0 -> startsWith
+      if (type === 'function') {
+        if (eventHandlerInterceptor && (propName.lastIndexOf('on', 0) === 0)) { // lastIndexOf(,0)===0 -> startsWith
           propValue = eventHandlerInterceptor(propName, propValue, domNode, properties); // intercept eventhandlers
-          if(propName === "oninput") {
-            (function () {
+          if (propName === 'oninput') {
+            (function() {
               // record the evt.target.value, because IE sometimes does a requestAnimationFrame between changing value and running oninput
               let oldPropValue = propValue;
-              propValue = function (evt) {
-                evt.target["oninput-value"] = evt.target.value;
+              propValue = function(evt) {
+                evt.target['oninput-value'] = evt.target.value;
                 oldPropValue.apply(this, [evt]);
               };
-            }());
+            } ());
           }
         }
         domNode[propName] = propValue;
-      } else if(type === "string" && propName !== "value") {
+      } else if (type === 'string' && propName !== 'value') {
         domNode.setAttribute(propName, propValue);
       } else {
         domNode[propName] = propValue;
@@ -123,69 +137,76 @@ let setProperties = function (domNode, properties, projectionOptions) {
   }
 };
 
-let updateProperties = function (domNode, previousProperties, properties, projectionOptions) {
-  if(!properties) {
+let updateProperties = function(domNode, previousProperties, properties, projectionOptions) {
+  if (!properties) {
     return;
   }
   let propertiesUpdated = false;
-  for(let propName in properties) {
+  let propNames = Object.keys(properties);
+  let propCount = propNames.length;
+  for (let i = 0; i < propCount; i++) {
+    let propName = propNames[i];
     // assuming that properties will be nullified instead of missing is by design
     let propValue = properties[propName];
     let previousValue = previousProperties[propName];
-    if(propName === "classes") {
+    if (propName === 'classes') {
       let classList = domNode.classList;
-      for(let className in propValue) {
+      let classNames = Object.keys(propValue);
+      let classNameCount = classNames.length;
+      for (let j = 0; j < classNameCount; j++) {
+        let className = classNames[j];
         let on = !!propValue[className];
         let previousOn = !!previousValue[className];
-        if(on === previousOn) {
+        if (on === previousOn) {
           continue;
         }
         propertiesUpdated = true;
-        if(on) {
+        if (on) {
           classList.add(className);
         } else {
           classList.remove(className);
         }
       }
-    } else if(propName === "styles") {
-      for(let styleName in propValue) {
+    } else if (propName === 'styles') {
+      let styleNames = Object.keys(propValue);
+      let styleCount = styleNames.length;
+      for (let j = 0; j < styleCount; j++) {
+        let styleName = styleNames[j];
         let newStyleValue = propValue[styleName];
         let oldStyleValue = previousValue[styleName];
-        if(newStyleValue === oldStyleValue) {
+        if (newStyleValue === oldStyleValue) {
           continue;
         }
         propertiesUpdated = true;
-        if(newStyleValue) {
-          if(typeof newStyleValue !== "string") {
-            throw new Error("Style values may only be strings");
-          }
+        if (newStyleValue) {
+          checkStyleValue(newStyleValue);
           projectionOptions.styleApplyer(domNode, styleName, newStyleValue);
         } else {
-          projectionOptions.styleApplyer(domNode, styleName, "");
+          projectionOptions.styleApplyer(domNode, styleName, '');
         }
       }
     } else {
-      if(!propValue && typeof previousValue === "string") {
-        propValue = "";
+      if (!propValue && typeof previousValue === 'string') {
+        propValue = '';
       }
-      if(propName === "value") { // value can be manipulated by the user directly and using event.preventDefault() is not an option
-        if(domNode[propName] !== propValue && domNode["oninput-value"] !== propValue) {
+      if (propName === 'value') { // value can be manipulated by the user directly and using event.preventDefault() is not an option
+        if (domNode[propName] !== propValue && domNode['oninput-value'] !== propValue) {
           domNode[propName] = propValue; // Reset the value, even if the virtual DOM did not change
-          domNode["oninput-value"] = undefined;
+          domNode['oninput-value'] = undefined;
         } // else do not update the domNode, otherwise the cursor position would be changed
-        if(propValue !== previousValue) {
+        if (propValue !== previousValue) {
           propertiesUpdated = true;
         }
-      } else if(propValue !== previousValue) {
+      } else if (propValue !== previousValue) {
         let type = typeof propValue;
-        if(type === "function") {
-          throw new Error("Functions may not be updated on subsequent renders (property: " + propName +
-            "). Hint: declare event handler functions outside the render() function.");
+        if (type === 'function') {
+          throw new Error('Functions may not be updated on subsequent renders (property: ' + propName +
+            '). Hint: declare event handler functions outside the render() function.');
         }
-        if(type === "string") {
+        if (type === 'string') {
           domNode.setAttribute(propName, propValue);
         } else {
-          if(domNode[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop
+          if (domNode[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop
             domNode[propName] = propValue;
           }
         }
@@ -196,30 +217,30 @@ let updateProperties = function (domNode, previousProperties, properties, projec
   return propertiesUpdated;
 };
 
-let addChildren = function (domNode, children, projectionOptions) {
-  if(!children) {
+let addChildren = function(domNode, children, projectionOptions) {
+  if (!children) {
     return;
   }
-  for(let i = 0; i < children.length; i++) {
+  for (let i = 0; i < children.length; i++) {
     createDom(children[i], domNode, undefined, projectionOptions);
   }
 };
 
-let same = function (vnode1, vnode2) {
-  if(vnode1.vnodeSelector !== vnode2.vnodeSelector) {
+let same = function(vnode1, vnode2) {
+  if (vnode1.vnodeSelector !== vnode2.vnodeSelector) {
     return false;
   }
-  if(vnode1.properties && vnode2.properties) {
+  if (vnode1.properties && vnode2.properties) {
     return vnode1.properties.key === vnode2.properties.key;
   }
   return !vnode1.properties && !vnode2.properties;
 };
 
-let findIndexOfChild = function (children, sameAs, start) {
-  if(sameAs.vnodeSelector !== "") {
+let findIndexOfChild = function(children, sameAs, start) {
+  if (sameAs.vnodeSelector !== '') {
     // Never scan for text-nodes
-    for(let i = start; i < children.length; i++) {
-      if(same(children[i], sameAs)) {
+    for (let i = start; i < children.length; i++) {
+      if (same(children[i], sameAs)) {
         return i;
       }
     }
@@ -227,11 +248,11 @@ let findIndexOfChild = function (children, sameAs, start) {
   return -1;
 };
 
-let nodeAdded = function (vNode, transitions) {
-  if(vNode.properties) {
+let nodeAdded = function(vNode, transitions) {
+  if (vNode.properties) {
     let enterAnimation = vNode.properties.enterAnimation;
-    if(enterAnimation) {
-      if(typeof enterAnimation === "function") {
+    if (enterAnimation) {
+      if (typeof enterAnimation === 'function') {
         enterAnimation(vNode.domNode, vNode.properties);
       } else {
         transitions.enter(vNode.domNode, vNode.properties, enterAnimation);
@@ -240,18 +261,18 @@ let nodeAdded = function (vNode, transitions) {
   }
 };
 
-let nodeToRemove = function (vNode, transitions) {
+let nodeToRemove = function(vNode, transitions) {
   let domNode = vNode.domNode;
-  if(vNode.properties) {
+  if (vNode.properties) {
     let exitAnimation = vNode.properties.exitAnimation;
-    if(exitAnimation) {
-      domNode.style.pointerEvents = "none";
-      let removeDomNode = function () {
-        if(domNode.parentNode) {
+    if (exitAnimation) {
+      domNode.style.pointerEvents = 'none';
+      let removeDomNode = function() {
+        if (domNode.parentNode) {
           domNode.parentNode.removeChild(domNode);
         }
       };
-      if(typeof exitAnimation === "function") {
+      if (typeof exitAnimation === 'function') {
         exitAnimation(domNode, removeDomNode, vNode.properties);
         return;
       } else {
@@ -260,14 +281,14 @@ let nodeToRemove = function (vNode, transitions) {
       }
     }
   }
-  if(domNode.parentNode) {
+  if (domNode.parentNode) {
     domNode.parentNode.removeChild(domNode);
   }
 };
 
 let checkDistinguishable = function(childNodes, indexToCheck, parentVNode, operation) {
   let childNode = childNodes[indexToCheck];
-  if (childNode.vnodeSelector === "") {
+  if (childNode.vnodeSelector === '') {
     return; // Text nodes need not be distinguishable
   }
   let key = childNode.properties ? childNode.properties.key : undefined;
@@ -276,12 +297,12 @@ let checkDistinguishable = function(childNodes, indexToCheck, parentVNode, opera
       if (i !== indexToCheck) {
         let node = childNodes[i];
         if (same(node, childNode)) {
-          if (operation === "added") {
-            throw new Error(parentVNode.vnodeSelector + " had a " + childNode.vnodeSelector + " child " +
-              "added, but there is now more than one. You must add unique key properties to make them distinguishable.");
+          if (operation === 'added') {
+            throw new Error(parentVNode.vnodeSelector + ' had a ' + childNode.vnodeSelector + ' child ' +
+              'added, but there is now more than one. You must add unique key properties to make them distinguishable.');
           } else {
-            throw new Error(parentVNode.vnodeSelector + " had a " + childNode.vnodeSelector + " child " +
-              "removed, but there were more than one. You must add unique key properties to make them distinguishable.");
+            throw new Error(parentVNode.vnodeSelector + ' had a ' + childNode.vnodeSelector + ' child ' +
+              'removed, but there were more than one. You must add unique key properties to make them distinguishable.');
           }
         }
       }
@@ -289,8 +310,8 @@ let checkDistinguishable = function(childNodes, indexToCheck, parentVNode, opera
   }
 };
 
-let updateChildren = function (vnode, domNode, oldChildren, newChildren, projectionOptions) {
-  if(oldChildren === newChildren) {
+let updateChildren = function(vnode, domNode, oldChildren, newChildren, projectionOptions) {
+  if (oldChildren === newChildren) {
     return false;
   }
   oldChildren = oldChildren || emptyArray;
@@ -303,19 +324,19 @@ let updateChildren = function (vnode, domNode, oldChildren, newChildren, project
   let newIndex = 0;
   let i;
   let textUpdated = false;
-  while(newIndex < newChildrenLength) {
+  while (newIndex < newChildrenLength) {
     let oldChild = (oldIndex < oldChildrenLength) ? oldChildren[oldIndex] : undefined;
     let newChild = newChildren[newIndex];
-    if(oldChild !== undefined && same(oldChild, newChild)) {
+    if (oldChild !== undefined && same(oldChild, newChild)) {
       textUpdated = updateDom(oldChild, newChild, projectionOptions) || textUpdated;
       oldIndex++;
     } else {
       let findOldIndex = findIndexOfChild(oldChildren, newChild, oldIndex + 1);
-      if(findOldIndex >= 0) {
+      if (findOldIndex >= 0) {
         // Remove preceding missing children
-        for(i = oldIndex; i < findOldIndex; i++) {
+        for (i = oldIndex; i < findOldIndex; i++) {
           nodeToRemove(oldChildren[i], transitions);
-          checkDistinguishable(oldChildren, i, vnode, "removed");
+          checkDistinguishable(oldChildren, i, vnode, 'removed');
         }
         textUpdated = updateDom(oldChildren[findOldIndex], newChild, projectionOptions) || textUpdated;
         oldIndex = findOldIndex + 1;
@@ -323,27 +344,27 @@ let updateChildren = function (vnode, domNode, oldChildren, newChildren, project
         // New child
         createDom(newChild, domNode, (oldIndex < oldChildrenLength) ? oldChildren[oldIndex].domNode : undefined, projectionOptions);
         nodeAdded(newChild, transitions);
-        checkDistinguishable(newChildren, newIndex, vnode, "added");
+        checkDistinguishable(newChildren, newIndex, vnode, 'added');
       }
     }
     newIndex++;
   }
-  if(oldChildrenLength > oldIndex) {
+  if (oldChildrenLength > oldIndex) {
     // Remove child fragments
-    for(i = oldIndex; i < oldChildrenLength; i++) {
+    for (i = oldIndex; i < oldChildrenLength; i++) {
       nodeToRemove(oldChildren[i], transitions);
-      checkDistinguishable(oldChildren, i, vnode, "removed");
+      checkDistinguishable(oldChildren, i, vnode, 'removed');
     }
   }
   return textUpdated;
 };
 
-var createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
+var createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
   let domNode, i, c, start = 0, type, found;
   let vnodeSelector = vnode.vnodeSelector;
-  if(vnodeSelector === "") {
+  if (vnodeSelector === '') {
     domNode = vnode.domNode = document.createTextNode(vnode.text);
-    if(insertBefore !== undefined) {
+    if (insertBefore !== undefined) {
       parentNode.insertBefore(domNode, insertBefore);
     } else {
       parentNode.appendChild(domNode);
@@ -354,13 +375,13 @@ var createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
       if (i === vnodeSelector.length || c === '.' || c === '#') {
         type = vnodeSelector.charAt(start - 1);
         found = vnodeSelector.slice(start, i);
-        if (type === ".") {
+        if (type === '.') {
           domNode.classList.add(found);
-        } else if (type === "#") {
+        } else if (type === '#') {
           domNode.id = found;
         } else {
-          if (found === "svg") {
-            projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
+          if (found === 'svg') {
+            projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });
           }
           if (projectionOptions.namespace !== undefined) {
             domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, found);
@@ -380,39 +401,39 @@ var createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
   }
 };
 
-var initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
+var initPropertiesAndChildren = function(domNode, vnode, projectionOptions) {
   addChildren(domNode, vnode.children, projectionOptions); // children before properties, needed for value property of <select>.
-  if(vnode.text) {
+  if (vnode.text) {
     domNode.textContent = vnode.text;
   }
   setProperties(domNode, vnode.properties, projectionOptions);
-  if(vnode.properties && vnode.properties.afterCreate) {
+  if (vnode.properties && vnode.properties.afterCreate) {
     vnode.properties.afterCreate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
   }
 };
 
-var updateDom = function (previous, vnode, projectionOptions) {
+var updateDom = function(previous, vnode, projectionOptions) {
   let domNode = previous.domNode;
-  if(!domNode) {
-    throw new Error("previous node was not rendered");
+  if (!domNode) {
+    throw new Error('previous node was not rendered');
   }
   let textUpdated = false;
-  if(previous === vnode) {
+  if (previous === vnode) {
     return textUpdated; // we assume that nothing has changed
   }
   let updated = false;
-  if(vnode.vnodeSelector === "") {
-    if(vnode.text !== previous.text) {
+  if (vnode.vnodeSelector === '') {
+    if (vnode.text !== previous.text) {
       domNode.nodeValue = vnode.text;
       textUpdated = true;
     }
   } else {
-    if(vnode.vnodeSelector.lastIndexOf("svg", 0) === 0) { // lastIndexOf(needle,0)===0 means StartsWith
-      projectionOptions = extend(projectionOptions, { namespace: "http://www.w3.org/2000/svg" });
+    if (vnode.vnodeSelector.lastIndexOf('svg', 0) === 0) { // lastIndexOf(needle,0)===0 means StartsWith
+      projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });
     }
-    if(previous.text !== vnode.text) {
+    if (previous.text !== vnode.text) {
       updated = true;
-      if(vnode.text === undefined) {
+      if (vnode.text === undefined) {
         domNode.removeChild(domNode.firstChild); // the only textnode presumably
       } else {
         domNode.textContent = vnode.text;
@@ -420,11 +441,11 @@ var updateDom = function (previous, vnode, projectionOptions) {
     }
     updated = updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions) || updated;
     updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
-    if(vnode.properties && vnode.properties.afterUpdate) {
+    if (vnode.properties && vnode.properties.afterUpdate) {
       vnode.properties.afterUpdate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
     }
   }
-  if(updated && vnode.properties && vnode.properties.updateAnimation) {
+  if (updated && vnode.properties && vnode.properties.updateAnimation) {
     vnode.properties.updateAnimation(domNode, vnode.properties, previous.properties);
   }
   vnode.domNode = previous.domNode;
@@ -435,19 +456,19 @@ var updateDom = function (previous, vnode, projectionOptions) {
  * Represents a {@link VNode} tree that has been rendered to a real DOM tree.
  * @interface Projection
  */
-let createProjection = function (vnode, projectionOptions) {
-  if(!vnode.vnodeSelector) {
-    throw new Error("Invalid vnode argument");
+let createProjection = function(vnode, projectionOptions) {
+  if (!vnode.vnodeSelector) {
+    throw new Error('Invalid vnode argument');
   }
   return {
     /**
      * Updates the projection with the new virtual DOM tree.
-     * @param {VNode} updatedVnode - The updated virtual DOM tree. Note: The selector for the root of the tree must remain constant. 
+     * @param {VNode} updatedVnode - The updated virtual DOM tree. Note: The selector for the root of the tree must remain constant.
      * @memberof Projection#
      */
-    update: function (updatedVnode) {
-      if(vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
-        throw new Error("The selector for the root VNode may not be changed. (consider using dom.merge and add one extra level to the virtual DOM)");
+    update: function(updatedVnode) {
+      if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
+        throw new Error('The selector for the root VNode may not be changed. (consider using dom.merge and add one extra level to the virtual DOM)');
       }
       updateDom(vnode, updatedVnode, projectionOptions);
       vnode = updatedVnode;
@@ -470,8 +491,8 @@ let createProjection = function (vnode, projectionOptions) {
  */
 
 /**
- * A CalculationCache object remembers the previous outcome of a calculation along with the inputs. 
- * On subsequent calls the previous outcome is returned if the inputs are identical. 
+ * A CalculationCache object remembers the previous outcome of a calculation along with the inputs.
+ * On subsequent calls the previous outcome is returned if the inputs are identical.
  * This object can be used to bypass both rendering and diffing of a virtual DOM subtree.
  * Instances of {@link CalculationCache} can be created using {@link module:maquette.createCache}.
  * @interface CalculationCache
@@ -479,7 +500,7 @@ let createProjection = function (vnode, projectionOptions) {
 
 /**
  * Keeps an array of result objects synchronized with an array of source objects.
- * Mapping provides a {@link Mapping#map} function that updates the {@link Mapping#results}. 
+ * Mapping provides a {@link Mapping#map} function that updates the {@link Mapping#results}.
  * The {@link Mapping#map} function can be called multiple times and the results will get created, removed and updated accordingly.
  * A {@link Mapping} can be used to keep an array of components (objects with a `renderMaquette` method) synchronized with an array of data.
  * Instances of {@link Mapping} can be created using {@link module:maquette.createMapping}.
@@ -488,15 +509,15 @@ let createProjection = function (vnode, projectionOptions) {
 
 /**
  * Used to create and update the DOM.
- * Use {@link Projector#append}, {@link Projector#merge}, {@link Projector#insertBefore} and {@link Projector#replace} 
+ * Use {@link Projector#append}, {@link Projector#merge}, {@link Projector#insertBefore} and {@link Projector#replace}
  * to create the DOM.
- * The `renderMaquetteFunction` callbacks will be called immediately to create the DOM. Afterwards, these functions 
+ * The `renderMaquetteFunction` callbacks will be called immediately to create the DOM. Afterwards, these functions
  * will be called again to update the DOM on the next animation-frame after:
- * 
+ *
  *  - The {@link Projector#scheduleRender} function  was called
  *  - An event handler (like `onclick`) on a rendered {@link VNode} was called.
- * 
- * The projector stops when {@link Projector#stop} is called or when an error is thrown during rendering. 
+ *
+ * The projector stops when {@link Projector#stop} is called or when an error is thrown during rendering.
  * It is possible to use `window.onerror` to handle these errors.
  * Instances of {@link Projector} can be created using {@link module:maquette.createProjector}.
  * @interface Projector
@@ -511,10 +532,11 @@ let createProjection = function (vnode, projectionOptions) {
 /**
  * @callback exitAnimationCallback
  * @param {Element} element - Element that ought to be removed from to the DOM.
- * @param {function(Element)} removeElement - Function that removes the element from the DOM. 
- * This argument is supplied purely for convenience. 
+ * @param {function(Element)} removeElement - Function that removes the element from the DOM.
+ * This argument is supplied purely for convenience.
  * You may use this function to remove the element when the animation is done.
- * @param {Object} properties - The properties object that was supplied to the {@link module:maquette.h} method that rendered this {@link VNode} the previous time.
+ * @param {Object} properties - The properties object that was supplied to the {@link module:maquette.h} method that rendered this {@link VNode}
+ * the previous time.
  */
 
 /**
@@ -523,7 +545,7 @@ let createProjection = function (vnode, projectionOptions) {
  * @param {Object} properties - The last properties object that was supplied to the {@link module:maquette.h} method
  * @param {Object} previousProperties - The previous properties object that was supplied to the {@link module:maquette.h} method
  */
-  
+
 /**
  * @callback afterCreateCallback
  * @param {Element} element - The element that was added to the DOM.
@@ -543,52 +565,55 @@ let createProjection = function (vnode, projectionOptions) {
  * @param {Object} properties - The properties passed to the {@link module:maquette.h} function.
  * @param {VNode[]} children - The children for this node.
  */
-  
+
 /**
  * Contains simple low-level utility functions to manipulate the real DOM. The singleton instance is available under {@link module:maquette.dom}.
  * @interface MaquetteDom
  */
-  
+
 /**
- * The `h` method is used to create a virtual DOM node. 
+ * The `h` method is used to create a virtual DOM node.
  * This function is largely inspired by the mercuryjs and mithril frameworks.
  * The `h` stands for (virtual) hyperscript.
- * 
- * @param {string} selector - Contains the tagName, id and fixed css classnames in CSS selector format. 
- * It is formatted as follows: `tagname.cssclass1.cssclass2#id`. 
+ *
+ * @param {string} selector - Contains the tagName, id and fixed css classnames in CSS selector format.
+ * It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
  * @param {Object} [properties] - An object literal containing properties that will be placed on the DOM node.
  * @param {function} properties.<b>*</b> - Properties with functions values like `onclick:handleClick` are registered as event handlers
- * @param {String} properties.<b>*</b> - Properties with string values, like `href:"/"` are used as attributes
+ * @param {String} properties.<b>*</b> - Properties with string values, like `href:'/'` are used as attributes
  * @param {object} properties.<b>*</b> - All non-string values are put on the DOM node as properties
- * @param {Object} properties.key - Used to uniquely identify a DOM node among siblings. 
+ * @param {Object} properties.key - Used to uniquely identify a DOM node among siblings.
  * A key is required when there are more children with the same selector and these children are added or removed dynamically.
- * @param {Object} properties.classes - An object literal like `{important:true}` which allows css classes, like `important` to be added and removed dynamically.
- * @param {Object} properties.styles - An object literal like `{height:"100px"}` which allows styles to be changed dynamically. All values must be strings.
- * @param {(string|enterAnimationCallback)} properties.enterAnimation - The animation to perform when this node is added to an already existing parent. 
+ * @param {Object} properties.classes - An object literal like `{important:true}` which allows css classes, like `important` to be added and removed
+ * dynamically.
+ * @param {Object} properties.styles - An object literal like `{height:'100px'}` which allows styles to be changed dynamically. All values must be strings.
+ * @param {(string|enterAnimationCallback)} properties.enterAnimation - The animation to perform when this node is added to an already existing parent.
  * {@link http://maquettejs.org/docs/animations.html|More about animations}.
- * When this value is a string, you must pass a `projectionOptions.transitions` object when creating the projector {@link module:maquette.createProjector}. 
+ * When this value is a string, you must pass a `projectionOptions.transitions` object when creating the projector {@link module:maquette.createProjector}.
  * @param {(string|exitAnimationCallback)} properties.exitAnimation - The animation to perform when this node is removed while its parent remains.
- * When this value is a string, you must pass a `projectionOptions.transitions` object when creating the projector {@link module:maquette.createProjector}. 
+ * When this value is a string, you must pass a `projectionOptions.transitions` object when creating the projector {@link module:maquette.createProjector}.
  * {@link http://maquettejs.org/docs/animations.html|More about animations}.
- * @param {updateAnimationCallback} properties.updateAnimation - The animation to perform when the properties of this node change. 
+ * @param {updateAnimationCallback} properties.updateAnimation - The animation to perform when the properties of this node change.
  * This also includes attributes, styles, css classes. This callback is also invoked when node contains only text and that text changes.
  * {@link http://maquettejs.org/docs/animations.html|More about animations}.
- * @param {afterCreateCallback} properties.afterCreate - Callback that is executed after this node is added to the DOM. Childnodes and properties have already been applied.
- * @param {afterUpdateCallback} properties.afterUpdate - Callback that is executed every time this node may have been updated. Childnodes and properties have already been updated. 
- * @param {Object[]} [children] - An array of virtual DOM nodes to add as child nodes. 
+ * @param {afterCreateCallback} properties.afterCreate - Callback that is executed after this node is added to the DOM. Childnodes and properties have
+ * already been applied.
+ * @param {afterUpdateCallback} properties.afterUpdate - Callback that is executed every time this node may have been updated. Childnodes and properties
+ * have already been updated.
+ * @param {Object[]} [children] - An array of virtual DOM nodes to add as child nodes.
  * This array may contain nested arrays, `null` or `undefined` values.
  * Nested arrays are flattened, `null` and `undefined` will be skipped.
- * 
- * @returns {VNode} A VNode object, used to render a real DOM later. 
+ *
+ * @returns {VNode} A VNode object, used to render a real DOM later.
  * NOTE: There are {@link http://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
  */
-export let h = function (selector /*, ...propertiesAndChildren */) {
+export let h = function(selector /*, ...propertiesAndChildren */) {
   let properties = arguments[1];
-  if (typeof selector !== "string") {
+  if (typeof selector !== 'string') {
     throw new Error();
   }
   let childIndex = 1;
-  if (properties && !properties.hasOwnProperty("vnodeSelector") && !Array.isArray(properties) && typeof properties === "object") {
+  if (properties && !properties.hasOwnProperty('vnodeSelector') && !Array.isArray(properties) && typeof properties === 'object') {
     childIndex = 2;
   } else {
     // Optional properties argument was omitted
@@ -598,23 +623,23 @@ export let h = function (selector /*, ...propertiesAndChildren */) {
   let children = undefined;
   let argsLength = arguments.length;
   // Recognize a common special case where there is only a single text node
-  if(argsLength === childIndex + 1) {
+  if (argsLength === childIndex + 1) {
     let onlyChild = arguments[childIndex];
-    if (typeof onlyChild === "string") {
+    if (typeof onlyChild === 'string') {
       text = onlyChild;
-    } else if (onlyChild !== undefined && onlyChild.length === 1 && typeof onlyChild[0] === "string") {
+    } else if (onlyChild !== undefined && onlyChild.length === 1 && typeof onlyChild[0] === 'string') {
       text = onlyChild[0];
     }
-  } 
+  }
   if (text === undefined) {
     children = [];
-    for (;childIndex<arguments.length;childIndex++) {
+    for (; childIndex < arguments.length; childIndex++) {
       let child = arguments[childIndex];
-      if(child === null || child === undefined) {
+      if (child === null || child === undefined) {
         continue;
-      } else if(Array.isArray(child)) {
+      } else if (Array.isArray(child)) {
         appendChildren(selector, child, children);
-      } else if(child.hasOwnProperty("vnodeSelector")) {
+      } else if (child.hasOwnProperty('vnodeSelector')) {
         children.push(child);
       } else {
         children.push(toTextVNode(child));
@@ -622,74 +647,78 @@ export let h = function (selector /*, ...propertiesAndChildren */) {
     }
   }
   return {
-    /** 
-     * The CSS selector containing tagname, css classnames and id. An empty string is used to denote a text node. 
-     * @memberof VNode# 
+    /**
+     * The CSS selector containing tagname, css classnames and id. An empty string is used to denote a text node.
+     * @memberof VNode#
      */
     vnodeSelector: selector,
-    /** 
-     * Object containing attributes, properties, event handlers and more @see module:maquette.h 
-     * @memberof VNode# 
+    /**
+     * Object containing attributes, properties, event handlers and more @see module:maquette.h
+     * @memberof VNode#
      */
     properties: properties,
-    /** 
-     * Array of VNodes to be used as children. This array is already flattened. 
-     * @memberof VNode# 
+    /**
+     * Array of VNodes to be used as children. This array is already flattened.
+     * @memberof VNode#
      */
     children: children,
     /**
      * Used in a special case when a VNode only has one childnode which is a textnode. Only used in combination with children === undefined.
-     * @memberof VNode# 
+     * @memberof VNode#
      */
     text: text,
     /**
      * Used by maquette to store the domNode that was produced from this {@link VNode}.
-     * @memberof VNode# 
+     * @memberof VNode#
      */
     domNode: null
   };
 };
-  
+
 /**
  * @type MaquetteDom
  */
 export let dom = {
   /**
-   * Creates a real DOM tree from a {@link VNode}. The {@link Projection} object returned will contain the resulting DOM Node under the {@link Projection#domNode} property. 
-   * This is a low-level method. Users wil typically use a {@link Projector} instead. 
+   * Creates a real DOM tree from a {@link VNode}. The {@link Projection} object returned will contain the resulting DOM Node under
+   * the {@link Projection#domNode} property.
+   * This is a low-level method. Users wil typically use a {@link Projector} instead.
    * @memberof MaquetteDom#
-   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode} objects may only be rendered once.
-   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}. 
+   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode}
+   * objects may only be rendered once.
+   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
    * @returns {Projection} The {@link Projection} which contains the DOM Node that was created.
    */
-  create: function (vnode, projectionOptions) {
+  create: function(vnode, projectionOptions) {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-    createDom(vnode, document.createElement("div"), undefined, projectionOptions);
+    createDom(vnode, document.createElement('div'), undefined, projectionOptions);
     return createProjection(vnode, projectionOptions);
   },
 
   /**
-   * Appends a new childnode to the DOM which is generated from a {@link VNode}. 
-   * This is a low-level method. Users wil typically use a {@link Projector} instead. 
+   * Appends a new childnode to the DOM which is generated from a {@link VNode}.
+   * This is a low-level method. Users wil typically use a {@link Projector} instead.
    * @memberof MaquetteDom#
    * @param {Element} parentNode - The parent node for the new childNode.
-   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode} objects may only be rendered once.
-   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}. 
+   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode}
+   * objects may only be rendered once.
+   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
    * @returns {Projection} The {@link Projection} that was created.
    */
-  append: function (parentNode, vnode, projectionOptions) {
+  append: function(parentNode, vnode, projectionOptions) {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     createDom(vnode, parentNode, undefined, projectionOptions);
     return createProjection(vnode, projectionOptions);
   },
-  
+
   /**
-   * Inserts a new DOM node which is generated from a {@link VNode}. 
-   * This is a low-level method. Users wil typically use a {@link Projector} instead. 
+   * Inserts a new DOM node which is generated from a {@link VNode}.
+   * This is a low-level method. Users wil typically use a {@link Projector} instead.
    * @memberof MaquetteDom#
    * @param {Element} beforeNode - The node that the DOM Node is inserted before.
-   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode} objects may only be rendered once.
-   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}. 
+   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function.
+   * NOTE: {@link VNode} objects may only be rendered once.
+   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
    * @returns {Projection} The {@link Projection} that was created.
    */
   insertBefore: function(beforeNode, vnode, projectionOptions) {
@@ -700,29 +729,30 @@ export let dom = {
 
   /**
    * Merges a new DOM node which is generated from a {@link VNode} with an existing DOM Node.
-   * This means that the virtual DOM and real DOM have one overlapping element. 
-   * Therefore the selector for the root {@link VNode} will be ignored, but its properties and children will be applied to the Element provided 
-   * This is a low-level method. Users wil typically use a {@link Projector} instead. 
+   * This means that the virtual DOM and real DOM have one overlapping element.
+   * Therefore the selector for the root {@link VNode} will be ignored, but its properties and children will be applied to the Element provided
+   * This is a low-level method. Users wil typically use a {@link Projector} instead.
    * @memberof MaquetteDom#
-   * @param {Element} domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.  
-   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode} objects may only be rendered once.
-   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}. 
+   * @param {Element} domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
+   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode} objects
+   * may only be rendered once.
+   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
    * @returns {Projection} The {@link Projection} that was created.
    */
-  merge: function (element, vnode, options) {
+  merge: function(element, vnode, options) {
     options = applyDefaultProjectionOptions(options);
     vnode.domNode = element;
     initPropertiesAndChildren(element, vnode, options);
     return createProjection(vnode, options);
   }
-}
+};
 
 /**
- * Creates a {@link CalculationCache} object, useful for caching {@link VNode} trees. 
+ * Creates a {@link CalculationCache} object, useful for caching {@link VNode} trees.
  * In practice, caching of {@link VNode} trees is not needed, because achieving 60 frames per second is almost never a problem.
  * @returns {CalculationCache}
  */
-export let createCache = function () {
+export let createCache = function() {
   let cachedInputs = undefined;
   let cachedOutcome = undefined;
   let result = {
@@ -730,28 +760,28 @@ export let createCache = function () {
      * Manually invalidates the cached outcome.
      * @memberof CalculationCache#
      */
-    invalidate: function () {
+    invalidate: function() {
       cachedOutcome = undefined;
       cachedInputs = undefined;
     },
     /**
      * If the inputs array matches the inputs array from the previous invocation, this method returns the result of the previous invocation.
-     * Otherwise, the calculation function is invoked and its result is cached and returned. 
+     * Otherwise, the calculation function is invoked and its result is cached and returned.
      * Objects in the inputs array are compared using ===.
-     * @param {Object[]} inputs - Array of objects that are to be compared using === with the inputs from the previous invocation. 
+     * @param {Object[]} inputs - Array of objects that are to be compared using === with the inputs from the previous invocation.
      * These objects are assumed to be immutable primitive values.
      * @param {function} calculation - Function that takes zero arguments and returns an object (A {@link VNode} assumably) that can be cached.
      * @memberof CalculationCache#
      */
-    result: function (inputs, calculation) {
-      if(cachedInputs) {
-        for(let i = 0; i < inputs.length; i++) {
-          if(cachedInputs[i] !== inputs[i]) {
+    result: function(inputs, calculation) {
+      if (cachedInputs) {
+        for (let i = 0; i < inputs.length; i++) {
+          if (cachedInputs[i] !== inputs[i]) {
             cachedOutcome = undefined;
           }
         }
       }
-      if(!cachedOutcome) {
+      if (!cachedOutcome) {
         cachedOutcome = calculation();
         cachedInputs = inputs;
       }
@@ -760,18 +790,19 @@ export let createCache = function () {
   };
   return result;
 };
-  
+
 /**
  * Creates a {@link Mapping} instance that keeps an array of result objects synchronized with an array of source objects.
  * @param {function} getSourceKey - `function(source)` that must return a key to identify each source object. The result must eather be a string or a number.
- * @param {function} createResult - `function(source, index)` that must create a new result object from a given source. This function is identical argument of `Array.map`.
+ * @param {function} createResult - `function(source, index)` that must create a new result object from a given source. This function is identical
+ * argument of `Array.map`.
  * @param {function} updateResult - `function(source, target, index)` that updates a result to an updated source.
- * @returns {Mapping} 
+ * @returns {Mapping}
  */
 export let createMapping = function(getSourceKey, createResult, updateResult /*, deleteTarget*/) {
   let keys = [];
   let results = [];
-  
+
   return {
     /**
      * The array of results. These results will be synchronized with the latest array of sources that were provided using {@link Mapping#map}.
@@ -788,7 +819,7 @@ export let createMapping = function(getSourceKey, createResult, updateResult /*,
       let newKeys = newSources.map(getSourceKey);
       let oldTargets = results.slice();
       let oldIndex = 0;
-      for (let i=0;i<newSources.length;i++) {
+      for (let i = 0; i < newSources.length; i++) {
         let source = newSources[i];
         let sourceKey = newKeys[i];
         if (sourceKey === keys[oldIndex]) {
@@ -821,16 +852,16 @@ export let createMapping = function(getSourceKey, createResult, updateResult /*,
 /**
  * Creates a {@link Projector} instance using the provided projectionOptions.
  * @param {Object} [projectionOptions] - Options that influence how the DOM is rendered and updated.
- * @param {Object} projectionOptions.transitions - A transition strategy to invoke when 
+ * @param {Object} projectionOptions.transitions - A transition strategy to invoke when
  * enterAnimation and exitAnimation properties are provided as strings.
- * The module `cssTransitions` in the provided `css-transitions.js` file provides such a strategy. 
+ * The module `cssTransitions` in the provided `css-transitions.js` file provides such a strategy.
  * A transition strategy is not needed when enterAnimation and exitAnimation properties are provided as functions.
  * @returns {Projector}
  */
-export let createProjector = function (projectionOptions) {
+export let createProjector = function(projectionOptions) {
   projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-  projectionOptions.eventHandlerInterceptor = function (propertyName, functionPropertyArgument) {
-    return function () {
+  projectionOptions.eventHandlerInterceptor = function(propertyName, functionPropertyArgument) {
+    return function() {
       // intercept function calls (event handlers) to do a render afterwards.
       projector.scheduleRender();
       return functionPropertyArgument.apply(this, arguments);
@@ -842,13 +873,13 @@ export let createProjector = function (projectionOptions) {
   let projections = [];
   let renderFunctions = []; // matches the projections array
 
-  let doRender = function () {
+  let doRender = function() {
     scheduled = undefined;
     if (!renderCompleted) {
-      return; // The last render threw an error, it should be logged in the browser console. 
+      return; // The last render threw an error, it should be logged in the browser console.
     }
     renderCompleted = false;
-    for(let i = 0; i < projections.length; i++) {
+    for (let i = 0; i < projections.length; i++) {
       let updatedVnode = renderFunctions[i]();
       projections[i].update(updatedVnode);
     }
@@ -862,24 +893,25 @@ export let createProjector = function (projectionOptions) {
      * You need to call this method for instance when timeouts expire or AJAX responses arrive.
      * @memberof Projector#
      */
-    scheduleRender: function () {
-      if(!scheduled && !stopped) {
+    scheduleRender: function() {
+      if (!scheduled && !stopped) {
         scheduled = requestAnimationFrame(doRender);
       }
     },
     /**
      * Stops the projector. This means that the registered `renderMaquette` functions will not be called anymore.
-     * Note that calling {@link Projector#stop} is not mandatory. A projector is a passive object that will get garbage collected as usual if it is no longer in scope.
+     * Note that calling {@link Projector#stop} is not mandatory. A projector is a passive object that will get garbage collected as usual
+     * if it is no longer in scope.
      * @memberof Projector#
      */
-    stop: function () {
-      if(scheduled) {
+    stop: function() {
+      if (scheduled) {
         cancelAnimationFrame(scheduled);
         scheduled = undefined;
       }
       stopped = true;
     },
-    
+
     /**
      * Resumes the projector. Use this method to resume rendering after stop was called or an error occurred during rendering.
      * @memberof Projector#
@@ -889,7 +921,7 @@ export let createProjector = function (projectionOptions) {
       renderCompleted = true;
       projector.scheduleRender();
     },
-    
+
     /**
      * Appends a new childnode to the DOM using the result from the provided `renderMaquetteFunction`.
      * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
@@ -897,11 +929,11 @@ export let createProjector = function (projectionOptions) {
      * @param {function} renderMaquetteFunction - Function with zero arguments that returns a {@link VNode} tree.
      * @memberof Projector#
      */
-    append: function (parentNode, renderMaquetteFunction) {
+    append: function(parentNode, renderMaquetteFunction) {
       projections.push(dom.append(parentNode, renderMaquetteFunction(), projectionOptions));
       renderFunctions.push(renderMaquetteFunction);
     },
-    
+
     /**
      * Inserts a new DOM node using the result from the provided `renderMaquetteFunction`.
      * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
@@ -909,25 +941,25 @@ export let createProjector = function (projectionOptions) {
      * @param {function} renderMaquetteFunction - Function with zero arguments that returns a {@link VNode} tree.
      * @memberof Projector#
      */
-    insertBefore: function (beforeNode, renderMaquetteFunction) {
+    insertBefore: function(beforeNode, renderMaquetteFunction) {
       projections.push(dom.insertBefore(beforeNode, renderMaquetteFunction(), projectionOptions));
       renderFunctions.push(renderMaquetteFunction);
     },
-    
+
     /**
      * Merges a new DOM node using the result from the provided `renderMaquetteFunction` with an existing DOM Node.
-     * This means that the virtual DOM and real DOM have one overlapping element. 
+     * This means that the virtual DOM and real DOM have one overlapping element.
      * Therefore the selector for the root {@link VNode} will be ignored, but its properties and children will be applied to the Element provided
      * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
-     * @param {Element} domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.  
+     * @param {Element} domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
      * @param {function} renderMaquetteFunction - Function with zero arguments that returns a {@link VNode} tree.
      * @memberof Projector#
      */
-    merge: function (domNode, renderMaquetteFunction) {
+    merge: function(domNode, renderMaquetteFunction) {
       projections.push(dom.merge(domNode, renderMaquetteFunction(), projectionOptions));
       renderFunctions.push(renderMaquetteFunction);
     },
-    
+
     /**
      * Replaces an existing DOM node with the result from the provided `renderMaquetteFunction`.
      * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
@@ -935,7 +967,7 @@ export let createProjector = function (projectionOptions) {
      * @param {function} renderMaquetteFunction - Function with zero arguments that returns a {@link VNode} tree.
      * @memberof Projector#
      */
-    replace: function (domNode, renderMaquetteFunction) {
+    replace: function(domNode, renderMaquetteFunction) {
       let vnode = renderMaquetteFunction();
       createDom(vnode, domNode.parentNode, domNode, projectionOptions);
       domNode.parentNode.removeChild(domNode);

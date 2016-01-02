@@ -10,6 +10,8 @@
         factory(root.maquette = {});
     }
 }(this, function (exports) {
+    var NAMESPACE_SVG = 'http://www.w3.org/2000/svg';
+    // Utilities
     var emptyArray = [];
     var extend = function (base, overrides) {
         var result = {};
@@ -67,30 +69,42 @@
     var applyDefaultProjectionOptions = function (projectionOptions) {
         return extend(defaultProjectionOptions, projectionOptions);
     };
+    var checkStyleValue = function (styleValue) {
+        if (typeof styleValue !== 'string') {
+            throw new Error('Style values must be strings');
+        }
+    };
     var setProperties = function (domNode, properties, projectionOptions) {
         if (!properties) {
             return;
         }
         var eventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
-        for (var propName in properties) {
+        var propNames = Object.keys(properties);
+        var propCount = propNames.length;
+        for (var i = 0; i < propCount; i++) {
+            var propName = propNames[i];
             var propValue = properties[propName];
             if (propName === 'class' || propName === 'className' || propName === 'classList') {
-                throw new Error('Property ' + propName + ' is not supported, use \'classes\' instead.');
+                throw new Error('Property ' + propName + ' is not supported, use classes.');
             } else if (propName === 'classes') {
                 // object with string keys and boolean values
-                for (var className in propValue) {
+                var classNames = Object.keys(propValue);
+                var classNameCount = classNames.length;
+                for (var j = 0; j < classNameCount; j++) {
+                    var className = classNames[j];
                     if (propValue[className]) {
                         domNode.classList.add(className);
                     }
                 }
             } else if (propName === 'styles') {
                 // object with string keys and string (!) values
-                for (var styleName in propValue) {
+                var styleNames = Object.keys(propValue);
+                var styleCount = styleNames.length;
+                for (var j = 0; j < styleCount; j++) {
+                    var styleName = styleNames[j];
                     var styleValue = propValue[styleName];
                     if (styleValue) {
-                        if (typeof styleValue !== 'string') {
-                            throw new Error('Style values may only be strings');
-                        }
+                        checkStyleValue(styleValue);
                         projectionOptions.styleApplyer(domNode, styleName, styleValue);
                     }
                 }
@@ -129,13 +143,19 @@
             return;
         }
         var propertiesUpdated = false;
-        for (var propName in properties) {
+        var propNames = Object.keys(properties);
+        var propCount = propNames.length;
+        for (var i = 0; i < propCount; i++) {
+            var propName = propNames[i];
             // assuming that properties will be nullified instead of missing is by design
             var propValue = properties[propName];
             var previousValue = previousProperties[propName];
             if (propName === 'classes') {
                 var classList = domNode.classList;
-                for (var className in propValue) {
+                var classNames = Object.keys(propValue);
+                var classNameCount = classNames.length;
+                for (var j = 0; j < classNameCount; j++) {
+                    var className = classNames[j];
                     var on = !!propValue[className];
                     var previousOn = !!previousValue[className];
                     if (on === previousOn) {
@@ -149,7 +169,10 @@
                     }
                 }
             } else if (propName === 'styles') {
-                for (var styleName in propValue) {
+                var styleNames = Object.keys(propValue);
+                var styleCount = styleNames.length;
+                for (var j = 0; j < styleCount; j++) {
+                    var styleName = styleNames[j];
                     var newStyleValue = propValue[styleName];
                     var oldStyleValue = previousValue[styleName];
                     if (newStyleValue === oldStyleValue) {
@@ -157,9 +180,7 @@
                     }
                     propertiesUpdated = true;
                     if (newStyleValue) {
-                        if (typeof newStyleValue !== 'string') {
-                            throw new Error('Style values may only be strings');
-                        }
+                        checkStyleValue(newStyleValue);
                         projectionOptions.styleApplyer(domNode, styleName, newStyleValue);
                     } else {
                         projectionOptions.styleApplyer(domNode, styleName, '');
@@ -351,7 +372,7 @@
                         domNode.id = found;
                     } else {
                         if (found === 'svg') {
-                            projectionOptions = extend(projectionOptions, { namespace: 'http://www.w3.org/2000/svg' });
+                            projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });
                         }
                         if (projectionOptions.namespace !== undefined) {
                             domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, found);
@@ -398,7 +419,7 @@
             }
         } else {
             if (vnode.vnodeSelector.lastIndexOf('svg', 0) === 0) {
-                projectionOptions = extend(projectionOptions, { namespace: 'http://www.w3.org/2000/svg' });
+                projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });
             }
             if (previous.text !== vnode.text) {
                 updated = true;
@@ -496,7 +517,8 @@
  * @param {function(Element)} removeElement - Function that removes the element from the DOM.
  * This argument is supplied purely for convenience.
  * You may use this function to remove the element when the animation is done.
- * @param {Object} properties - The properties object that was supplied to the {@link module:maquette.h} method that rendered this {@link VNode} the previous time.
+ * @param {Object} properties - The properties object that was supplied to the {@link module:maquette.h} method that rendered this {@link VNode}
+ * the previous time.
  */
     /**
  * @callback updateAnimationCallback
@@ -535,12 +557,13 @@
  * It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
  * @param {Object} [properties] - An object literal containing properties that will be placed on the DOM node.
  * @param {function} properties.<b>*</b> - Properties with functions values like `onclick:handleClick` are registered as event handlers
- * @param {String} properties.<b>*</b> - Properties with string values, like `href:"/"` are used as attributes
+ * @param {String} properties.<b>*</b> - Properties with string values, like `href:'/'` are used as attributes
  * @param {object} properties.<b>*</b> - All non-string values are put on the DOM node as properties
  * @param {Object} properties.key - Used to uniquely identify a DOM node among siblings.
  * A key is required when there are more children with the same selector and these children are added or removed dynamically.
- * @param {Object} properties.classes - An object literal like `{important:true}` which allows css classes, like `important` to be added and removed dynamically.
- * @param {Object} properties.styles - An object literal like `{height:"100px"}` which allows styles to be changed dynamically. All values must be strings.
+ * @param {Object} properties.classes - An object literal like `{important:true}` which allows css classes, like `important` to be added and removed
+ * dynamically.
+ * @param {Object} properties.styles - An object literal like `{height:'100px'}` which allows styles to be changed dynamically. All values must be strings.
  * @param {(string|enterAnimationCallback)} properties.enterAnimation - The animation to perform when this node is added to an already existing parent.
  * {@link http://maquettejs.org/docs/animations.html|More about animations}.
  * When this value is a string, you must pass a `projectionOptions.transitions` object when creating the projector {@link module:maquette.createProjector}.
@@ -550,8 +573,10 @@
  * @param {updateAnimationCallback} properties.updateAnimation - The animation to perform when the properties of this node change.
  * This also includes attributes, styles, css classes. This callback is also invoked when node contains only text and that text changes.
  * {@link http://maquettejs.org/docs/animations.html|More about animations}.
- * @param {afterCreateCallback} properties.afterCreate - Callback that is executed after this node is added to the DOM. Childnodes and properties have already been applied.
- * @param {afterUpdateCallback} properties.afterUpdate - Callback that is executed every time this node may have been updated. Childnodes and properties have already been updated.
+ * @param {afterCreateCallback} properties.afterCreate - Callback that is executed after this node is added to the DOM. Childnodes and properties have
+ * already been applied.
+ * @param {afterUpdateCallback} properties.afterUpdate - Callback that is executed every time this node may have been updated. Childnodes and properties
+ * have already been updated.
  * @param {Object[]} [children] - An array of virtual DOM nodes to add as child nodes.
  * This array may contain nested arrays, `null` or `undefined` values.
  * Nested arrays are flattened, `null` and `undefined` will be skipped.
@@ -631,10 +656,12 @@
  */
     exports.dom = {
         /**
-     * Creates a real DOM tree from a {@link VNode}. The {@link Projection} object returned will contain the resulting DOM Node under the {@link Projection#domNode} property.
+     * Creates a real DOM tree from a {@link VNode}. The {@link Projection} object returned will contain the resulting DOM Node under
+     * the {@link Projection#domNode} property.
      * This is a low-level method. Users wil typically use a {@link Projector} instead.
      * @memberof MaquetteDom#
-     * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode} objects may only be rendered once.
+     * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode}
+     * objects may only be rendered once.
      * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
      * @returns {Projection} The {@link Projection} which contains the DOM Node that was created.
      */
@@ -648,7 +675,8 @@
      * This is a low-level method. Users wil typically use a {@link Projector} instead.
      * @memberof MaquetteDom#
      * @param {Element} parentNode - The parent node for the new childNode.
-     * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode} objects may only be rendered once.
+     * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode}
+     * objects may only be rendered once.
      * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
      * @returns {Projection} The {@link Projection} that was created.
      */
@@ -662,7 +690,8 @@
      * This is a low-level method. Users wil typically use a {@link Projector} instead.
      * @memberof MaquetteDom#
      * @param {Element} beforeNode - The node that the DOM Node is inserted before.
-     * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode} objects may only be rendered once.
+     * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function.
+     * NOTE: {@link VNode} objects may only be rendered once.
      * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
      * @returns {Projection} The {@link Projection} that was created.
      */
@@ -678,7 +707,8 @@
      * This is a low-level method. Users wil typically use a {@link Projector} instead.
      * @memberof MaquetteDom#
      * @param {Element} domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
-     * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode} objects may only be rendered once.
+     * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode} objects
+     * may only be rendered once.
      * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
      * @returns {Projection} The {@link Projection} that was created.
      */
@@ -735,7 +765,8 @@
     /**
  * Creates a {@link Mapping} instance that keeps an array of result objects synchronized with an array of source objects.
  * @param {function} getSourceKey - `function(source)` that must return a key to identify each source object. The result must eather be a string or a number.
- * @param {function} createResult - `function(source, index)` that must create a new result object from a given source. This function is identical argument of `Array.map`.
+ * @param {function} createResult - `function(source, index)` that must create a new result object from a given source. This function is identical
+ * argument of `Array.map`.
  * @param {function} updateResult - `function(source, target, index)` that updates a result to an updated source.
  * @returns {Mapping}
  */
@@ -814,7 +845,7 @@
         var doRender = function () {
             scheduled = undefined;
             if (!renderCompleted) {
-                return;    // The last render threw an error, it should be logged in the browser console. 
+                return;    // The last render threw an error, it should be logged in the browser console.
             }
             renderCompleted = false;
             for (var i = 0; i < projections.length; i++) {
@@ -837,7 +868,8 @@
             },
             /**
          * Stops the projector. This means that the registered `renderMaquette` functions will not be called anymore.
-         * Note that calling {@link Projector#stop} is not mandatory. A projector is a passive object that will get garbage collected as usual if it is no longer in scope.
+         * Note that calling {@link Projector#stop} is not mandatory. A projector is a passive object that will get garbage collected as usual
+         * if it is no longer in scope.
          * @memberof Projector#
          */
             stop: function () {

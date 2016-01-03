@@ -12,6 +12,7 @@
 }(this, function (exports) {
     ;
     ;
+    ;
     var NAMESPACE_SVG = 'http://www.w3.org/2000/svg';
     // Utilities
     var emptyArray = [];
@@ -137,6 +138,7 @@
                                 var oldPropValue = propValue;
                                 propValue = function (evt) {
                                     evt.target['oninput-value'] = evt.target.value;
+                                    // may be HTMLTextAreaElement as well
                                     oldPropValue.apply(this, [evt]);
                                 };
                             }());
@@ -693,11 +695,11 @@
      * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
      * @returns {Projection} The {@link Projection} that was created.
      */
-        merge: function (element, vnode, options) {
-            options = applyDefaultProjectionOptions(options);
+        merge: function (element, vnode, projectionOptions) {
+            projectionOptions = applyDefaultProjectionOptions(projectionOptions);
             vnode.domNode = element;
-            initPropertiesAndChildren(element, vnode, options);
-            return createProjection(vnode, options);
+            initPropertiesAndChildren(element, vnode, projectionOptions);
+            return createProjection(vnode, projectionOptions);
         }
     };
     /**

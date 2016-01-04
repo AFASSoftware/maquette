@@ -223,7 +223,9 @@ export interface VNodeProperties {
   alt?: string;
   srcset?: string;
 
-  // Everything else (uncommon or custom properties and attributes)
+  /**
+   * Everything else (properties and attributes that are either uncommon or custom)
+   */
   [index: string]: any;
 };
 
@@ -720,6 +722,15 @@ let createProjection = function(vnode: VNode, projectionOptions: ProjectionOptio
   };
 };
 
+/**
+ * The following line is not possible in Typescript, hence the workaround in the two lines below
+ * export type VNodeChild = string|VNode|Array<VNodeChild>
+ */
+export interface VNodeChildren extends Array<VNodeChild> {} // A bit of a hack to create a recursive type
+/**
+ * These are valid values for the children parameter of the h() function.
+ */
+export type VNodeChild = string|VNode|VNodeChildren;
 
 /**
  * The `h` method is used to create a virtual DOM node.
@@ -736,7 +747,9 @@ let createProjection = function(vnode: VNode, projectionOptions: ProjectionOptio
  * @returns {VNode} A VNode object, used to render a real DOM later.
  * NOTE: There are {@link http://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
  */
-export let h = function(selector: string /*, ...propertiesAndChildren */): VNode {
+export let h: (selector: string, properties?: VNodeProperties, ...children: VNodeChild[]) => VNode;
+
+h = function(selector: string): VNode {
   let properties = arguments[1];
   if (typeof selector !== 'string') {
     throw new Error();
@@ -785,9 +798,9 @@ export let h = function(selector: string /*, ...propertiesAndChildren */): VNode
 };
 
 /**
- * Contains simple low-level utility functions to manipulate the real DOM. The singleton instance is available under {@link module:maquette.dom}.
+ * The interface of the maquette.dom singleton
  */
-export let dom = {
+export interface MaquetteDom {
   /**
    * Creates a real DOM tree from a {@link VNode}. The {@link Projection} object returned will contain the resulting DOM Node under
    * the {@link Projection#domNode} property.
@@ -797,12 +810,7 @@ export let dom = {
    * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
    * @returns {Projection} The {@link Projection} which contains the DOM Node that was created.
    */
-  create: function(vnode: VNode, projectionOptions: ProjectionOptions): Projection {
-    projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-    createDom(vnode, document.createElement('div'), undefined, projectionOptions);
-    return createProjection(vnode, projectionOptions);
-  },
-
+  create: (vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
   /**
    * Appends a new childnode to the DOM which is generated from a {@link VNode}.
    * This is a low-level method. Users wil typically use a {@link Projector} instead.
@@ -812,12 +820,7 @@ export let dom = {
    * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
    * @returns {Projection} The {@link Projection} that was created.
    */
-  append: function(parentNode: Element, vnode: VNode, projectionOptions: ProjectionOptions): Projection {
-    projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-    createDom(vnode, parentNode, undefined, projectionOptions);
-    return createProjection(vnode, projectionOptions);
-  },
-
+  append: (parentNode: Element, vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
   /**
    * Inserts a new DOM node which is generated from a {@link VNode}.
    * This is a low-level method. Users wil typically use a {@link Projector} instead.
@@ -827,11 +830,7 @@ export let dom = {
    * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
    * @returns {Projection} The {@link Projection} that was created.
    */
-  insertBefore: function(beforeNode: Element, vnode: VNode, projectionOptions: ProjectionOptions): Projection {
-    projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-    createDom(vnode, beforeNode.parentNode, beforeNode, projectionOptions);
-    return createProjection(vnode, projectionOptions);
-  },
+  insertBefore: (beforeNode: Element, vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
 
   /**
    * Merges a new DOM node which is generated from a {@link VNode} with an existing DOM Node.
@@ -844,12 +843,39 @@ export let dom = {
    * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
    * @returns {Projection} The {@link Projection} that was created.
    */
+  merge: (element: Element, vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
+};
+
+/**
+ * Contains simple low-level utility functions to manipulate the real DOM. The singleton instance is available under {@link module:maquette.dom}.
+ */
+export let dom: MaquetteDom = {
+
+  create: function(vnode: VNode, projectionOptions: ProjectionOptions): Projection {
+    projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+    createDom(vnode, document.createElement('div'), undefined, projectionOptions);
+    return createProjection(vnode, projectionOptions);
+  },
+
+  append: function(parentNode: Element, vnode: VNode, projectionOptions: ProjectionOptions): Projection {
+    projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+    createDom(vnode, parentNode, undefined, projectionOptions);
+    return createProjection(vnode, projectionOptions);
+  },
+
+  insertBefore: function(beforeNode: Element, vnode: VNode, projectionOptions: ProjectionOptions): Projection {
+    projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+    createDom(vnode, beforeNode.parentNode, beforeNode, projectionOptions);
+    return createProjection(vnode, projectionOptions);
+  },
+
   merge: function(element: Element, vnode: VNode, projectionOptions: ProjectionOptions): Projection {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     vnode.domNode = element;
     initPropertiesAndChildren(element, vnode, projectionOptions);
     return createProjection(vnode, projectionOptions);
   }
+
 };
 
 /**
@@ -858,7 +884,7 @@ export let dom = {
  * This object can be used to bypass both rendering and diffing of a virtual DOM subtree.
  * Instances of CalculationCache can be created using {@link module:maquette.createCache}.
  */
-export interface CalculationCache {
+export interface CalculationCache<Result> {
   /**
    * Manually invalidates the cached outcome.
    */
@@ -871,7 +897,7 @@ export interface CalculationCache {
    * These objects are assumed to be immutable primitive values.
    * @param {function} calculation - Function that takes zero arguments and returns an object (A {@link VNode} assumably) that can be cached.
    */
-  result: (inputs: Object[], calculation: () => Object) => void;
+  result: (inputs: Object[], calculation: () => Result) => Result;
 }
 
 /**
@@ -879,9 +905,9 @@ export interface CalculationCache {
  * In practice, caching of {@link VNode} trees is not needed, because achieving 60 frames per second is almost never a problem.
  * @returns {CalculationCache}
  */
-export let createCache = function(): CalculationCache {
+export let createCache = <Result>(): CalculationCache<Result> => {
   let cachedInputs = undefined as Object[];
-  let cachedOutcome = undefined as Object;
+  let cachedOutcome = undefined as Result;
   let result = {
 
     invalidate: function() {
@@ -889,7 +915,7 @@ export let createCache = function(): CalculationCache {
       cachedInputs = undefined;
     },
 
-    result: function(inputs: Object[], calculation: () => Object) {
+    result: function(inputs: Object[], calculation: () => Result) {
       if (cachedInputs) {
         for (let i = 0; i < inputs.length; i++) {
           if (cachedInputs[i] !== inputs[i]) {
@@ -914,17 +940,17 @@ export let createCache = function(): CalculationCache {
  * A {@link Mapping} can be used to keep an array of components (objects with a `renderMaquette` method) synchronized with an array of data.
  * Instances of {@link Mapping} can be created using {@link module:maquette.createMapping}.
  */
-export interface Mapping {
+export interface Mapping<Source, Target> {
   /**
    * The array of results. These results will be synchronized with the latest array of sources that were provided using {@link Mapping#map}.
    * @type {Object[]}
    */
-  results: Object[];
+  results: Array<Target>;
   /**
    * Maps a new array of sources and updates {@link Mapping#results}.
    * @param {Object[]} newSources - The new array of sources.
    */
-  map: (newSources: Object[]) => void;
+  map: (newSources: Array<Source>) => void;
 }
 
 /**
@@ -935,16 +961,16 @@ export interface Mapping {
  * @param {function} updateResult - `function(source, target, index)` that updates a result to an updated source.
  * @returns {Mapping}
  */
-export let createMapping = function (
-  getSourceKey: (source: Object) => Object,
-  createResult: (source: Object, index: number) => Object,
-  updateResult: (source: Object, target: Object, index: number) => void /*, deleteTarget*/): Mapping {
+export let createMapping = <Source, Target>(
+  getSourceKey: (source: Source) => (string|number),
+  createResult: (source: Source, index: number) => Target,
+  updateResult: (source: Source, target: Target, index: number) => void): Mapping<Source, Target> => {
   let keys = [] as Object[];
-  let results = [] as  Object[];
+  let results = [] as Target[];
 
   return {
     results: results,
-    map: function(newSources: Object[]) {
+    map: function(newSources: Source[]) {
       let newKeys = newSources.map(getSourceKey);
       let oldTargets = results.slice();
       let oldIndex = 0;
@@ -1061,3 +1087,8 @@ export let createProjector = function(projectionOptions: ProjectionOptions): Pro
   };
   return projector;
 };
+
+// Not used anywhere in the maquette sourcecode, but this is a widely used pattern.
+export interface Component {
+  renderMaquette(): VNode;
+}

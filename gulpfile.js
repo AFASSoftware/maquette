@@ -35,6 +35,17 @@ gulp.task('compile', function() {
 		.pipe(gulp.dest('build/js'));
 });
 
+gulp.task('declaration', function() {
+  var configTypescript = require('./tsconfig.json').compilerOptions;
+  configTypescript.declaration = true;
+  configTypescript.typescript = require('typescript');
+	return gulp.src('src/**/*.ts')
+		.pipe(ts(configTypescript))
+    .dts
+		.pipe(gulp.dest('dist'));
+
+});
+
 // This seems to be the most lightweight solution to create an UMD wrapper and working sourcemaps
 var umdTemplate = "(function (root, factory) {" +
   "\n  if (typeof define === 'function' && define.amd) {" +

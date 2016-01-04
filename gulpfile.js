@@ -1,5 +1,5 @@
-var gulp=require("gulp");
-var uglify=require("gulp-uglify");
+var gulp=require('gulp');
+var uglify=require('gulp-uglify');
 var rename = require('gulp-rename');
 var del = require('del');
 var source = require('vinyl-source-stream');
@@ -13,17 +13,17 @@ var filter = require('gulp-filter');
 var tag_version = require('gulp-tag-version');
 
 var ts = require('gulp-typescript');
-var wrapJS = require("gulp-wrap-js");
+var wrapJS = require('gulp-wrap-js');
 
 var browserify = require('browserify');
 var tsify = require('tsify');
-var gutil = require("gulp-util");
+var gutil = require('gulp-util');
 
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 
 var BROWSERSYNC_PORT = parseInt(process.env.PORT) || 3002;
-var BROWSERSYNC_HOST = process.env.IP || "127.0.0.1";
+var BROWSERSYNC_HOST = process.env.IP || '127.0.0.1';
 
 gulp.task('compile', function() {
   var configTypescript = require('./tsconfig.json').compilerOptions;
@@ -43,7 +43,6 @@ gulp.task('declaration', function() {
 		.pipe(ts(configTypescript))
     .dts
 		.pipe(gulp.dest('dist'));
-
 });
 
 // This seems to be the most lightweight solution to create an UMD wrapper and working sourcemaps
@@ -67,7 +66,7 @@ gulp.task('dist', ['compile'], function() {
     }))
     .pipe(wrapJS(umdTemplate))
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest("./dist"));
+    .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('dist-min', ['dist'], function() {
@@ -79,7 +78,7 @@ gulp.task('dist-min', ['dist'], function() {
     .pipe(uglify())
     .pipe(rename({extname: '.min.js'}))
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest("./dist"));
+    .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('check-size', ['dist-min'], function(callback) {
@@ -100,18 +99,18 @@ gulp.task('check-size', ['dist-min'], function(callback) {
   });
 });
 
-gulp.task("compress",  function() {
-  gulp.src("src/*.js")
+gulp.task('compress',  function() {
+  gulp.src('src/*.js')
     .pipe(uglify())
     .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest("dist"));
+    .pipe(gulp.dest('dist'));
 });
 
 gulp.task('clean', function(cb) {
   del(['dist', 'build'], cb);
 });
 
-gulp.task("default", ["compress", "dist-min", 'check-size']);
+gulp.task('default', ['compress', 'dist-min', 'check-size', 'declaration']);
 
 function inc(importance) {
   // get all the files to bump version in
@@ -129,9 +128,9 @@ function inc(importance) {
 }
 
 // these tasks are called from scripts/release.js
-gulp.task('bump-patch', ["compress"], function () { return inc('patch'); });
-gulp.task('bump-minor', ["compress"], function () { return inc('minor'); });
-gulp.task('bump-major', ["compress"], function () { return inc('major'); });
+gulp.task('bump-patch', ['compress'], function () { return inc('patch'); });
+gulp.task('bump-minor', ['compress'], function () { return inc('minor'); });
+gulp.task('bump-major', ['compress'], function () { return inc('major'); });
 
 gulp.task('reload', reload);
 

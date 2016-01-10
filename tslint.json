@@ -31,8 +31,7 @@
     "member-ordering": [
       true,
       "public-before-private",
-      "static-before-instance",
-      "variables-before-functions"
+      "static-before-instance"
     ],
     "no-any": false,
     "no-arg": true,

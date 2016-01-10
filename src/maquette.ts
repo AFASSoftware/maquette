@@ -1,6 +1,6 @@
 /**
- * A virtual representation of a DOM Node. Maquette assumes that {@link VNode} objects are never modified externally.
- * Instances of {@link VNode} can be created using {@link module:maquette.h}.
+ * A virtual representation of a DOM Node. Maquette assumes that [[VNode]] objects are never modified externally.
+ * Instances of [[VNode]] can be created using [[h]].
  */
 export interface VNode {
   /**
@@ -8,160 +8,208 @@ export interface VNode {
    */
   vnodeSelector: string;
   /**
-   * Object containing attributes, properties, event handlers and more @see module:maquette.h
+   * Object containing attributes, properties, event handlers and more, see [[h]].
    */
   properties: VNodeProperties;
   /**
-   * Array of VNodes to be used as children. This array is already flattened.
+   * Array of [[VNode]]s to be used as children. This array is already flattened.
    */
   children: Array<VNode>;
   /**
-   * Used in a special case when a VNode only has one childnode which is a textnode. Only used in combination with children === undefined.
+   * Used in a special case when a [[VNode]] only has one childnode which is a textnode. Only used in combination with children === undefined.
    */
   text: string;
   /**
-   * Used by maquette to store the domNode that was produced from this {@link VNode}.
+   * Used by maquette to store the domNode that was produced from this [[VNode]].
    */
   domNode: Node;
 }
 
 /**
- * Used to create and update the DOM.
- * Use {@link Projector#append}, {@link Projector#merge}, {@link Projector#insertBefore} and {@link Projector#replace}
- * to create the DOM.
- * The `renderMaquetteFunction` callbacks will be called immediately to create the DOM. Afterwards, these functions
- * will be called again to update the DOM on the next animation-frame after:
+ * A projector is used to create the real DOM from the the virtual DOM and to keep it up-to-date afterwards.
  *
- *  - The {@link Projector#scheduleRender} function  was called
- *  - An event handler (like `onclick`) on a rendered {@link VNode} was called.
+ * You can call [[append]], [[merge]], [[insertBefore]] and [[replace]] to add the virtual DOM to the real DOM.
+ * The `renderMaquetteFunction` callbacks will be called to create the real DOM immediately.
+ * Afterwards, the `renderMaquetteFunction` callbacks will be called again to update the DOM on the next animation-frame after:
  *
- * The projector stops when {@link Projector#stop} is called or when an error is thrown during rendering.
+ *  - The Projector's [[scheduleRender]] function  was called
+ *  - An event handler (like `onclick`) on a rendered [[VNode]] was called.
+ *
+ * The projector stops when [[stop]] is called or when an error is thrown during rendering.
  * It is possible to use `window.onerror` to handle these errors.
- * Instances of {@link Projector} can be created using {@link module:maquette.createProjector}.
+ * Instances of [[Projector]] can be created using [[createProjector]].
  */
 export interface Projector {
   /**
    * Appends a new childnode to the DOM using the result from the provided `renderMaquetteFunction`.
    * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
-   * @param {Element} parentNode - The parent node for the new childNode.
-   * @param {function} renderMaquetteFunction - Function with zero arguments that returns a {@link VNode} tree.
+   * @param parentNode - The parent node for the new childNode.
+   * @param renderMaquetteFunction - Function with zero arguments that returns a [[VNode]] tree.
    */
   append(parentNode: Element, renderMaquetteFunction: () => VNode): void;
   /**
    * Inserts a new DOM node using the result from the provided `renderMaquetteFunction`.
    * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
-   * @param {Element} beforeNode - The node that the DOM Node is inserted before.
-   * @param {function} renderMaquetteFunction - Function with zero arguments that returns a {@link VNode} tree.
+   * @param beforeNode - The node that the DOM Node is inserted before.
+   * @param renderMaquetteFunction - Function with zero arguments that returns a [[VNode]] tree.
    */
   insertBefore(beforeNode: Element, renderMaquetteFunction: () => VNode): void;
   /**
    * Merges a new DOM node using the result from the provided `renderMaquetteFunction` with an existing DOM Node.
    * This means that the virtual DOM and real DOM have one overlapping element.
-   * Therefore the selector for the root {VNode} will be ignored, but its properties and children will be applied to the Element provided
+   * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided
    * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
-   * @param {Element} domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
-   * @param {function} renderMaquetteFunction - Function with zero arguments that returns a {@link VNode} tree.
+   * @param domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
+   * @param renderMaquetteFunction - Function with zero arguments that returns a [[VNode]] tree.
    */
   merge(domNode: Element, renderMaquetteFunction: () => VNode): void;
   /**
    * Replaces an existing DOM node with the result from the provided `renderMaquetteFunction`.
    * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
-   * @param {Element} domNode - The DOM node to replace.
-   * @param {function} renderMaquetteFunction - Function with zero arguments that returns a {@link VNode} tree.
+   * @param domNode - The DOM node to replace.
+   * @param renderMaquetteFunction - Function with zero arguments that returns a [[VNode]] tree.
    */
   replace(domNode: Element, renderMaquetteFunction: () => VNode): void;
   /**
-   * Resumes the projector. Use this method to resume rendering after stop was called or an error occurred during rendering.
+   * Resumes the projector. Use this method to resume rendering after [[stop]] was called or an error occurred during rendering.
    */
   resume(): void;
   /**
    * Instructs the projector to re-render to the DOM at the next animation-frame using the registered `renderMaquette` functions.
-   * This method is automatically called for you when event-handlers that are registered in the {@link VNode}s are invoked.
-   * You need to call this method for instance when timeouts expire or AJAX responses arrive.
+   * This method is automatically called for you when event-handlers that are registered in the [[VNode]]s are invoked.
+   *
+   * You need to call this method when timeouts expire, when AJAX responses arrive or other asynchronous actions happen.
    */
   scheduleRender(): void;
   /**
    * Stops the projector. This means that the registered `renderMaquette` functions will not be called anymore.
-   * Note that calling {@link Projector#stop} is not mandatory. A projector is a passive object that will get garbage collected
+   *
+   * Note that calling [[stop]] is not mandatory. A projector is a passive object that will get garbage collected
    * as usual if it is no longer in scope.
    */
   stop(): void;
 }
 
-export interface Transitions {
-  enter: (element: Element, properties: VNodeProperties, enterAnimation: string) => void;
-  exit: (element: Element, properties: VNodeProperties, exitAnimation: string, removeElement: () => void) => void;
+/**
+ * These functions are called when [[VNodeProperties.enterAnimation]] and [[VNodeProperties.exitAnimation]] are provided as strings.
+ * See [[ProjectionOptions.transitions]].
+ */
+export interface TransitionStrategy {
+  /**
+   * Function that is called when a [[VNode]] with an `enterAnimation` string is added to an already existing parent [[VNode]].
+   *
+   * @param element         Element that was just added to the DOM.
+   * @param properties      The properties object that was supplied to the [[h]] method
+   * @param enterAnimation  The string that was passed to [[VNodeProperties.enterAnimation]].
+   */
+  enter(element: Element, properties: VNodeProperties, enterAnimation: string): void;
+  /**
+   * Function that is called when a [[VNode]] with an `exitAnimation` string is removed from a existing parent [[VNode]] that remains.
+   *
+   * @param element         Element that ought to be removed from to the DOM.
+   * @param properties      The properties object that was supplied to the [[h]] method that rendered this [[VNode]] the previous time.
+   * @param exitAnimation   The string that was passed to [[VNodeProperties.exitAnimation]].
+   * @param removeElement   Function that removes the element from the DOM.
+   *                        This argument is provided purely for convenience.
+   *                        You may use this function to remove the element when the animation is done.
+   */
+  exit(element: Element, properties: VNodeProperties, exitAnimation: string, removeElement: () => void): void;
 };
 
+/**
+ * Options that influence how the DOM is rendered and updated.
+ */
 export interface ProjectionOptions {
-  transitions?: Transitions;
   /**
-   * Only for internal use.
+   * A transition strategy to invoke when enterAnimation and exitAnimation properties are provided as strings.
+   * The module `cssTransitions` in the provided `css-transitions.js` file provides such a strategy.
+   * A transition strategy is not needed when enterAnimation and exitAnimation properties are provided as functions.
+   */
+  transitions?: TransitionStrategy;
+  /**
+   * Only for internal use. Used for rendering SVG Nodes.
    */
   namespace: string;
+  /**
+   * Only for internal use. Used to wrap eventHandlers to call [[scheduleRender]] on the [[Projector]].
+   */
   eventHandlerInterceptor: Function;
-  styleApplyer: (domNode: HTMLElement, styleName: string, value: string) => void;
+  /**
+   * May be used to add vendor prefixes when applying inline styles when needed.
+   * This function is called when [[styles]] is used.
+   * This function should execute `domNode.style[styleName] = value` or do something smarter.
+   *
+   * @param domNode   The DOM Node that needs to receive the style
+   * @param styleName The name of the style that should be applied, for example `transform`.
+   * @param value     The value of this style, for example `rotate(45deg)`.
+   */
+  styleApplyer?(domNode: HTMLElement, styleName: string, value: string): void;
 };
 
+/**
+ * Object containing attributes, properties, event handlers and more that can be put on DOM nodes.
+ *
+ * For your convenience, all common attributes, properties and event handlers are listed here and are
+ * type-checked when using Typescript.
+ */
 export interface VNodeProperties {
   /**
    * The animation to perform when this node is added to an already existing parent.
    * When this value is a string, you must pass a `projectionOptions.transitions` object when creating the
-   * projector {@link module:maquette.createProjector}.
+   * projector using [[createProjector]].
    * {@link http://maquettejs.org/docs/animations.html|More about animations}.
-   * @param {Element} element - Element that was just added to the DOM.
-   * @param {Object} properties - The properties object that was supplied to the {@link module:maquette.h} method
+   * @param element - Element that was just added to the DOM.
+   * @param properties - The properties object that was supplied to the [[h]] method
    */
   enterAnimation?: ((element: Element, properties?: VNodeProperties) => void) | string;
   /**
    * The animation to perform when this node is removed while its parent remains.
-   * When this value is a string, you must pass a `projectionOptions.transitions` object when creating the projector {@link module:maquette.createProjector}.
+   * When this value is a string, you must pass a `projectionOptions.transitions` object when creating the projector using [[createProjector]].
    * {@link http://maquettejs.org/docs/animations.html|More about animations}.
-   * @param {Element} element - Element that ought to be removed from to the DOM.
-   * @param {function(Element)} removeElement - Function that removes the element from the DOM.
-   * This argument is supplied purely for convenience.
+   * @param element - Element that ought to be removed from to the DOM.
+   * @param removeElement - Function that removes the element from the DOM.
+   * This argument is provided purely for convenience.
    * You may use this function to remove the element when the animation is done.
-   * @param {Object} properties - The properties object that was supplied to the {@link module:maquette.h} method that rendered this {@link VNode}
-   * the previous time.
+   * @param properties - The properties object that was supplied to the [[h]] method that rendered this [[VNode]] the previous time.
    */
   exitAnimation?: ((element: Element, removeElement: () => void, properties?: VNodeProperties) => void) | string;
   /**
    * The animation to perform when the properties of this node change.
    * This also includes attributes, styles, css classes. This callback is also invoked when node contains only text and that text changes.
    * {@link http://maquettejs.org/docs/animations.html|More about animations}.
-   * @param {Element} element - Element that was modified in the DOM.
-   * @param {Object} properties - The last properties object that was supplied to the {@link module:maquette.h} method
-   * @param {Object} previousProperties - The previous properties object that was supplied to the {@link module:maquette.h} method
+   * @param element - Element that was modified in the DOM.
+   * @param properties - The last properties object that was supplied to the [[h]] method
+   * @param previousProperties - The previous properties object that was supplied to the [[h]] method
    */
   updateAnimation?: (element: Element, properties?: VNodeProperties, previousProperties?: VNodeProperties) => void;
   /**
    * Callback that is executed after this node is added to the DOM. Childnodes and properties have
    * already been applied.
-   * @param {Element} element - The element that was added to the DOM.
-   * @param {Object} projectionOptions - The projection options that were used see {@link module:maquette.createProjector}.
-   * @param {string} vnodeSelector - The selector passed to the {@link module:maquette.h} function.
-   * @param {Object} properties - The properties passed to the {@link module:maquette.h} function.
-   * @param {VNode[]} children - The children that were created.
-   * @param {Object} properties - The last properties object that was supplied to the {@link module:maquette.h} method
-   * @param {Object} previousProperties - The previous properties object that was supplied to the {@link module:maquette.h} method
+   * @param element - The element that was added to the DOM.
+   * @param projectionOptions - The projection options that were used see [[createProjector]].
+   * @param vnodeSelector - The selector passed to the [[h]] function.
+   * @param properties - The properties passed to the [[h]] function.
+   * @param children - The children that were created.
+   * @param properties - The last properties object that was supplied to the [[h]] method
+   * @param previousProperties - The previous properties object that was supplied to the [[h]] method
    */
-  afterCreate?: (element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties,
-    children: VNode[]) => void;
+  afterCreate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties,
+    children: VNode[]): void;
   /**
    * Callback that is executed every time this node may have been updated. Childnodes and properties
    * have already been updated.
-   * @param {Element} element - The element that may have been updated in the DOM.
-   * @param {Object} projectionOptions - The projection options that were used see {@link module:maquette.createProjector}.
-   * @param {string} vnodeSelector - The selector passed to the {@link module:maquette.h} function.
-   * @param {Object} properties - The properties passed to the {@link module:maquette.h} function.
-   * @param {VNode[]} children - The children for this node.
+   * @param element - The element that may have been updated in the DOM.
+   * @param projectionOptions - The projection options that were used see [[createProjector]].
+   * @param vnodeSelector - The selector passed to the [[h]] function.
+   * @param properties - The properties passed to the [[h]] function.
+   * @param children - The children for this node.
    */
-  afterUpdate?: (element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties,
-    children: VNode[]) => void;
+  afterUpdate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties,
+    children: VNode[]): void;
   /**
    * Used to uniquely identify a DOM node among siblings.
    * A key is required when there are more children with the same selector and these children are added or removed dynamically.
-   * NOTE: this does not have to be a string or number, a {@link Component} Object is also possible.
+   * NOTE: this does not have to be a string or number, a [[Component]] Object for instance is also possible.
    */
   key?: Object;
   /**
@@ -175,10 +223,10 @@ export interface VNodeProperties {
   styles?: {[index: string]: string};
 
   // From Element
-  ontouchcancel?: (ev?: TouchEvent) => boolean|void;
-  ontouchend?: (ev?: TouchEvent) => boolean|void;
-  ontouchmove?: (ev?: TouchEvent) => boolean|void;
-  ontouchstart?: (ev?: TouchEvent) => boolean|void;
+  ontouchcancel?(ev?: TouchEvent): boolean|void;
+  ontouchend?(ev?: TouchEvent): boolean|void;
+  ontouchmove?(ev?: TouchEvent): boolean|void;
+  ontouchstart?(ev?: TouchEvent): boolean|void;
   // From HTMLFormElement
   action?: string;
   encoding?: string;
@@ -187,26 +235,26 @@ export interface VNodeProperties {
   name?: string;
   target?: string;
   // From HTMLElement
-  onblur?: (ev?: FocusEvent) => boolean|void;
-  onchange?: (ev?: Event) => boolean|void;
-  onclick?: (ev?: MouseEvent) => boolean|void;
-  ondblclick?: (ev?: MouseEvent) => boolean|void;
-  onfocus?: (ev?: FocusEvent) => boolean|void;
-  oninput?: (ev?: Event) => boolean|void;
-  onkeydown?: (ev?: KeyboardEvent) => boolean|void;
-  onkeypress?: (ev?: KeyboardEvent) => boolean|void;
-  onkeyup?: (ev?: KeyboardEvent) => boolean|void;
-  onload?: (ev?: Event) => boolean|void;
-  onmousedown?: (ev?: MouseEvent) => boolean|void;
-  onmouseenter?: (ev?: MouseEvent) => boolean|void;
-  onmouseleave?: (ev?: MouseEvent) => boolean|void;
-  onmousemove?: (ev?: MouseEvent) => boolean|void;
-  onmouseout?: (ev?: MouseEvent) => boolean|void;
-  onmouseover?: (ev?: MouseEvent) => boolean|void;
-  onmouseup?: (ev?: MouseEvent) => boolean|void;
-  onmousewheel?: (ev?: MouseWheelEvent) => boolean|void;
-  onscroll?: (ev?: UIEvent) => boolean|void;
-  onsubmit?: (ev?: Event) => boolean|void;
+  onblur?(ev?: FocusEvent): boolean|void;
+  onchange?(ev?: Event): boolean|void;
+  onclick?(ev?: MouseEvent): boolean|void;
+  ondblclick?(ev?: MouseEvent): boolean|void;
+  onfocus?(ev?: FocusEvent): boolean|void;
+  oninput?(ev?: Event): boolean|void;
+  onkeydown?(ev?: KeyboardEvent): boolean|void;
+  onkeypress?(ev?: KeyboardEvent): boolean|void;
+  onkeyup?(ev?: KeyboardEvent): boolean|void;
+  onload?(ev?: Event): boolean|void;
+  onmousedown?(ev?: MouseEvent): boolean|void;
+  onmouseenter?(ev?: MouseEvent): boolean|void;
+  onmouseleave?(ev?: MouseEvent): boolean|void;
+  onmousemove?(ev?: MouseEvent): boolean|void;
+  onmouseout?(ev?: MouseEvent): boolean|void;
+  onmouseover?(ev?: MouseEvent): boolean|void;
+  onmouseup?(ev?: MouseEvent): boolean|void;
+  onmousewheel?(ev?: MouseWheelEvent): boolean|void;
+  onscroll?(ev?: UIEvent): boolean|void;
+  onsubmit?(ev?: Event): boolean|void;
   spellcheck?: boolean;
   tabIndex?: number;
   title?: string;
@@ -224,23 +272,22 @@ export interface VNodeProperties {
   srcset?: string;
 
   /**
-   * Everything else (properties and attributes that are either uncommon or custom)
+   * Everything that is not explicitly listed (properties and attributes that are either uncommon or custom).
    */
   [index: string]: any;
 };
 
 /**
- * Represents a {@link VNode} tree that has been rendered to a real DOM tree.
+ * Represents a [[VNode]] tree that has been rendered to a real DOM tree.
  */
 export interface Projection {
   /**
-   * The DOM node that is used as the root of this {@link Projection}.
-   * @type {Element}
+   * The DOM node that is used as the root of this [[Projection]].
    */
   domNode: Element;
   /**
-   * Updates the projection with the new virtual DOM tree.
-   * @param {VNode} updatedVnode - The updated virtual DOM tree. Note: The selector for the root of the tree must remain constant.
+   * Updates the real DOM to match the new virtual DOM tree.
+   * @param updatedVnode The updated virtual DOM tree. Note: The selector for the root of the [[VNode]] tree may not change.
    */
   update(updatedVnode: VNode): void;
 }
@@ -258,7 +305,7 @@ let extend = <T>(base: T, overrides: any): T => {
     result[key] = (base as any)[key];
   });
   if (overrides) {
-    Object.keys(overrides).forEach(function(key) {
+    Object.keys(overrides).forEach((key) => {
       result[key] = overrides[key];
     });
   }
@@ -267,7 +314,7 @@ let extend = <T>(base: T, overrides: any): T => {
 
 // Hyperscript helper functions
 
-let same = function(vnode1: VNode, vnode2: VNode) {
+let same = (vnode1: VNode, vnode2: VNode) => {
   if (vnode1.vnodeSelector !== vnode2.vnodeSelector) {
     return false;
   }
@@ -326,7 +373,7 @@ let applyDefaultProjectionOptions = function(projectionOptions: ProjectionOption
   return extend(DEFAULT_PROJECTION_OPTIONS, projectionOptions);
 };
 
-let checkStyleValue = function(styleValue: Object) {
+let checkStyleValue = (styleValue: Object) => {
   if (typeof styleValue !== 'string') {
     throw new Error('Style values must be strings');
   }
@@ -490,7 +537,7 @@ let findIndexOfChild = function(children: VNode[], sameAs: VNode, start: number)
   return -1;
 };
 
-let nodeAdded = function(vNode: VNode, transitions: Transitions) {
+let nodeAdded = function(vNode: VNode, transitions: TransitionStrategy) {
   if (vNode.properties) {
     let enterAnimation = vNode.properties.enterAnimation;
     if (enterAnimation) {
@@ -503,7 +550,7 @@ let nodeAdded = function(vNode: VNode, transitions: Transitions) {
   }
 };
 
-let nodeToRemove = function(vNode: VNode, transitions: Transitions) {
+let nodeToRemove = function(vNode: VNode, transitions: TransitionStrategy) {
   let domNode = vNode.domNode;
   if (vNode.properties) {
     let exitAnimation = vNode.properties.exitAnimation;
@@ -722,13 +769,14 @@ let createProjection = function(vnode: VNode, projectionOptions: ProjectionOptio
   };
 };
 
+// The following line is not possible in Typescript, hence the workaround in the two lines below
+// export type VNodeChild = string|VNode|Array<VNodeChild>
 /**
- * The following line is not possible in Typescript, hence the workaround in the two lines below
- * export type VNodeChild = string|VNode|Array<VNodeChild>
+ * Only needed for the defintion of [[VNodeChild]].
  */
-export interface VNodeChildren extends Array<VNodeChild> {} // A bit of a hack to create a recursive type
+export interface VNodeChildren extends Array<VNodeChild> {};
 /**
- * These are valid values for the children parameter of the h() function.
+ * These are valid values for the children parameter of the [[h]] function.
  */
 export type VNodeChild = string|VNode|VNodeChildren;
 
@@ -737,18 +785,22 @@ export type VNodeChild = string|VNode|VNodeChildren;
  * This function is largely inspired by the mercuryjs and mithril frameworks.
  * The `h` stands for (virtual) hyperscript.
  *
- * @param {string} selector - Contains the tagName, id and fixed css classnames in CSS selector format.
- * It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
- * @param {Object} [properties] - An object literal containing properties that will be placed on the DOM node.
- * @param {Object[]} [children] - An array of virtual DOM nodes to add as child nodes.
- * This array may contain nested arrays, `null` or `undefined` values.
- * Nested arrays are flattened, `null` and `undefined` will be skipped.
- *
- * @returns {VNode} A VNode object, used to render a real DOM later.
  * NOTE: There are {@link http://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
+ *
+ * @param selector    Contains the tagName, id and fixed css classnames in CSS selector format.
+ *                    It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
+ * @param properties  An object literal containing properties that will be placed on the DOM node.
+ * @param children    Virtual DOM nodes and strings to add as child nodes.
+ *                    `children` may contain [[VNode]]s, `string`s, nested arrays, `null` and `undefined`.
+ *                    Nested arrays are flattened, `null` and `undefined` are removed.
+ *
+ * @returns           A VNode object, used to render a real DOM later.
  */
-export let h: (selector: string, properties?: VNodeProperties, ...children: VNodeChild[]) => VNode;
+export let h = function(selector: string, properties?: VNodeProperties, ...children: VNodeChild[]): VNode {return undefined; };
 
+// Splitting the h into declaration and implementation because the Typescript compiler creates some surrogate code for desctructuring 'children'.
+// This would needlessly slow the h() function down.
+// This double declaration adds some extra bytes into the library, but it generates the right API documentation.
 h = function(selector: string): VNode {
   let properties = arguments[1];
   if (typeof selector !== 'string') {
@@ -798,77 +850,66 @@ h = function(selector: string): VNode {
 };
 
 /**
- * The interface of the maquette.dom singleton
+ * Contains simple low-level utility functions to manipulate the real DOM.
  */
-export interface MaquetteDom {
+export let dom = {
+
   /**
-   * Creates a real DOM tree from a {@link VNode}. The {@link Projection} object returned will contain the resulting DOM Node under
-   * the {@link Projection#domNode} property.
-   * This is a low-level method. Users wil typically use a {@link Projector} instead.
-   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode}
+   * Creates a real DOM tree from `vnode`. The [[Projection]] object returned will contain the resulting DOM Node in
+   * its [[Projection.domNode|domNode]] property.
+   * This is a low-level method. Users wil typically use a [[Projector]] instead.
+   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
    * objects may only be rendered once.
-   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
-   * @returns {Projection} The {@link Projection} which contains the DOM Node that was created.
+   * @param projectionOptions - Options to be used to create and update the projection.
+   * @returns The [[Projection]] which also contains the DOM Node that was created.
    */
-  create: (vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
-  /**
-   * Appends a new childnode to the DOM which is generated from a {@link VNode}.
-   * This is a low-level method. Users wil typically use a {@link Projector} instead.
-   * @param {Element} parentNode - The parent node for the new childNode.
-   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode}
-   * objects may only be rendered once.
-   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
-   * @returns {Projection} The {@link Projection} that was created.
-   */
-  append: (parentNode: Element, vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
-  /**
-   * Inserts a new DOM node which is generated from a {@link VNode}.
-   * This is a low-level method. Users wil typically use a {@link Projector} instead.
-   * @param {Element} beforeNode - The node that the DOM Node is inserted before.
-   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function.
-   * NOTE: {@link VNode} objects may only be rendered once.
-   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
-   * @returns {Projection} The {@link Projection} that was created.
-   */
-  insertBefore: (beforeNode: Element, vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
-
-  /**
-   * Merges a new DOM node which is generated from a {@link VNode} with an existing DOM Node.
-   * This means that the virtual DOM and real DOM have one overlapping element.
-   * Therefore the selector for the root {@link VNode} will be ignored, but its properties and children will be applied to the Element provided
-   * This is a low-level method. Users wil typically use a {@link Projector} instead.
-   * @param {Element} domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
-   * @param {VNode} vnode - The root of the virtual DOM tree that was created using the {@link module:maquette.h} function. NOTE: {@link VNode} objects
-   * may only be rendered once.
-   * @param {Object} projectionOptions - Options to be used to create and update the projection, see {@link module:maquette.createProjector}.
-   * @returns {Projection} The {@link Projection} that was created.
-   */
-  merge: (element: Element, vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
-};
-
-/**
- * Contains simple low-level utility functions to manipulate the real DOM. The singleton instance is available under {@link module:maquette.dom}.
- */
-export let dom: MaquetteDom = {
-
   create: function(vnode: VNode, projectionOptions: ProjectionOptions): Projection {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     createDom(vnode, document.createElement('div'), undefined, projectionOptions);
     return createProjection(vnode, projectionOptions);
   },
 
+  /**
+   * Appends a new childnode to the DOM which is generated from a [[VNode]].
+   * This is a low-level method. Users wil typically use a [[Projector]] instead.
+   * @param parentNode - The parent node for the new childNode.
+   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+   * objects may only be rendered once.
+   * @param projectionOptions - Options to be used to create and update the [[Projection]].
+   * @returns The [[Projection]] that was created.
+   */
   append: function(parentNode: Element, vnode: VNode, projectionOptions: ProjectionOptions): Projection {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     createDom(vnode, parentNode, undefined, projectionOptions);
     return createProjection(vnode, projectionOptions);
   },
 
+  /**
+   * Inserts a new DOM node which is generated from a [[VNode]].
+   * This is a low-level method. Users wil typically use a [[Projector]] instead.
+   * @param beforeNode - The node that the DOM Node is inserted before.
+   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function.
+   * NOTE: [[VNode]] objects may only be rendered once.
+   * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
+   * @returns The [[Projection]] that was created.
+   */
   insertBefore: function(beforeNode: Element, vnode: VNode, projectionOptions: ProjectionOptions): Projection {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     createDom(vnode, beforeNode.parentNode, beforeNode, projectionOptions);
     return createProjection(vnode, projectionOptions);
   },
 
+  /**
+   * Merges a new DOM node which is generated from a [[VNode]] with an existing DOM Node.
+   * This means that the virtual DOM and the real DOM will have one overlapping element.
+   * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided.
+   * This is a low-level method. Users wil typically use a [[Projector]] instead.
+   * @param domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
+   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]] objects
+   * may only be rendered once.
+   * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
+   * @returns The [[Projection]] that was created.
+   */
   merge: function(element: Element, vnode: VNode, projectionOptions: ProjectionOptions): Projection {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     vnode.domNode = element;
@@ -882,28 +923,32 @@ export let dom: MaquetteDom = {
  * A CalculationCache object remembers the previous outcome of a calculation along with the inputs.
  * On subsequent calls the previous outcome is returned if the inputs are identical.
  * This object can be used to bypass both rendering and diffing of a virtual DOM subtree.
- * Instances of CalculationCache can be created using {@link module:maquette.createCache}.
+ * Instances of CalculationCache can be created using [[createCache]].
+ *
+ * @param <Result> The type of the value that is cached.
  */
 export interface CalculationCache<Result> {
   /**
    * Manually invalidates the cached outcome.
    */
-  invalidate: () => void;
+  invalidate(): void;
   /**
    * If the inputs array matches the inputs array from the previous invocation, this method returns the result of the previous invocation.
    * Otherwise, the calculation function is invoked and its result is cached and returned.
    * Objects in the inputs array are compared using ===.
-   * @param {Object[]} inputs - Array of objects that are to be compared using === with the inputs from the previous invocation.
+   * @param inputs - Array of objects that are to be compared using === with the inputs from the previous invocation.
    * These objects are assumed to be immutable primitive values.
-   * @param {function} calculation - Function that takes zero arguments and returns an object (A {@link VNode} assumably) that can be cached.
+   * @param calculation - Function that takes zero arguments and returns an object (A [[VNode]] assumably) that can be cached.
    */
-  result: (inputs: Object[], calculation: () => Result) => Result;
+  result(inputs: Object[], calculation: () => Result): Result;
 }
 
 /**
- * Creates a {@link CalculationCache} object, useful for caching {@link VNode} trees.
- * In practice, caching of {@link VNode} trees is not needed, because achieving 60 frames per second is almost never a problem.
- * @returns {CalculationCache}
+ * Creates a [[CalculationCache]] object, useful for caching [[VNode]] trees.
+ * In practice, caching of [[VNode]] trees is not needed, because achieving 60 frames per second is almost never a problem.
+ * For more information, see [[CalculationCache]].
+ *
+ * @param <Result> The type of the value that is cached.
  */
 export let createCache = <Result>(): CalculationCache<Result> => {
   let cachedInputs = undefined as Object[];
@@ -935,31 +980,39 @@ export let createCache = <Result>(): CalculationCache<Result> => {
 
 /**
  * Keeps an array of result objects synchronized with an array of source objects.
- * Mapping provides a {@link Mapping#map} function that updates the {@link Mapping#results}.
- * The {@link Mapping#map} function can be called multiple times and the results will get created, removed and updated accordingly.
- * A {@link Mapping} can be used to keep an array of components (objects with a `renderMaquette` method) synchronized with an array of data.
- * Instances of {@link Mapping} can be created using {@link module:maquette.createMapping}.
+ * See {@link http://maquettejs.org/docs/arrays.html|Working with arrays}.
+ *
+ * Mapping provides a [[map]] function that updates its [[results]].
+ * The [[map]] function can be called multiple times and the results will get created, removed and updated accordingly.
+ * A Mapping can be used to keep an array of components (objects with a `renderMaquette` method) synchronized with an array of data.
+ * Instances of Mapping can be created using [[createMapping]].
+ *
+ * @param <Source>   The type of source elements. Usually the data type.
+ * @param <Target>   The type of target elements. Usually the component type.
  */
 export interface Mapping<Source, Target> {
   /**
-   * The array of results. These results will be synchronized with the latest array of sources that were provided using {@link Mapping#map}.
-   * @type {Object[]}
+   * The array of results. These results will be synchronized with the latest array of sources that were provided using [[map]].
    */
   results: Array<Target>;
   /**
-   * Maps a new array of sources and updates {@link Mapping#results}.
-   * @param {Object[]} newSources - The new array of sources.
+   * Maps a new array of sources and updates [[results]].
+   *
+   * @param newSources   The new array of sources.
    */
-  map: (newSources: Array<Source>) => void;
+  map(newSources: Array<Source>): void;
 }
 
 /**
  * Creates a {@link Mapping} instance that keeps an array of result objects synchronized with an array of source objects.
- * @param {function} getSourceKey - `function(source)` that must return a key to identify each source object. The result must eather be a string or a number.
- * @param {function} createResult - `function(source, index)` that must create a new result object from a given source. This function is identical
- * argument of `Array.map`.
- * @param {function} updateResult - `function(source, target, index)` that updates a result to an updated source.
- * @returns {Mapping}
+ * See {@link http://maquettejs.org/docs/arrays.html|Working with arrays}.
+ *
+ * @param <Source>       The type of source items. A database-record for instance.
+ * @param <Target>       The type of target items. A [[Component]] for instance.
+ * @param getSourceKey   `function(source)` that must return a key to identify each source object. The result must either be a string or a number.
+ * @param createResult   `function(source, index)` that must create a new result object from a given source. This function is identical
+ *                       to the `callback` argument in `Array.map(callback)`.
+ * @param updateResult   `function(source, target, index)` that updates a result to an updated source.
  */
 export let createMapping = <Source, Target>(
   getSourceKey: (source: Source) => (string|number),
@@ -1005,13 +1058,11 @@ export let createMapping = <Source, Target>(
 };
 
 /**
- * Creates a {@link Projector} instance using the provided projectionOptions.
- * @param {Object} [projectionOptions] - Options that influence how the DOM is rendered and updated.
- * @param {Object} projectionOptions.transitions - A transition strategy to invoke when
- * enterAnimation and exitAnimation properties are provided as strings.
- * The module `cssTransitions` in the provided `css-transitions.js` file provides such a strategy.
- * A transition strategy is not needed when enterAnimation and exitAnimation properties are provided as functions.
- * @returns {Projector}
+ * Creates a [[Projector]] instance using the provided projectionOptions.
+ *
+ * For more information, see [[Projector]].
+ *
+ * @param projectionOptions   Options that influence how the DOM is rendered and updated.
  */
 export let createProjector = function(projectionOptions: ProjectionOptions): Projector {
   let projector: Projector;
@@ -1088,7 +1139,18 @@ export let createProjector = function(projectionOptions: ProjectionOptions): Pro
   return projector;
 };
 
-// Not used anywhere in the maquette sourcecode, but this is a widely used pattern.
+/**
+ * A component is a pattern with which you can split up your web application into self-contained parts.
+ *
+ * A component may contain other components.
+ * This can be achieved by calling the subcomponents `renderMaquette` functions during the [[renderMaquette]] function and by using the
+ * resulting [[VNode]]s in the return value.
+ *
+ * This interface is not used anywhere in the maquette sourcecode, but this is a widely used pattern.
+ */
 export interface Component {
+  /**
+   * A function that returns the DOM representation of the component.
+   */
   renderMaquette(): VNode;
 }

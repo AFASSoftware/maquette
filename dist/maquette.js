@@ -464,6 +464,33 @@
             domNode: vnode.domNode
         };
     };
+    ;
+    /**
+ * The `h` method is used to create a virtual DOM node.
+ * This function is largely inspired by the mercuryjs and mithril frameworks.
+ * The `h` stands for (virtual) hyperscript.
+ *
+ * NOTE: There are {@link http://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
+ *
+ * @param selector    Contains the tagName, id and fixed css classnames in CSS selector format.
+ *                    It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
+ * @param properties  An object literal containing properties that will be placed on the DOM node.
+ * @param children    Virtual DOM nodes and strings to add as child nodes.
+ *                    `children` may contain [[VNode]]s, `string`s, nested arrays, `null` and `undefined`.
+ *                    Nested arrays are flattened, `null` and `undefined` are removed.
+ *
+ * @returns           A VNode object, used to render a real DOM later.
+ */
+    exports.h = function (selector, properties) {
+        var children = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            children[_i - 2] = arguments[_i];
+        }
+        return undefined;
+    };
+    // Splitting the h into declaration and implementation because the Typescript compiler creates some surrogate code for desctructuring 'children'.
+    // This would needlessly slow the h() function down.
+    // This double declaration adds some extra bytes into the library, but it generates the right API documentation.
     exports.h = function (selector) {
         var properties = arguments[1];
         if (typeof selector !== 'string') {
@@ -511,26 +538,63 @@
             domNode: null
         };
     };
-    ;
     /**
- * Contains simple low-level utility functions to manipulate the real DOM. The singleton instance is available under {@link module:maquette.dom}.
+ * Contains simple low-level utility functions to manipulate the real DOM.
  */
     exports.dom = {
+        /**
+     * Creates a real DOM tree from `vnode`. The [[Projection]] object returned will contain the resulting DOM Node in
+     * its [[Projection.domNode|domNode]] property.
+     * This is a low-level method. Users wil typically use a [[Projector]] instead.
+     * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+     * objects may only be rendered once.
+     * @param projectionOptions - Options to be used to create and update the projection.
+     * @returns The [[Projection]] which also contains the DOM Node that was created.
+     */
         create: function (vnode, projectionOptions) {
             projectionOptions = applyDefaultProjectionOptions(projectionOptions);
             createDom(vnode, document.createElement('div'), undefined, projectionOptions);
             return createProjection(vnode, projectionOptions);
         },
+        /**
+     * Appends a new childnode to the DOM which is generated from a [[VNode]].
+     * This is a low-level method. Users wil typically use a [[Projector]] instead.
+     * @param parentNode - The parent node for the new childNode.
+     * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+     * objects may only be rendered once.
+     * @param projectionOptions - Options to be used to create and update the [[Projection]].
+     * @returns The [[Projection]] that was created.
+     */
         append: function (parentNode, vnode, projectionOptions) {
             projectionOptions = applyDefaultProjectionOptions(projectionOptions);
             createDom(vnode, parentNode, undefined, projectionOptions);
             return createProjection(vnode, projectionOptions);
         },
+        /**
+     * Inserts a new DOM node which is generated from a [[VNode]].
+     * This is a low-level method. Users wil typically use a [[Projector]] instead.
+     * @param beforeNode - The node that the DOM Node is inserted before.
+     * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function.
+     * NOTE: [[VNode]] objects may only be rendered once.
+     * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
+     * @returns The [[Projection]] that was created.
+     */
         insertBefore: function (beforeNode, vnode, projectionOptions) {
             projectionOptions = applyDefaultProjectionOptions(projectionOptions);
             createDom(vnode, beforeNode.parentNode, beforeNode, projectionOptions);
             return createProjection(vnode, projectionOptions);
         },
+        /**
+     * Merges a new DOM node which is generated from a [[VNode]] with an existing DOM Node.
+     * This means that the virtual DOM and the real DOM will have one overlapping element.
+     * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided.
+     * This is a low-level method. Users wil typically use a [[Projector]] instead.
+     * @param domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
+     * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]] objects
+     * may only be rendered once.
+     * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
+     * @returns The [[Projection]] that was created.
+     */
         merge: function (element, vnode, projectionOptions) {
             projectionOptions = applyDefaultProjectionOptions(projectionOptions);
             vnode.domNode = element;
@@ -539,9 +603,11 @@
         }
     };
     /**
- * Creates a {@link CalculationCache} object, useful for caching {@link VNode} trees.
- * In practice, caching of {@link VNode} trees is not needed, because achieving 60 frames per second is almost never a problem.
- * @returns {CalculationCache}
+ * Creates a [[CalculationCache]] object, useful for caching [[VNode]] trees.
+ * In practice, caching of [[VNode]] trees is not needed, because achieving 60 frames per second is almost never a problem.
+ * For more information, see [[CalculationCache]].
+ *
+ * @param <Result> The type of the value that is cached.
  */
     exports.createCache = function () {
         var cachedInputs = undefined;
@@ -570,11 +636,14 @@
     };
     /**
  * Creates a {@link Mapping} instance that keeps an array of result objects synchronized with an array of source objects.
- * @param {function} getSourceKey - `function(source)` that must return a key to identify each source object. The result must eather be a string or a number.
- * @param {function} createResult - `function(source, index)` that must create a new result object from a given source. This function is identical
- * argument of `Array.map`.
- * @param {function} updateResult - `function(source, target, index)` that updates a result to an updated source.
- * @returns {Mapping}
+ * See {@link http://maquettejs.org/docs/arrays.html|Working with arrays}.
+ *
+ * @param <Source>       The type of source items. A database-record for instance.
+ * @param <Target>       The type of target items. A [[Component]] for instance.
+ * @param getSourceKey   `function(source)` that must return a key to identify each source object. The result must either be a string or a number.
+ * @param createResult   `function(source, index)` that must create a new result object from a given source. This function is identical
+ *                       to the `callback` argument in `Array.map(callback)`.
+ * @param updateResult   `function(source, target, index)` that updates a result to an updated source.
  */
     exports.createMapping = function (getSourceKey, createResult, updateResult) {
         var keys = [];
@@ -615,13 +684,11 @@
         };
     };
     /**
- * Creates a {@link Projector} instance using the provided projectionOptions.
- * @param {Object} [projectionOptions] - Options that influence how the DOM is rendered and updated.
- * @param {Object} projectionOptions.transitions - A transition strategy to invoke when
- * enterAnimation and exitAnimation properties are provided as strings.
- * The module `cssTransitions` in the provided `css-transitions.js` file provides such a strategy.
- * A transition strategy is not needed when enterAnimation and exitAnimation properties are provided as functions.
- * @returns {Projector}
+ * Creates a [[Projector]] instance using the provided projectionOptions.
+ *
+ * For more information, see [[Projector]].
+ *
+ * @param projectionOptions   Options that influence how the DOM is rendered and updated.
  */
     exports.createProjector = function (projectionOptions) {
         var projector;

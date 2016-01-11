@@ -3,3 +3,5 @@ google_analytics_key: "UA-58254103-1"
 maquette_version: "2.1.6"
 api_url: "/docs/typedoc/modules/_maquette_.html"
 encoding: "utf-8"
+include: 
+  - _*.html

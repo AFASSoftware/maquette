@@ -1,5 +1,5 @@
-var gulp=require('gulp');
-var uglify=require('gulp-uglify');
+var gulp = require('gulp');
+var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var del = require('del');
 var source = require('vinyl-source-stream');
@@ -21,6 +21,8 @@ var gutil = require('gulp-util');
 
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
+
+var typedoc = require('gulp-typedoc');
 
 var BROWSERSYNC_PORT = parseInt(process.env.PORT) || 3002;
 var BROWSERSYNC_HOST = process.env.IP || '127.0.0.1';
@@ -108,6 +110,23 @@ gulp.task('compress',  function() {
 
 gulp.task('clean', function(cb) {
   del(['dist', 'build'], cb);
+});
+
+gulp.task('typedoc', function() {
+  return gulp
+    .src(["src/**/*.ts"])
+    .pipe(typedoc({
+      module: "commonjs",
+      target: "es5",
+      out: "build/docs/",
+      name: "Maquette",
+      excludeNotExported: true,
+      excludeExternals: true,
+      includeDeclarations: false,
+      exclude: 'node_modules/typedoc/node_modules/typescript/lib/lib.d.ts',
+      gaID: 'UA-58254103-1',
+      readme: 'none'
+    }));
 });
 
 gulp.task('default', ['compress', 'dist-min', 'check-size', 'declaration']);

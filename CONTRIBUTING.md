@@ -1,5 +1,5 @@
 # How to contribute
 
-Before you  may contribute you need to <a href="https://www.clahub.com/agreements/AFASSoftware/maquette">sign our Contributor License Agreement</a>.
+Before you may contribute, we need you to sign our <a href="https://www.clahub.com/agreements/AFASSoftware/maquette">Contributor License Agreement</a> (CLA).
 
-Thanks in advance.
+Sorry about the inconvenience.

@@ -1,3 +1,10 @@
+// Comment that is displayed in the API documentation for the maquette module:
+/**
+ * Welcome to the API documentation of the **maquette** library.
+ *
+ * [[http://maquettejs.org/|To the maquette homepage]]
+ */
+
 /**
  * A virtual representation of a DOM Node. Maquette assumes that [[VNode]] objects are never modified externally.
  * Instances of [[VNode]] can be created using [[h]].
@@ -129,11 +136,11 @@ export interface ProjectionOptions {
   /**
    * Only for internal use. Used for rendering SVG Nodes.
    */
-  namespace: string;
+  namespace?: string;
   /**
    * Only for internal use. Used to wrap eventHandlers to call [[scheduleRender]] on the [[Projector]].
    */
-  eventHandlerInterceptor: Function;
+  eventHandlerInterceptor?: Function;
   /**
    * May be used to add vendor prefixes when applying inline styles when needed.
    * This function is called when [[styles]] is used.
@@ -863,7 +870,7 @@ export let dom = {
    * @param projectionOptions - Options to be used to create and update the projection.
    * @returns The [[Projection]] which also contains the DOM Node that was created.
    */
-  create: function(vnode: VNode, projectionOptions: ProjectionOptions): Projection {
+  create: function(vnode: VNode, projectionOptions?: ProjectionOptions): Projection {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     createDom(vnode, document.createElement('div'), undefined, projectionOptions);
     return createProjection(vnode, projectionOptions);
@@ -878,7 +885,7 @@ export let dom = {
    * @param projectionOptions - Options to be used to create and update the [[Projection]].
    * @returns The [[Projection]] that was created.
    */
-  append: function(parentNode: Element, vnode: VNode, projectionOptions: ProjectionOptions): Projection {
+  append: function(parentNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     createDom(vnode, parentNode, undefined, projectionOptions);
     return createProjection(vnode, projectionOptions);
@@ -893,7 +900,7 @@ export let dom = {
    * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
    * @returns The [[Projection]] that was created.
    */
-  insertBefore: function(beforeNode: Element, vnode: VNode, projectionOptions: ProjectionOptions): Projection {
+  insertBefore: function(beforeNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     createDom(vnode, beforeNode.parentNode, beforeNode, projectionOptions);
     return createProjection(vnode, projectionOptions);
@@ -910,7 +917,7 @@ export let dom = {
    * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
    * @returns The [[Projection]] that was created.
    */
-  merge: function(element: Element, vnode: VNode, projectionOptions: ProjectionOptions): Projection {
+  merge: function(element: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     vnode.domNode = element;
     initPropertiesAndChildren(element, vnode, projectionOptions);

@@ -1,4 +1,9 @@
 /**
+ * Welcome to the API documentation of the **maquette** library.
+ *
+ * [[http://maquettejs.org/|To the maquette homepage]]
+ */
+/**
  * A virtual representation of a DOM Node. Maquette assumes that [[VNode]] objects are never modified externally.
  * Instances of [[VNode]] can be created using [[h]].
  */
@@ -126,11 +131,11 @@ export interface ProjectionOptions {
     /**
      * Only for internal use. Used for rendering SVG Nodes.
      */
-    namespace: string;
+    namespace?: string;
     /**
      * Only for internal use. Used to wrap eventHandlers to call [[scheduleRender]] on the [[Projector]].
      */
-    eventHandlerInterceptor: Function;
+    eventHandlerInterceptor?: Function;
     /**
      * May be used to add vendor prefixes when applying inline styles when needed.
      * This function is called when [[styles]] is used.
@@ -311,10 +316,10 @@ export declare let h: (selector: string, properties?: VNodeProperties, ...childr
  * Contains simple low-level utility functions to manipulate the real DOM.
  */
 export declare let dom: {
-    create: (vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
-    append: (parentNode: Element, vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
-    insertBefore: (beforeNode: Element, vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
-    merge: (element: Element, vnode: VNode, projectionOptions: ProjectionOptions) => Projection;
+    create: (vnode: VNode, projectionOptions?: ProjectionOptions) => Projection;
+    append: (parentNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions) => Projection;
+    insertBefore: (beforeNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions) => Projection;
+    merge: (element: Element, vnode: VNode, projectionOptions?: ProjectionOptions) => Projection;
 };
 /**
  * A CalculationCache object remembers the previous outcome of a calculation along with the inputs.

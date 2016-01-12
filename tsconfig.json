@@ -5,7 +5,7 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "outDir": "./build/js",
-    "rootDir": "./src",
+    "rootDir": ".",
     "target": "es5",
     "noEmitOnError": true
   },

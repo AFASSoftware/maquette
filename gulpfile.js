@@ -24,6 +24,8 @@ var reload = browserSync.reload;
 
 var typedoc = require('gulp-typedoc');
 
+const mocha = require('gulp-mocha');
+
 var BROWSERSYNC_PORT = parseInt(process.env.PORT) || 3002;
 var BROWSERSYNC_HOST = process.env.IP || '127.0.0.1';
 
@@ -45,6 +47,11 @@ gulp.task('declaration', function() {
 		.pipe(ts(configTypescript))
     .dts
 		.pipe(gulp.dest('dist'));
+});
+
+gulp.task('test', ['compile'], function() {
+  return gulp.src(['test/**/*.js', 'build/js/test/**/*.js'], {read: false})
+    .pipe(mocha({reporterx: 'dot'}));
 });
 
 // This seems to be the most lightweight solution to create an UMD wrapper and working sourcemaps
@@ -118,7 +125,7 @@ gulp.task('typedoc', function() {
     .pipe(typedoc({
       module: "commonjs",
       target: "es5",
-      out: "build/docs/",
+      out: "build/typedoc/",
       name: "Maquette",
       excludeNotExported: true,
       excludeExternals: true,

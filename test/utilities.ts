@@ -8,4 +8,6 @@ import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
-export {chai, expect, sinon};
+let jsdom = require('mocha-jsdom');
+
+export {chai, expect, sinon, jsdom};

@@ -223,17 +223,17 @@ export interface VNodeProperties {
    * An object literal like `{important:true}` which allows css classes, like `important` to be added and removed
    * dynamically.
    */
-  classes?: {[index: string]: boolean};
+  classes?: { [index: string]: boolean };
   /**
    * An object literal like `{height:'100px'}` which allows styles to be changed dynamically. All values must be strings.
    */
-  styles?: {[index: string]: string};
+  styles?: { [index: string]: string };
 
   // From Element
-  ontouchcancel?(ev?: TouchEvent): boolean|void;
-  ontouchend?(ev?: TouchEvent): boolean|void;
-  ontouchmove?(ev?: TouchEvent): boolean|void;
-  ontouchstart?(ev?: TouchEvent): boolean|void;
+  ontouchcancel?(ev?: TouchEvent): boolean | void;
+  ontouchend?(ev?: TouchEvent): boolean | void;
+  ontouchmove?(ev?: TouchEvent): boolean | void;
+  ontouchstart?(ev?: TouchEvent): boolean | void;
   // From HTMLFormElement
   action?: string;
   encoding?: string;
@@ -242,26 +242,26 @@ export interface VNodeProperties {
   name?: string;
   target?: string;
   // From HTMLElement
-  onblur?(ev?: FocusEvent): boolean|void;
-  onchange?(ev?: Event): boolean|void;
-  onclick?(ev?: MouseEvent): boolean|void;
-  ondblclick?(ev?: MouseEvent): boolean|void;
-  onfocus?(ev?: FocusEvent): boolean|void;
-  oninput?(ev?: Event): boolean|void;
-  onkeydown?(ev?: KeyboardEvent): boolean|void;
-  onkeypress?(ev?: KeyboardEvent): boolean|void;
-  onkeyup?(ev?: KeyboardEvent): boolean|void;
-  onload?(ev?: Event): boolean|void;
-  onmousedown?(ev?: MouseEvent): boolean|void;
-  onmouseenter?(ev?: MouseEvent): boolean|void;
-  onmouseleave?(ev?: MouseEvent): boolean|void;
-  onmousemove?(ev?: MouseEvent): boolean|void;
-  onmouseout?(ev?: MouseEvent): boolean|void;
-  onmouseover?(ev?: MouseEvent): boolean|void;
-  onmouseup?(ev?: MouseEvent): boolean|void;
-  onmousewheel?(ev?: MouseWheelEvent): boolean|void;
-  onscroll?(ev?: UIEvent): boolean|void;
-  onsubmit?(ev?: Event): boolean|void;
+  onblur?(ev?: FocusEvent): boolean | void;
+  onchange?(ev?: Event): boolean | void;
+  onclick?(ev?: MouseEvent): boolean | void;
+  ondblclick?(ev?: MouseEvent): boolean | void;
+  onfocus?(ev?: FocusEvent): boolean | void;
+  oninput?(ev?: Event): boolean | void;
+  onkeydown?(ev?: KeyboardEvent): boolean | void;
+  onkeypress?(ev?: KeyboardEvent): boolean | void;
+  onkeyup?(ev?: KeyboardEvent): boolean | void;
+  onload?(ev?: Event): boolean | void;
+  onmousedown?(ev?: MouseEvent): boolean | void;
+  onmouseenter?(ev?: MouseEvent): boolean | void;
+  onmouseleave?(ev?: MouseEvent): boolean | void;
+  onmousemove?(ev?: MouseEvent): boolean | void;
+  onmouseout?(ev?: MouseEvent): boolean | void;
+  onmouseover?(ev?: MouseEvent): boolean | void;
+  onmouseup?(ev?: MouseEvent): boolean | void;
+  onmousewheel?(ev?: MouseWheelEvent): boolean | void;
+  onscroll?(ev?: UIEvent): boolean | void;
+  onsubmit?(ev?: Event): boolean | void;
   spellcheck?: boolean;
   tabIndex?: number;
   title?: string;
@@ -298,7 +298,6 @@ export interface Projection {
    */
   update(updatedVnode: VNode): void;
 }
-
 
 const NAMESPACE_SVG = 'http://www.w3.org/2000/svg';
 
@@ -781,11 +780,11 @@ let createProjection = function(vnode: VNode, projectionOptions: ProjectionOptio
 /**
  * Only needed for the defintion of [[VNodeChild]].
  */
-export interface VNodeChildren extends Array<VNodeChild> {};
+export interface VNodeChildren extends Array<VNodeChild> { };
 /**
  * These are valid values for the children parameter of the [[h]] function.
  */
-export type VNodeChild = string|VNode|VNodeChildren;
+export type VNodeChild = string | VNode | VNodeChildren;
 
 /**
  * The `h` method is used to create a virtual DOM node.
@@ -803,7 +802,7 @@ export type VNodeChild = string|VNode|VNodeChildren;
  *
  * @returns           A VNode object, used to render a real DOM later.
  */
-export let h = function(selector: string, properties?: VNodeProperties, ...children: VNodeChild[]): VNode {return undefined; };
+export let h = function(selector: string, properties?: VNodeProperties, ...children: VNodeChild[]): VNode { return undefined; };
 
 // Splitting the h into declaration and implementation because the Typescript compiler creates some surrogate code for desctructuring 'children'.
 // This would needlessly slow the h() function down.
@@ -1022,7 +1021,7 @@ export interface Mapping<Source, Target> {
  * @param updateResult   `function(source, target, index)` that updates a result to an updated source.
  */
 export let createMapping = <Source, Target>(
-  getSourceKey: (source: Source) => (string|number),
+  getSourceKey: (source: Source) => (string | number),
   createResult: (source: Source, index: number) => Target,
   updateResult: (source: Source, target: Target, index: number) => void): Mapping<Source, Target> => {
   let keys = [] as Object[];

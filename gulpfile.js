@@ -32,7 +32,7 @@ var BROWSERSYNC_HOST = process.env.IP || '127.0.0.1';
 gulp.task('compile', function() {
   var configTypescript = require('./tsconfig.json').compilerOptions;
   configTypescript.typescript = require('typescript');
-	return gulp.src('src/**/*.ts')
+	return gulp.src(['src/**/*.ts', 'test/**/*.ts', 'typings/**/*.ts'])
     .pipe(sourcemaps.init())
 		.pipe(ts(configTypescript))
     .pipe(sourcemaps.write('./'))
@@ -50,8 +50,8 @@ gulp.task('declaration', function() {
 });
 
 gulp.task('test', ['compile'], function() {
-  return gulp.src(['test/**/*.js', 'build/js/test/**/*.js'], {read: false})
-    .pipe(mocha({reporterx: 'dot'}));
+  return gulp.src(['build/js/test/**/*.js'], {read: false})
+    .pipe(mocha({reporter: 'dot'}));
 });
 
 // This seems to be the most lightweight solution to create an UMD wrapper and working sourcemaps

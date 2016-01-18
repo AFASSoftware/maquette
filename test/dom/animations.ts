@@ -1,7 +1,8 @@
-import {expect, jsdom, sinon} from './utilities';
-import {h, dom} from '../src/maquette';
+import {expect, jsdom, sinon} from '../utilities';
+import {h, dom} from '../../src/maquette';
 
-describe('Maquette', function() {
+describe('dom', function() {
+
   describe('animations', function() {
 
     describe('updateAnimation', function() {
@@ -18,4 +19,5 @@ describe('Maquette', function() {
 
     });
   });
+
 });

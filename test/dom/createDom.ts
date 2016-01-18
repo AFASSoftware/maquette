@@ -1,8 +1,8 @@
-import {expect, jsdom} from './utilities';
-import {h, dom} from '../src/maquette';
+import {expect, jsdom} from '../utilities';
+import {h, dom} from '../../src/maquette';
 
-describe('Maquette', function() {
-  describe('#createDom()', function() {
+describe('dom', function() {
+  describe('create', function() {
 
     jsdom();
 
@@ -35,8 +35,6 @@ describe('Maquette', function() {
     });
 
     it('should parse the selector', function() {
-      /* tslint:disable:no-require-imports */
-      require('./jsdom-classlist-polyfill')(window);
 
       let projection = dom.create(h('div'));
       expect(projection.domNode.outerHTML).to.equal('<div></div>');

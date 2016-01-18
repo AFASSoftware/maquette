@@ -1,7 +1,8 @@
-import {expect, jsdom} from './utilities';
-import {h, dom} from '../src/maquette';
+import {expect, jsdom} from '../utilities';
+import {h, dom} from '../../src/maquette';
 
-describe('Maquette', function() {
+describe('dom', function() {
+
   describe('styles', function() {
 
     jsdom();
@@ -42,5 +43,7 @@ describe('Maquette', function() {
       projection.update(h('div', { styles: { height: '30px' } }));
       expect(projection.domNode.outerHTML).to.equal('<div style="min-height: 30px;"></div>');
     });
+
   });
+
 });

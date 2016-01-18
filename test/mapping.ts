@@ -54,21 +54,21 @@ let checkMapping = function(mapping: Mapping<number, Target>, sources: number[])
   });
 };
 
-describe("Maquette", function() {
-  describe("#createMapping", function() {
-    it("works correctly for all permutations of 4 items to every other permutation of 4 items", function() {
-      var permutations = createPermutations();
-      for (var i = 0; i < permutations.length; i++) {
-        for (var j = 0; j < permutations.length; j++) {
-          var mapping = createMapping(function(key) { return key; }, createTarget, updateTarget);
-          mapping.map(permutations[i]);
-          checkMapping(mapping, permutations[i]);
-          mapping.results.forEach(function(target: Target) { target.alreadyPresent = true; });
-          // console.log("--> ", permutations[i], permutations[j]);
-          mapping.map(permutations[j]);
-          checkMapping(mapping, permutations[j]);
-        }
+describe("Mapping", function() {
+
+  it("works correctly for all permutations of 4 items to every other permutation of 4 items", function() {
+    var permutations = createPermutations();
+    for (var i = 0; i < permutations.length; i++) {
+      for (var j = 0; j < permutations.length; j++) {
+        var mapping = createMapping(function(key) { return key; }, createTarget, updateTarget);
+        mapping.map(permutations[i]);
+        checkMapping(mapping, permutations[i]);
+        mapping.results.forEach(function(target: Target) { target.alreadyPresent = true; });
+        // console.log("--> ", permutations[i], permutations[j]);
+        mapping.map(permutations[j]);
+        checkMapping(mapping, permutations[j]);
       }
-    });
+    }
   });
-})
+
+});

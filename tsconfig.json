@@ -15,6 +15,7 @@
     "dist",
     "bower_components",
     "browser-tests",
+    ".idea",
     ".vscode"
   ],
   "filesGlob": [

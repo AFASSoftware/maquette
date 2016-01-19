@@ -259,7 +259,7 @@ var coverage = function(cb) {
     .on('finish', function () {
       var cbCalled = false;
       gulp.src('build/js/test/**/*.js')
-        .pipe(mocha({ reporter: 'dot' }))
+        .pipe(mocha({ reporter: 'dot', timeout: 5000 }))
         .on('error', function (err) {
           cbCalled = true;
           return cb(err);

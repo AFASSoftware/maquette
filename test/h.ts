@@ -73,4 +73,11 @@ describe('h', function() {
     expect(h('div', 1)).to.deep.equal({ vnodeSelector: 'div', properties: undefined, text: undefined, children: [toTextVNode('1')], domNode: null });
   });
 
+  it('Validates the first argument to be a string', () => {
+    expect(() => {
+      h(5 as any);
+    }).to.throw();
+
+  });
+
 });

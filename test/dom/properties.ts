@@ -7,7 +7,6 @@ let noopEventHandlerInterceptor = (propertyName: string, functionPropertyArgumen
   };
 };
 
-
 describe('dom', function() {
 
   describe('properties', function() {
@@ -39,6 +38,30 @@ describe('dom', function() {
 
       });
 
+    });
+
+    it('updates attributes', () => {
+      let projection = dom.create(h('a', { href: '#1' }));
+      let link = projection.domNode as HTMLLinkElement;
+      expect(link.getAttribute('href')).to.equal('#1');
+
+      projection.update(h('a', { href: '#2' }));
+      expect(link.getAttribute('href')).to.equal('#2');
+
+      projection.update(h('a', { href: undefined }));
+      expect(link.getAttribute('href')).to.equal('');
+    });
+
+    it('updates properties', () => {
+      let projection = dom.create(h('a', { href: '#1', tabIndex: 1 }));
+      let link = projection.domNode as HTMLLinkElement;
+      expect(link.tabIndex).to.equal(1);
+
+      projection.update(h('a', { href: '#1', tabIndex: 2 }));
+      expect(link.tabIndex).to.equal(2);
+
+      projection.update(h('a', { href: '#1', tabIndex: undefined }));
+      expect(link.tabIndex).to.equal(0);
     });
 
     it('allows one to correct the value while being typed', () => {

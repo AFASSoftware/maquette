@@ -802,6 +802,7 @@ export type VNodeChild = string | VNode | VNodeChildren;
  *
  * @returns           A VNode object, used to render a real DOM later.
  */
+/* istanbul ignore next: this function will be overwritten later, only its signature matters for documentation purposes */
 export let h = function(selector: string, properties?: VNodeProperties, ...children: VNodeChild[]): VNode { return undefined; };
 
 // Splitting the h into declaration and implementation because the Typescript compiler creates some surrogate code for desctructuring 'children'.

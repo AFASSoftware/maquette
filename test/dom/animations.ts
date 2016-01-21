@@ -69,6 +69,7 @@ describe('dom', () => {
         expect(projection.domNode.childNodes).to.have.length(1);
         exitAnimation.lastCall.callArg(1); // arg1: removeElement
         expect(projection.domNode.childNodes).to.be.empty;
+        exitAnimation.lastCall.callArg(1); // arg1: removeElement
       });
 
     });

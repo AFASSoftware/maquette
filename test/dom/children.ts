@@ -68,6 +68,28 @@ describe('dom', function() {
       expect(div.children[3]).to.equal(lastSpan);
     });
 
+    it('can insert textnodes', () => {
+      let projection = dom.create(h('div', [
+        h('span', { key: 2 }),
+        h('span', { key: 4 })
+      ]));
+
+      let div = projection.domNode as HTMLDivElement;
+      expect(div.children.length).to.equal(2);
+      let firstSpan = div.children[0];
+      let lastSpan = div.children[1];
+
+      projection.update(h('div', [
+        h('span', { key: 2 }),
+        'Text between',
+        h('span', { key: 4 })
+      ]));
+
+      expect(div.childNodes.length).to.equal(3);
+      expect(div.childNodes[0]).to.equal(firstSpan);
+      expect(div.childNodes[2]).to.equal(lastSpan);
+    });
+
     it('will throw an error when maquette is not sure which node is added', () => {
       let projection = dom.create(h('div', [
         h('span', 'a'),

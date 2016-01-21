@@ -52,6 +52,15 @@ describe('dom', function() {
       expect(link.getAttribute('href')).to.equal('');
     });
 
+    it('can add an attribute that was initially undefined', () => {
+      let projection = dom.create(h('a', { href: undefined }));
+      let link = projection.domNode as HTMLLinkElement;
+      expect(link.getAttribute('href')).to.be.null;
+
+      projection.update(h('a', { href: '#2' }));
+      expect(link.getAttribute('href')).to.equal('#2');
+    });
+
     it('updates properties', () => {
       let projection = dom.create(h('a', { href: '#1', tabIndex: 1 }));
       let link = projection.domNode as HTMLLinkElement;

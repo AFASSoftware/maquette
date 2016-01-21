@@ -335,7 +335,7 @@ let toTextVNode = (data: any): VNode => {
     vnodeSelector: '',
     properties: undefined,
     children: undefined,
-    text: (data === null || data === undefined) ? '' : data.toString(),
+    text: data.toString(),
     domNode: null
   };
 };

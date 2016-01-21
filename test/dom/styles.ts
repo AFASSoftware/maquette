@@ -33,6 +33,13 @@ describe('dom', function() {
       expect(projection.domNode.outerHTML).to.equal('<div style=""></div>');
     });
 
+    it('should add styles', function() {
+      let projection = dom.create(h('div', { styles: { height: undefined } }));
+      projection.update(h('div', { styles: { height: '20px' } }));
+      expect(projection.domNode.outerHTML).to.equal('<div style="height: 20px;"></div>');
+      projection.update(h('div', { styles: { height: '20px' } }));
+    });
+
     it('should use the provided styleApplyer', function() {
       let styleApplyer = (domNode: Element, styleName: string, value: string) => {
         // Useless styleApplyer which transforms height to minHeight

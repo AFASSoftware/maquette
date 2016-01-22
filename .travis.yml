@@ -9,6 +9,8 @@ addons:
 language: node_js
 node_js:
   - "4.1"
+env:
+  - CXX=g++-4.8
 
 before_install: npm install -g grunt-cli bower
 

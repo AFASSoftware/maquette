@@ -94,7 +94,7 @@ gulp.task('declaration', function() {
 
 gulp.task('test', ['compile'], function() {
   return gulp.src(['build/js/test/**/*.js'], {read: false})
-    .pipe(mocha({reporter: 'dot', timeout: 5000 /* give mswindows some slack */}));
+    .pipe(mocha({reporter: 'spec', timeout: 5000}));
 });
 
 // This seems to be the most lightweight solution to create an UMD wrapper and working sourcemaps
@@ -112,7 +112,7 @@ var umdTemplate = "(function (root, factory) {" +
   "\n}(this, function (exports){%= body %}));";
 
 gulp.task('dist', ['compile'], function() {
-  return gulp.src('build/js/maquette.js')
+  return gulp.src('build/js/src/maquette.js')
     .pipe(sourcemaps.init({
       loadMaps: true
     }))
@@ -122,7 +122,7 @@ gulp.task('dist', ['compile'], function() {
 });
 
 gulp.task('dist-min', ['dist'], function() {
-  return gulp.src('build/js/maquette.js')
+  return gulp.src('build/js/src/maquette.js')
     .pipe(sourcemaps.init({
       loadMaps: true
     }))
@@ -179,7 +179,7 @@ gulp.task('typedoc', function() {
     }));
 });
 
-gulp.task('default', ['compress', 'dist-min', 'check-size', 'declaration']);
+gulp.task('default', ['coverage', 'compress', 'dist-min', 'check-size', 'declaration']);
 
 function inc(importance) {
   // get all the files to bump version in

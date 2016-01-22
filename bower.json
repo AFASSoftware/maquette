@@ -1,6 +1,6 @@
 {
   "name": "maquette",
-  "main": "maquette.js",
+  "main": "dist/maquette.js",
   "version": "2.1.5",
   "homepage": "http://maquettejs.org/",
   "authors": [
@@ -27,6 +27,7 @@
     "tests",
     "examples",
     "scripts",
+    "typings",
     "browser-tests"
   ],
   "dependencies": {

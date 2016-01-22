@@ -55,5 +55,12 @@ describe('dom', function() {
       expect(projection.domNode.outerHTML).to.equal('<div id="id" class="class1 class2"></div>');
     });
 
+    it('should give a meaningful error when the root selector is changed', () => {
+      let projection = dom.create(h('div'));
+      expect(() => {
+        projection.update(h('span'));
+      }).to.throw(/may not be changed/);
+    });
+
   });
 });

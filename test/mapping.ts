@@ -1,25 +1,25 @@
 import {expect} from './utilities';
 import {createMapping, Mapping} from '../src/maquette';
 
-var addAllPermutations = function(results: number[][], result: number[], unusedNumbers: number[], numbersToAdd: number) {
+let addAllPermutations = function(results: number[][], result: number[], unusedNumbers: number[], numbersToAdd: number) {
   if (numbersToAdd === 0) {
     results.push(result);
   }
-  for (var i = 0; i < unusedNumbers.length; i++) {
-    var newResult = result.slice();
+  for (let i = 0; i < unusedNumbers.length; i++) {
+    let newResult = result.slice();
     newResult.push(unusedNumbers[i]);
-    var newUnusedNumbers = unusedNumbers.slice();
+    let newUnusedNumbers = unusedNumbers.slice();
     newUnusedNumbers.splice(i, 1);
     addAllPermutations(results, newResult, newUnusedNumbers, numbersToAdd - 1);
   }
 };
 
-var createPermutations = function() {
+let createPermutations = function() {
   // returns an array of all possible arrays with numbers 0..4
-  var results = [] as number[][];
-  for (var length = 0; length <= 4; length++) {
-    var unusedNumbers = [0, 1, 2, 3];
-    var result = [] as number[];
+  let results = [] as number[][];
+  for (let length = 0; length <= 4; length++) {
+    let unusedNumbers = [0, 1, 2, 3];
+    let result = [] as number[];
     addAllPermutations(results, result, unusedNumbers, length);
   }
   return results;
@@ -54,17 +54,17 @@ let checkMapping = function(mapping: Mapping<number, Target>, sources: number[])
   });
 };
 
-describe("Mapping", function() {
+describe('Mapping', function() {
 
-  it("works correctly for all permutations of 4 items to every other permutation of 4 items", function() {
-    var permutations = createPermutations();
-    for (var i = 0; i < permutations.length; i++) {
-      for (var j = 0; j < permutations.length; j++) {
-        var mapping = createMapping(function(key) { return key; }, createTarget, updateTarget);
+  it('works correctly for all permutations of 4 items to every other permutation of 4 items', () => {
+    let permutations = createPermutations();
+    for (let i = 0; i < permutations.length; i++) {
+      for (let j = 0; j < permutations.length; j++) {
+        let mapping = createMapping(function(key) { return key; }, createTarget, updateTarget);
         mapping.map(permutations[i]);
         checkMapping(mapping, permutations[i]);
         mapping.results.forEach(function(target: Target) { target.alreadyPresent = true; });
-        // console.log("--> ", permutations[i], permutations[j]);
+        // console.log('--> ', permutations[i], permutations[j]);
         mapping.map(permutations[j]);
         checkMapping(mapping, permutations[j]);
       }

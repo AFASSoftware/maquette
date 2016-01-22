@@ -118,7 +118,35 @@ describe('dom', function() {
       }).to.throw();
     });
 
-  });
+    describe('svg', () => {
 
+      it('creates and updates svg dom nodes with the right namespace', () => {
+        let projection = dom.create(h('div', [
+          h('svg', [
+            h('circle', {cx: '2cm', cy: '2cm', r: '1cm', fill: 'red'})
+          ]),
+          h('span')
+        ]));
+        let svg = projection.domNode.firstChild;
+        expect(svg.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+        let circle = svg.firstChild;
+        expect(circle.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+        let span = projection.domNode.lastChild;
+        expect(span.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
+
+        projection.update(h('div', [
+          h('svg', [
+            h('circle', {key: 'blue', cx: '2cm', cy: '2cm', r: '1cm', fill: 'blue'})
+          ]),
+          h('span')
+        ]));
+
+        let blueCircle = svg.firstChild;
+        expect(blueCircle.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+      });
+
+    });
+
+  });
 
 });

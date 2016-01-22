@@ -721,9 +721,6 @@ createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
 
 updateDom = function(previous, vnode, projectionOptions) {
   let domNode = previous.domNode;
-  if (!domNode) {
-    throw new Error('previous node was not rendered');
-  }
   let textUpdated = false;
   if (previous === vnode) {
     return textUpdated; // we assume that nothing has changed
@@ -760,9 +757,6 @@ updateDom = function(previous, vnode, projectionOptions) {
 };
 
 let createProjection = function(vnode: VNode, projectionOptions: ProjectionOptions): Projection {
-  if (!vnode.vnodeSelector) {
-    throw new Error('Invalid vnode argument');
-  }
   return {
     update: function(updatedVnode: VNode) {
       if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {

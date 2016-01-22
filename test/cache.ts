@@ -1,33 +1,34 @@
-/* globals describe,it */
+import {expect, sinon} from './utilities';
 import {createCache} from '../src/maquette';
-import {expect} from './utilities';
 
 describe('Cache', function() {
 
   it('should execute calculate() on the first invocation', function() {
     let cache = createCache();
-    let calculationCalled = false;
-    let calculate = function() {
-      calculationCalled = true;
-      return 'calculation result';
-    };
+    let calculate = sinon.stub().returns('calculation result');
     let result = cache.result([1], calculate);
-    expect(calculationCalled).to.be.true;
+    expect(calculate).to.be.calledOnce;
     expect(result).to.equal('calculation result');
   });
 
-  it('should only execute calculate() on next invocations when the inputs are equal', function() {
+  it('should only execute calculate() on next invocations when the inputs are different', function() {
     let cache = createCache();
-    let calculationCount = 0;
-    let calculate = function() {
-      calculationCount++;
-      return 'calculation result';
-    };
+    let calculate = sinon.stub().returns('calculation result');
     cache.result([1], calculate);
-    expect(calculationCount).to.equal(1);
-    let result = cache.result([1], calculate);
-    expect(calculationCount).to.equal(1);
-    expect(result).to.equal('calculation result');
+    expect(calculate).to.have.callCount(1);
+    cache.result([1], calculate);
+    expect(calculate).to.have.callCount(1);
+    cache.result([2], calculate);
+    expect(calculate).to.have.callCount(2);
+  });
+
+  it('can be invalidated manually', () => {
+    let cache = createCache();
+    let calculate = sinon.stub().returns('calculation result');
+    cache.result([1], calculate);
+    cache.invalidate();
+    cache.result([1], calculate);
+    expect(calculate).to.have.callCount(2);
   });
 
 });

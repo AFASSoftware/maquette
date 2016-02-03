@@ -49,7 +49,8 @@ function handleNameInput(evt) {
 function renderMaquette() {
   return h('div', [
     h('input', { 
-      type: 'text', placeholder: 'What is your name?', value: you, oninput: handleNameInput 
+      type: 'text', placeholder: 'What is your name?', 
+      value: you, oninput: handleNameInput 
     }),
     h('p.output', ['Hello ' + (you || 'you') + '!'])
   ]);

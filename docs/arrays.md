@@ -9,8 +9,7 @@ liveEditors: true
 Working with arrays of data in maquette can simply  be accomplished by using the javascript `map` function,
 mapping from the data to the virtual DOM nodes directly. This looks as follows:
 
-{% include live-editor-start.html %}// The underlying data
-var data = [1,2,3];
+{% include live-editor-start.html %}var data = [1,2,3];
 
 function renderMaquette() {
   return h("div", [
@@ -29,8 +28,7 @@ For performance reasons maquette forces you to reuse event handler functions on 
 A good approach is to map the data to components and have these components render the virtual DOM.
 The following example shows how to do this.
 
-{% include live-editor-start.html %}// The underlying data
-var data = [1,2,3];
+{% include live-editor-start.html %}var data = [1,2,3];
 
 // Create a component instance for every item in our data
 var components = data.map(function(item) {
@@ -68,20 +66,21 @@ but there are subtle differences. For example, the components will be reordered,
 The `createMapping` function serves the same purpose as the Javascript `map` function, but with the ability
 to call `map` multiple times and reusing the previous results where possible. The code below demonstrates this behavior. 
 
-{% include live-editor-start.html %}// The underlying data
-var dataSnapshot1 = [1, 3];
+{% include live-editor-start.html %}var dataSnapshot1 = [1, 3];
 var dataSnapshot2 = [1, 2, 3];
 
 var data = dataSnapshot1;
 
-// Keeps the data and components synchronized. Components are stored under mapping.results
+// Keeps the data and components synchronized. Components are stored 
+// under mapping.results
 var mapping = maquette.createMapping(
   function getSourceKey(source) {
     // function that returns a key to uniquely identify each item in the data
     return source;
   },
   function createTarget(source) {
-    // function to create the target based on the source (the same function that you use in Array.map)
+    // function to create the target based on the source 
+    // (the same function that you use in Array.map)
     var clickCount = 0;
     function handleClick(evt) {
       clickCount++;

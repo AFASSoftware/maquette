@@ -20,7 +20,7 @@ describe('dom', () => {
     it('is always invoked when the dom is being rendered, regardless of updates to the node itself', () => {
       let afterUpdate = sinon.stub();
       let projection = dom.create(h('div', { afterUpdate }));
-      projection.update(h('div', {afterUpdate}));
+      projection.update(h('div', { afterUpdate }));
       expect(afterUpdate).to.have.been.calledWith(projection.domNode);
     });
 

@@ -27,15 +27,26 @@ describe('dom', function() {
         expect(div.className).to.equal('b');
       });
 
-      it('helps to prevent mistakes when using class or className', () => {
+      it('allows a constant class to be applied to make JSX workable', () => {
+        let projection = dom.create(h('div', { class: 'special' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="special"></div>');
+        projection.update(h('div', { class: 'special' }));
         expect(() => {
-          dom.create(h('div', { class: 'special' }));
+          projection.update(h('div', { class: '' }));
         }).to.throw(Error);
+      });
 
+      it('allows classes and class to be combined', () => {
+        let projection = dom.create(h('div', { classes: { extra: true }, class: 'special' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="extra special"></div>');
+        projection.update(h('div', { classes: { extra: false }, class: 'special' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="special"></div>');
+      });
+
+      it('helps to prevent mistakes when using className', () => {
         expect(() => {
           dom.create(h('div', { className: 'special' }));
         }).to.throw(Error);
-
       });
 
     });
@@ -143,9 +154,9 @@ describe('dom', function() {
       it('does not allow event handlers to be updated, for performance reasons', () => {
         let handler1 = () => undefined as void;
         let handler2 = () => undefined as void;
-        let projection = dom.create(h('button', {onclick: handler1}));
+        let projection = dom.create(h('button', { onclick: handler1 }));
         expect(() => {
-          projection.update(h('button', {onclick: handler2}));
+          projection.update(h('button', { onclick: handler2 }));
         }).to.throw();
       });
 

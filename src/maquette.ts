@@ -397,8 +397,15 @@ let setProperties = function(domNode: Node, properties: VNodeProperties, project
     /* tslint:disable:no-var-keyword: edge case */
     var propValue = properties[propName];
     /* tslint:enable:no-var-keyword */
-    if (propName === 'class' || propName === 'className' || propName === 'classList') {
-      throw new Error('Property ' + propName + ' is not supported, use classes.');
+    if (propName === 'className') {
+      throw new Error('Property "className" is not supported, use "class".');
+    } else if (propName === 'class') {
+      if ((domNode as Element).className) {
+        // May happen if classes is specified before class
+        (domNode as Element).className += ' ' + propValue;
+      } else {
+        (domNode as Element).className = propValue;
+      }
     } else if (propName === 'classes') {
       // object with string keys and boolean values
       let classNames = Object.keys(propValue);
@@ -463,7 +470,11 @@ let updateProperties = function(domNode: Node, previousProperties: VNodeProperti
     // assuming that properties will be nullified instead of missing is by design
     let propValue = properties[propName];
     let previousValue = previousProperties[propName];
-    if (propName === 'classes') {
+    if (propName === 'class') {
+      if (previousValue !== propValue) {
+        throw new Error('"class" property may not be updated. Use the "classes" property for conditional css classes.');
+      }
+    } else if (propName === 'classes') {
       let classList = (domNode as Element).classList;
       let classNames = Object.keys(propValue);
       let classNameCount = classNames.length;

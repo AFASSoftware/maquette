@@ -32,7 +32,7 @@ describe('dom', () => {
         let updateAnimation = sinon.stub();
         let projection = dom.create(h('a', { updateAnimation, href: '#1' }));
         projection.update(h('a', { updateAnimation, href: '#2' }));
-        expect(updateAnimation).to.have.been.calledWith(projection.domNode, sinon.match({href: '#2'}), sinon.match({href: '#1'}));
+        expect(updateAnimation).to.have.been.calledWith(projection.domNode, sinon.match({ href: '#2' }), sinon.match({ href: '#1' }));
       });
 
     });
@@ -77,23 +77,23 @@ describe('dom', () => {
     describe('transitionStrategy', () => {
 
       it('will be invoked when enterAnimation is provided as a string', () => {
-        let transitionStrategy = {enter: sinon.stub(), exit: sinon.stub()};
-        let projection = dom.create(h('div'), {transitions: transitionStrategy});
+        let transitionStrategy = { enter: sinon.stub(), exit: sinon.stub() };
+        let projection = dom.create(h('div'), { transitions: transitionStrategy });
 
         projection.update(h('div', [
-          h('span', {enterAnimation: 'fadeIn'})
+          h('span', { enterAnimation: 'fadeIn' })
         ]));
 
         expect(transitionStrategy.enter).to.have.been.calledWithExactly(projection.domNode.firstChild, sinon.match({}), 'fadeIn');
       });
 
       it('will be invoked when exitAnimation is provided as a string', () => {
-        let transitionStrategy = {enter: sinon.stub(), exit: sinon.stub()};
+        let transitionStrategy = { enter: sinon.stub(), exit: sinon.stub() };
         let projection = dom.create(
           h('div', [
-            h('span', {exitAnimation: 'fadeOut'})
+            h('span', { exitAnimation: 'fadeOut' })
           ]),
-          {transitions: transitionStrategy}
+          { transitions: transitionStrategy }
         );
 
         projection.update(h('div', []));
@@ -109,13 +109,12 @@ describe('dom', () => {
 
         expect(() => {
           projection.update(h('div', [
-            h('span', {enterAnimation: 'fadeIn'})
+            h('span', { enterAnimation: 'fadeIn' })
           ]));
         }).to.throw();
       });
 
     });
-
 
   });
 

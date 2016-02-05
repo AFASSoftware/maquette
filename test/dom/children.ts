@@ -123,7 +123,7 @@ describe('dom', function() {
       it('creates and updates svg dom nodes with the right namespace', () => {
         let projection = dom.create(h('div', [
           h('svg', [
-            h('circle', {cx: '2cm', cy: '2cm', r: '1cm', fill: 'red'})
+            h('circle', { cx: '2cm', cy: '2cm', r: '1cm', fill: 'red' })
           ]),
           h('span')
         ]));
@@ -136,7 +136,7 @@ describe('dom', function() {
 
         projection.update(h('div', [
           h('svg', [
-            h('circle', {key: 'blue', cx: '2cm', cy: '2cm', r: '1cm', fill: 'blue'})
+            h('circle', { key: 'blue', cx: '2cm', cy: '2cm', r: '1cm', fill: 'blue' })
           ]),
           h('span')
         ]));

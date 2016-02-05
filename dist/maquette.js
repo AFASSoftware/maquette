@@ -98,8 +98,15 @@
             /* tslint:disable:no-var-keyword: edge case */
             var propValue = properties[propName];
             /* tslint:enable:no-var-keyword */
-            if (propName === 'class' || propName === 'className' || propName === 'classList') {
-                throw new Error('Property ' + propName + ' is not supported, use classes.');
+            if (propName === 'className') {
+                throw new Error('Property "className" is not supported, use "class".');
+            } else if (propName === 'class') {
+                if (domNode.className) {
+                    // May happen if classes is specified before class
+                    domNode.className += ' ' + propValue;
+                } else {
+                    domNode.className = propValue;
+                }
             } else if (propName === 'classes') {
                 // object with string keys and boolean values
                 var classNames = Object.keys(propValue);
@@ -165,7 +172,11 @@
             // assuming that properties will be nullified instead of missing is by design
             var propValue = properties[propName];
             var previousValue = previousProperties[propName];
-            if (propName === 'classes') {
+            if (propName === 'class') {
+                if (previousValue !== propValue) {
+                    throw new Error('"class" property may not be updated. Use the "classes" property for conditional css classes.');
+                }
+            } else if (propName === 'classes') {
                 var classList = domNode.classList;
                 var classNames = Object.keys(propValue);
                 var classNameCount = classNames.length;

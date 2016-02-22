@@ -14,8 +14,8 @@
     "type": "git",
     "url": "https://github.com/AFASSoftware/maquette"
   },
-  "main": "dist/maquette.js",
-  "typings": "dist/maquette.d.ts",
+  "main": "./dist/maquette.js",
+  "typings": "./dist/maquette.d.ts",
   "scripts": {
     "test": "gulp test && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js",
     "coverage": "node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha"

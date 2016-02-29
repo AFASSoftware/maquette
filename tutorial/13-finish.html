@@ -4,29 +4,38 @@ layout: tutorial
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+
     var projector = maquette.createProjector();
-    var navigation = window.createNavigation(projector);
-    projector.insertBefore(document.querySelector("main"), navigation.renderMaquette);
+    
+    var tableOfContent = window.createTableOfContent();
+    projector.merge(document.querySelector(".table-of-content"), tableOfContent.renderMaquette);
+    
+    var navigation = window.createNavigationBar(projector);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
   });
 </script>
 
-<main>
-  <article>
-    <h1>The grande finale</h1>
-    <p>
-      By now you know everything you need to know about the maquette API.
-    </p>
-    <p>
-      We still want to show you how maquette makes developing a larger web application straightforward.
-      In this last exercise you must complete the remote control by adding support for the available CSS transforms.
-    </p>
-    <p>
-      You will notice we split the code into "components" for you.
-      A component in maquette is simply an object which exposes a renderMaquette function.
-      The component files are integrated using window globals, but you could also be using requirejs or browserify.
-    </p>
-    <p>
-      Good luck finishing the last objectives.
-    </p>
-  </article>
-</main>
+<div class="content-container">
+  <div class="table-of-content"></div>
+  <main>
+    <article>
+      <h1>Bonus level</h1>
+      <p>
+        By now you know everything you need to know about the maquette API.
+      </p>
+      <p>
+        We still want to show you how maquette makes developing a larger web application straightforward.
+        In this last exercise you must complete the remote control by adding support for the available CSS transforms.
+      </p>
+      <p>
+        You will notice we split the code into "components" for you.
+        A component in maquette is simply an object which exposes a renderMaquette function.
+        The component files are integrated using window globals, but you could also be using requirejs or browserify.
+      </p>
+      <p>
+        Good luck finishing the last objectives.
+      </p>
+    </article>
+  </main>
+</div>
+<div class="navigation-bar"></div>

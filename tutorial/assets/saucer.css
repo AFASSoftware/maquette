@@ -103,7 +103,8 @@ body {
   width: 150px;
   height: 150px;
   padding: 75px;
-  background-color: orangered; 
+  background-color: orangered;
+  background: radial-gradient(red 10%, orange 100%);
   border-radius: 50%;
   z-index:3;
 }
@@ -184,8 +185,7 @@ body {
     z-index: 1; }
   .landscape:before {
     box-shadow: 478px 405px 0px -4px rgba(255, 255, 255, 0.7) ,52px 142px 0px -4px rgba(255, 255, 255, 0.5) ,599px 223px 0px -4px rgba(255, 255, 255, 0.3) ,122px 220px 0px -4px white ,767px 120px 0px -4px rgba(255, 255, 255, 0.6) ,342px 85px 0px -4px rgba(255, 255, 255, 0.4) ,516px 76px 0px -4px rgba(255, 255, 255, 0.1) ,273px 3px 0px -4px rgba(255, 255, 255, 0.6) ,610px 296px 0px -4px rgba(255, 255, 255, 0.3) ,202px 34px 0px -4px rgba(255, 255, 255, 0.4) ,603px 750px 0px -4px rgba(255, 255, 255, 0.7) ,579px 164px 0px -4px rgba(255, 255, 255, 0.2) ,492px 41px 0px -4px rgba(255, 255, 255, 0.4) ,539px 708px 0px -4px rgba(255, 255, 255, 0.2) ,457px 397px 0px -4px rgba(255, 255, 255, 0.2) ,185px 575px 0px -4px rgba(255, 255, 255, 0.8) ,621px 75px 0px -4px rgba(255, 255, 255, 0.3) ,215px 174px 0px -4px rgba(255, 255, 255, 0.1) ,498px 99px 0px -4px rgba(255, 255, 255, 0.7) ,310px 687px 0px -4px rgba(255, 255, 255, 0.6) ,756px 121px 0px -4px rgba(255, 255, 255, 0.7) ,663px 372px 0px -4px rgba(255, 255, 255, 0.6) ,773px 213px 0px -4px rgba(255, 255, 255, 0.2) ,384px 393px 0px -4px rgba(255, 255, 255, 0.8) ,36px 170px 0px -4px rgba(255, 255, 255, 0.1) ,247px 700px 0px -4px white ,344px 136px 0px -4px rgba(255, 255, 255, 0.5) ,273px 108px 0px -4px rgba(255, 255, 255, 0.3) ,679px 35px 0px -4px rgba(255, 255, 255, 0.6);
-    -webkit-animation: sky 5s infinite alternate;
-            animation: sky 5s infinite alternate; }
+  }
   .landscape:after {
     box-shadow: 27px 683px 0px -4px rgba(255, 255, 255, 0.8) ,429px 626px 0px -4px rgba(255, 255, 255, 0.1) ,95px 669px 0px -4px rgba(255, 255, 255, 0.8) ,453px 274px 0px -4px rgba(255, 255, 255, 0.2) ,451px 71px 0px -4px rgba(255, 255, 255, 0.9) ,715px 508px 0px -4px rgba(255, 255, 255, 0.6) ,581px 173px 0px -4px rgba(255, 255, 255, 0.7) ,262px 617px 0px -4px rgba(255, 255, 255, 0.7) ,538px 425px 0px -4px rgba(255, 255, 255, 0.2) ,397px 341px 0px -4px rgba(255, 255, 255, 0.8) ,702px 444px 0px -4px rgba(255, 255, 255, 0.4) ,360px 3px 0px -4px rgba(255, 255, 255, 0.3) ,389px 415px 0px -4px white ,630px 25px 0px -4px rgba(255, 255, 255, 0.2) ,50px 173px 0px -4px rgba(255, 255, 255, 0.2) ,64px 771px 0px -4px rgba(255, 255, 255, 0.8) ,533px 407px 0px -4px rgba(255, 255, 255, 0.3) ,350px 394px 0px -4px rgba(255, 255, 255, 0.5) ,683px 469px 0px -4px rgba(255, 255, 255, 0.5) ,788px 235px 0px -4px rgba(255, 255, 255, 0.7) ,738px 12px 0px -4px rgba(255, 255, 255, 0.3) ,344px 232px 0px -4px rgba(255, 255, 255, 0.5) ,292px 459px 0px -4px rgba(255, 255, 255, 0.7) ,307px 150px 0px -4px rgba(255, 255, 255, 0.9) ,351px 685px 0px -4px white ,701px 434px 0px -4px rgba(255, 255, 255, 0.6) ,120px 51px 0px -4px rgba(255, 255, 255, 0.7) ,672px 358px 0px -4px rgba(255, 255, 255, 0.9) ,573px 516px 0px -4px rgba(255, 255, 255, 0.8); }
 
@@ -217,8 +217,16 @@ body {
     z-index: 1;
     background: #00D1FF;
     position: absolute;
-    -webkit-animation: lamps 1s infinite alternate;
-            animation: lamps 1s infinite alternate; }
+    -webkit-animation: lamps 1s;
+            animation: lamps 1s; 
+    -webkit-animation-iteration-count: 5;
+    animation-iteration-count: 5;
+    -webkit-animation-direction: alternate;
+    animation-direction: alternate;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    
+  }
   .saucer:after {
     z-index:-1; /* behind text */
     position: absolute;

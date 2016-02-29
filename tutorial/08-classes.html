@@ -5,35 +5,42 @@ layout: tutorial
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     var projector = maquette.createProjector();
-    var navigation = window.createNavigation(projector);
-    projector.insertBefore(document.querySelector("main"), navigation.renderMaquette);
+    
+    var tableOfContent = window.createTableOfContent();
+    projector.merge(document.querySelector(".table-of-content"), tableOfContent.renderMaquette);
+    
+    var navigation = window.createNavigationBar(projector);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
   });
 </script>
-
-<main>
-  <article>
-    <h1>Conditional CSS classes</h1>
-    <p>
-      Congratulations on completing the tutorial this far! We still need to explain two more concepts before you are ready to build maquette applications yourself.
-    </p>
-    <p>
-      The first concept is about conditional CSS classes.
-      You are already familliar with css classes in the selector. For example
-      <code>"div.landscape"</code> creates a <code>&lt;div class="landscape"&gt;</code>.
-      But what if our landscape div can also have a CSS class "night" which is conditional?
-      This usecase is so common, that maquette provides a special construction for this.
-      It uses the <code>classes</code> property, which is an object literal mapping classnames to a condition.
-      It works as follows:
-    </p>
-    <pre>h("div.landscape", {
-  classes: { night: new Date().getHours() &lt;= 8 }        
-})</pre>
-    <p>
-      Looks easy right? Your next assignment is to assign the CSS class 'stealth' to the
-      flying saucer, based on the 'stealth' variable.
-    </p>
-    <p>
-      Good luck!
-    </p>
-  </article>
-</main>
+<div class="content-container">
+  <div class="table-of-content"></div>
+  <main>
+    <article>
+      <h1>Conditional CSS classes</h1>
+      <p>
+        Congratulations on completing the tutorial this far! We still need to explain two more concepts before you are ready to build maquette applications yourself.
+      </p>
+      <p>
+        The first concept is about conditional CSS classes.
+        You are already familliar with css classes in the selector. For example
+        <code>"div.landscape"</code> creates a <code>&lt;div class="landscape"&gt;</code>.
+        But what if our landscape div can also have a CSS class "night" which is conditional?
+        This usecase is so common, that maquette provides a special construction for this.
+        It uses the <code>classes</code> property, which is an object literal mapping classnames to a condition.
+        It works as follows:
+      </p>
+      <pre>h("div.landscape", {
+    classes: { night: new Date().getHours() &lt;= 8 }        
+  })</pre>
+      <p>
+        Looks easy right? Your next assignment is to assign the CSS class 'stealth' to the
+        flying saucer, based on the 'stealth' variable.
+      </p>
+      <p>
+        Good luck!
+      </p>
+    </article>
+  </main>
+</div>
+<div class="navigation-bar"></div>

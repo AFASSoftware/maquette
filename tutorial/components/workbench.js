@@ -1,6 +1,6 @@
 ---
 ---
-window.createWorkbench = function (projector, tabs, objectives, navigation) {
+window.createWorkbench = function (projector, tabs, objectives) {
 
   if(typeof tabs === "string") {
     tabs = [
@@ -286,10 +286,7 @@ window.createWorkbench = function (projector, tabs, objectives, navigation) {
                 ])
               ] : []
             ]);
-          }),
-          h("div.objectives-menu", [
-            navigation.renderMaquette()
-          ])
+          })
         ]),
         h("div.input", [
           h("div.tabs", [

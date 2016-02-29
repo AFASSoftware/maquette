@@ -5,49 +5,56 @@ layout: tutorial
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     var projector = maquette.createProjector();
-    var navigation = window.createNavigation(projector);
-    projector.insertBefore(document.querySelector("main"), navigation.renderMaquette);
+    
+    var tableOfContent = window.createTableOfContent();
+    projector.merge(document.querySelector(".table-of-content"), tableOfContent.renderMaquette);
+    
+    var navigation = window.createNavigationBar(projector);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
   });
 </script>
-
-<main>
-  <article>
-    <h1>How it works</h1>
-    <p>
-      You might now be concerned about how often the renderMaquette function is executed.
-      Let me reassure you, it is only executed whenever the virtual DOM might have changed, not 60 times per second.
-      It is also never called more than once per frame (16ms).
-    </p>
-    <p>
-      The projector is responsible for updating the DOM. It works as follows:
-    </p>
-    <ol>
-      <li>The projector waits until its scheduleRender() function gets called one or more times.</li>
-      <li>The projector waits until the browser signals it is ready to paint the next frame (using requestAnimationFrame).</li>
-      <li>The projector calls the renderMaquette function to render the virtual DOM.</li>
-      <li>The projector determines the differences between this virtual DOM and the previous one.</li>
-      <li>The differences are applied to the real DOM, applying animations if specified.</li>
-    </ol>
-    <p>
-      You may have noticed that we did not call scheduleRender() in our previous assignment.
-      So how did the projector know it needed to render the DOM?
-      The answer is that scheduleRender() is called automatically every time an event handler registered on the virtual DOM is invoked.
-      So in our previous assignment, the oninput event handler caused the projector to render.
-    </p>
-    <p>
-      So why is this important? Because if you make changes to the data by other means than through a registered event handler, you
-      must not forget to call scheduleRender(). Common scenario's where this happens are:
-    </p>
-    <ul>
-      <li>Data is received from the server (using XHR or websockets)</li>
-      <li>Code is executed asynchronously using setTimeout, setInterval or requestAnimationFrame. (Note: not needed when using Promises or MutationObservers)</li>
-    </ul>
-    <p>
-      In your next example, you will see an attempt to make the flying saucer orbit a planet. However, it does not work as it should.
-      You must use the information you just received to fix the broken example.
-    </p>
-    <p>
-      Press next to start. Good luck.
-    </p>
-  </article>
-</main>
+<div class="content-container">
+  <div class="table-of-content"></div>
+  <main>
+    <article>
+      <h1>How it works</h1>
+      <p>
+        You might now be concerned about how often the renderMaquette function is executed.
+        Let me reassure you, it is only executed whenever the virtual DOM might have changed, not 60 times per second.
+        It is also never called more than once per frame (16ms).
+      </p>
+      <p>
+        The projector is responsible for updating the DOM. It works as follows:
+      </p>
+      <ol>
+        <li>The projector waits until its scheduleRender() function gets called one or more times.</li>
+        <li>The projector waits until the browser signals it is ready to paint the next frame (using requestAnimationFrame).</li>
+        <li>The projector calls the renderMaquette function to render the virtual DOM.</li>
+        <li>The projector determines the differences between this virtual DOM and the previous one.</li>
+        <li>The differences are applied to the real DOM, applying animations if specified.</li>
+      </ol>
+      <p>
+        You may have noticed that we did not call scheduleRender() in our previous assignment.
+        So how did the projector know it needed to render the DOM?
+        The answer is that scheduleRender() is called automatically every time an event handler registered on the virtual DOM is invoked.
+        So in our previous assignment, the oninput event handler caused the projector to render.
+      </p>
+      <p>
+        So why is this important? Because if you make changes to the data by other means than through a registered event handler, you
+        must not forget to call scheduleRender(). Common scenario's where this happens are:
+      </p>
+      <ul>
+        <li>Data is received from the server (using XHR or websockets)</li>
+        <li>Code is executed asynchronously using setTimeout, setInterval or requestAnimationFrame. (Note: not needed when using Promises or MutationObservers)</li>
+      </ul>
+      <p>
+        In your next example, you will see an attempt to make the flying saucer orbit a planet. However, it does not work as it should.
+        You must use the information you just received to fix the broken example.
+      </p>
+      <p>
+        Press next to start. Good luck.
+      </p>
+    </article>
+  </main>
+</div>
+<div class="navigation-bar"></div>

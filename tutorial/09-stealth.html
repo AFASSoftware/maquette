@@ -38,15 +38,18 @@ workbench: true
     var getallObjectivesAchieved = function () {
       return workbench.allObjectivesAchieved();
     };
-    
-    var navigation = window.createNavigation(projector, getallObjectivesAchieved);
 
     var workbench = createWorkbench(projector, "assets/saucer-stealth.js", [
       objective1
-    ], navigation);
+    ]);
 
     projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    
+    var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
   });
 </script>
 
 <div class="work"></div>
+
+<div class="navigation-bar"></div>

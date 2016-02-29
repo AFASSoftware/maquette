@@ -122,8 +122,6 @@ workbench: true
       return workbench.allObjectivesAchieved();
     };
     
-    var navigation = window.createNavigation(projector, getallObjectivesAchieved);
-
     var workbench = createWorkbench(projector, [
       { name: "saucer.html", url: "assets/saucer-final.html" },
       { name: "saucer.css", url: "assets/saucer.css" },
@@ -133,7 +131,12 @@ workbench: true
     ], [ objective1, objective2 ], navigation);
 
     projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    
+    var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+
   });
 </script>
 
 <div class="work"></div>
+<div class="navigation-bar"></div>

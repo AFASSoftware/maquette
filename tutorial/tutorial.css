@@ -1,58 +1,28 @@
+@import 'styles/tutorial-menu.css';
+@import 'styles/progress-bar.css';
+@import 'styles/navigation-bar.css';
+
 .main-area {
-  display:flex;
-  flex-wrap: wrap;
+  display: flex;
+  flex-grow: 1;
+  align-content: stretch;
+  flex-direction: column;
+}
+.content-container {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  background: #F7F7F7;
 }
 
 .main-area > main {
   flex: 1 0 80%;
+  justify-content: flex-start;
+  padding: 16px 48px 16px 48px;
 }
 
 .main-area > .work {
-  flex: 1 0 800px;
-}
-
-.menu {
-  margin: 10px;
-  padding-top: 10px;
-  flex: 0 0 280px;
-  align-items: flex-start;
-  display:flex;
-  bottom: 0px;
-  border-top: solid 1px #D8D8D8;
-}
-
-.menu a {
-  padding:5px 15px;
-  margin-right:10px;
-  color:white;
-  box-shadow: 0 1px 2px rgba(0,0,0,.1);
-  border: solid 1px #D8D8D8;
-  background:indigo;
-}
-
-.menu > a.locked {
-  opacity: .5;
-  background: #E3E6E6;
-  color: grey;
-  position: relative;
-}
-
-.menu > a.unlocked {
-  position: relative;
-  background: #43A047;
-}
-
-.menu > a.secondary {
-  background: #E3E6E6;
-  color: #444444;
-}
-
-
-.menu > a > svg {
-  position:absolute; /* may disappear using an animation without the button itself being changed */
-  fill: indigo;
-  left: 0px;
-  top:10px;
+  flex: 1 0 600px;
 }
 
 .instructions {
@@ -60,7 +30,7 @@
 }
 
 .work {
-  height: calc(100vh - 40px);
+  height: calc(100vh - 100px);
   min-height: 300px;
   display: -webkit-flex;
   display: flex;
@@ -186,13 +156,15 @@
   flex: 0 0 300px;
   max-width: 350px;
 }
+.table-of-content .header,
 .objectives .header{
-  margin: 10px;
   font-size: 21px;
   font-weight: 100;
   border-bottom: 1px solid rgb(221, 221, 221);
   padding-bottom: 5px;
-  margin-bottom: 10px;
+}
+.objectives .header {
+  margin: 10px;
 }
 
 .objective {
@@ -262,3 +234,97 @@
 .complete {
   background-color: green;
 }
+.table-of-content {
+  padding: 10px;
+  background-color: #E8EBEA;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 280px;
+  display: flex;
+  bottom: 0px;
+  border-right: 1px solid #E0E0E0;
+}
+.table-of-content ul {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  margin: 10px 0;
+}
+.table-of-content li {
+  flex: 1 1 auto;
+  list-style: none;
+  margin-bottom: 10px;
+}
+
+.table-of-content li a {
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: row;
+}
+.table-of-content li a::before{
+  content: '✓';
+  opacity: 0.6;
+  color: #F5F5F5;
+  text-shadow: 0px 1px #C3C3C3;
+  font-size: 22px;
+  margin-right: 5px;
+  transition: all 0.3s ease-in-out;
+}
+.table-of-content li a:hover::before {
+  transform: rotate(360deg) scale(1.2);
+}
+/*.table-of-content li a::before{*/
+/*  transition: all 0.4s ease-in-out;*/
+/*  content:'';*/
+/*  display: block;*/
+/*  border: 1px solid #E6E4E4;*/
+/*  line-height: 12px;*/
+/*  padding: 3px 3px;*/
+/*  margin-right: 6px;*/
+/*  background: white;*/
+/*  box-sizing: border-box;*/
+/*  height: 22px;*/
+/*  width: 22px;*/
+/*  font-size: 18px;*/
+/*}*/
+
+
+.table-of-content li a.achieved::before{
+  content: '✓';
+  opacity: 1;
+  color: #288A2B;
+}
+.table-of-content .level-count {
+  font-weight: 100;
+  padding-right: 5px;
+  font-size: 12px;
+  transition: color 0.4s;
+}
+.table-of-content li a:hover .level-count {
+  color: indigo;
+}
+.table-of-content .level-title {
+  font-weight: 300;
+  color:#4d4d4d;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.4s;
+}
+.table-of-content li a:hover .level-title {
+  color: indigo;
+  text-decoration: underline;
+}
+
+.table-of-content .active .level-title,
+.table-of-content .active .level-count {
+  color: indigo;
+}
+
+.table-of-content .active .level-title {
+  text-decoration: none;
+  font-weight: 700;
+}
+
+

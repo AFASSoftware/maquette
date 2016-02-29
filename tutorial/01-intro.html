@@ -7,23 +7,21 @@ workbench: true
 <script src="/tutorial/components/markup-matcher.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-
     var h = maquette.h;
     var projector = maquette.createProjector();
-
     var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Greetings</div>\n</div>');
-
     var getallObjectivesAchieved = function () {
       return workbench.allObjectivesAchieved();
     };
     
-    var navigation = window.createNavigation(projector, getallObjectivesAchieved);
-
+    //var navigation = window.createNavigation(projector, getallObjectivesAchieved);
     var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
       markupMatcher
-    ], navigation);
-
+    ]);
     projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    
+    var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
   });
 </script>
 
@@ -75,3 +73,4 @@ workbench: true
 
 <div class="work" style="height:350px">
 </div>
+<div class="navigation-bar"></div>

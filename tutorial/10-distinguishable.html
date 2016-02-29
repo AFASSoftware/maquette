@@ -5,26 +5,33 @@ layout: tutorial
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     var projector = maquette.createProjector();
-    var navigation = window.createNavigation(projector);
-    projector.insertBefore(document.querySelector("main"), navigation.renderMaquette);
+    
+    var tableOfContent = window.createTableOfContent();
+    projector.merge(document.querySelector(".table-of-content"), tableOfContent.renderMaquette);
+    
+    var navigation = window.createNavigationBar(projector);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
   });
 </script>
-
-<main>
-  <article>
-    
-    {% capture rulesInclude %}{% include rules.md %}{% endcapture %}
-    {{ rulesInclude | markdownify }}
-    
-    <h2>Assignment</h2>
-    <p>
-      The next assignment demonstrates what goes wrong when a non-distinguishable child node is removed and how maquette helps you fix it.
-    </p>
-    <p>
-      In this assignment, we have two rows in our remote control. 
-      When you press the 'remove' button the top row should be removed. 
-      Maquette removes the wrong row and then crashes. Your task is to make sure the right thing happens. Good luck.
-    </p>
-
-  </article>
-</main>
+<div class="content-container">
+  <div class="table-of-content"></div>
+  <main>
+    <article>
+      
+      {% capture rulesInclude %}{% include rules.md %}{% endcapture %}
+      {{ rulesInclude | markdownify }}
+      
+      <h2>Assignment</h2>
+      <p>
+        The next assignment demonstrates what goes wrong when a non-distinguishable child node is removed and how maquette helps you fix it.
+      </p>
+      <p>
+        In this assignment, we have two rows in our remote control. 
+        When you press the 'remove' button the top row should be removed. 
+        Maquette removes the wrong row and then crashes. Your task is to make sure the right thing happens. Good luck.
+      </p>
+  
+    </article>
+  </main>
+</div>
+<div class="navigation-bar"></div>

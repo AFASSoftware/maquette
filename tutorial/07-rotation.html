@@ -67,10 +67,14 @@ workbench: true
     workbench = createWorkbench(projector, "assets/saucer-orbit.js", [
       objective1,
       objective2
-    ],navigation);
+    ]);
 
     projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    
+    var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
   });
 </script>
 
 <div class="work"></div>
+<div class="navigation-bar"></div>

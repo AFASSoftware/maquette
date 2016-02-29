@@ -13,18 +13,12 @@
 
   <nav class="top-bar">
     <nav class="full-width">
-      <a class="logo" href="/">Maquette</a>
+      <a class="logo" href="/tutorial/index.html">Maquette tutorial</a>
     </nav>
   </nav>
   
   <script src="//cdnjs.cloudflare.com/ajax/libs/maquette/{{ site.maquette_version }}/maquette.min.js"></script>
   <script src="/tutorial/components/navigation.js"></script>
-  {%if page.workbench %}
-  <script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
-  <script src="/tutorial/components/workbench.js"></script>
-  {% endif %}
-
   <div class="main-area">
   
     {{ content }}

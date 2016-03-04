@@ -425,13 +425,16 @@
         var domNode = previous.domNode;
         var textUpdated = false;
         if (previous === vnode) {
-            return textUpdated;    // we assume that nothing has changed
+            return textUpdated;    // By contract, VNode objects may not be modified after passing them to maquette
         }
         var updated = false;
         if (vnode.vnodeSelector === '') {
             if (vnode.text !== previous.text) {
-                domNode.nodeValue = vnode.text;
+                var newVNode = document.createTextNode(vnode.text);
+                domNode.parentNode.replaceChild(newVNode, domNode);
+                vnode.domNode = newVNode;
                 textUpdated = true;
+                return textUpdated;
             }
         } else {
             if (vnode.vnodeSelector.lastIndexOf('svg', 0) === 0) {

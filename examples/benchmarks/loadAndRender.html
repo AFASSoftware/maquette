@@ -10,7 +10,7 @@
     var h = maquette.h;
 
     var items = [{ name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }, { name: "a" }, { name: "b" }, { name: "c" }];
-    var render = function () {
+    var renderMaquette = function () {
       return h("div#container", items.map(
         function (item, index) {
           return h("input", { key: index, value: item.name });
@@ -18,7 +18,8 @@
       ));
     };
 
-    maquette.createProjector(document.getElementById("container"), render, {});
+    var projector = maquette.createProjector({});
+    projector.append(document.getElementById('container'), renderMaquette);
 
   </script>
 </body>

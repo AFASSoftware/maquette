@@ -150,9 +150,9 @@
                                 };
                             }());
                         }
+                        domNode[propName] = propValue;
                     }
-                    domNode[propName] = propValue;
-                } else if (type === 'string' && propName !== 'value') {
+                } else if (type === 'string' && propName !== 'value' && propName !== 'innerHTML') {
                     domNode.setAttribute(propName, propValue);
                 } else {
                     domNode[propName] = propValue;
@@ -231,7 +231,7 @@
                     if (type === 'function') {
                         throw new Error('Functions may not be updated on subsequent renders (property: ' + propName + '). Hint: declare event handler functions outside the render() function.');
                     }
-                    if (type === 'string') {
+                    if (type === 'string' && propName !== 'innerHTML') {
                         domNode.setAttribute(propName, propValue);
                     } else {
                         if (domNode[propName] !== propValue) {

@@ -447,9 +447,9 @@ let setProperties = function(domNode: Node, properties: VNodeProperties, project
               };
             } ());
           }
+          (domNode as any)[propName] = propValue;
         }
-        (domNode as any)[propName] = propValue;
-      } else if (type === 'string' && propName !== 'value') {
+      } else if (type === 'string' && propName !== 'value' && propName !== 'innerHTML') {
         (domNode as Element).setAttribute(propName, propValue);
       } else {
         (domNode as any)[propName] = propValue;
@@ -528,7 +528,7 @@ let updateProperties = function(domNode: Node, previousProperties: VNodeProperti
           throw new Error('Functions may not be updated on subsequent renders (property: ' + propName +
             '). Hint: declare event handler functions outside the render() function.');
         }
-        if (type === 'string') {
+        if (type === 'string' && propName !== 'innerHTML') {
           (domNode as Element).setAttribute(propName, propValue);
         } else {
           if ((domNode as any)[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop

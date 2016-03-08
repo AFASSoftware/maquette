@@ -277,6 +277,12 @@ export interface VNodeProperties {
   // From HTMLImageElement
   alt?: string;
   srcset?: string;
+  /**
+   * Puts a non-interactive piece of html inside the DOM node.
+   *
+   * Note: if you use innerHTML, maquette cannot protect you from XSS vulnerabilities and you must make sure that the innerHTML value is safe.
+   */
+  innerHTML?: string;
 
   /**
    * Everything that is not explicitly listed (properties and attributes that are either uncommon or custom).

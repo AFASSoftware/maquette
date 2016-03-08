@@ -84,6 +84,16 @@ describe('dom', function() {
       expect(link.tabIndex).to.equal(0);
     });
 
+    it('updates innerHTML', () => {
+      let projection = dom.create(h('p', { innerHTML: '<span>INNER</span>' }));
+      let paragraph = projection.domNode as HTMLElement;
+      expect(paragraph.childNodes).to.have.length(1);
+      expect(paragraph.firstChild.textContent).to.equal('INNER');
+      projection.update(h('p', { innerHTML: '<span>UPDATED</span>' }));
+      expect(paragraph.childNodes).to.have.length(1);
+      expect(paragraph.firstChild.textContent).to.equal('UPDATED');
+    });
+
     it('does not mess up scrolling in Edge', () => {
       let projection = dom.create(h('div', { scrollTop: 0 }));
       let div = projection.domNode as HTMLDivElement;

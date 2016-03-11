@@ -6,7 +6,7 @@ liveEditors: true
 Maquette itself is not a framework. 
 This means it does not force you to structure your application in a certain way.
 Using components however is an obvious and convenient way to structure your application.
-A component is simply an object instance with a `renderMaquette()` function.
+A component by convention an object instance with a `renderMaquette()` function.
 This method can then be called a parent component in their `renderMaquette()` function,
 thus forming a simple component hierarchy.
 
@@ -14,14 +14,14 @@ The code below shows this mechanism in its simplest form; the `okButton` compone
 
 {% include live-editor-start.html %}var okButton = {
   renderMaquette: function () {
-    return h("button", ["ok"]);
+    return h('button', ['ok']);
   }
 };
 
 var form = {
   renderMaquette: function() {
-    return h("div.form", [
-      h("textarea"),
+    return h('div.form', [
+      h('textarea'),
       okButton.renderMaquette()
     ]);
   }
@@ -40,20 +40,20 @@ Let us go one step further and create a function that can produce configurable b
 
   return {
     renderMaquette: function() {
-      return h("button", { onclick: handleClick }, [text]);
+      return h('button', { onclick: handleClick }, [text]);
     }
   };
 };
 
-var rotateButton = createButton("skew", function() { 
-  domNode.style.transform = "skewX(15deg)";
+var rotateButton = createButton('skew', function() { 
+  domNode.style.transform = 'skewX(15deg)';
 });
-var undoButton = createButton("straight", function() { 
-  domNode.style.transform = ""; 
+var undoButton = createButton('straight', function() { 
+  domNode.style.transform = ''; 
 });
 
 projector.append(domNode, function() { 
-  return h("div", [
+  return h('div', [
     rotateButton.renderMaquette(),
     undoButton.renderMaquette()
   ]); 
@@ -68,21 +68,21 @@ There is one problem however with the implementation we have just shown. Conside
 {% include live-editor-start.html %}var createButton = function(text, onClick) {
   return {
     renderMaquette: function() {
-      return h("button", { onclick: onClick }, [text]);
+      return h('button', { onclick: onClick }, [text]);
     }
   };
 };
 
 var lastStep = false;
 
-var nextButton = createButton("Next", function() {
+var nextButton = createButton('Next', function() {
   lastStep = true;
 });
-var finishButton = createButton("Finish", function() {});
+var finishButton = createButton('Finish', function() {});
 
 var renderMaquette = function() {
-  return h("div.form", [
-    h("textarea"),
+  return h('div.form', [
+    h('textarea'),
     lastStep ? [
       finishButton.renderMaquette()
     ] : [
@@ -115,8 +115,8 @@ function createMyButton(text, onClick) {
 
   var myButton = {
     renderMaquette: function() {
-      return h("my-button", {key: myButton}, [ 
-        h("button", { onclick: handleClick }, [text])
+      return h('my-button', {key: myButton}, [ 
+        h('button', { onclick: handleClick }, [text])
       ]);
     }
   };
@@ -124,7 +124,7 @@ function createMyButton(text, onClick) {
 }
 
 // how to use the button component
-var button = createMyButton("click me", function(){ alert("clicked"); });
+var button = createMyButton('click me', function(){ alert('clicked'); });
 
 projector.append(domNode, button.renderMaquette);
 {% include live-editor-end.html %}
@@ -132,6 +132,7 @@ projector.append(domNode, button.renderMaquette);
 In this snippet we did something else as well. We added an extra wrapper element `my-button`, which has a nonstandard tagname.
 This technique is also used by other frameworks, like polymer. This makes styling and debugging your components easier.
 Browsers will just use an HTMLUnknown element which essentially just works just like a &lt;span&gt;. 
-We really like this approach, but you can decide for yourself if you also want to use this.
+You can decide for yourself if you also want to use this.
 
+You can continue reading how to [unit test components](unit-testing.html).
 

@@ -44,6 +44,25 @@
         projector.merge(editorElement.querySelector(".live-editor-result"), liveEditor.renderResult);
         projector.append(editorElement.querySelector(".col-2"), liveEditor.renderExtras);
       }
+      var mochaEditors = document.querySelectorAll(".mocha-editor");
+      for (var j=0;j<mochaEditors.length;j++) {
+        var textArea = mochaEditors[j];
+        var content = textArea.textContent;
+        var value = textArea.value;
+        editor = ace.edit(textArea);
+        editor.setOptions({minLines: 5, maxLines: 50});
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode({ path: "ace/mode/javascript" });
+        editor.getSession().setTabSize(2);
+        editor.getSession().setUseSoftTabs(true);
+        editor.setShowPrintMargin(false);
+        editor.setBehavioursEnabled(true);
+        if (content && value.charCodeAt(0)===1) {
+          // Happens sometimes in chrome while navigatiing using browser back
+          editor.setValue(content, 0);
+          editor.clearSelection();
+        }
+      }
     }
   }
   </script>

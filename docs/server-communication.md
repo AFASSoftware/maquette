@@ -38,10 +38,48 @@ function renderMaquette() {
 projector.append(domNode, renderMaquette);
 {% include live-editor-end.html %}
 
+
+#### Using fetch
+
+If you want tu use the modern `fetch API` (Needs polyfilling for IE, Edge and Safari)
+you can use a function similar to the `fetchText` function below:
+
+{% include live-editor-start.html %}var result;
+
+var fetchText = function(url) {
+  return fetch('/index.html')
+    .then(function(response) {
+      return response.text();
+    })
+    .then(function(responseText) {
+      projector.scheduleRender();
+      return responseText;
+    }); 
+};
+
+var load = function() {
+  fetchText('/index.html')
+    .then(function(responseText) {
+    result = responseText.length + ' bytes';
+  });
+};
+
+function renderMaquette() {
+  return h('div', [
+    h('button', {onclick:load}, ['Load']),
+    h('p', [result])
+  ]);
+}
+
+projector.append(domNode, renderMaquette);
+
+{% include live-editor-end.html %}
+
+
 #### Using a library
 
-Most developers do not use XMLHttpRequest directly, but use some kind of library.
-Most libraries provide some kind of hook which is invoked whenever a response arrives.
+Most developers do not use XMLHttpRequest or fetch directly, but use some kind of library.
+Most libraries provide a hook which is invoked whenever a response arrives.
 You can use such a hook to call `projector.scheduleRender()`.
 I will show how this works with the lightweight promise-based [axios](https://github.com/mzabriskie/axios) library.
 

@@ -70,7 +70,7 @@ describe('h', function() {
   });
 
   it('Should render a number as text', function() {
-    expect(h('div', 1)).to.deep.equal({ vnodeSelector: 'div', properties: undefined, text: undefined, children: [toTextVNode('1')], domNode: null });
+    expect(h('div', 1 as any)).to.deep.equal({ vnodeSelector: 'div', properties: undefined, text: undefined, children: [toTextVNode('1')], domNode: null });
   });
 
   it('Validates the first argument to be a string', () => {

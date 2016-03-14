@@ -68,6 +68,22 @@ describe('dom', function() {
       expect(div.children[3]).to.equal(lastSpan);
     });
 
+    it('uses "bind" instead of "key" when no "key" is present', () => {
+      let projection = dom.create(h('div', [
+        h('span', { bind: 2 })
+      ]));
+
+      let div = projection.domNode as HTMLDivElement;
+      expect(div.children.length).to.equal(1);
+
+      projection.update(h('div', [
+        h('span', { bind: 1 }),
+        h('span', { bind: 2 })
+      ]));
+
+      expect(div.children.length).to.equal(2);
+    });
+
     it('can insert textnodes', () => {
       let projection = dom.create(h('div', [
         h('span', { key: 2 }),

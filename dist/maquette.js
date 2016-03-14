@@ -10,6 +10,7 @@
         factory(root.maquette = {});
     }
 }(this, function (exports) {
+    'use strict';
     ;
     ;
     ;
@@ -34,7 +35,10 @@
             return false;
         }
         if (vnode1.properties && vnode2.properties) {
-            return vnode1.properties.key === vnode2.properties.key;
+            if (vnode1.properties.key !== vnode2.properties.key) {
+                return false;
+            }
+            return vnode1.properties.bind === vnode2.properties.bind;
         }
         return !vnode1.properties && !vnode2.properties;
     };
@@ -296,7 +300,7 @@
         if (childNode.vnodeSelector === '') {
             return;    // Text nodes need not be distinguishable
         }
-        var key = childNode.properties ? childNode.properties.key : undefined;
+        var key = childNode.properties ? childNode.properties.key || childNode.properties.bind : undefined;
         if (!key) {
             for (var i = 0; i < childNodes.length; i++) {
                 if (i !== indexToCheck) {
@@ -473,33 +477,7 @@
         };
     };
     ;
-    /**
- * The `h` method is used to create a virtual DOM node.
- * This function is largely inspired by the mercuryjs and mithril frameworks.
- * The `h` stands for (virtual) hyperscript.
- *
- * NOTE: There are {@link http://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
- *
- * @param selector    Contains the tagName, id and fixed css classnames in CSS selector format.
- *                    It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
- * @param properties  An object literal containing properties that will be placed on the DOM node.
- * @param children    Virtual DOM nodes and strings to add as child nodes.
- *                    `children` may contain [[VNode]]s, `string`s, nested arrays, `null` and `undefined`.
- *                    Nested arrays are flattened, `null` and `undefined` are removed.
- *
- * @returns           A VNode object, used to render a real DOM later.
- */
-    /* istanbul ignore next: this function will be overwritten later, only its signature matters for documentation purposes */
-    exports.h = function (selector, properties) {
-        var children = [];
-        for (var _i = 2; _i < arguments.length; _i++) {
-            children[_i - 2] = arguments[_i];
-        }
-        return undefined;
-    };
-    // Splitting the h into declaration and implementation because the Typescript compiler creates some surrogate code for desctructuring 'children'.
-    // This would needlessly slow the h() function down.
-    // This double declaration adds some extra bytes into the library, but it generates the right API documentation.
+    // The other two parameters are not added here, because the Typescript compiler creates surrogate code for desctructuring 'children'.
     exports.h = function (selector) {
         var properties = arguments[1];
         if (typeof selector !== 'string') {
@@ -702,12 +680,18 @@
     exports.createProjector = function (projectionOptions) {
         var projector;
         projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-        projectionOptions.eventHandlerInterceptor = function (propertyName, functionPropertyArgument) {
-            return function () {
+        var originalEventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
+        projectionOptions.eventHandlerInterceptor = function (propertyName, eventHandler, domNode, properties) {
+            var scheduleRenderAndInvokeEventHandler = function () {
                 // intercept function calls (event handlers) to do a render afterwards.
                 projector.scheduleRender();
-                return functionPropertyArgument.apply(this, arguments);
+                return eventHandler.apply(properties.bind || this, arguments);
             };
+            if (originalEventHandlerInterceptor) {
+                return originalEventHandlerInterceptor(propertyName, scheduleRenderAndInvokeEventHandler, domNode, properties);
+            } else {
+                return scheduleRenderAndInvokeEventHandler;
+            }
         };
         var renderCompleted = true;
         var scheduled;

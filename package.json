@@ -59,7 +59,7 @@
     "tsd": "^0.6.5",
     "tsify": "^0.13.1",
     "tslint": "3.2.1",
-    "typescript": "1.7.5",
+    "typescript": "1.8.7",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }

@@ -1,5 +1,5 @@
 import {expect, sinon, jsdom} from './utilities';
-import {createProjector, h} from '../src/maquette';
+import {createProjector, h, Component} from '../src/maquette';
 
 describe('Projector', () => {
 
@@ -134,7 +134,7 @@ describe('Projector', () => {
     let projector = createProjector({});
     let parentElement = { appendChild: sinon.stub() };
     let handleClick = sinon.stub();
-    let renderFunction = sinon.stub().returns(h('button', { onclick: handleClick }));
+    let renderFunction = () => h('button', { onclick: handleClick });
     projector.append(parentElement as any, renderFunction);
 
     let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
@@ -149,34 +149,19 @@ describe('Projector', () => {
 
   });
 
-  it('uses a null eventHandlerInterceptor', () => {
-    let projector = createProjector({ eventHandlerInterceptor: null });
-    let parentElement = { appendChild: sinon.stub() };
-    let handleClick = sinon.stub();
-    let renderFunction = sinon.stub().returns(h('button', { onclick: handleClick }));
-    projector.append(parentElement as any, renderFunction);
-
-    let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let evt = {};
-
-    expect(global.requestAnimationFrame).not.to.be.called;
-    expect(button.onclick).is.equal(undefined);
-    expect(handleClick).not.to.be.called;
-  });
-
   it('uses a supplied eventHandlerInterceptor', () => {
-    var eventHandlerInterceptorCalledFlag = false;
-    var eventHandlerCalledFlag = false;
+    let eventHandlerInterceptorCalledFlag = false;
+    let eventHandlerCalledFlag = false;
     let eventHandlerInterceptor = function(propertyName: string, functionPropertyArgument: Function) {
-        eventHandlerInterceptorCalledFlag = true;
-        return function() {
-          eventHandlerCalledFlag = true;
-        }
+      eventHandlerInterceptorCalledFlag = true;
+      return function() {
+        eventHandlerCalledFlag = true;
+      }
     }
     let projector = createProjector({ eventHandlerInterceptor: eventHandlerInterceptor });
     let parentElement = { appendChild: sinon.stub() };
     let handleClick = sinon.stub();
-    let renderFunction = sinon.stub().returns(h('button', { onclick: handleClick }));
+    let renderFunction = () => h('button', { onclick: handleClick });
     projector.append(parentElement as any, renderFunction);
 
     let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
@@ -187,6 +172,59 @@ describe('Projector', () => {
     expect(eventHandlerInterceptorCalledFlag).is.equal(true);
     expect(eventHandlerCalledFlag).is.equal(true);
     expect(handleClick).not.to.be.called;
+  });
+
+  it('invokes the eventHandler with "this" set to the DOM node when no bind is present', () => {
+    let parentElement = { appendChild: sinon.stub() };
+    let projector = createProjector({});
+    let handleClick = sinon.stub();
+    let renderFunction = () => h('button', { onclick: handleClick });
+    projector.append(parentElement as any, renderFunction);
+
+    let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+    let clickEvent = {};
+    button.onclick(clickEvent as any);  // Invoking onclick like this sets 'this' to the ButtonElement
+
+    expect(handleClick).to.be.calledOn(button).calledWithExactly(clickEvent);
+  });
+
+  /**
+   * A class/prototype based implementation of a Component
+   *
+   * NOTE: This is not our recommended way, but this is completely supported (using VNodeProperties.bind).
+   */
+  class ButtonComponent implements Component {
+
+    private text: string;
+    private clicked: (sender: ButtonComponent) => void;
+
+    constructor(buttonText: string, buttonClicked: (sender: ButtonComponent) => void) {
+      this.text = buttonText;
+      this.clicked = buttonClicked;
+    }
+
+    public renderMaquette() {
+      return h('button', { onclick: this.handleClick, bind: this }, [this.text]);
+    }
+
+    private handleClick(evt: MouseEvent) {
+      this.clicked(this);
+    }
+  }
+
+  it('invokes the eventHandler with "this" set to the value of the bind property', () => {
+    let clicked = sinon.stub();
+    let button = new ButtonComponent('Click me', clicked);
+
+    let parentElement = { appendChild: sinon.stub() };
+    let projector = createProjector({});
+    projector.append(parentElement as any, () => button.renderMaquette());
+
+    let buttonElement = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+    let clickEvent = {};
+    buttonElement.onclick(clickEvent as any); // Invoking onclick like this sets 'this' to the ButtonElement
+
+    expect(clicked).to.be.calledWithExactly(button);
   });
 
 });

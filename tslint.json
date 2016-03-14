@@ -30,7 +30,6 @@
     "member-access": true,
     "member-ordering": [
       true,
-      "public-before-private",
       "static-before-instance"
     ],
     "no-any": false,

@@ -138,9 +138,17 @@ export interface ProjectionOptions {
    */
   namespace?: string;
   /**
-   * Only for internal use. Used to wrap eventHandlers to call [[scheduleRender]] on the [[Projector]].
+   * May be used to intercept registration of event-handlers.
+   *
+   * Used by the [[Projector]] to wrap eventHandler-calls to call [[scheduleRender]] as well.
+   *
+   * @param propertyName             The name of the property to be assigned, for example onclick
+   * @param eventHandler             The function that was registered on the [[VNode]]
+   * @param domNode                  The real DOM element
+   * @param properties               The whole set of properties that was put on the VNode
+   * @returns                        The function that is to be placed on the DOM node as the event handler, instead of `eventHandler`.
    */
-  eventHandlerInterceptor?: Function;
+  eventHandlerInterceptor?: (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function;
   /**
    * May be used to add vendor prefixes when applying inline styles when needed.
    * This function is called when [[styles]] is used.
@@ -213,6 +221,13 @@ export interface VNodeProperties {
    */
   afterUpdate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties,
     children: VNode[]): void;
+  /**
+   * When specified, the event handlers will be invoked with 'this' pointing to the value.
+   * This is useful when using the prototype/class based implementation of Components.
+   *
+   * When no [[key]] is present, this object is also used to uniquely identify a DOM node.
+   */
+  bind?: Object;
   /**
    * Used to uniquely identify a DOM node among siblings.
    * A key is required when there are more children with the same selector and these children are added or removed dynamically.
@@ -331,7 +346,10 @@ let same = (vnode1: VNode, vnode2: VNode) => {
     return false;
   }
   if (vnode1.properties && vnode2.properties) {
-    return vnode1.properties.key === vnode2.properties.key;
+    if (vnode1.properties.key !== vnode2.properties.key) {
+      return false;
+    }
+    return vnode1.properties.bind === vnode2.properties.bind;
   }
   return !vnode1.properties && !vnode2.properties;
 };
@@ -603,7 +621,7 @@ let checkDistinguishable = function(childNodes: VNode[], indexToCheck: number, p
   if (childNode.vnodeSelector === '') {
     return; // Text nodes need not be distinguishable
   }
-  let key = childNode.properties ? childNode.properties.key : undefined;
+  let key = childNode.properties ? (childNode.properties.key || childNode.properties.bind) : undefined;
   if (!key) { // A key is just assumed to be unique
     for (let i = 0; i < childNodes.length; i++) {
       if (i !== indexToCheck) {
@@ -801,27 +819,35 @@ export interface VNodeChildren extends Array<VNodeChild> { };
 export type VNodeChild = string | VNode | VNodeChildren;
 
 /**
- * The `h` method is used to create a virtual DOM node.
+ * Contains all valid method signatures for the [[h]] function.
+ */
+export interface H {
+  /**
+   * @param selector    Contains the tagName, id and fixed css classnames in CSS selector format.
+   *                    It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
+   * @param properties  An object literal containing properties that will be placed on the DOM node.
+   * @param children    Virtual DOM nodes and strings to add as child nodes.
+   *                    `children` may contain [[VNode]]s, `string`s, nested arrays, `null` and `undefined`.
+   *                    Nested arrays are flattened, `null` and `undefined` are removed.
+   *
+   * @returns           A VNode object, used to render a real DOM later.
+   */
+  (selector: string, properties?: VNodeProperties, ...children: VNodeChild[]): VNode;
+  (selector: string, ...children: VNodeChild[]): VNode;
+}
+
+/**
+ * The `h` function is used to create a virtual DOM node.
  * This function is largely inspired by the mercuryjs and mithril frameworks.
  * The `h` stands for (virtual) hyperscript.
  *
+ * All possible method signatures of this function can be found in the [[H]] 'interface'.
+ *
  * NOTE: There are {@link http://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
- *
- * @param selector    Contains the tagName, id and fixed css classnames in CSS selector format.
- *                    It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
- * @param properties  An object literal containing properties that will be placed on the DOM node.
- * @param children    Virtual DOM nodes and strings to add as child nodes.
- *                    `children` may contain [[VNode]]s, `string`s, nested arrays, `null` and `undefined`.
- *                    Nested arrays are flattened, `null` and `undefined` are removed.
- *
- * @returns           A VNode object, used to render a real DOM later.
  */
-/* istanbul ignore next: this function will be overwritten later, only its signature matters for documentation purposes */
-export let h = function(selector: string, properties?: VNodeProperties, ...children: VNodeChild[]): VNode { return undefined; };
+export let h: H;
 
-// Splitting the h into declaration and implementation because the Typescript compiler creates some surrogate code for desctructuring 'children'.
-// This would needlessly slow the h() function down.
-// This double declaration adds some extra bytes into the library, but it generates the right API documentation.
+// The other two parameters are not added here, because the Typescript compiler creates surrogate code for desctructuring 'children'.
 h = function(selector: string): VNode {
   let properties = arguments[1];
   if (typeof selector !== 'string') {
@@ -1088,15 +1114,19 @@ export let createMapping = <Source, Target>(
 export let createProjector = function(projectionOptions: ProjectionOptions): Projector {
   let projector: Projector;
   projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-  if (projectionOptions.eventHandlerInterceptor === undefined) {
-    projectionOptions.eventHandlerInterceptor = function(propertyName: string, functionPropertyArgument: Function) {
-      return function() {
-        // intercept function calls (event handlers) to do a render afterwards.
-        projector.scheduleRender();
-        return functionPropertyArgument.apply(this, arguments);
-      };
+  let originalEventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
+  projectionOptions.eventHandlerInterceptor = function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
+    let scheduleRenderAndInvokeEventHandler = function() {
+      // intercept function calls (event handlers) to do a render afterwards.
+      projector.scheduleRender();
+      return eventHandler.apply(properties.bind || this, arguments);
     };
-  }
+    if (originalEventHandlerInterceptor) {
+      return originalEventHandlerInterceptor(propertyName, scheduleRenderAndInvokeEventHandler, domNode, properties);
+    } else {
+      return scheduleRenderAndInvokeEventHandler;
+    }
+  };
   let renderCompleted = true;
   let scheduled: number;
   let stopped = false;

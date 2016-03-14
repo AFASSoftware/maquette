@@ -149,4 +149,44 @@ describe('Projector', () => {
 
   });
 
+  it('uses a null eventHandlerInterceptor', () => {
+    let projector = createProjector({ eventHandlerInterceptor: null });
+    let parentElement = { appendChild: sinon.stub() };
+    let handleClick = sinon.stub();
+    let renderFunction = sinon.stub().returns(h('button', { onclick: handleClick }));
+    projector.append(parentElement as any, renderFunction);
+
+    let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+    let evt = {};
+
+    expect(global.requestAnimationFrame).not.to.be.called;
+    expect(button.onclick).is.equal(undefined);
+    expect(handleClick).not.to.be.called;
+  });
+
+  it('uses a supplied eventHandlerInterceptor', () => {
+    var eventHandlerInterceptorCalledFlag = false;
+    var eventHandlerCalledFlag = false;
+    let eventHandlerInterceptor = function(propertyName: string, functionPropertyArgument: Function) {
+        eventHandlerInterceptorCalledFlag = true;
+        return function() {
+          eventHandlerCalledFlag = true;
+        }
+    }
+    let projector = createProjector({ eventHandlerInterceptor: eventHandlerInterceptor });
+    let parentElement = { appendChild: sinon.stub() };
+    let handleClick = sinon.stub();
+    let renderFunction = sinon.stub().returns(h('button', { onclick: handleClick }));
+    projector.append(parentElement as any, renderFunction);
+
+    let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+    let evt = {};
+
+    button.onclick.apply(button, [evt]);
+
+    expect(eventHandlerInterceptorCalledFlag).is.equal(true);
+    expect(eventHandlerCalledFlag).is.equal(true);
+    expect(handleClick).not.to.be.called;
+  });
+
 });

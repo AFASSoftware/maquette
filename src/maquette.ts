@@ -1088,13 +1088,15 @@ export let createMapping = <Source, Target>(
 export let createProjector = function(projectionOptions: ProjectionOptions): Projector {
   let projector: Projector;
   projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-  projectionOptions.eventHandlerInterceptor = function(propertyName: string, functionPropertyArgument: Function) {
-    return function() {
-      // intercept function calls (event handlers) to do a render afterwards.
-      projector.scheduleRender();
-      return functionPropertyArgument.apply(this, arguments);
+  if (projectionOptions.eventHandlerInterceptor === undefined) {
+    projectionOptions.eventHandlerInterceptor = function(propertyName: string, functionPropertyArgument: Function) {
+      return function() {
+        // intercept function calls (event handlers) to do a render afterwards.
+        projector.scheduleRender();
+        return functionPropertyArgument.apply(this, arguments);
+      };
     };
-  };
+  }
   let renderCompleted = true;
   let scheduled: number;
   let stopped = false;

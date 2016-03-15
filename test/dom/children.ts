@@ -84,6 +84,115 @@ describe('dom', function() {
       expect(div.children.length).to.equal(2);
     });
 
+    it('can distinguish between string keys when adding', () => {
+      let projection = dom.create(h('div', [
+          h('span', { key: 'one' }),
+          h('span', { key: 'three' })
+        ]));
+
+        let div = projection.domNode as HTMLDivElement;
+        expect(div.children.length).to.equal(3);
+        let firstSpan = div.children[0];
+        let secondSpan = div.children[1];
+
+        projection.update(h('div', [
+          h('span', { key: 'one' }),
+          h('span', { key: 'two' }),
+          h('span', { key: 'three' })
+        ]));
+
+        expect(div.childNodes.length).to.equal(3);
+        expect(div.childNodes[0]).to.equal(firstSpan);
+        expect(div.childNodes[2]).to.equal(secondSpan);
+    });
+
+    it('can distinguish between falsy keys when adding', () => {
+      let projection = dom.create(h('div', [
+          h('span', { key: 0 }),
+          h('span', { key: null })
+        ]));
+
+        let div = projection.domNode as HTMLDivElement;
+        expect(div.children.length).to.equal(3);
+        let firstSpan = div.children[0];
+        let secondSpan = div.children[1];
+
+        projection.update(h('div', [
+          h('span', { key: 0 }),
+          h('span', { key: false }),
+          h('span', { key: null })
+        ]));
+
+        expect(div.childNodes.length).to.equal(3);
+        expect(div.childNodes[0]).to.equal(firstSpan);
+        expect(div.childNodes[2]).to.equal(secondSpan);
+    });
+
+    it('can distinguish between string keys when deleting', () => {
+      let projection = dom.create(h('div', [
+          h('span', { key: 'one' }),
+          h('span', { key: 'two' }),
+          h('span', { key: 'three' })
+        ]));
+
+        let div = projection.domNode as HTMLDivElement;
+        expect(div.children.length).to.equal(3);
+        let firstSpan = div.children[0];
+        let thirdSpan = div.children[2];
+
+        projection.update(h('div', [
+          h('span', { key: 'one' }),
+          h('span', { key: 'three' })
+        ]));
+
+        expect(div.childNodes.length).to.equal(2);
+        expect(div.childNodes[0]).to.equal(firstSpan);
+        expect(div.childNodes[1]).to.equal(thirdSpan);
+    });
+
+    it('can distinguish between falsy keys when deleting', () => {
+      let projection = dom.create(h('div', [
+          h('span', { key: 0 }),
+          h('span', { key: false }),
+          h('span', { key: null })
+        ]));
+
+        let div = projection.domNode as HTMLDivElement;
+        expect(div.children.length).to.equal(3);
+        let firstSpan = div.children[0];
+        let thirdSpan = div.children[2];
+
+        projection.update(h('div', [
+          h('span', { key: 0 }),
+          h('span', { key: null })
+        ]));
+
+        expect(div.childNodes.length).to.equal(2);
+        expect(div.childNodes[0]).to.equal(firstSpan);
+        expect(div.childNodes[1]).to.equal(thirdSpan);
+    });
+
+    it('does not reorder nodes based on keys', () => {
+      let projection = dom.create(h('div', [
+          h('span', { key: 'a' }),
+          h('span', { key: 'b' })
+        ]));
+
+        let div = projection.domNode as HTMLDivElement;
+        expect(div.children.length).to.equal(2);
+        let firstSpan = div.children[0];
+        let lastSpan = div.children[1];
+
+        projection.update(h('div', [
+          h('span', { key: 'b' }),
+          h('span', { key: 'a' })
+        ]));
+
+        expect(div.childNodes.length).to.equal(2);
+        expect(div.childNodes[1]).to.not.equal(firstSpan);
+        expect(div.childNodes[0]).to.equal(lastSpan);
+    });
+
     it('can insert textnodes', () => {
       let projection = dom.create(h('div', [
         h('span', { key: 2 }),

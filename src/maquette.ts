@@ -621,9 +621,8 @@ let checkDistinguishable = function(childNodes: VNode[], indexToCheck: number, p
   if (childNode.vnodeSelector === '') {
     return; // Text nodes need not be distinguishable
   }
-  let key = childNode.properties ?
-    (childNode.properties.key === undefined ? childNode.properties.key : childNode.properties.bind) :
-    undefined;
+  let properties = childNode.properties;
+  let key = properties ? (properties.key === undefined ? properties.bind : properties.key) : undefined;
   if (!key) { // A key is just assumed to be unique
     for (let i = 0; i < childNodes.length; i++) {
       if (i !== indexToCheck) {

@@ -300,7 +300,8 @@
         if (childNode.vnodeSelector === '') {
             return;    // Text nodes need not be distinguishable
         }
-        var key = childNode.properties ? childNode.properties.key || childNode.properties.bind : undefined;
+        var properties = childNode.properties;
+        var key = properties ? properties.key === undefined ? properties.bind : properties.key : undefined;
         if (!key) {
             for (var i = 0; i < childNodes.length; i++) {
                 if (i !== indexToCheck) {

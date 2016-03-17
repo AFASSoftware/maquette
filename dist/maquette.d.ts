@@ -119,15 +119,30 @@ export interface TransitionStrategy {
     exit(element: Element, properties: VNodeProperties, exitAnimation: string, removeElement: () => void): void;
 }
 /**
- * Options that influence how the DOM is rendered and updated.
+ * Options that may be passed when creating the [[Projector]]
  */
-export interface ProjectionOptions {
+export interface ProjectorOptions {
     /**
      * A transition strategy to invoke when enterAnimation and exitAnimation properties are provided as strings.
      * The module `cssTransitions` in the provided `css-transitions.js` file provides such a strategy.
      * A transition strategy is not needed when enterAnimation and exitAnimation properties are provided as functions.
      */
     transitions?: TransitionStrategy;
+    /**
+     * May be used to add vendor prefixes when applying inline styles when needed.
+     * This function is called when [[styles]] is used.
+     * This function should execute `domNode.style[styleName] = value` or do something smarter.
+     *
+     * @param domNode   The DOM Node that needs to receive the style
+     * @param styleName The name of the style that should be applied, for example `transform`.
+     * @param value     The value of this style, for example `rotate(45deg)`.
+     */
+    styleApplyer?(domNode: HTMLElement, styleName: string, value: string): void;
+}
+/**
+ * Options that influence how the DOM is rendered and updated.
+ */
+export interface ProjectionOptions extends ProjectorOptions {
     /**
      * Only for internal use. Used for rendering SVG Nodes.
      */
@@ -144,16 +159,6 @@ export interface ProjectionOptions {
      * @returns                        The function that is to be placed on the DOM node as the event handler, instead of `eventHandler`.
      */
     eventHandlerInterceptor?: (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function;
-    /**
-     * May be used to add vendor prefixes when applying inline styles when needed.
-     * This function is called when [[styles]] is used.
-     * This function should execute `domNode.style[styleName] = value` or do something smarter.
-     *
-     * @param domNode   The DOM Node that needs to receive the style
-     * @param styleName The name of the style that should be applied, for example `transform`.
-     * @param value     The value of this style, for example `rotate(45deg)`.
-     */
-    styleApplyer?(domNode: HTMLElement, styleName: string, value: string): void;
 }
 /**
  * Object containing attributes, properties, event handlers and more that can be put on DOM nodes.
@@ -426,7 +431,7 @@ export declare let createMapping: <Source, Target>(getSourceKey: (source: Source
  *
  * @param projectionOptions   Options that influence how the DOM is rendered and updated.
  */
-export declare let createProjector: (projectionOptions: ProjectionOptions) => Projector;
+export declare let createProjector: (projectorOptions: ProjectorOptions) => Projector;
 /**
  * A component is a pattern with which you can split up your web application into self-contained parts.
  *

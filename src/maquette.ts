@@ -124,15 +124,31 @@ export interface TransitionStrategy {
 };
 
 /**
- * Options that influence how the DOM is rendered and updated.
+ * Options that may be passed when creating the [[Projector]]
  */
-export interface ProjectionOptions {
+export interface ProjectorOptions {
   /**
    * A transition strategy to invoke when enterAnimation and exitAnimation properties are provided as strings.
    * The module `cssTransitions` in the provided `css-transitions.js` file provides such a strategy.
    * A transition strategy is not needed when enterAnimation and exitAnimation properties are provided as functions.
    */
   transitions?: TransitionStrategy;
+  /**
+   * May be used to add vendor prefixes when applying inline styles when needed.
+   * This function is called when [[styles]] is used.
+   * This function should execute `domNode.style[styleName] = value` or do something smarter.
+   *
+   * @param domNode   The DOM Node that needs to receive the style
+   * @param styleName The name of the style that should be applied, for example `transform`.
+   * @param value     The value of this style, for example `rotate(45deg)`.
+   */
+  styleApplyer?(domNode: HTMLElement, styleName: string, value: string): void;
+};
+
+/**
+ * Options that influence how the DOM is rendered and updated.
+ */
+export interface ProjectionOptions extends ProjectorOptions {
   /**
    * Only for internal use. Used for rendering SVG Nodes.
    */
@@ -149,16 +165,6 @@ export interface ProjectionOptions {
    * @returns                        The function that is to be placed on the DOM node as the event handler, instead of `eventHandler`.
    */
   eventHandlerInterceptor?: (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function;
-  /**
-   * May be used to add vendor prefixes when applying inline styles when needed.
-   * This function is called when [[styles]] is used.
-   * This function should execute `domNode.style[styleName] = value` or do something smarter.
-   *
-   * @param domNode   The DOM Node that needs to receive the style
-   * @param styleName The name of the style that should be applied, for example `transform`.
-   * @param value     The value of this style, for example `rotate(45deg)`.
-   */
-  styleApplyer?(domNode: HTMLElement, styleName: string, value: string): void;
 };
 
 /**
@@ -320,7 +326,9 @@ export interface Projection {
   update(updatedVnode: VNode): void;
 }
 
-const NAMESPACE_SVG = 'http://www.w3.org/2000/svg';
+const NAMESPACE_W3 = 'http://www.w3.org/';
+const NAMESPACE_SVG = NAMESPACE_W3 + '2000/svg';
+const NAMESPACE_XLINK = NAMESPACE_W3 + '1999/xlink';
 
 // Utilities
 
@@ -399,8 +407,8 @@ const DEFAULT_PROJECTION_OPTIONS: ProjectionOptions = {
   }
 };
 
-let applyDefaultProjectionOptions = function(projectionOptions: ProjectionOptions) {
-  return extend(DEFAULT_PROJECTION_OPTIONS, projectionOptions);
+let applyDefaultProjectionOptions = (projectorOptions: ProjectionOptions) => {
+  return extend(DEFAULT_PROJECTION_OPTIONS, projectorOptions);
 };
 
 let checkStyleValue = (styleValue: Object) => {
@@ -474,7 +482,11 @@ let setProperties = function(domNode: Node, properties: VNodeProperties, project
           (domNode as any)[propName] = propValue;
         }
       } else if (type === 'string' && propName !== 'value' && propName !== 'innerHTML') {
-        (domNode as Element).setAttribute(propName, propValue);
+        if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
+          (domNode as Element).setAttributeNS(NAMESPACE_XLINK, propName, propValue);
+        } else {
+          (domNode as Element).setAttribute(propName, propValue);
+        }
       } else {
         (domNode as any)[propName] = propValue;
       }
@@ -553,7 +565,11 @@ let updateProperties = function(domNode: Node, previousProperties: VNodeProperti
             '). Hint: declare event handler functions outside the render() function.');
         }
         if (type === 'string' && propName !== 'innerHTML') {
-          (domNode as Element).setAttribute(propName, propValue);
+          if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
+            (domNode as Element).setAttributeNS(NAMESPACE_XLINK, propName, propValue);
+          } else {
+            (domNode as Element).setAttribute(propName, propValue);
+          }
         } else {
           if ((domNode as any)[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop
             (domNode as any)[propName] = propValue;
@@ -1112,21 +1128,15 @@ export let createMapping = <Source, Target>(
  *
  * @param projectionOptions   Options that influence how the DOM is rendered and updated.
  */
-export let createProjector = function(projectionOptions: ProjectionOptions): Projector {
+export let createProjector = function(projectorOptions: ProjectorOptions): Projector {
   let projector: Projector;
-  projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-  let originalEventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
+  let projectionOptions = applyDefaultProjectionOptions(projectorOptions);
   projectionOptions.eventHandlerInterceptor = function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
-    let scheduleRenderAndInvokeEventHandler = function() {
+    return function() {
       // intercept function calls (event handlers) to do a render afterwards.
       projector.scheduleRender();
       return eventHandler.apply(properties.bind || this, arguments);
     };
-    if (originalEventHandlerInterceptor) {
-      return originalEventHandlerInterceptor(propertyName, scheduleRenderAndInvokeEventHandler, domNode, properties);
-    } else {
-      return scheduleRenderAndInvokeEventHandler;
-    }
   };
   let renderCompleted = true;
   let scheduled: number;

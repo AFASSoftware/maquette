@@ -149,33 +149,6 @@ describe('Projector', () => {
 
   });
 
-  it('uses a supplied eventHandlerInterceptor', () => {
-    let eventHandlerCalledFlag = false;
-    let eventHandlerInterceptor = sinon.spy((propertyName: string, functionPropertyArgument: Function) => {
-      return (evt: Event) => {
-        eventHandlerCalledFlag = true;
-        functionPropertyArgument(evt);
-      };
-    });
-    let projector = createProjector({ eventHandlerInterceptor: eventHandlerInterceptor });
-    projector.scheduleRender = sinon.stub();
-    let parentElement = { appendChild: sinon.stub() };
-    let handleClick = sinon.stub();
-    let renderFunction = () => h('button', { onclick: handleClick });
-    projector.append(parentElement as any, renderFunction);
-
-    let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let evt = {};
-    expect(projector.scheduleRender).not.to.have.been.called;
-    expect(eventHandlerInterceptor).to.have.been.calledOnce;
-
-    button.onclick.apply(button, [evt]);
-
-    expect(projector.scheduleRender).to.have.been.calledOnce;
-    expect(eventHandlerCalledFlag).to.be.true;
-    expect(handleClick).to.have.been.called;
-  });
-
   it('invokes the eventHandler with "this" set to the DOM node when no bind is present', () => {
     let parentElement = { appendChild: sinon.stub() };
     let projector = createProjector({});

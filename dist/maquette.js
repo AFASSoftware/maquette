@@ -14,7 +14,10 @@
     ;
     ;
     ;
-    var NAMESPACE_SVG = 'http://www.w3.org/2000/svg';
+    ;
+    var NAMESPACE_W3 = 'http://www.w3.org/';
+    var NAMESPACE_SVG = NAMESPACE_W3 + '2000/svg';
+    var NAMESPACE_XLINK = NAMESPACE_W3 + '1999/xlink';
     // Utilities
     var emptyArray = [];
     var extend = function (base, overrides) {
@@ -82,8 +85,8 @@
             exit: missingTransition
         }
     };
-    var applyDefaultProjectionOptions = function (projectionOptions) {
-        return extend(DEFAULT_PROJECTION_OPTIONS, projectionOptions);
+    var applyDefaultProjectionOptions = function (projectorOptions) {
+        return extend(DEFAULT_PROJECTION_OPTIONS, projectorOptions);
     };
     var checkStyleValue = function (styleValue) {
         if (typeof styleValue !== 'string') {
@@ -157,7 +160,11 @@
                         domNode[propName] = propValue;
                     }
                 } else if (type === 'string' && propName !== 'value' && propName !== 'innerHTML') {
-                    domNode.setAttribute(propName, propValue);
+                    if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
+                        domNode.setAttributeNS(NAMESPACE_XLINK, propName, propValue);
+                    } else {
+                        domNode.setAttribute(propName, propValue);
+                    }
                 } else {
                     domNode[propName] = propValue;
                 }
@@ -236,7 +243,11 @@
                         throw new Error('Functions may not be updated on subsequent renders (property: ' + propName + '). Hint: declare event handler functions outside the render() function.');
                     }
                     if (type === 'string' && propName !== 'innerHTML') {
-                        domNode.setAttribute(propName, propValue);
+                        if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
+                            domNode.setAttributeNS(NAMESPACE_XLINK, propName, propValue);
+                        } else {
+                            domNode.setAttribute(propName, propValue);
+                        }
                     } else {
                         if (domNode[propName] !== propValue) {
                             domNode[propName] = propValue;
@@ -678,21 +689,15 @@
  *
  * @param projectionOptions   Options that influence how the DOM is rendered and updated.
  */
-    exports.createProjector = function (projectionOptions) {
+    exports.createProjector = function (projectorOptions) {
         var projector;
-        projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-        var originalEventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
+        var projectionOptions = applyDefaultProjectionOptions(projectorOptions);
         projectionOptions.eventHandlerInterceptor = function (propertyName, eventHandler, domNode, properties) {
-            var scheduleRenderAndInvokeEventHandler = function () {
+            return function () {
                 // intercept function calls (event handlers) to do a render afterwards.
                 projector.scheduleRender();
                 return eventHandler.apply(properties.bind || this, arguments);
             };
-            if (originalEventHandlerInterceptor) {
-                return originalEventHandlerInterceptor(propertyName, scheduleRenderAndInvokeEventHandler, domNode, properties);
-            } else {
-                return scheduleRenderAndInvokeEventHandler;
-            }
         };
         var renderCompleted = true;
         var scheduled;

@@ -254,7 +254,8 @@ describe('dom', function() {
       it('creates and updates svg dom nodes with the right namespace', () => {
         let projection = dom.create(h('div', [
           h('svg', [
-            h('circle', { cx: '2cm', cy: '2cm', r: '1cm', fill: 'red' })
+            h('circle', { cx: '2cm', cy: '2cm', r: '1cm', fill: 'red' }),
+            h('image', {href: '/image.jpeg'})
           ]),
           h('span')
         ]));
@@ -262,12 +263,15 @@ describe('dom', function() {
         expect(svg.namespaceURI).to.equal('http://www.w3.org/2000/svg');
         let circle = svg.firstChild;
         expect(circle.namespaceURI).to.equal('http://www.w3.org/2000/svg');
+        let image = svg.lastChild;
+        expect(image.attributes[0].namespaceURI).to.equal('http://www.w3.org/1999/xlink');
         let span = projection.domNode.lastChild;
         expect(span.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
 
         projection.update(h('div', [
           h('svg', [
-            h('circle', { key: 'blue', cx: '2cm', cy: '2cm', r: '1cm', fill: 'blue' })
+            h('circle', { key: 'blue', cx: '2cm', cy: '2cm', r: '1cm', fill: 'blue' }),
+            h('image', {href: '/image2.jpeg'})
           ]),
           h('span')
         ]));

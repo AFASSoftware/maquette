@@ -206,7 +206,9 @@ describe('Projector', () => {
     let parentElement = { appendChild: sinon.stub() };
     let projector = createProjector({});
     let renderFunction = () => h('textarea#t1');
+    let renderFunction2 = () => h('textarea#t2');
     projector.append(parentElement as any, renderFunction);
+    projector.append(parentElement as any, renderFunction2);
 
     let projection = projector.detach(renderFunction);
     expect(projection.domNode.id).to.equal('t1');

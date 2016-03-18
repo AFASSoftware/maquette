@@ -10,7 +10,6 @@
         factory(root.maquette = {});
     }
 }(this, function (exports) {
-    'use strict';
     ;
     ;
     ;
@@ -753,6 +752,15 @@
                 domNode.parentNode.removeChild(domNode);
                 projections.push(createProjection(vnode, projectionOptions));
                 renderFunctions.push(renderMaquetteFunction);
+            },
+            detach: function (renderMaquetteFunction) {
+                for (var i = 0; i < renderFunctions.length; i++) {
+                    if (renderFunctions[i] === renderMaquetteFunction) {
+                        renderFunctions.splice(i, 1);
+                        return projections.splice(i, 1)[0];
+                    }
+                }
+                throw new Error('renderMaquetteFunction was not found');
             }
         };
         return projector;

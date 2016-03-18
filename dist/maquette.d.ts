@@ -86,6 +86,12 @@ export interface Projector {
      */
     scheduleRender(): void;
     /**
+     * Stops running the renderMaquetteFunction to update the DOM.
+     *
+     * @returns The [Projection] which contains the DOM Node that was rendered using the renderMaquetteFunction.
+     */
+    detach(renderMaquetteFunction: () => VNode): Projection;
+    /**
      * Stops the projector. This means that the registered `renderMaquette` functions will not be called anymore.
      *
      * Note that calling [[stop]] is not mandatory. A projector is a passive object that will get garbage collected

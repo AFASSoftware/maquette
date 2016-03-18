@@ -202,4 +202,18 @@ describe('Projector', () => {
     expect(clicked).to.be.calledWithExactly(button);
   });
 
+  it('can detach a projection', () => {
+    let parentElement = { appendChild: sinon.stub() };
+    let projector = createProjector({});
+    let renderFunction = () => h('textarea#t1');
+    projector.append(parentElement as any, renderFunction);
+
+    let projection = projector.detach(renderFunction);
+    expect(projection.domNode.id).to.equal('t1');
+
+    expect(() => {
+      projector.detach(renderFunction);
+    }).to.throw();
+  });
+
 });

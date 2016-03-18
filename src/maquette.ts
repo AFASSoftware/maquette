@@ -89,6 +89,12 @@ export interface Projector {
    */
   scheduleRender(): void;
   /**
+   * Stops running the renderMaquetteFunction to update the DOM.
+   *
+   * @returns The [Projection] which contains the DOM Node that was rendered using the renderMaquetteFunction.
+   */
+  detach(renderMaquetteFunction: () => VNode): Projection;
+  /**
    * Stops the projector. This means that the registered `renderMaquette` functions will not be called anymore.
    *
    * Note that calling [[stop]] is not mandatory. A projector is a passive object that will get garbage collected
@@ -1198,7 +1204,18 @@ export let createProjector = function(projectorOptions: ProjectorOptions): Proje
       domNode.parentNode.removeChild(domNode);
       projections.push(createProjection(vnode, projectionOptions));
       renderFunctions.push(renderMaquetteFunction);
+    },
+
+    detach: function(renderMaquetteFunction) {
+      for (let i = 0; i < renderFunctions.length; i++) {
+        if (renderFunctions[i] === renderMaquetteFunction) {
+          renderFunctions.splice(i, 1);
+          return projections.splice(i, 1)[0];
+        }
+      }
+      throw new Error('renderMaquetteFunction was not found');
     }
+
   };
   return projector;
 };

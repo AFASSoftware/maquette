@@ -79,7 +79,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ProjectionOptions</span>
+						<a href="_maquette_.projectoroptions.html" class="tsd-signature-type">ProjectorOptions</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">ProjectionOptions</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -92,13 +97,13 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_maquette_.projectionoptions.html#eventhandlerinterceptor" class="tsd-kind-icon">event<wbr>Handler<wbr>Interceptor</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_maquette_.projectionoptions.html#namespace" class="tsd-kind-icon">namespace</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_maquette_.projectionoptions.html#transitions" class="tsd-kind-icon">transitions</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_maquette_.projectionoptions.html#transitions" class="tsd-kind-icon">transitions</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projectionoptions.html#styleapplyer" class="tsd-kind-icon">style<wbr>Applyer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="_maquette_.projectionoptions.html#styleapplyer" class="tsd-kind-icon">style<wbr>Applyer</a></li>
 							</ul>
 						</section>
 					</div>
@@ -109,16 +114,64 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="eventhandlerinterceptor" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> event<wbr>Handler<wbr>Interceptor</h3>
-					<div class="tsd-signature tsd-kind-icon">event<wbr>Handler<wbr>Interceptor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span></div>
+					<div class="tsd-signature tsd-kind-icon">event<wbr>Handler<wbr>Interceptor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L143">maquette.ts:143</a></li>
+							<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L173">maquette.ts:173</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Only for internal use. Used to wrap eventHandlers to call <a href="_maquette_.projector.html#schedulerender">scheduleRender</a> on the <a href="_maquette_.projector.html">Projector</a>.</p>
+							<p>May be used to intercept registration of event-handlers.</p>
 						</div>
+						<p>Used by the <a href="_maquette_.projector.html">Projector</a> to wrap eventHandler-calls to call <a href="_maquette_.projector.html#schedulerender">scheduleRender</a> as well.</p>
+						<dl class="tsd-comment-tags">
+							<dt>param</dt>
+							<dd><p>The name of the property to be assigned, for example onclick</p>
+							</dd>
+							<dt>param</dt>
+							<dd><p>The function that was registered on the <a href="_maquette_.vnode.html">VNode</a></p>
+							</dd>
+							<dt>param</dt>
+							<dd><p>The real DOM element</p>
+							</dd>
+							<dt>param</dt>
+							<dd><p>The whole set of properties that was put on the VNode</p>
+							</dd>
+							<dt>returns</dt>
+							<dd><p>The function that is to be placed on the DOM node as the event handler, instead of <code>eventHandler</code>.</p>
+							</dd>
+						</dl>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>propertyName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, eventHandler<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span>, domNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span>, properties<span class="tsd-signature-symbol">: </span><a href="_maquette_.vnodeproperties.html" class="tsd-signature-type">VNodeProperties</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>propertyName: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5>eventHandler: <span class="tsd-signature-type">Function</span></h5>
+											</li>
+											<li>
+												<h5>domNode: <span class="tsd-signature-type">Node</span></h5>
+											</li>
+											<li>
+												<h5>properties: <a href="_maquette_.vnodeproperties.html" class="tsd-signature-type">VNodeProperties</a></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Function</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
@@ -127,7 +180,7 @@
 					<div class="tsd-signature tsd-kind-icon">namespace<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L139">maquette.ts:139</a></li>
+							<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L161">maquette.ts:161</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -136,13 +189,14 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="transitions" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> transitions</h3>
 					<div class="tsd-signature tsd-kind-icon">transitions<span class="tsd-signature-symbol">:</span> <a href="_maquette_.transitionstrategy.html" class="tsd-signature-type">TransitionStrategy</a></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="_maquette_.projectoroptions.html">ProjectorOptions</a>.<a href="_maquette_.projectoroptions.html#transitions">transitions</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L135">maquette.ts:135</a></li>
+							<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L141">maquette.ts:141</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -154,19 +208,20 @@
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 					<a name="styleapplyer" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> style<wbr>Applyer</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">style<wbr>Applyer<span class="tsd-signature-symbol">(</span>domNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLElement</span>, styleName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="_maquette_.projectoroptions.html">ProjectorOptions</a>.<a href="_maquette_.projectoroptions.html#styleapplyer">styleApplyer</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L153">maquette.ts:153</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L151">maquette.ts:151</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -222,6 +277,9 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_maquette_.component.html" class="tsd-kind-icon">Component</a>
 					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_maquette_.h.html" class="tsd-kind-icon">H</a>
+					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
 						<a href="_maquette_.mapping.html" class="tsd-kind-icon">Mapping</a>
 					</li>
@@ -239,10 +297,10 @@
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_maquette_.projectionoptions.html#namespace" class="tsd-kind-icon">namespace</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 								<a href="_maquette_.projectionoptions.html#transitions" class="tsd-kind-icon">transitions</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
+							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 								<a href="_maquette_.projectionoptions.html#styleapplyer" class="tsd-kind-icon">style<wbr>Applyer</a>
 							</li>
 						</ul>
@@ -251,6 +309,9 @@
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_maquette_.projector.html" class="tsd-kind-icon">Projector</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_maquette_.projectoroptions.html" class="tsd-kind-icon">Projector<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_maquette_.transitionstrategy.html" class="tsd-kind-icon">Transition<wbr>Strategy</a>
@@ -267,6 +328,9 @@
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
 						<a href="../modules/_maquette_.html#vnodechild" class="tsd-kind-icon">VNode<wbr>Child</a>
 					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="../modules/_maquette_.html#h-1" class="tsd-kind-icon">h</a>
+					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 						<a href="../modules/_maquette_.html#createcache" class="tsd-kind-icon">create<wbr>Cache</a>
 					</li>
@@ -275,9 +339,6 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="../modules/_maquette_.html#createprojector" class="tsd-kind-icon">create<wbr>Projector</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_maquette_.html#h" class="tsd-kind-icon">h</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module">
 						<a href="../modules/_maquette_.html#dom" class="tsd-kind-icon">dom</a>

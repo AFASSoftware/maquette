@@ -101,6 +101,7 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#append" class="tsd-kind-icon">append</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#detach" class="tsd-kind-icon">detach</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#insertbefore" class="tsd-kind-icon">insert<wbr>Before</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#merge" class="tsd-kind-icon">merge</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#replace" class="tsd-kind-icon">replace</a></li>
@@ -161,6 +162,47 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="detach" class="tsd-anchor"></a>
+					<h3>detach</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">detach<span class="tsd-signature-symbol">(</span>renderMaquetteFunction<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_maquette_.projection.html" class="tsd-signature-type">Projection</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L96">maquette.ts:96</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Stops running the renderMaquetteFunction to update the DOM.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>renderMaquetteFunction: <span class="tsd-signature-type">function</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_maquette_.vnode.html" class="tsd-signature-type">VNode</a></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-returns-title">Returns <a href="_maquette_.vnode.html" class="tsd-signature-type">VNode</a></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_maquette_.projection.html" class="tsd-signature-type">Projection</a></h4>
+							<p>The [Projection] which contains the DOM Node that was rendered using the renderMaquetteFunction.</p>
 						</li>
 					</ul>
 				</section>
@@ -372,7 +414,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L97">maquette.ts:97</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L103">maquette.ts:103</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -407,6 +449,9 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_maquette_.component.html" class="tsd-kind-icon">Component</a>
 					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_maquette_.h.html" class="tsd-kind-icon">H</a>
+					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
 						<a href="_maquette_.mapping.html" class="tsd-kind-icon">Mapping</a>
 					</li>
@@ -423,6 +468,9 @@
 						<ul>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_maquette_.projector.html#append" class="tsd-kind-icon">append</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_maquette_.projector.html#detach" class="tsd-kind-icon">detach</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_maquette_.projector.html#insertbefore" class="tsd-kind-icon">insert<wbr>Before</a>
@@ -447,6 +495,9 @@
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_maquette_.projectoroptions.html" class="tsd-kind-icon">Projector<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_maquette_.transitionstrategy.html" class="tsd-kind-icon">Transition<wbr>Strategy</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
@@ -461,6 +512,9 @@
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
 						<a href="../modules/_maquette_.html#vnodechild" class="tsd-kind-icon">VNode<wbr>Child</a>
 					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="../modules/_maquette_.html#h-1" class="tsd-kind-icon">h</a>
+					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 						<a href="../modules/_maquette_.html#createcache" class="tsd-kind-icon">create<wbr>Cache</a>
 					</li>
@@ -469,9 +523,6 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="../modules/_maquette_.html#createprojector" class="tsd-kind-icon">create<wbr>Projector</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_maquette_.html#h" class="tsd-kind-icon">h</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module">
 						<a href="../modules/_maquette_.html#dom" class="tsd-kind-icon">dom</a>

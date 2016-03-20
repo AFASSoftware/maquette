@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>CalculationCache | Maquette</title>
+	<title>ProjectorOptions | Maquette</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -58,10 +58,10 @@
 					<a href="../modules/_maquette_.html">&quot;maquette&quot;</a>
 				</li>
 				<li>
-					<a href="_maquette_.calculationcache.html">CalculationCache</a>
+					<a href="_maquette_.projectoroptions.html">ProjectorOptions</a>
 				</li>
 			</ul>
-			<h1>Interface CalculationCache&lt;Result&gt;</h1>
+			<h1>Interface ProjectorOptions</h1>
 		</div>
 	</div>
 </header>
@@ -71,31 +71,20 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A CalculationCache object remembers the previous outcome of a calculation along with the inputs.
-							On subsequent calls the previous outcome is returned if the inputs are identical.
-							This object can be used to bypass both rendering and diffing of a virtual DOM subtree.
-						Instances of CalculationCache can be created using <a href="../modules/_maquette_.html#createcache">createCache</a>.</p>
+						<p>Options that may be passed when creating the <a href="_maquette_.projector.html">Projector</a></p>
 					</div>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-type-parameters">
-				<h3>Type parameters</h3>
-				<ul class="tsd-type-parameters">
-					<li>
-						<h4>Result</h4>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<p>The type of the value that is cached.</p>
-							</div>
-						</div>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">CalculationCache</span>
+						<span class="target">ProjectorOptions</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="_maquette_.projectionoptions.html" class="tsd-signature-type">ProjectionOptions</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -104,88 +93,84 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_maquette_.projectoroptions.html#transitions" class="tsd-kind-icon">transitions</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.calculationcache.html#invalidate" class="tsd-kind-icon">invalidate</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.calculationcache.html#result" class="tsd-kind-icon">result</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projectoroptions.html#styleapplyer" class="tsd-kind-icon">style<wbr>Applyer</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="transitions" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> transitions</h3>
+					<div class="tsd-signature tsd-kind-icon">transitions<span class="tsd-signature-symbol">:</span> <a href="_maquette_.transitionstrategy.html" class="tsd-signature-type">TransitionStrategy</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L141">maquette.ts:141</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A transition strategy to invoke when enterAnimation and exitAnimation properties are provided as strings.
+								The module <code>cssTransitions</code> in the provided <code>css-transitions.js</code> file provides such a strategy.
+							A transition strategy is not needed when enterAnimation and exitAnimation properties are provided as functions.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="invalidate" class="tsd-anchor"></a>
-					<h3>invalidate</h3>
+					<a name="styleapplyer" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> style<wbr>Applyer</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">invalidate<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">style<wbr>Applyer<span class="tsd-signature-symbol">(</span>domNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLElement</span>, styleName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L1004">maquette.ts:1004</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L151">maquette.ts:151</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Manually invalidates the cached outcome.</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="result" class="tsd-anchor"></a>
-					<h3>result</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">result<span class="tsd-signature-symbol">(</span>inputs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">[]</span>, calculation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Result</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L1013">maquette.ts:1013</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>If the inputs array matches the inputs array from the previous invocation, this method returns the result of the previous invocation.
-										Otherwise, the calculation function is invoked and its result is cached and returned.
-									Objects in the inputs array are compared using ===.</p>
+									<p>May be used to add vendor prefixes when applying inline styles when needed.
+										This function is called when <a href="_maquette_.vnodeproperties.html#styles">styles</a> is used.
+									This function should execute <code>domNode.style[styleName] = value</code> or do something smarter.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>inputs: <span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>domNode: <span class="tsd-signature-type">HTMLElement</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Array of objects that are to be compared using === with the inputs from the previous invocation.
-										These objects are assumed to be immutable primitive values.</p>
+										<p>The DOM Node that needs to receive the style</p>
 									</div>
 								</li>
 								<li>
-									<h5>calculation: <span class="tsd-signature-type">function</span></h5>
+									<h5>styleName: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Function that takes zero arguments and returns an object (A <a href="_maquette_.vnode.html">VNode</a> assumably) that can be cached.</p>
+										<p>The name of the style that should be applied, for example <code>transform</code>.</p>
 									</div>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Result</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Result</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
+								</li>
+								<li>
+									<h5>value: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The value of this style, for example <code>rotate(45deg)</code>.</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Result</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -204,21 +189,9 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
 						<a href="_maquette_.calculationcache.html" class="tsd-kind-icon">Calculation<wbr>Cache</a>
-						<ul>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="_maquette_.calculationcache.html#invalidate" class="tsd-kind-icon">invalidate</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="_maquette_.calculationcache.html#result" class="tsd-kind-icon">result</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_maquette_.component.html" class="tsd-kind-icon">Component</a>
 					</li>
@@ -237,9 +210,21 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_maquette_.projector.html" class="tsd-kind-icon">Projector</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_maquette_.projectoroptions.html" class="tsd-kind-icon">Projector<wbr>Options</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_maquette_.projectoroptions.html#transitions" class="tsd-kind-icon">transitions</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_maquette_.projectoroptions.html#styleapplyer" class="tsd-kind-icon">style<wbr>Applyer</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_maquette_.transitionstrategy.html" class="tsd-kind-icon">Transition<wbr>Strategy</a>
 					</li>

@@ -175,12 +175,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L96">maquette.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L98">maquette.ts:98</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Stops running the renderMaquetteFunction to update the DOM.</p>
+									<p>Stops running the <code>renderMaquetteFunction</code> to update the DOM. The <code>renderMaquetteFunction</code> must have been
+									registered using <a href="_maquette_.projector.html#append">append</a>, <a href="_maquette_.projector.html#merge">merge</a>, <a href="_maquette_.projector.html#insertbefore">insertBefore</a> or <a href="_maquette_.projector.html#replace">replace</a>.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -202,7 +203,8 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_maquette_.projection.html" class="tsd-signature-type">Projection</a></h4>
-							<p>The [Projection] which contains the DOM Node that was rendered using the renderMaquetteFunction.</p>
+							<p>The <a href="_maquette_.projection.html">Projection</a> which was created using this <code>renderMaquetteFunction</code>.
+							The <a href="_maquette_.projection.html">Projection</a> contains a reference to the DOM Node that was rendered.</p>
 						</li>
 					</ul>
 				</section>
@@ -414,7 +416,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L103">maquette.ts:103</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L105">maquette.ts:105</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

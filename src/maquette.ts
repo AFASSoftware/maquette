@@ -89,9 +89,11 @@ export interface Projector {
    */
   scheduleRender(): void;
   /**
-   * Stops running the renderMaquetteFunction to update the DOM.
+   * Stops running the `renderMaquetteFunction` to update the DOM. The `renderMaquetteFunction` must have been
+   * registered using [[append]], [[merge]], [[insertBefore]] or [[replace]].
    *
-   * @returns The [Projection] which contains the DOM Node that was rendered using the renderMaquetteFunction.
+   * @returns The [[Projection]] which was created using this `renderMaquetteFunction`.
+   * The [[Projection]] contains a reference to the DOM Node that was rendered.
    */
   detach(renderMaquetteFunction: () => VNode): Projection;
   /**

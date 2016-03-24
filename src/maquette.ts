@@ -783,7 +783,7 @@ updateDom = function(previous, vnode, projectionOptions) {
   let domNode = previous.domNode;
   let textUpdated = false;
   if (previous === vnode) {
-    return textUpdated; // By contract, VNode objects may not be modified after passing them to maquette
+    return false; // By contract, VNode objects may not be modified anymore after passing them to maquette
   }
   let updated = false;
   if (vnode.vnodeSelector === '') {

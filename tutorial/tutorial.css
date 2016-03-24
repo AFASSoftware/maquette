@@ -214,11 +214,11 @@
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
       flex-shrink: 0;
-  -webkit-flex: 0 0 300px;
+  -webkit-flex: 0 0 350px;
   -webkit-box-flex: 0;
-      -ms-flex: 0 0 300px;
-          flex: 0 0 300px;
-  max-width: 350px;
+      -ms-flex: 0 0 350px;
+          flex: 0 0 350px;
+  width: 350px;
 }
 .table-of-content .header,
 .objectives .header{

@@ -22,7 +22,7 @@
   }
   
   > nav {
-    width: $card-width;
+    width: $small-content-width;
     max-width: 96%;
     font-size: 18px;
     @include flexbox();

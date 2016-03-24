@@ -76,6 +76,9 @@
     width: 100%;
     >.row {
       margin: 0;
+      &.live-editor .col-2 {
+        @include flex-shrink(1);
+      }
     }
     input {
       border: 1px solid #CECECE;

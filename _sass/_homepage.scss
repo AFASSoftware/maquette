@@ -1,38 +1,149 @@
 .homepage {
+  @include flex-direction(column);
+  @include align-items(center);
+  padding-top: 0;
+  
   > header {
+    @include flexbox();
+    @include flex-direction(column);
+    @include align-self(stretch);
+    background-image: url('../img/bg.png');
+    background-position: center center;
+    background-size: cover;
+    -webkit-clip-path: polygon(100% 0, 100% 90%, 50% 100%, 0 90%, 0 0);
+    clip-path: polygon(100% 0, 100% 90%, 50% 100%, 0 90%, 0 0);
+    padding: 150px 20px;
+    color: white;
+    margin: 0 0 80px 0;
     > h1 {
+      @include align-self(center);
       text-align: center;
-      font-size: 56px;
+      font-size: 62px;
       line-height: 80px;
+      font-weight: 400;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: inline;
+      padding: 20px 40px;
+      text-shadow: 3px 3px indigo;
+      background: rgba(255, 255, 255, 0.02);
     }
-    > p {
+    > p.subtitle {
       text-align: center;
       font-size: 24px;
       line-height: 40px;
       padding: 16px 0 24px 0;
+      font-weight: 100;
     }
   }
-  
   .teasers {
     @include flexbox();
     @include justify-content(space-around);
     @include flex-wrap(wrap);
     margin: 0 (-$gutter-width/2);
-    padding-bottom: 20px;
-    
+    padding-bottom: 80px;
     > aside {
       max-width: $column-width + $gutter-width;
       @include flex(1 0 250px);
-      padding: 0 $gutter-width/2;
+      margin: 0 $gutter-width/2;
       text-align: center;
+      border-right: 1px solid #EAEAEA;
+      padding: 20px;
       
+      &:last-child {
+        border-right: 0;
+      }
       > svg {
-        width: 40px;
-        height: 40px;
+        width: 64px;
+        height: 64px;
       }
-      > p {
-        text-align: left;
+    }
+    @media(max-width: 767px) {
+      @include flex-direction(column);
+      @include align-items(center);
+      > aside {
+          border-right: 0;
       }
+    }
+  }
+  p {
+    text-align: justify;
+  }
+  .live-demonstration {
+    @include align-self(stretch);
+    background: #F5F5F5;
+    padding: 30px 0 60px 0;
+    width: 100%;
+    >.row {
+      margin: 0;
+    }
+    input {
+      border: 1px solid #CECECE;
+    }
+  }
+  h1 {
+    font-weight: 100;
+    color: $text-color-dark;
+    font-size: 42px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .row {
+    @include flexbox();
+    @include flex-direction(row);
+    @include align-content(center);
+    @include justify-content(center);
+    >.credits,
+    > section {
+      @include flex(0, 1, 670px);
+      @include flexbox();
+      @include flex-direction(column);
+      padding: 20px;
+    }
+  }
+  .get-started {
+    > p {
+      text-align: center;
+    }
+    > h2,
+    > a.button {
+      @include align-self(center);
+    }
+    > a.button {
+      @include align-self(center);
+      margin: 20px 0;
+      padding: 8px 28px;
+    }
+  }
+  .news {
+    > ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      > li {
+        list-style: none;
+        @include flexbox();
+        @include flex-direction(row);
+        .date {
+          border-right: 1px solid #EAEAEA;
+          padding: 8px 20px 0 0;
+          width: 150px;
+          margin: 10px 20px 10px 0;
+        }
+        a {
+          text-decoration: none;
+          color: indigo;
+          :hover {
+            text-decoration: underline;
+          }
+        }
+        p {
+          max-width: 670px;
+        }
+      }
+    }
+    .more-news {
+      margin-left: 132px;
     }
   }
 }

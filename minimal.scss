@@ -12,7 +12,7 @@
 
 body {
   min-height: 100vh;
-  padding-top: 40px; // Leave room for the topbar
+  padding-top: 50px; // Leave room for the topbar
   @include flexbox();
   @include flex-direction(column);
   

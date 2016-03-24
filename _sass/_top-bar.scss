@@ -4,14 +4,15 @@
   top:0;
   left:0;
   right:0;
-  height: 40px;
+  height: 50px;
   @include flexbox();
   @include justify-content(center);
-  background-color: $heading-color;
-  color: $white;
+  background-color: $top-bar-color;
+  color: $primary-color;
+  box-shadow:1px 1px 10px rgba(0,0,0,0.1);
 
   a {
-    color:$white;
+    color: $text-color-light;
     text-decoration: none;
     
     
@@ -23,12 +24,18 @@
   > nav {
     width: $card-width;
     max-width: 96%;
-    line-height: 40px;
     font-size: 18px;
     @include flexbox();
     @include justify-content(space-between);
-    @include align-items(baseline);
-    
+    @include align-items(stretch);
+    >.logo {
+      line-height: 50px;
+      font-weight: 600;
+      color: $primary-color;
+      &:hover {
+        text-decoration: none;
+      }
+    }
     &.full-width {
       width: 100%;
       max-width: 100%;
@@ -40,9 +47,9 @@
 
       > a {
         display: block;
+        color: $text-color-light;
         font-size: 14px;
-        line-height: 36px;
-        color: $white;
+        line-height: 50px;
         margin-left:32px;
       }
     }

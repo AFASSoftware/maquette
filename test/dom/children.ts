@@ -221,6 +221,27 @@ describe('dom', function() {
       expect(div.childNodes[2]).to.equal(lastSpan);
     });
 
+    it('can update single textnodes', () => {
+      let projection = dom.create(h('span', ['']));
+      let span = projection.domNode as HTMLSpanElement;
+      expect(span.childNodes.length).to.equal(0);
+
+      projection.update(h('span', [undefined]));
+      expect(span.childNodes.length).to.equal(0);
+
+      projection.update(h('span', ['f']));
+      expect(span.childNodes.length).to.equal(1);
+
+      projection.update(h('span', [undefined]));
+      expect(span.childNodes.length).to.equal(0);
+
+      projection.update(h('span', ['']));
+      expect(span.childNodes.length).to.equal(0);
+
+      projection.update(h('span', [' ']));
+      expect(span.childNodes.length).to.equal(1);
+    });
+
     it('will throw an error when maquette is not sure which node is added', () => {
       let projection = dom.create(h('div', [
         h('span', 'a'),
@@ -255,7 +276,7 @@ describe('dom', function() {
         let projection = dom.create(h('div', [
           h('svg', [
             h('circle', { cx: '2cm', cy: '2cm', r: '1cm', fill: 'red' }),
-            h('image', {href: '/image.jpeg'})
+            h('image', { href: '/image.jpeg' })
           ]),
           h('span')
         ]));
@@ -271,7 +292,7 @@ describe('dom', function() {
         projection.update(h('div', [
           h('svg', [
             h('circle', { key: 'blue', cx: '2cm', cy: '2cm', r: '1cm', fill: 'blue' }),
-            h('image', {href: '/image2.jpeg'})
+            h('image', { href: '/image2.jpeg' })
           ]),
           h('span')
         ]));

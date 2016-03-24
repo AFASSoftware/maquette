@@ -916,7 +916,7 @@ h = function(selector: string): VNode {
     vnodeSelector: selector,
     properties: properties,
     children: children,
-    text: text,
+    text: (text === '') ? undefined : text,
     domNode: null
   };
 };

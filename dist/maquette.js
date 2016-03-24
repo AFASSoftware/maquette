@@ -440,7 +440,7 @@
         var domNode = previous.domNode;
         var textUpdated = false;
         if (previous === vnode) {
-            return textUpdated;    // By contract, VNode objects may not be modified after passing them to maquette
+            return false;    // By contract, VNode objects may not be modified anymore after passing them to maquette
         }
         var updated = false;
         if (vnode.vnodeSelector === '') {
@@ -532,7 +532,7 @@
             vnodeSelector: selector,
             properties: properties,
             children: children,
-            text: text,
+            text: text === '' ? undefined : text,
             domNode: null
         };
     };

@@ -475,11 +475,13 @@ let setProperties = function(domNode: Node, properties: VNodeProperties, project
     } else {
       let type = typeof propValue;
       if (type === 'function') {
-        if (eventHandlerInterceptor && (propName.lastIndexOf('on', 0) === 0)) { // lastIndexOf(,0)===0 -> startsWith
-          propValue = eventHandlerInterceptor(propName, propValue, domNode, properties); // intercept eventhandlers
+        if (propName.lastIndexOf('on', 0) === 0) { // lastIndexOf(,0)===0 -> startsWith
+          if (eventHandlerInterceptor) {
+            propValue = eventHandlerInterceptor(propName, propValue, domNode, properties); // intercept eventhandlers
+          }
           if (propName === 'oninput') {
             (function() {
-              // record the evt.target.value, because IE sometimes does a requestAnimationFrame between changing value and running oninput
+              // record the evt.target.value, because IE and Edge sometimes do a requestAnimationFrame between changing value and running oninput
               let oldPropValue = propValue;
               propValue = function(evt: Event) {
                 (evt.target as any)['oninput-value'] = (evt.target as HTMLInputElement).value; // may be HTMLTextAreaElement as well

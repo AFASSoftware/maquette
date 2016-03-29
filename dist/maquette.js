@@ -10,6 +10,7 @@
         factory(root.maquette = {});
     }
 }(this, function (exports) {
+    'use strict';
     ;
     ;
     ;
@@ -142,12 +143,13 @@
             } else {
                 var type = typeof propValue;
                 if (type === 'function') {
-                    if (eventHandlerInterceptor && propName.lastIndexOf('on', 0) === 0) {
-                        propValue = eventHandlerInterceptor(propName, propValue, domNode, properties);
-                        // intercept eventhandlers
+                    if (propName.lastIndexOf('on', 0) === 0) {
+                        if (eventHandlerInterceptor) {
+                            propValue = eventHandlerInterceptor(propName, propValue, domNode, properties);    // intercept eventhandlers
+                        }
                         if (propName === 'oninput') {
                             (function () {
-                                // record the evt.target.value, because IE sometimes does a requestAnimationFrame between changing value and running oninput
+                                // record the evt.target.value, because IE and Edge sometimes do a requestAnimationFrame between changing value and running oninput
                                 var oldPropValue = propValue;
                                 propValue = function (evt) {
                                     evt.target['oninput-value'] = evt.target.value;

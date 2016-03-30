@@ -18,24 +18,24 @@
   {
     var lastTime = 0;
     var vendors = ['webkit', 'moz'];
-    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x)
+    for(var x = 0; x < vendors.length && !global.requestAnimationFrame; ++x)
     {
-      window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-      window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+      global.requestAnimationFrame = global[vendors[x] + 'RequestAnimationFrame'];
+      global.cancelAnimationFrame = global[vendors[x] + 'CancelAnimationFrame'] || global[vendors[x] + 'CancelRequestAnimationFrame'];
     }
 
-    if(!window.requestAnimationFrame || /iP(ad|hone|od).*OS 6/.test(global.navigator.userAgent)) // Buggy iOS6
-      window.requestAnimationFrame = function (callback, element)
+    if(!global.requestAnimationFrame || /iP(ad|hone|od).*OS 6/.test(global.navigator.userAgent)) // Buggy iOS6
+      global.requestAnimationFrame = function (callback, element)
       {
         var currTime = new Date().getTime();
         var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-        var id = window.setTimeout(function () { callback(currTime + timeToCall); }, timeToCall);
+        var id = global.setTimeout(function () { callback(currTime + timeToCall); }, timeToCall);
         lastTime = currTime + timeToCall;
         return id;
       };
 
-    if(!window.cancelAnimationFrame)
-      window.cancelAnimationFrame = function (id)
+    if(!global.cancelAnimationFrame)
+      global.cancelAnimationFrame = function (id)
       {
         clearTimeout(id);
       };
@@ -238,7 +238,7 @@
           return new classListObject(this);
         };
 
-        Object.defineProperty(window.Element.prototype, "classList", {
+        Object.defineProperty(global.Element.prototype, "classList", {
           get: classListGetter,
           enumerable: true,
           configurable: true

@@ -54,7 +54,10 @@ describe('h', function() {
       [
         undefined,
         h('button', 'click me'),
-        h('button', undefined, 'click me')
+        h('button', undefined, 'click me'),
+        h('p', undefined),
+        h('p', null, null),
+        h('p', null)
       ]
     );
 
@@ -64,7 +67,10 @@ describe('h', function() {
       h('img', { src: 'x.png' }),
       toTextVNode('text2'),
       h('button', 'click me'),
-      h('button', 'click me', undefined)
+      h('button', 'click me', undefined),
+      h('p'),
+      h('p'),
+      h('p')
     ]);
 
   });

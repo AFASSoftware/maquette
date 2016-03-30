@@ -895,7 +895,7 @@ h = function(selector: string): VNode {
     let onlyChild = arguments[childIndex];
     if (typeof onlyChild === 'string') {
       text = onlyChild;
-    } else if (onlyChild !== undefined && onlyChild.length === 1 && typeof onlyChild[0] === 'string') {
+    } else if (onlyChild !== undefined && onlyChild !== null && onlyChild.length === 1 && typeof onlyChild[0] === 'string') {
       text = onlyChild[0];
     }
   }

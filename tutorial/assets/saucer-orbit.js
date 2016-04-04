@@ -10,7 +10,7 @@ function handleRotationInput(evt) {
   rotation = evt.target.value;
 }
 
-// This function continually adjusts the x and y variables
+// This function continually adjusts the saucer position
 function tick() {
   var moment = (new Date().getTime() - startDate)/1000;
   x = Math.round(150 * Math.sin(moment));

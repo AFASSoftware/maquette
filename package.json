@@ -21,6 +21,7 @@
     "coverage": "node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha"
   },
   "license": "MIT",
+  "tonicExampleFilename": "examples/tonic-example.js"
   "devDependencies": {
     "Set": "0.4.1",
     "browser-sync": "2.11.1",

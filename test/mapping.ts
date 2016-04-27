@@ -43,12 +43,21 @@ let updateTarget = function(source: number, target: Target) {
   target.updateCount++;
 };
 
-let checkMapping = function(mapping: Mapping<number, Target>, sources: number[]) {
-  mapping.results.forEach(function(target, index) {
+let checkInitialMapping = function(results: Target[], sources: number[]) {
+  results.forEach(function(target, index) {
     expect(target.source).to.equal(sources[index]);
-    if (target.alreadyPresent) {
+    expect(target.updateCount).to.equal(0);
+  });
+};
+
+let checkNextMapping = function(results: Target[], sources: number[], previousSources: number[]) {
+  results.forEach(function(target, index) {
+    expect(target.source).to.equal(sources[index]);
+    if (previousSources.indexOf(target.source) >= 0) {
+      expect(target.alreadyPresent).to.be.true;
       expect(target.updateCount).to.equal(1);
     } else {
+      expect(target.alreadyPresent).to.be.undefined;
       expect(target.updateCount).to.equal(0);
     }
   });
@@ -62,11 +71,12 @@ describe('Mapping', function() {
       for (let j = 0; j < permutations.length; j++) {
         let mapping = createMapping(function(key) { return key; }, createTarget, updateTarget);
         mapping.map(permutations[i]);
-        checkMapping(mapping, permutations[i]);
+        checkInitialMapping(mapping.results, permutations[i]);
         mapping.results.forEach(function(target: Target) { target.alreadyPresent = true; });
         // console.log('--> ', permutations[i], permutations[j]);
         mapping.map(permutations[j]);
-        checkMapping(mapping, permutations[j]);
+        checkNextMapping(mapping.results, permutations[j], permutations[i]);
+
       }
     }
   });

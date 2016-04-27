@@ -1110,7 +1110,7 @@ export let createMapping = <Source, Target>(
           oldIndex++;
         } else {
           let found = false;
-          for (let j = 1; j < keys.length; j++) {
+          for (let j = 1; j < keys.length + 1; j++) {
             let searchIndex = (oldIndex + j) % keys.length;
             if (keys[searchIndex] === sourceKey) {
               results[i] = oldTargets[searchIndex];

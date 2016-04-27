@@ -10,7 +10,6 @@
         factory(root.maquette = {});
     }
 }(this, function (exports) {
-    'use strict';
     ;
     ;
     ;
@@ -108,12 +107,9 @@
             if (propName === 'className') {
                 throw new Error('Property "className" is not supported, use "class".');
             } else if (propName === 'class') {
-                if (domNode.className) {
-                    // May happen if classes is specified before class
-                    domNode.className += ' ' + propValue;
-                } else {
-                    domNode.className = propValue;
-                }
+                propValue.split(/\s+/).forEach(function (token) {
+                    return domNode.classList.add(token);
+                });
             } else if (propName === 'classes') {
                 // object with string keys and boolean values
                 var classNames = Object.keys(propValue);
@@ -511,7 +507,7 @@
             var onlyChild = arguments[childIndex];
             if (typeof onlyChild === 'string') {
                 text = onlyChild;
-            } else if (onlyChild !== undefined && onlyChild.length === 1 && typeof onlyChild[0] === 'string') {
+            } else if (onlyChild !== undefined && onlyChild !== null && onlyChild.length === 1 && typeof onlyChild[0] === 'string') {
                 text = onlyChild[0];
             }
         }
@@ -663,7 +659,7 @@
                         oldIndex++;
                     } else {
                         var found = false;
-                        for (var j = 1; j < keys.length; j++) {
+                        for (var j = 1; j < keys.length + 1; j++) {
                             var searchIndex = (oldIndex + j) % keys.length;
                             if (keys[searchIndex] === sourceKey) {
                                 results[i] = oldTargets[searchIndex];

@@ -440,12 +440,7 @@ let setProperties = function(domNode: Node, properties: VNodeProperties, project
     if (propName === 'className') {
       throw new Error('Property "className" is not supported, use "class".');
     } else if (propName === 'class') {
-      if ((domNode as Element).className) {
-        // May happen if classes is specified before class
-        (domNode as Element).className += ' ' + propValue;
-      } else {
-        (domNode as Element).className = propValue;
-      }
+      (propValue as string).split(/\s+/).forEach(token => (domNode as Element).classList.add(token));
     } else if (propName === 'classes') {
       // object with string keys and boolean values
       let classNames = Object.keys(propValue);

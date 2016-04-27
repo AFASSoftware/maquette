@@ -28,10 +28,11 @@ describe('dom', function() {
       });
 
       it('allows a constant class to be applied to make JSX workable', () => {
-        let projection = dom.create(h('div', { class: 'special' }));
-        expect(projection.domNode.outerHTML).to.equal('<div class="special"></div>');
-        projection.update(h('div', { class: 'special' }));
+        let projection = dom.create(h('div', { class: 'extra special' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="extra special"></div>');
+        projection.update(h('div', { class: 'extra special' }));
         expect(() => {
+          // updating class is not allowed, use 'classes' for this
           projection.update(h('div', { class: '' }));
         }).to.throw(Error);
       });

@@ -381,7 +381,7 @@ let toTextVNode = (data: any): VNode => {
 };
 
 let appendChildren = function(parentSelector: string, insertions: any[], main: VNode[]) {
-  for (let i = 0; i < insertions.length; i++) {
+  for (let i = 0, length = insertions.length; i < length; i++) {
     let item = insertions[i];
     if (Array.isArray(item)) {
       appendChildren(parentSelector, item, main);
@@ -896,7 +896,7 @@ h = function(selector: string): VNode {
   }
   if (text === undefined) {
     children = [];
-    for (; childIndex < arguments.length; childIndex++) {
+    for (; childIndex < argsLength; childIndex++) {
       let child = arguments[childIndex];
       if (child === null || child === undefined) {
         continue;

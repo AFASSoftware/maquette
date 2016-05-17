@@ -10,6 +10,7 @@
         factory(root.maquette = {});
     }
 }(this, function (exports) {
+    'use strict';
     ;
     ;
     ;
@@ -54,7 +55,7 @@
         };
     };
     var appendChildren = function (parentSelector, insertions, main) {
-        for (var i = 0; i < insertions.length; i++) {
+        for (var i = 0, length_1 = insertions.length; i < length_1; i++) {
             var item = insertions[i];
             if (Array.isArray(item)) {
                 appendChildren(parentSelector, item, main);
@@ -390,7 +391,13 @@
         }
         setProperties(domNode, vnode.properties, projectionOptions);
         if (vnode.properties && vnode.properties.afterCreate) {
-            vnode.properties.afterCreate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
+            vnode.properties.afterCreate.apply(vnode.properties.bind || vnode.properties, [
+                domNode,
+                projectionOptions,
+                vnode.vnodeSelector,
+                vnode.properties,
+                vnode.children
+            ]);
         }
     };
     createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
@@ -464,7 +471,13 @@
             updated = updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions) || updated;
             updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
             if (vnode.properties && vnode.properties.afterUpdate) {
-                vnode.properties.afterUpdate(domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
+                vnode.properties.afterUpdate.apply(vnode.properties.bind || vnode.properties, [
+                    domNode,
+                    projectionOptions,
+                    vnode.vnodeSelector,
+                    vnode.properties,
+                    vnode.children
+                ]);
             }
         }
         if (updated && vnode.properties && vnode.properties.updateAnimation) {
@@ -513,7 +526,7 @@
         }
         if (text === undefined) {
             children = [];
-            for (; childIndex < arguments.length; childIndex++) {
+            for (; childIndex < argsLength; childIndex++) {
                 var child = arguments[childIndex];
                 if (child === null || child === undefined) {
                     continue;

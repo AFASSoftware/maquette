@@ -1,7 +1,7 @@
 {
   "name": "maquette",
   "main": "dist/maquette.js",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "homepage": "http://maquettejs.org/",
   "authors": [
     "Johan Gorter <johan@johangorter.com>"

@@ -730,7 +730,7 @@ let initPropertiesAndChildren = function(domNode: Node, vnode: VNode, projection
   }
   setProperties(domNode, vnode.properties, projectionOptions);
   if (vnode.properties && vnode.properties.afterCreate) {
-    vnode.properties.afterCreate(domNode as Element, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
+    vnode.properties.afterCreate.apply(vnode.properties.bind || vnode.properties, [domNode as Element, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children]);
   }
 };
 
@@ -806,7 +806,7 @@ updateDom = function(previous, vnode, projectionOptions) {
     updated = updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions) || updated;
     updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
     if (vnode.properties && vnode.properties.afterUpdate) {
-      vnode.properties.afterUpdate(<Element>domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children);
+      vnode.properties.afterUpdate.apply(vnode.properties.bind || vnode.properties, [<Element>domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children]);
     }
   }
   if (updated && vnode.properties && vnode.properties.updateAnimation) {

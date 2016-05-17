@@ -13,6 +13,13 @@ describe('dom', () => {
       expect(afterCreate).to.have.been.calledWith(projection.domNode);
     });
 
+    it('invokes afterCreate with "this" set to the value of the bind property', () => {
+      let afterCreate = sinon.stub();
+      let thisObject = sinon.stub();
+      let projection = dom.create(h('div', { afterCreate: afterCreate, bind: thisObject }));
+      expect(afterCreate).to.be.calledOn(thisObject);
+    });
+
   });
 
   describe('afterUpdate', () => {
@@ -22,6 +29,14 @@ describe('dom', () => {
       let projection = dom.create(h('div', { afterUpdate }));
       projection.update(h('div', { afterUpdate }));
       expect(afterUpdate).to.have.been.calledWith(projection.domNode);
+    });
+
+    it('invokes afterUpdate with "this" set to the value of the bind property', () => {
+      let afterUpdate = sinon.stub();
+      let thisObject = sinon.stub();
+      let projection = dom.create(h('div', { afterUpdate: afterUpdate, bind: thisObject }));
+      projection.update(h('div', { afterUpdate: afterUpdate, bind: thisObject }));
+      expect(afterUpdate).to.be.calledOn(thisObject);
     });
 
   });

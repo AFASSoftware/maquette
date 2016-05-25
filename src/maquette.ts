@@ -219,8 +219,6 @@ export interface VNodeProperties {
    * @param vnodeSelector - The selector passed to the [[h]] function.
    * @param properties - The properties passed to the [[h]] function.
    * @param children - The children that were created.
-   * @param properties - The last properties object that was supplied to the [[h]] method
-   * @param previousProperties - The previous properties object that was supplied to the [[h]] method
    */
   afterCreate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties,
     children: VNode[]): void;
@@ -973,7 +971,7 @@ export let dom = {
    * This means that the virtual DOM and the real DOM will have one overlapping element.
    * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided.
    * This is a low-level method. Users wil typically use a [[Projector]] instead.
-   * @param domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
+   * @param element - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
    * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]] objects
    * may only be rendered once.
    * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].

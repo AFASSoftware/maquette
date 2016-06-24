@@ -1134,13 +1134,17 @@ export let createMapping = <Source, Target>(
 export let createProjector = function(projectorOptions: ProjectorOptions): Projector {
   let projector: Projector;
   let projectionOptions = applyDefaultProjectionOptions(projectorOptions);
-  projectionOptions.eventHandlerInterceptor = function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
-    return function() {
-      // intercept function calls (event handlers) to do a render afterwards.
-      projector.scheduleRender();
-      return eventHandler.apply(properties.bind || this, arguments);
+
+  if (projectionOptions.eventHandlerInterceptor === undefined) {
+    projectionOptions.eventHandlerInterceptor = function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
+      return function() {
+        // intercept function calls (event handlers) to do a render afterwards.
+        projector.scheduleRender();
+        return eventHandler.apply(properties.bind || this, arguments);
+      };
     };
-  };
+  }
+
   let renderCompleted = true;
   let scheduled: number;
   let stopped = false;

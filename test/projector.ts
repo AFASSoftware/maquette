@@ -1,5 +1,5 @@
 import {expect, sinon, jsdom} from './utilities';
-import {createProjector, h, Component} from '../src/maquette';
+import {createProjector, h, Component, ProjectorOptions} from '../src/maquette';
 
 describe('Projector', () => {
 
@@ -218,4 +218,15 @@ describe('Projector', () => {
     }).to.throw();
   });
 
+  it('can override the projector default event interceptor', (cb) => {
+    let parentElement = { appendChild: sinon.stub() };
+    let projector = createProjector({eventHandlerInterceptor: () => function() { cb() }} as ProjectorOptions);
+    let handleClick = function() {};
+    let renderFunction = () => h('button', { onclick: handleClick });
+    projector.append(parentElement as any, renderFunction);
+
+    let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+    let clickEvent = {};
+    button.onclick(clickEvent as any);
+  });
 });

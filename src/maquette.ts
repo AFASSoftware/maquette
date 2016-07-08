@@ -830,7 +830,7 @@ let createProjection = function(vnode: VNode, projectionOptions: ProjectionOptio
 // The following line is not possible in Typescript, hence the workaround in the two lines below
 // export type VNodeChild = string|VNode|Array<VNodeChild>
 /**
- * Only needed for the defintion of [[VNodeChild]].
+ * Only needed for the definition of [[VNodeChild]].
  */
 export interface VNodeChildren extends Array<VNodeChild> { };
 /**
@@ -867,7 +867,7 @@ export interface H {
  */
 export let h: H;
 
-// The other two parameters are not added here, because the Typescript compiler creates surrogate code for desctructuring 'children'.
+// The other two parameters are not added here, because the Typescript compiler creates surrogate code for destructuring 'children'.
 h = function(selector: string): VNode {
   let properties = arguments[1];
   if (typeof selector !== 'string') {
@@ -924,7 +924,7 @@ export let dom = {
   /**
    * Creates a real DOM tree from `vnode`. The [[Projection]] object returned will contain the resulting DOM Node in
    * its [[Projection.domNode|domNode]] property.
-   * This is a low-level method. Users wil typically use a [[Projector]] instead.
+   * This is a low-level method. Users will typically use a [[Projector]] instead.
    * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
    * objects may only be rendered once.
    * @param projectionOptions - Options to be used to create and update the projection.
@@ -938,7 +938,7 @@ export let dom = {
 
   /**
    * Appends a new childnode to the DOM which is generated from a [[VNode]].
-   * This is a low-level method. Users wil typically use a [[Projector]] instead.
+   * This is a low-level method. Users will typically use a [[Projector]] instead.
    * @param parentNode - The parent node for the new childNode.
    * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
    * objects may only be rendered once.
@@ -1005,7 +1005,7 @@ export interface CalculationCache<Result> {
    * Objects in the inputs array are compared using ===.
    * @param inputs - Array of objects that are to be compared using === with the inputs from the previous invocation.
    * These objects are assumed to be immutable primitive values.
-   * @param calculation - Function that takes zero arguments and returns an object (A [[VNode]] assumably) that can be cached.
+   * @param calculation - Function that takes zero arguments and returns an object (A [[VNode]] presumably) that can be cached.
    */
   result(inputs: Object[], calculation: () => Result): Result;
 }

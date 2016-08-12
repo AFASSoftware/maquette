@@ -105,6 +105,16 @@ describe('dom', function() {
       projection.update(h('div', { scrollTop: 1 }));
     });
 
+    it('sets HTMLInputElement.type before the element is added to the DOM for IE8 and earlier', () => {
+      let parentNode = {
+        appendChild: sinon.spy((child: HTMLElement) => {
+          expect(child.getAttribute('type')).to.equal('file');
+        })
+      }
+      let projection = dom.append(<any>parentNode, h('input', { type: 'file' }));
+      expect(parentNode.appendChild).to.have.been.called;
+    });
+
     describe('event handlers', () => {
 
       it('allows one to correct the value while being typed', () => {

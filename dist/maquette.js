@@ -427,6 +427,10 @@
                             domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, found);
                         } else {
                             domNode = vnode.domNode = document.createElement(found);
+                            if (found === 'input' && vnode.properties && vnode.properties.type !== undefined) {
+                                // IE8 and older don't support setting input type after the DOM Node has been added to the document
+                                domNode.setAttribute('type', vnode.properties.type);
+                            }
                         }
                         if (insertBefore !== undefined) {
                             parentNode.insertBefore(domNode, insertBefore);
@@ -498,7 +502,7 @@
         };
     };
     ;
-    // The other two parameters are not added here, because the Typescript compiler creates surrogate code for desctructuring 'children'.
+    // The other two parameters are not added here, because the Typescript compiler creates surrogate code for destructuring 'children'.
     exports.h = function (selector) {
         var properties = arguments[1];
         if (typeof selector !== 'string') {
@@ -553,7 +557,7 @@
         /**
      * Creates a real DOM tree from `vnode`. The [[Projection]] object returned will contain the resulting DOM Node in
      * its [[Projection.domNode|domNode]] property.
-     * This is a low-level method. Users wil typically use a [[Projector]] instead.
+     * This is a low-level method. Users will typically use a [[Projector]] instead.
      * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
      * objects may only be rendered once.
      * @param projectionOptions - Options to be used to create and update the projection.
@@ -566,7 +570,7 @@
         },
         /**
      * Appends a new childnode to the DOM which is generated from a [[VNode]].
-     * This is a low-level method. Users wil typically use a [[Projector]] instead.
+     * This is a low-level method. Users will typically use a [[Projector]] instead.
      * @param parentNode - The parent node for the new childNode.
      * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
      * objects may only be rendered once.
@@ -597,7 +601,7 @@
      * This means that the virtual DOM and the real DOM will have one overlapping element.
      * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided.
      * This is a low-level method. Users wil typically use a [[Projector]] instead.
-     * @param domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
+     * @param element - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
      * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]] objects
      * may only be rendered once.
      * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].

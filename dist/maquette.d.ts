@@ -212,8 +212,6 @@ export interface VNodeProperties {
      * @param vnodeSelector - The selector passed to the [[h]] function.
      * @param properties - The properties passed to the [[h]] function.
      * @param children - The children that were created.
-     * @param properties - The last properties object that was supplied to the [[h]] method
-     * @param previousProperties - The previous properties object that was supplied to the [[h]] method
      */
     afterCreate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties, children: VNode[]): void;
     /**
@@ -279,7 +277,7 @@ export interface VNodeProperties {
     onmouseout?(ev?: MouseEvent): boolean | void;
     onmouseover?(ev?: MouseEvent): boolean | void;
     onmouseup?(ev?: MouseEvent): boolean | void;
-    onmousewheel?(ev?: MouseWheelEvent): boolean | void;
+    onmousewheel?(ev?: WheelEvent | MouseWheelEvent): boolean | void;
     onscroll?(ev?: UIEvent): boolean | void;
     onsubmit?(ev?: Event): boolean | void;
     spellcheck?: boolean;
@@ -287,6 +285,7 @@ export interface VNodeProperties {
     title?: string;
     accessKey?: string;
     id?: string;
+    type?: string;
     autocomplete?: string;
     checked?: boolean;
     placeholder?: string;
@@ -321,7 +320,7 @@ export interface Projection {
     update(updatedVnode: VNode): void;
 }
 /**
- * Only needed for the defintion of [[VNodeChild]].
+ * Only needed for the definition of [[VNodeChild]].
  */
 export interface VNodeChildren extends Array<VNodeChild> {
 }
@@ -384,7 +383,7 @@ export interface CalculationCache<Result> {
      * Objects in the inputs array are compared using ===.
      * @param inputs - Array of objects that are to be compared using === with the inputs from the previous invocation.
      * These objects are assumed to be immutable primitive values.
-     * @param calculation - Function that takes zero arguments and returns an object (A [[VNode]] assumably) that can be cached.
+     * @param calculation - Function that takes zero arguments and returns an object (A [[VNode]] presumably) that can be cached.
      */
     result(inputs: Object[], calculation: () => Result): Result;
 }

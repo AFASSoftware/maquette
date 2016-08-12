@@ -760,6 +760,9 @@ createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
             domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, found);
           } else {
             domNode = vnode.domNode = document.createElement(found);
+            if (found === 'input' && vnode.properties && vnode.properties.type !== undefined) { // IE8 and older don't support setting input type after it has been added to the document
+              domNode.setAttribute("type", vnode.properties.type);
+            }
           }
           if (insertBefore !== undefined) {
             parentNode.insertBefore(domNode, insertBefore);

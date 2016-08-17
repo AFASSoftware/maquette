@@ -116,7 +116,7 @@ function renderMaquette() {
   ]);
 }
 
-maquette.createProjector(domNode, renderMaquette);
+projector.append(domNode, renderMaquette);
 {% include live-editor-end.html %}
 
 More information about `createMapping` can be found in the [API]({{ site.api_url }}#createmapping) documentation.

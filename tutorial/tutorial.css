@@ -1,3 +1,4 @@
+@import 'styles/navigation-bar.css';
 @import 'styles/tutorial-menu.css';
 @import 'styles/progress-bar.css';
 @import 'styles/navigation-bar.css';
@@ -396,7 +397,7 @@
           transition: color 0.4s;
 }
 .table-of-content li a:hover .level-count {
-  color: indigo;
+  color: #2c6cbe;
 }
 .table-of-content .level-title {
   font-weight: 300;
@@ -407,13 +408,13 @@
           transition: all 0.4s;
 }
 .table-of-content li a:hover .level-title {
-  color: indigo;
+  color: #2c6cbe;
   text-decoration: underline;
 }
 
 .table-of-content .active .level-title,
 .table-of-content .active .level-count {
-  color: indigo;
+  color: #2c6cbe;
 }
 
 .table-of-content .active .level-title {

@@ -1,6 +1,11 @@
 .progress-bar {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: row;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
 }
 
 .progress-bar a {
@@ -13,9 +18,9 @@
 }
 
 .progress-bar .achieved {
-  background: indigo;
-  border-color: indigo;
+  background: #2c6cbe;
+  border-color: #2c6cbe;
 }
 .progress-bar .active {
-  border-color: indigo;
+  border-color: #2c6cbe;
 }

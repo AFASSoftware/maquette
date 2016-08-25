@@ -14,7 +14,7 @@
   a {
     color: $text-color-light;
     text-decoration: none;
-    
+    outline: none;
     
     &:hover, &:active {
       text-decoration: underline;
@@ -32,6 +32,14 @@
       line-height: 50px;
       font-weight: 600;
       color: $primary-color;
+      @include flexbox();
+      @include align-items(center);
+      @include flex-direction(row);
+      > img {
+        height: 42px;
+        margin-right: 8px;
+      }
+    
       &:hover {
         text-decoration: none;
       }

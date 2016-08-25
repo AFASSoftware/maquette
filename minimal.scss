@@ -10,6 +10,12 @@
 @import "live-editor";
 @import "demo";
 
+html, body {
+  overflow: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
 body {
   min-height: 100vh;
   padding-top: 50px; // Leave room for the topbar
@@ -19,6 +25,19 @@ body {
   > * {
     flex-shrink: 0;
   }
+}
+
+h1 {
+  font-weight: 100;
+  color: $text-color-dark;
+}
+
+h1 {
+  font-weight: 100;
+}
+
+h2, h3 {
+  font-weight: 400;
 }
 
 
@@ -122,9 +141,11 @@ body > footer {
   background-color: #272822;
   color: $white;
   @include flexbox();
-  @include flex-direction(column);
+  @include flex-direction(row);
   @include flex-wrap(wrap);
   @include align-items(center);
+  @include justify-content(center);
+  
   padding-top: 40px; // matches top bar
   
   a {
@@ -137,8 +158,8 @@ body > footer {
   }
   
   > nav {
-    width: $small-content-width;
-    max-width: 96%;
+    @include flex(0 1 $small-content-width);
+    padding: 0 20px;
 
     > h2 {
       color: #AAAAAA;

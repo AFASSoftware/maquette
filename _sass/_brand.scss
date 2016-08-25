@@ -1,28 +1,31 @@
 @import url(https://fonts.googleapis.com/css?family=Raleway:400,100,700);
 
 $font-family: 'Raleway', sans-serif;
-$text-font-size: 14px;
+$text-font-size: 16px;
 $text-line-height: 24px;
 
-$tet-color: #A9A9A9;
+$text-color: #6A6A6A;
 $text-color-light: #A9A9A9;
 $text-color-dark: #404040;
 
-$primary-color: indigo;
+$primary-color: #2c6cbe;
 $white: #EEEEEE;
 
 $heading-font-family: 'Raleway', sans-serif;
-$heading-color: indigo;
+$heading-color: #2c6cbe;
 
 $top-bar-color: white;
+$header-color: #5192e8;
 
-$heading1-font-size: 32px;
+$heading1-font-size: 36px;
 $heading1-line-height: 48px;
-$heading2-font-size: 24px;
-$heading2-line-height: 32px;
+$heading2-font-size: 30px;
+$heading2-line-height: 36px;
+
 $heading3-font-size: 20px;
 $heading3-line-height: 24px;
 
+$content-width: 1040px;
 $card-width: 1040px;
 $small-content-width: 670px;
 $gutter-width: 10px;

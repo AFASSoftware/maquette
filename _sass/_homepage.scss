@@ -7,34 +7,35 @@
     @include flexbox();
     @include flex-direction(column);
     @include align-self(stretch);
-    background-image: url('../img/bg.png');
-    background-position: center center;
-    background-size: cover;
-    -webkit-clip-path: polygon(100% 0, 100% 90%, 50% 100%, 0 90%, 0 0);
-    clip-path: polygon(100% 0, 100% 90%, 50% 100%, 0 90%, 0 0);
-    padding: 150px 20px;
+    background: -webkit-linear-gradient(54deg, #51D1E8 0%,#51A8E8 42%,#2C58C1 100%);
+    background: linear-gradient(36deg, #51D1E8 0%,#51A8E8 42%,#2C58C1 100%);
+    background-color: $header-color;
+    border-bottom: 8px solid #94FFFF;
     color: white;
     margin: 0 0 80px 0;
-    > h1 {
+    > .container {
+      @include flexbox();
+      @include flex-direction(row);
+      @include justify-content(center);
+      @include align-items(center);
       @include align-self(center);
-      text-align: center;
-      font-size: 62px;
-      line-height: 80px;
-      font-weight: 400;
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      display: inline;
-      padding: 20px 40px;
-      text-shadow: 3px 3px indigo;
-      background: rgba(255, 255, 255, 0.02);
+      @include flex-wrap(wrap);
+      max-width: $content-width;
+      padding: 40px;
+      > .logo {
+        width: 380px;
+        height: 300px;
+      }
+      > p.subtitle {
+        @include flex(1 1 200px);
+        text-align: left;
+        font-size: 32px;
+        line-height: 40px;
+        padding: 0 0 40px 20px;
+        font-weight: 100;
+      }
     }
-    > p.subtitle {
-      text-align: center;
-      font-size: 24px;
-      line-height: 40px;
-      padding: 16px 0 24px 0;
-      font-weight: 100;
-    }
+    
   }
   .teasers {
     @include flexbox();
@@ -46,29 +47,32 @@
       max-width: $column-width + $gutter-width;
       @include flex(1 0 250px);
       margin: 0 $gutter-width/2;
-      text-align: center;
-      border-right: 1px solid #EAEAEA;
-      padding: 20px;
+      padding: 6px;
+      @include flexbox();
       
-      &:last-child {
-        border-right: 0;
-      }
       > svg {
-        width: 64px;
-        height: 64px;
+        margin: 24px 12px;
+        flex-shrink: 0;
+        width: 72px;
+        height: 72px;
+      }
+      
+      > div > p {
+        font-size: 14px;
       }
     }
     @media(max-width: 767px) {
       @include flex-direction(column);
       @include align-items(center);
       > aside {
-          border-right: 0;
+        border-right: 0;
       }
     }
   }
   p {
-    text-align: justify;
+//    text-align: justify;
   }
+  .news-section,
   .live-demonstration {
     @include align-self(stretch);
     background: #F5F5F5;
@@ -76,6 +80,13 @@
     width: 100%;
     >.row {
       margin: 0;
+    }
+  }
+  .why-maquette {
+    
+  }
+  .live-demonstration {
+    >.row {
       &.live-editor .col-2 {
         @include flex-shrink(1);
       }
@@ -83,13 +94,6 @@
     input {
       border: 1px solid #CECECE;
     }
-  }
-  h1 {
-    font-weight: 100;
-    color: $text-color-dark;
-    font-size: 42px;
-    text-align: center;
-    margin-bottom: 20px;
   }
   .row {
     @include flexbox();
@@ -104,10 +108,11 @@
       padding: 20px;
     }
   }
-  .get-started {
-    > p {
-      text-align: center;
+  .why-maquette > section {
+    >h2 {
+      margin-top: 40px;
     }
+    > h1,
     > h2,
     > a.button {
       @include align-self(center);
@@ -135,13 +140,15 @@
         }
         a {
           text-decoration: none;
-          color: indigo;
           :hover {
             text-decoration: underline;
           }
         }
         p {
           max-width: 670px;
+          > a {
+            text-decoration: underline;
+          }
         }
       }
     }

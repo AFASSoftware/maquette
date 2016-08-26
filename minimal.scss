@@ -10,14 +10,7 @@
 @import "live-editor";
 @import "demo";
 
-html, body {
-  overflow: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-}
-
 body {
-  min-height: 100vh;
   padding-top: 50px; // Leave room for the topbar
   @include flexbox();
   @include flex-direction(column);

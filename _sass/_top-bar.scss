@@ -1,9 +1,9 @@
 .top-bar {
   position: fixed;
   z-index: 100;
-  top:0;
-  left:0;
-  right:0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 50px;
   @include flexbox();
   @include justify-content(center);
@@ -37,6 +37,7 @@
       @include flex-direction(row);
       > img {
         height: 42px;
+        width: 42px;
         margin-right: 8px;
       }
     

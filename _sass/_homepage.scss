@@ -26,16 +26,28 @@
         width: 380px;
         height: 300px;
       }
-      > p.subtitle {
-        @include flex(1 1 200px);
-        text-align: left;
-        font-size: 32px;
-        line-height: 40px;
+      @media(max-width: 767px) {
+        >.logo {
+          width: 280px;
+          height: 221px;
+        }
+      }
+      > .texts {
         padding: 0 0 40px 20px;
-        font-weight: 100;
+        > h1 {
+          font-size: 48px;
+          color: #94FFFF;
+          font-weight: 100;
+        }
+        > p.subtitle {
+          @include flex(1 1 200px);
+          text-align: left;
+          font-size: 30px;
+          line-height: 40px;
+          font-weight: 100;
+        } 
       }
     }
-    
   }
   .teasers {
     @include flexbox();

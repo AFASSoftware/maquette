@@ -1,5 +1,3 @@
-# The 3 rules
-
 Before you are ready to start using maquette, you need to be aware of three rules, which are all easy to follow.
 These rules are there to make sure maquette can generally render and diff very large pages at 60 frames per second on every device.
 

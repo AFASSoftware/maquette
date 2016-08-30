@@ -112,6 +112,7 @@
     @include flex-direction(row);
     @include align-content(center);
     @include justify-content(center);
+    width: 100%;
     >.credits,
     > section {
       @include flex(0, 1, 670px);

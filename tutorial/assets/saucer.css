@@ -238,7 +238,5 @@ body {
     background: #272727;
     opacity: 1;
     background: radial-gradient(ellipse at center, #fdfcfd 0%, #fdfcfd 10%, #444444 10%, #444444 7%, #444444 11%, #1c1c1c 100%);
-    background-position-y: 135px;
-    background-position-x: -20px;
-    background-size: 120% 140%;
+    background-size: 100% 169%;
     box-shadow: 1px -2px 0px 0px #8B8B8B, 1px -3px 0px 0px #222222, 1px -5px 0px 0px #8B8B8B, 1px -5px 60px -2px rgba(255, 255, 255, 0.4); }

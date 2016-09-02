@@ -73,13 +73,22 @@ describe('dom', function() {
       expect(link.getAttribute('href')).to.equal('#2');
     });
 
-    it('can remove disabled attribute when null or undefined', () => {
-      let projection = dom.create(h('a', { disabled: 'disabled' }));
+    it('can remove disabled property when set to null or undefined', () => {
+      let projection = dom.create(h('a', { disabled: true }));
       let link = projection.domNode as HTMLLinkElement;
-      expect(link.getAttribute('disabled')).to.equal('disabled');
+
+      expect(link.disabled).to.equal(true);
+      // Unfortunately JSDom does not map the property value to the attribute as real browsers do
+      // expect(link.getAttribute('disabled')).to.equal('');
 
       projection.update(h('a', { disabled: null }));
-      expect(link.getAttribute('disabled')).to.not.exist;
+
+      // What Chrome would do:
+      // expect(link.disabled).to.equal(false);
+      // expect(link.getAttribute('disabled')).to.be.null;
+
+      // What JSDom does:
+      expect(link.disabled).to.be.null;
     });
 
     it('updates properties', () => {

@@ -551,7 +551,7 @@ let updateProperties = function(domNode: Node, previousProperties: VNodeProperti
         }
       }
     } else {
-      if (!propValue && typeof previousValue === 'string') {
+      if (!propValue && propName !== "disabled" && typeof previousValue === 'string') {
         propValue = '';
       }
       if (propName === 'value') { // value can be manipulated by the user directly and using event.preventDefault() is not an option
@@ -576,7 +576,11 @@ let updateProperties = function(domNode: Node, previousProperties: VNodeProperti
           }
         } else {
           if ((domNode as any)[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop
-            (domNode as any)[propName] = propValue;
+            if (!propValue && propName === "disabled") {
+              (domNode as any).removeAttribute(propName);
+            } else {
+              (domNode as any)[propName] = propValue;
+            }
           }
         }
         propertiesUpdated = true;

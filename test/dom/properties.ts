@@ -73,6 +73,15 @@ describe('dom', function() {
       expect(link.getAttribute('href')).to.equal('#2');
     });
 
+    it('can remove disabled attribute when null or undefined', () => {
+      let projection = dom.create(h('a', { disabled: 'disabled' }));
+      let link = projection.domNode as HTMLLinkElement;
+      expect(link.getAttribute('disabled')).to.equal('disabled');
+
+      projection.update(h('a', { disabled: null }));
+      expect(link.getAttribute('disabled')).to.not.exist;
+    });
+
     it('updates properties', () => {
       let projection = dom.create(h('a', { href: '#1', tabIndex: 1 }));
       let link = projection.domNode as HTMLLinkElement;

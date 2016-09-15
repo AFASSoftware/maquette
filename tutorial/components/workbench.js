@@ -288,21 +288,23 @@ window.createWorkbench = function (projector, tabs, objectives) {
             ]);
           })
         ]),
-        h("div.input", [
-          h("div.tabs", [
-            tabs.map(function (scriptTab, index) {
-              return h("button.tab", { key: index+1, onclick: switchTo[index], classes: { active: currentTab === index } }, [scriptTab.name]);
-            }),
-            h("button.reset", { onclick: handleReset, disabled: isPristine() }, ["Reset"])
+        h("div.work-do", [
+          h("div.input", [
+            h("div.tabs", [
+              tabs.map(function (scriptTab, index) {
+                return h("button.tab", { key: index+1, onclick: switchTo[index], classes: { active: currentTab === index } }, [scriptTab.name]);
+              }),
+              h("button.reset", { onclick: handleReset, disabled: isPristine() }, ["Reset"])
+            ]),
+            h("div.editor", { afterCreate: createEditor }),
+  //          h("div.parseError", [parseError])
           ]),
-          h("div.editor", { afterCreate: createEditor }),
-//          h("div.parseError", [parseError])
-        ]),
-        h("div.result", [
-          h("div.preview", [
-            lastValidScript ? [
-              h("iframe", { srcdoc: html, onload: iframeLoaded, afterCreate: applySrcdoc, afterUpdate: applySrcdoc })
-            ] : []
+          h("div.result", [
+            h("div.preview", [
+              lastValidScript ? [
+                h("iframe", { srcdoc: html, onload: iframeLoaded, afterCreate: applySrcdoc, afterUpdate: applySrcdoc })
+              ] : []
+            ])
           ])
         ])
       ]);

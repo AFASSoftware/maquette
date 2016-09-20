@@ -33,6 +33,7 @@ projector.append(domNode, form.renderMaquette);
 Let us go one step further and create a function that can produce configurable button components.
 
 {% include live-editor-start.html %}var createButton = function(text, onClick) {
+
   function handleClick(evt) {
     evt.preventDefault();
     onClick();
@@ -45,19 +46,24 @@ Let us go one step further and create a function that can produce configurable b
   };
 };
 
-var rotateButton = createButton('skew', function() { 
+var skewButton = createButton('skew', function() { 
   domNode.style.transform = 'skewX(15deg)';
 });
-var undoButton = createButton('straight', function() { 
+
+var straightButton = createButton('straight', function() { 
   domNode.style.transform = ''; 
 });
 
-projector.append(domNode, function() { 
-  return h('div', [
-    rotateButton.renderMaquette(),
-    undoButton.renderMaquette()
-  ]); 
-});
+var form = {
+  renderMaquette: function() {
+    return h('div.form', [
+      skewButton.renderMaquette(),
+      straightButton.renderMaquette()
+    ]);
+  }
+};
+
+projector.append(domNode, form.renderMaquette);
 {% include live-editor-end.html %}
 
 You could also use the Javascript prototype way to create a Button class, but we prefer the

@@ -86,6 +86,13 @@ export interface Projector {
      */
     scheduleRender(): void;
     /**
+     * Synchronously re-renders to the DOM. You should normally call the `scheduleRender()` function to keep the
+     * user interface more performant. There is however one good reason to call renderNow(),
+     * when you want to put the focus into a newly created element in iOS.
+     * This is only allowed when triggered by a user-event, not during requestAnimationFrame.
+     */
+    renderNow(): void;
+    /**
      * Stops running the `renderMaquetteFunction` to update the DOM. The `renderMaquetteFunction` must have been
      * registered using [[append]], [[merge]], [[insertBefore]] or [[replace]].
      *
@@ -282,6 +289,7 @@ export interface VNodeProperties {
     onsubmit?(ev?: Event): boolean | void;
     spellcheck?: boolean;
     tabIndex?: number;
+    disabled?: boolean;
     title?: string;
     accessKey?: string;
     id?: string;

@@ -10,6 +10,7 @@
         factory(root.maquette = {});
     }
 }(this, function (exports) {
+    'use strict';
     ;
     ;
     ;
@@ -731,6 +732,7 @@
             renderCompleted = true;
         };
         projector = {
+            renderNow: doRender,
             scheduleRender: function () {
                 if (!scheduled && !stopped) {
                     scheduled = requestAnimationFrame(doRender);

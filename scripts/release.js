@@ -4,7 +4,7 @@ var inquirer = require('inquirer');
 
 
 
-spawn("gulp", ["compress"], { stdio: 'inherit' }).on('close', function (code) {
+spawn("gulp", ["compress", "dist-min", "declaration"], { stdio: 'inherit' }).on('close', function (code) {
   if(code !== 0) {
     process.exit(code);
   }

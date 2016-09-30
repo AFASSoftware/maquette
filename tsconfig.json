@@ -7,7 +7,9 @@
     "outDir": "./build/js",
     "rootDir": ".",
     "target": "es5",
-    "noEmitOnError": true
+    "noEmitOnError": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true
   },
   "exclude": [
     "node_modules",

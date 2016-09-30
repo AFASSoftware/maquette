@@ -11,23 +11,23 @@ export interface VNode {
     /**
      * The CSS selector containing tagname, css classnames and id. An empty string is used to denote a text node.
      */
-    vnodeSelector: string;
+    readonly vnodeSelector: string;
     /**
      * Object containing attributes, properties, event handlers and more, see [[h]].
      */
-    properties: VNodeProperties;
+    readonly properties: VNodeProperties | undefined;
     /**
      * Array of [[VNode]]s to be used as children. This array is already flattened.
      */
-    children: Array<VNode>;
+    readonly children: Array<VNode> | undefined;
     /**
      * Used in a special case when a [[VNode]] only has one childnode which is a textnode. Only used in combination with children === undefined.
      */
-    text: string;
+    readonly text: string | undefined;
     /**
      * Used by maquette to store the domNode that was produced from this [[VNode]].
      */
-    domNode: Node;
+    domNode: Node | null;
 }
 /**
  * A projector is used to create the real DOM from the the virtual DOM and to keep it up-to-date afterwards.
@@ -142,7 +142,7 @@ export interface ProjectorOptions {
      * The module `cssTransitions` in the provided `css-transitions.js` file provides such a strategy.
      * A transition strategy is not needed when enterAnimation and exitAnimation properties are provided as functions.
      */
-    transitions?: TransitionStrategy;
+    readonly transitions?: TransitionStrategy;
     /**
      * May be used to add vendor prefixes when applying inline styles when needed.
      * This function is called when [[styles]] is used.
@@ -161,7 +161,7 @@ export interface ProjectionOptions extends ProjectorOptions {
     /**
      * Only for internal use. Used for rendering SVG Nodes.
      */
-    namespace?: string;
+    readonly namespace?: string;
     /**
      * May be used to intercept registration of event-handlers.
      *
@@ -237,36 +237,36 @@ export interface VNodeProperties {
      *
      * When no [[key]] is present, this object is also used to uniquely identify a DOM node.
      */
-    bind?: Object;
+    readonly bind?: Object;
     /**
      * Used to uniquely identify a DOM node among siblings.
      * A key is required when there are more children with the same selector and these children are added or removed dynamically.
      * NOTE: this does not have to be a string or number, a [[Component]] Object for instance is also possible.
      */
-    key?: Object;
+    readonly key?: Object;
     /**
      * An object literal like `{important:true}` which allows css classes, like `important` to be added and removed
      * dynamically.
      */
-    classes?: {
-        [index: string]: boolean;
+    readonly classes?: {
+        [index: string]: boolean | null | undefined;
     };
     /**
      * An object literal like `{height:'100px'}` which allows styles to be changed dynamically. All values must be strings.
      */
-    styles?: {
-        [index: string]: string;
+    readonly styles?: {
+        [index: string]: string | null | undefined;
     };
     ontouchcancel?(ev?: TouchEvent): boolean | void;
     ontouchend?(ev?: TouchEvent): boolean | void;
     ontouchmove?(ev?: TouchEvent): boolean | void;
     ontouchstart?(ev?: TouchEvent): boolean | void;
-    action?: string;
-    encoding?: string;
-    enctype?: string;
-    method?: string;
-    name?: string;
-    target?: string;
+    readonly action?: string;
+    readonly encoding?: string;
+    readonly enctype?: string;
+    readonly method?: string;
+    readonly name?: string;
+    readonly target?: string;
     onblur?(ev?: FocusEvent): boolean | void;
     onchange?(ev?: Event): boolean | void;
     onclick?(ev?: MouseEvent): boolean | void;
@@ -287,31 +287,31 @@ export interface VNodeProperties {
     onmousewheel?(ev?: WheelEvent | MouseWheelEvent): boolean | void;
     onscroll?(ev?: UIEvent): boolean | void;
     onsubmit?(ev?: Event): boolean | void;
-    spellcheck?: boolean;
-    tabIndex?: number;
-    disabled?: boolean;
-    title?: string;
-    accessKey?: string;
-    id?: string;
-    type?: string;
-    autocomplete?: string;
-    checked?: boolean;
-    placeholder?: string;
-    readOnly?: boolean;
-    src?: string;
-    value?: string;
-    alt?: string;
-    srcset?: string;
+    readonly spellcheck?: boolean;
+    readonly tabIndex?: number;
+    readonly disabled?: boolean;
+    readonly title?: string;
+    readonly accessKey?: string;
+    readonly id?: string;
+    readonly type?: string;
+    readonly autocomplete?: string;
+    readonly checked?: boolean;
+    readonly placeholder?: string;
+    readonly readOnly?: boolean;
+    readonly src?: string;
+    readonly value?: string;
+    readonly alt?: string;
+    readonly srcset?: string;
     /**
      * Puts a non-interactive piece of html inside the DOM node.
      *
      * Note: if you use innerHTML, maquette cannot protect you from XSS vulnerabilities and you must make sure that the innerHTML value is safe.
      */
-    innerHTML?: string;
+    readonly innerHTML?: string;
     /**
      * Everything that is not explicitly listed (properties and attributes that are either uncommon or custom).
      */
-    [index: string]: any;
+    readonly [index: string]: any;
 }
 /**
  * Represents a [[VNode]] tree that has been rendered to a real DOM tree.
@@ -320,7 +320,7 @@ export interface Projection {
     /**
      * The DOM node that is used as the root of this [[Projection]].
      */
-    domNode: Element;
+    readonly domNode: Element;
     /**
      * Updates the real DOM to match the new virtual DOM tree.
      * @param updatedVnode The updated virtual DOM tree. Note: The selector for the root of the [[VNode]] tree may not change.
@@ -335,7 +335,7 @@ export interface VNodeChildren extends Array<VNodeChild> {
 /**
  * These are valid values for the children parameter of the [[h]] function.
  */
-export declare type VNodeChild = string | VNode | VNodeChildren;
+export declare type VNodeChild = string | VNode | VNodeChildren | null | undefined;
 /**
  * Contains all valid method signatures for the [[h]] function.
  */
@@ -367,10 +367,10 @@ export declare let h: H;
  * Contains simple low-level utility functions to manipulate the real DOM.
  */
 export declare let dom: {
-    create: (vnode: VNode, projectionOptions?: ProjectionOptions) => Projection;
-    append: (parentNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions) => Projection;
-    insertBefore: (beforeNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions) => Projection;
-    merge: (element: Element, vnode: VNode, projectionOptions?: ProjectionOptions) => Projection;
+    create: (vnode: VNode, projectionOptions?: ProjectionOptions | undefined) => Projection;
+    append: (parentNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions | undefined) => Projection;
+    insertBefore: (beforeNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions | undefined) => Projection;
+    merge: (element: Element, vnode: VNode, projectionOptions?: ProjectionOptions | undefined) => Projection;
 };
 /**
  * A CalculationCache object remembers the previous outcome of a calculation along with the inputs.
@@ -444,7 +444,7 @@ export declare let createMapping: <Source, Target>(getSourceKey: (source: Source
  *
  * For more information, see [[Projector]].
  *
- * @param projectionOptions   Options that influence how the DOM is rendered and updated.
+ * @param projectorOptions   Options that influence how the DOM is rendered and updated.
  */
 export declare let createProjector: (projectorOptions: ProjectorOptions) => Projector;
 /**

@@ -13,23 +13,23 @@ export interface VNode {
   /**
    * The CSS selector containing tagname, css classnames and id. An empty string is used to denote a text node.
    */
-  vnodeSelector: string;
+  readonly vnodeSelector: string;
   /**
    * Object containing attributes, properties, event handlers and more, see [[h]].
    */
-  properties: VNodeProperties;
+  readonly properties: VNodeProperties | undefined;
   /**
    * Array of [[VNode]]s to be used as children. This array is already flattened.
    */
-  children: Array<VNode>;
+  readonly children: Array<VNode> | undefined;
   /**
    * Used in a special case when a [[VNode]] only has one childnode which is a textnode. Only used in combination with children === undefined.
    */
-  text: string;
+  readonly text: string | undefined;
   /**
    * Used by maquette to store the domNode that was produced from this [[VNode]].
    */
-  domNode: Node;
+  domNode: Node | null;
 }
 
 /**
@@ -129,7 +129,7 @@ export interface TransitionStrategy {
    *                        You may use this function to remove the element when the animation is done.
    */
   exit(element: Element, properties: VNodeProperties, exitAnimation: string, removeElement: () => void): void;
-};
+}
 
 /**
  * Options that may be passed when creating the [[Projector]]
@@ -140,7 +140,7 @@ export interface ProjectorOptions {
    * The module `cssTransitions` in the provided `css-transitions.js` file provides such a strategy.
    * A transition strategy is not needed when enterAnimation and exitAnimation properties are provided as functions.
    */
-  transitions?: TransitionStrategy;
+  readonly transitions?: TransitionStrategy;
   /**
    * May be used to add vendor prefixes when applying inline styles when needed.
    * This function is called when [[styles]] is used.
@@ -151,7 +151,7 @@ export interface ProjectorOptions {
    * @param value     The value of this style, for example `rotate(45deg)`.
    */
   styleApplyer?(domNode: HTMLElement, styleName: string, value: string): void;
-};
+}
 
 /**
  * Options that influence how the DOM is rendered and updated.
@@ -160,7 +160,7 @@ export interface ProjectionOptions extends ProjectorOptions {
   /**
    * Only for internal use. Used for rendering SVG Nodes.
    */
-  namespace?: string;
+  readonly namespace?: string;
   /**
    * May be used to intercept registration of event-handlers.
    *
@@ -173,7 +173,7 @@ export interface ProjectionOptions extends ProjectorOptions {
    * @returns                        The function that is to be placed on the DOM node as the event handler, instead of `eventHandler`.
    */
   eventHandlerInterceptor?: (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function;
-};
+}
 
 /**
  * Object containing attributes, properties, event handlers and more that can be put on DOM nodes.
@@ -239,22 +239,22 @@ export interface VNodeProperties {
    *
    * When no [[key]] is present, this object is also used to uniquely identify a DOM node.
    */
-  bind?: Object;
+  readonly bind?: Object;
   /**
    * Used to uniquely identify a DOM node among siblings.
    * A key is required when there are more children with the same selector and these children are added or removed dynamically.
    * NOTE: this does not have to be a string or number, a [[Component]] Object for instance is also possible.
    */
-  key?: Object;
+  readonly key?: Object;
   /**
    * An object literal like `{important:true}` which allows css classes, like `important` to be added and removed
    * dynamically.
    */
-  classes?: { [index: string]: boolean };
+  readonly classes?: { [index: string]: boolean };
   /**
    * An object literal like `{height:'100px'}` which allows styles to be changed dynamically. All values must be strings.
    */
-  styles?: { [index: string]: string };
+  readonly styles?: { [index: string]: string };
 
   // From Element
   ontouchcancel?(ev?: TouchEvent): boolean | void;
@@ -262,12 +262,12 @@ export interface VNodeProperties {
   ontouchmove?(ev?: TouchEvent): boolean | void;
   ontouchstart?(ev?: TouchEvent): boolean | void;
   // From HTMLFormElement
-  action?: string;
-  encoding?: string;
-  enctype?: string;
-  method?: string;
-  name?: string;
-  target?: string;
+  readonly action?: string;
+  readonly encoding?: string;
+  readonly enctype?: string;
+  readonly method?: string;
+  readonly name?: string;
+  readonly target?: string;
   // From HTMLElement
   onblur?(ev?: FocusEvent): boolean | void;
   onchange?(ev?: Event): boolean | void;
@@ -289,35 +289,35 @@ export interface VNodeProperties {
   onmousewheel?(ev?: WheelEvent | MouseWheelEvent): boolean | void;
   onscroll?(ev?: UIEvent): boolean | void;
   onsubmit?(ev?: Event): boolean | void;
-  spellcheck?: boolean;
-  tabIndex?: number;
-  disabled?: boolean;
-  title?: string;
-  accessKey?: string;
-  id?: string;
+  readonly spellcheck?: boolean;
+  readonly tabIndex?: number;
+  readonly disabled?: boolean;
+  readonly title?: string;
+  readonly accessKey?: string;
+  readonly id?: string;
   // From HTMLInputElement
-  type?: string;
-  autocomplete?: string;
-  checked?: boolean;
-  placeholder?: string;
-  readOnly?: boolean;
-  src?: string;
-  value?: string;
+  readonly type?: string;
+  readonly autocomplete?: string;
+  readonly checked?: boolean;
+  readonly placeholder?: string;
+  readonly readOnly?: boolean;
+  readonly src?: string;
+  readonly value?: string;
   // From HTMLImageElement
-  alt?: string;
-  srcset?: string;
+  readonly alt?: string;
+  readonly srcset?: string;
   /**
    * Puts a non-interactive piece of html inside the DOM node.
    *
    * Note: if you use innerHTML, maquette cannot protect you from XSS vulnerabilities and you must make sure that the innerHTML value is safe.
    */
-  innerHTML?: string;
+  readonly innerHTML?: string;
 
   /**
    * Everything that is not explicitly listed (properties and attributes that are either uncommon or custom).
    */
-  [index: string]: any;
-};
+  readonly [index: string]: any;
+}
 
 /**
  * Represents a [[VNode]] tree that has been rendered to a real DOM tree.
@@ -326,7 +326,7 @@ export interface Projection {
   /**
    * The DOM node that is used as the root of this [[Projection]].
    */
-  domNode: Element;
+  readonly domNode: Element;
   /**
    * Updates the real DOM to match the new virtual DOM tree.
    * @param updatedVnode The updated virtual DOM tree. Note: The selector for the root of the [[VNode]] tree may not change.
@@ -415,7 +415,7 @@ const DEFAULT_PROJECTION_OPTIONS: ProjectionOptions = {
   }
 };
 
-let applyDefaultProjectionOptions = (projectorOptions: ProjectionOptions) => {
+let applyDefaultProjectionOptions = (projectorOptions?: ProjectionOptions) => {
   return extend(DEFAULT_PROJECTION_OPTIONS, projectorOptions);
 };
 
@@ -425,7 +425,7 @@ let checkStyleValue = (styleValue: Object) => {
   }
 };
 
-let setProperties = function(domNode: Node, properties: VNodeProperties, projectionOptions: ProjectionOptions) {
+let setProperties = function(domNode: Node, properties: VNodeProperties | undefined, projectionOptions: ProjectionOptions) {
   if (!properties) {
     return;
   }
@@ -435,7 +435,7 @@ let setProperties = function(domNode: Node, properties: VNodeProperties, project
   for (let i = 0; i < propCount; i++) {
     let propName = propNames[i];
     /* tslint:disable:no-var-keyword: edge case */
-    var propValue = properties[propName];
+    let propValue = properties[propName];
     /* tslint:enable:no-var-keyword */
     if (propName === 'className') {
       throw new Error('Property "className" is not supported, use "class".');
@@ -460,14 +460,10 @@ let setProperties = function(domNode: Node, properties: VNodeProperties, project
         let styleValue = propValue[styleName];
         if (styleValue) {
           checkStyleValue(styleValue);
-          projectionOptions.styleApplyer(<HTMLElement>domNode, styleName, styleValue);
+          projectionOptions.styleApplyer!(<HTMLElement>domNode, styleName, styleValue);
         }
       }
-    } else if (propName === 'key') {
-      continue;
-    } else if (propValue === null || propValue === undefined) {
-      continue;
-    } else {
+    } else if (propName !== 'key' && propValue !== null && propValue !== undefined) {
       let type = typeof propValue;
       if (type === 'function') {
         if (propName.lastIndexOf('on', 0) === 0) { // lastIndexOf(,0)===0 -> startsWith
@@ -478,7 +474,7 @@ let setProperties = function(domNode: Node, properties: VNodeProperties, project
             (function() {
               // record the evt.target.value, because IE and Edge sometimes do a requestAnimationFrame between changing value and running oninput
               let oldPropValue = propValue;
-              propValue = function(evt: Event) {
+              propValue = function(this: HTMLElement, evt: Event) {
                 (evt.target as any)['oninput-value'] = (evt.target as HTMLInputElement).value; // may be HTMLTextAreaElement as well
                 oldPropValue.apply(this, [evt]);
               };
@@ -499,7 +495,7 @@ let setProperties = function(domNode: Node, properties: VNodeProperties, project
   }
 };
 
-let updateProperties = function(domNode: Node, previousProperties: VNodeProperties, properties: VNodeProperties, projectionOptions: ProjectionOptions) {
+let updateProperties = function(domNode: Node, previousProperties: VNodeProperties | undefined, properties: VNodeProperties | undefined, projectionOptions: ProjectionOptions) {
   if (!properties) {
     return;
   }
@@ -510,7 +506,7 @@ let updateProperties = function(domNode: Node, previousProperties: VNodeProperti
     let propName = propNames[i];
     // assuming that properties will be nullified instead of missing is by design
     let propValue = properties[propName];
-    let previousValue = previousProperties[propName];
+    let previousValue = previousProperties![propName];
     if (propName === 'class') {
       if (previousValue !== propValue) {
         throw new Error('"class" property may not be updated. Use the "classes" property for conditional css classes.');
@@ -546,9 +542,9 @@ let updateProperties = function(domNode: Node, previousProperties: VNodeProperti
         propertiesUpdated = true;
         if (newStyleValue) {
           checkStyleValue(newStyleValue);
-          projectionOptions.styleApplyer(domNode as HTMLElement, styleName, newStyleValue);
+          projectionOptions.styleApplyer!(domNode as HTMLElement, styleName, newStyleValue);
         } else {
-          projectionOptions.styleApplyer(domNode as HTMLElement, styleName, '');
+          projectionOptions.styleApplyer!(domNode as HTMLElement, styleName, '');
         }
       }
     } else {
@@ -613,7 +609,7 @@ let nodeAdded = function(vNode: VNode, transitions: TransitionStrategy) {
 };
 
 let nodeToRemove = function(vNode: VNode, transitions: TransitionStrategy) {
-  let domNode = vNode.domNode;
+  let domNode: Node = vNode.domNode!;
   if (vNode.properties) {
     let exitAnimation = vNode.properties.exitAnimation;
     if (exitAnimation) {
@@ -662,10 +658,10 @@ let checkDistinguishable = function(childNodes: VNode[], indexToCheck: number, p
   }
 };
 
-let createDom: (vnode: VNode, parentNode: Node, insertBefore: Node, projectionOptions: ProjectionOptions) => void;
+let createDom: (vnode: VNode, parentNode: Node, insertBefore: Node | null | undefined, projectionOptions: ProjectionOptions) => void;
 let updateDom: (previous: VNode, vnode: VNode, projectionOptions: ProjectionOptions) => boolean;
 
-let updateChildren = function(vnode: VNode, domNode: Node, oldChildren: VNode[], newChildren: VNode[], projectionOptions: ProjectionOptions) {
+let updateChildren = function(vnode: VNode, domNode: Node, oldChildren: VNode[] | undefined, newChildren: VNode[] | undefined, projectionOptions: ProjectionOptions) {
   if (oldChildren === newChildren) {
     return false;
   }
@@ -673,7 +669,7 @@ let updateChildren = function(vnode: VNode, domNode: Node, oldChildren: VNode[],
   newChildren = newChildren || emptyArray;
   let oldChildrenLength = oldChildren.length;
   let newChildrenLength = newChildren.length;
-  let transitions = projectionOptions.transitions;
+  let transitions = projectionOptions.transitions!;
 
   let oldIndex = 0;
   let newIndex = 0;
@@ -714,7 +710,7 @@ let updateChildren = function(vnode: VNode, domNode: Node, oldChildren: VNode[],
   return textUpdated;
 };
 
-let addChildren = function(domNode: Node, children: VNode[], projectionOptions: ProjectionOptions) {
+let addChildren = function(domNode: Node, children: VNode[] | undefined, projectionOptions: ProjectionOptions) {
   if (!children) {
     return;
   }
@@ -735,10 +731,10 @@ let initPropertiesAndChildren = function(domNode: Node, vnode: VNode, projection
 };
 
 createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
-  let domNode: Node, i: number, c: string, start = 0, type: string, found: string;
+  let domNode: Node | undefined, i: number, c: string, start = 0, type: string, found: string;
   let vnodeSelector = vnode.vnodeSelector;
   if (vnodeSelector === '') {
-    domNode = vnode.domNode = document.createTextNode(vnode.text);
+    domNode = vnode.domNode = document.createTextNode(vnode.text!);
     if (insertBefore !== undefined) {
       parentNode.insertBefore(domNode, insertBefore);
     } else {
@@ -776,12 +772,12 @@ createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
         start = i + 1;
       }
     }
-    initPropertiesAndChildren(domNode, vnode, projectionOptions);
+    initPropertiesAndChildren(domNode!, vnode, projectionOptions);
   }
 };
 
 updateDom = function(previous, vnode, projectionOptions) {
-  let domNode = previous.domNode;
+  let domNode = previous.domNode!;
   let textUpdated = false;
   if (previous === vnode) {
     return false; // By contract, VNode objects may not be modified anymore after passing them to maquette
@@ -789,7 +785,7 @@ updateDom = function(previous, vnode, projectionOptions) {
   let updated = false;
   if (vnode.vnodeSelector === '') {
     if (vnode.text !== previous.text) {
-      let newVNode = document.createTextNode(vnode.text);
+      let newVNode = document.createTextNode(vnode.text!);
       domNode.parentNode.replaceChild(newVNode, domNode);
       vnode.domNode = newVNode;
       textUpdated = true;
@@ -838,7 +834,7 @@ let createProjection = function(vnode: VNode, projectionOptions: ProjectionOptio
 /**
  * Only needed for the definition of [[VNodeChild]].
  */
-export interface VNodeChildren extends Array<VNodeChild> { };
+export interface VNodeChildren extends Array<VNodeChild> { }
 /**
  * These are valid values for the children parameter of the [[h]] function.
  */
@@ -886,8 +882,8 @@ h = function(selector: string): VNode {
     // Optional properties argument was omitted
     properties = undefined;
   }
-  let text = undefined as string;
-  let children = undefined as VNode[];
+  let text: string | undefined;
+  let children: VNode[] | undefined;
   let argsLength = arguments.length;
   // Recognize a common special case where there is only a single text node
   if (argsLength === childIndex + 1) {
@@ -903,7 +899,6 @@ h = function(selector: string): VNode {
     for (; childIndex < argsLength; childIndex++) {
       let child = arguments[childIndex];
       if (child === null || child === undefined) {
-        continue;
       } else if (Array.isArray(child)) {
         appendChildren(selector, child, children);
       } else if (child.hasOwnProperty('vnodeSelector')) {
@@ -1024,9 +1019,9 @@ export interface CalculationCache<Result> {
  * @param <Result> The type of the value that is cached.
  */
 export let createCache = <Result>(): CalculationCache<Result> => {
-  let cachedInputs = undefined as Object[];
-  let cachedOutcome = undefined as Result;
-  let result = {
+  let cachedInputs: Object[] | undefined;
+  let cachedOutcome: Result | undefined;
+  return {
 
     invalidate: function() {
       cachedOutcome = undefined;
@@ -1048,7 +1043,6 @@ export let createCache = <Result>(): CalculationCache<Result> => {
       return cachedOutcome;
     }
   };
-  return result;
 };
 
 /**
@@ -1135,20 +1129,20 @@ export let createMapping = <Source, Target>(
  *
  * For more information, see [[Projector]].
  *
- * @param projectionOptions   Options that influence how the DOM is rendered and updated.
+ * @param projectorOptions   Options that influence how the DOM is rendered and updated.
  */
 export let createProjector = function(projectorOptions: ProjectorOptions): Projector {
   let projector: Projector;
   let projectionOptions = applyDefaultProjectionOptions(projectorOptions);
   projectionOptions.eventHandlerInterceptor = function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
-    return function() {
+    return function(this: Node) {
       // intercept function calls (event handlers) to do a render afterwards.
       projector.scheduleRender();
       return eventHandler.apply(properties.bind || this, arguments);
     };
   };
   let renderCompleted = true;
-  let scheduled: number;
+  let scheduled: number | undefined;
   let stopped = false;
   let projections = [] as Projection[];
   let renderFunctions = [] as (() => VNode)[]; // matches the projections array

@@ -282,6 +282,7 @@ export interface VNodeProperties {
     onsubmit?(ev?: Event): boolean | void;
     spellcheck?: boolean;
     tabIndex?: number;
+    disabled?: boolean;
     title?: string;
     accessKey?: string;
     id?: string;

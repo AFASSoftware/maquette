@@ -10,6 +10,7 @@
         factory(root.maquette = {});
     }
 }(this, function (exports) {
+    'use strict';
     ;
     ;
     ;

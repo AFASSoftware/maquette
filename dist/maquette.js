@@ -732,6 +732,7 @@
             renderCompleted = true;
         };
         projector = {
+            renderNow: doRender,
             scheduleRender: function () {
                 if (!scheduled && !stopped) {
                     scheduled = requestAnimationFrame(doRender);

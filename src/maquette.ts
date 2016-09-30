@@ -250,11 +250,11 @@ export interface VNodeProperties {
    * An object literal like `{important:true}` which allows css classes, like `important` to be added and removed
    * dynamically.
    */
-  readonly classes?: { [index: string]: boolean };
+  readonly classes?: { [index: string]: boolean | null | undefined };
   /**
    * An object literal like `{height:'100px'}` which allows styles to be changed dynamically. All values must be strings.
    */
-  readonly styles?: { [index: string]: string };
+  readonly styles?: { [index: string]: string | null | undefined };
 
   // From Element
   ontouchcancel?(ev?: TouchEvent): boolean | void;
@@ -838,7 +838,7 @@ export interface VNodeChildren extends Array<VNodeChild> { }
 /**
  * These are valid values for the children parameter of the [[h]] function.
  */
-export type VNodeChild = string | VNode | VNodeChildren;
+export type VNodeChild = string | VNode | VNodeChildren | null | undefined;
 
 /**
  * Contains all valid method signatures for the [[h]] function.

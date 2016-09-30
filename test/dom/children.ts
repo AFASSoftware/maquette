@@ -109,7 +109,7 @@ describe('dom', function() {
     it('can distinguish between falsy keys when replacing', () => {
       let projection = dom.create(h('div', [
         h('span', { key: false }),
-        h('span', { key: null }),
+        h('span', <any>{ key: null }),
         h('span', { key: '' }),
         h('span', {})
       ]));
@@ -160,7 +160,7 @@ describe('dom', function() {
       let projection = dom.create(h('div', [
         h('span', { key: 0 }),
         h('span', { key: false }),
-        h('span', { key: null })
+        h('span', <any>{ key: null })
       ]));
 
       let div = projection.domNode as HTMLDivElement;
@@ -170,7 +170,7 @@ describe('dom', function() {
 
       projection.update(h('div', [
         h('span', { key: 0 }),
-        h('span', { key: null })
+        h('span', <any>{ key: null })
       ]));
 
       expect(div.childNodes.length).to.equal(2);

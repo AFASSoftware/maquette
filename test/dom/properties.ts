@@ -2,7 +2,7 @@ import {expect, jsdom, sinon} from '../utilities';
 import {h, dom} from '../../src/maquette';
 
 let noopEventHandlerInterceptor = (propertyName: string, functionPropertyArgument: Function) => {
-  return function() {
+  return function(this: Node) {
     return functionPropertyArgument.apply(this, arguments);
   };
 };
@@ -81,7 +81,7 @@ describe('dom', function() {
       // Unfortunately JSDom does not map the property value to the attribute as real browsers do
       // expect(link.getAttribute('disabled')).to.equal('');
 
-      projection.update(h('a', { disabled: null }));
+      projection.update(h('a', <any>{ disabled: null }));
 
       // What Chrome would do:
       // expect(link.disabled).to.equal(false);

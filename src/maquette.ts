@@ -1138,7 +1138,7 @@ export let createMapping = <Source, Target>(
  *
  * @param projectorOptions   Options that influence how the DOM is rendered and updated.
  */
-export let createProjector = function(projectorOptions: ProjectorOptions): Projector {
+export let createProjector = function(projectorOptions?: ProjectorOptions): Projector {
   let projector: Projector;
   let projectionOptions = applyDefaultProjectionOptions(projectorOptions);
   projectionOptions.eventHandlerInterceptor = function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {

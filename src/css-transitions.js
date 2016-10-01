@@ -3,14 +3,18 @@
   "use strict";
 
   var browserSpecificTransitionEndEventName = null;
+  var browserSpecificAnimationEndEventName = null;
 
   var determineBrowserSpecificStyleNames = function (element) {
     if ("WebkitTransition" in element.style) {
       browserSpecificTransitionEndEventName = "webkitTransitionEnd";
+      browserSpecificAnimationEndEventName = "webkitAnimationEnd";
     } else if ("transition" in element.style) {
       browserSpecificTransitionEndEventName = "transitionend";
+      browserSpecificAnimationEndEventName = "animationend";
     } else if ("MozTransition" in element.style) {
       browserSpecificTransitionEndEventName = "transitionend";
+      browserSpecificAnimationEndEventName = "animationend";
     } else {
       throw new Error("Your browser is not supported");
     }
@@ -30,11 +34,13 @@
         if (!finished) {
           finished = true;
           node.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+          node.removeEventListener(browserSpecificAnimationEndEventName, transitionEnd);
           removeNode();
         }
       };
       node.classList.add(exitAnimation);
       node.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+      node.addEventListener(browserSpecificAnimationEndEventName, transitionEnd);
       requestAnimationFrame(function () {
         node.classList.add(exitAnimation + "-active");
       });
@@ -46,12 +52,14 @@
         if (!finished) {
           finished = true;
           node.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+          node.removeEventListener(browserSpecificAnimationEndEventName, transitionEnd);
           node.classList.remove(enterAnimation);
           node.classList.remove(enterAnimation + "-active");
         }
       };
       node.classList.add(enterAnimation);
       node.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+      node.addEventListener(browserSpecificAnimationEndEventName, transitionEnd);
       requestAnimationFrame(function () {
         node.classList.add(enterAnimation + "-active");
       });

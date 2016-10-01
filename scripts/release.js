@@ -22,13 +22,13 @@ spawn("gulp", ["compress", "dist-min", "declaration"], { stdio: 'inherit' }).on(
       process.exit(1);
     }
 
-    inquirer.prompt({
+    inquirer.prompt([{
       type: 'list',
       name: 'bump',
       message: 'What type of bump would you like to do?',
       choices: ['patch', 'minor', 'major']
-    }, function (importance) {
-      spawn("gulp", ["bump-" + importance.bump], { stdio: 'inherit' }).on("close", function (code2) {
+    }]).then(function (answers) {
+      spawn("gulp", ["bump-" + answers.bump], { stdio: 'inherit' }).on("close", function (code2) {
         if(code2 !== 0) { process.exit(code2); }
         spawn("git", ["push"], { stdio: 'inherit' }).on("close", function (code3) {
           if(code3 !== 0) { process.exit(code3); }

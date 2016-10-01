@@ -446,7 +446,7 @@ export declare let createMapping: <Source, Target>(getSourceKey: (source: Source
  *
  * @param projectorOptions   Options that influence how the DOM is rendered and updated.
  */
-export declare let createProjector: (projectorOptions: ProjectorOptions) => Projector;
+export declare let createProjector: (projectorOptions?: ProjectorOptions | undefined) => Projector;
 /**
  * A component is a pattern with which you can split up your web application into self-contained parts.
  *

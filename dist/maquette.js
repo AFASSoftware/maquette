@@ -11,10 +11,6 @@
     }
 }(this, function (exports) {
     'use strict';
-    ;
-    ;
-    ;
-    ;
     var NAMESPACE_W3 = 'http://www.w3.org/';
     var NAMESPACE_SVG = NAMESPACE_W3 + '2000/svg';
     var NAMESPACE_XLINK = NAMESPACE_W3 + '1999/xlink';
@@ -100,7 +96,7 @@
         var eventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
         var propNames = Object.keys(properties);
         var propCount = propNames.length;
-        for (var i = 0; i < propCount; i++) {
+        var _loop_1 = function (i) {
             var propName = propNames[i];
             /* tslint:disable:no-var-keyword: edge case */
             var propValue = properties[propName];
@@ -133,11 +129,7 @@
                         projectionOptions.styleApplyer(domNode, styleName, styleValue);
                     }
                 }
-            } else if (propName === 'key') {
-                continue;
-            } else if (propValue === null || propValue === undefined) {
-                continue;
-            } else {
+            } else if (propName !== 'key' && propValue !== null && propValue !== undefined) {
                 var type = typeof propValue;
                 if (type === 'function') {
                     if (propName.lastIndexOf('on', 0) === 0) {
@@ -167,6 +159,9 @@
                     domNode[propName] = propValue;
                 }
             }
+        };
+        for (var i = 0; i < propCount; i++) {
+            _loop_1(i);
         }
     };
     var updateProperties = function (domNode, previousProperties, properties, projectionOptions) {
@@ -467,7 +462,9 @@
             if (previous.text !== vnode.text) {
                 updated = true;
                 if (vnode.text === undefined) {
-                    domNode.removeChild(domNode.firstChild);    // the only textnode presumably
+                    if (domNode.firstChild) {
+                        domNode.removeChild(domNode.firstChild);    // the only textnode presumably
+                    }
                 } else {
                     domNode.textContent = vnode.text;
                 }
@@ -502,7 +499,6 @@
             domNode: vnode.domNode
         };
     };
-    ;
     // The other two parameters are not added here, because the Typescript compiler creates surrogate code for destructuring 'children'.
     exports.h = function (selector) {
         var properties = arguments[1];
@@ -516,8 +512,8 @@
             // Optional properties argument was omitted
             properties = undefined;
         }
-        var text = undefined;
-        var children = undefined;
+        var text;
+        var children;
         var argsLength = arguments.length;
         // Recognize a common special case where there is only a single text node
         if (argsLength === childIndex + 1) {
@@ -533,7 +529,6 @@
             for (; childIndex < argsLength; childIndex++) {
                 var child = arguments[childIndex];
                 if (child === null || child === undefined) {
-                    continue;
                 } else if (Array.isArray(child)) {
                     appendChildren(selector, child, children);
                 } else if (child.hasOwnProperty('vnodeSelector')) {
@@ -623,9 +618,9 @@
  * @param <Result> The type of the value that is cached.
  */
     exports.createCache = function () {
-        var cachedInputs = undefined;
-        var cachedOutcome = undefined;
-        var result = {
+        var cachedInputs;
+        var cachedOutcome;
+        return {
             invalidate: function () {
                 cachedOutcome = undefined;
                 cachedInputs = undefined;
@@ -645,7 +640,6 @@
                 return cachedOutcome;
             }
         };
-        return result;
     };
     /**
  * Creates a {@link Mapping} instance that keeps an array of result objects synchronized with an array of source objects.
@@ -701,7 +695,7 @@
  *
  * For more information, see [[Projector]].
  *
- * @param projectionOptions   Options that influence how the DOM is rendered and updated.
+ * @param projectorOptions   Options that influence how the DOM is rendered and updated.
  */
     exports.createProjector = function (projectorOptions) {
         var projector;

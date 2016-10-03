@@ -67,7 +67,7 @@ var setWatching = function (notify) {
 var compile = function() {
   var configTypescript = require('./tsconfig.json').compilerOptions;
   configTypescript.typescript = require('typescript');
-	return gulp.src(['src/**/*.ts', 'test/**/*.ts', 'typings/**/*.ts'])
+	return gulp.src(['src/**/*.ts', 'test/**/*.ts', 'typings/**/*.ts'], {base: '.'})
     .pipe(sourcemaps.init())
 		.pipe(ts(configTypescript))
     .pipe(sourcemaps.write('.', {
@@ -75,7 +75,7 @@ var compile = function() {
       sourceRoot: function (file) {
         return file.relative.split(path.sep).map(function () {
             return '..'
-          }).join('/') + '/../';
+          }).join('/').substr(3);// + '/../../';// + '../';
       }
     }))
 		.pipe(gulp.dest('build/js'));

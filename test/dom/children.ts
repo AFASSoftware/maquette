@@ -270,6 +270,27 @@ describe('dom', function() {
       }).to.throw();
     });
 
+    it('allows a contentEditable tag to be cleared', () => {
+      let text = 'initial value';
+      let handleInput = (evt: Event) => {
+        text = (evt.currentTarget as HTMLElement).innerText;
+      };
+      let renderMaquette = () => h('div', {contentEditable: true, oninput: handleInput}, [text]);
+      let projection = dom.create(renderMaquette());
+
+      // The user clears the value
+      projection.domNode.removeChild(projection.domNode.firstChild);
+      handleInput(<any>{currentTarget: projection.domNode});
+      projection.update(renderMaquette());
+
+      // The user enters a new value
+      projection.domNode.innerHTML = 'changed value';
+      handleInput(<any>{currentTarget: projection.domNode});
+      projection.update(renderMaquette());
+
+      expect(projection.domNode.innerHTML).to.equal('changed value');
+    });
+
     describe('svg', () => {
 
       it('creates and updates svg dom nodes with the right namespace', () => {

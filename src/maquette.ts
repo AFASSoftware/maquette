@@ -805,7 +805,9 @@ updateDom = function(previous, vnode, projectionOptions) {
     if (previous.text !== vnode.text) {
       updated = true;
       if (vnode.text === undefined) {
-        domNode.removeChild(domNode.firstChild); // the only textnode presumably
+        if (domNode.firstChild) {
+          domNode.removeChild(domNode.firstChild); // the only textnode presumably
+        }
       } else {
         domNode.textContent = vnode.text;
       }

@@ -11,18 +11,9 @@
     "strictNullChecks": true,
     "noImplicitThis": true
   },
-  "exclude": [
-    "node_modules",
-    "build",
-    "dist",
-    "bower_components",
-    "browser-tests",
-    ".idea",
-    ".vscode"
-  ],
-  "filesGlob": [
-    "./src/**/*.ts",
-    "./test/**/*.ts",
-    "./typings/**/*.ts"
+  "include": [
+    "src/**/*",
+    "test/**/*",
+    "typings/**/*"
   ]
 }

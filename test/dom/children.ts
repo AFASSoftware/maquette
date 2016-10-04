@@ -270,12 +270,12 @@ describe('dom', function() {
       }).to.throw();
     });
 
-    it('allows a contentEditable tag to be cleared', () => {
+    it('allows a contentEditable tag to be altered', () => {
       let text = 'initial value';
       let handleInput = (evt: Event) => {
-        text = (evt.currentTarget as HTMLElement).innerText;
+        text = (evt.currentTarget as HTMLElement).innerHTML;
       };
-      let renderMaquette = () => h('div', {contentEditable: true, oninput: handleInput}, [text]);
+      let renderMaquette = () => h('div', {contentEditable: true, oninput: handleInput, innerHTML: text});
       let projection = dom.create(renderMaquette());
 
       // The user clears the value
@@ -284,11 +284,11 @@ describe('dom', function() {
       projection.update(renderMaquette());
 
       // The user enters a new value
-      projection.domNode.innerHTML = 'changed value';
+      projection.domNode.innerHTML = 'changed <i>value</i>';
       handleInput(<any>{currentTarget: projection.domNode});
       projection.update(renderMaquette());
 
-      expect(projection.domNode.innerHTML).to.equal('changed value');
+      expect(projection.domNode.innerHTML).to.equal('changed <i>value</i>');
     });
 
     describe('svg', () => {

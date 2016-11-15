@@ -9,9 +9,9 @@ Because this mistake that is so easy to make, maquette disallows changing event 
 
 ## Rule #2 Always provide the same set of properties
 
-If you render `h('a', {href: '.' target: '_blank'})` and then you want to clear the `target` attribute,
-you need to use either `h('a', {href: '.' target: undefined})`, `h('a', {href: '.' target: null})` or `h('a', {href: '.' target: ''})`.
-If you use `h('a', {href: '.'})` maquette will **not** clear the `target` attribute.
+If you render `h('a',{href:'.',target:'_blank'})` and then you want to clear the `target` attribute,
+you need to use either `h('a',{href:'.',target:undefined})`, `h('a',{href: '.',target:null})` or `h('a',{href:'.',target:''})`.
+If you use `h('a',{href:'.'})` maquette will **not** clear the `target` attribute.
 This is because maquette does not sacrifice performance searching for properties that you left out.
 This makes you responsible to always provide the same set of properties. The same principe applies to the nested `classes` and `styles` objects.
 

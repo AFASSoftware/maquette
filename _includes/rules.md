@@ -25,9 +25,9 @@ then they must have unique key properties.
 A key property is typically used as follows:
 (If you are unfamilliar with the javascript map() function see <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank">this description on MDN</a>)
 
-    h("ul", [
+    h('ul', [
       items.map(function(item) {
-        return h("li", {key: item.id}, [item.text]);
+        return h('li', {key: item.id}, [item.text]);
       })
     ])
 

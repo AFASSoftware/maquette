@@ -7,7 +7,6 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
-	<script src="../assets/js/modernizr.js"></script>
 </head>
 <body>
 <header>
@@ -39,8 +38,6 @@
 							</div>
 							<input type="checkbox" id="tsd-filter-inherited" checked />
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -104,6 +101,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#detach" class="tsd-kind-icon">detach</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#insertbefore" class="tsd-kind-icon">insert<wbr>Before</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#merge" class="tsd-kind-icon">merge</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#rendernow" class="tsd-kind-icon">render<wbr>Now</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#replace" class="tsd-kind-icon">replace</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#resume" class="tsd-kind-icon">resume</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_maquette_.projector.html#schedulerender" class="tsd-kind-icon">schedule<wbr>Render</a></li>
@@ -125,7 +123,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L56">maquette.ts:56</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/be6eefc/src/maquette.ts#L56">maquette.ts:56</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -175,7 +173,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L98">maquette.ts:98</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/be6eefc/src/maquette.ts#L105">maquette.ts:105</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -218,7 +216,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L63">maquette.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/be6eefc/src/maquette.ts#L63">maquette.ts:63</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -268,7 +266,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L72">maquette.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/be6eefc/src/maquette.ts#L72">maquette.ts:72</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -311,6 +309,31 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="rendernow" class="tsd-anchor"></a>
+					<h3>render<wbr>Now</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Now<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/be6eefc/src/maquette.ts#L97">maquette.ts:97</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Synchronously re-renders to the DOM. You should normally call the <code>scheduleRender()</code> function to keep the
+										user interface more performant. There is however one good reason to call renderNow(),
+										when you want to put the focus into a newly created element in iOS.
+									This is only allowed when triggered by a user-event, not during requestAnimationFrame.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="replace" class="tsd-anchor"></a>
 					<h3>replace</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
@@ -320,7 +343,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L79">maquette.ts:79</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/be6eefc/src/maquette.ts#L79">maquette.ts:79</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -370,7 +393,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L83">maquette.ts:83</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/be6eefc/src/maquette.ts#L83">maquette.ts:83</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -392,7 +415,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L90">maquette.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/be6eefc/src/maquette.ts#L90">maquette.ts:90</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -416,7 +439,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/master/src/maquette.ts#L105">maquette.ts:105</a></li>
+									<li>Defined in <a href="https://github.com/AFASSoftware/maquette/blob/be6eefc/src/maquette.ts#L112">maquette.ts:112</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -479,6 +502,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_maquette_.projector.html#merge" class="tsd-kind-icon">merge</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_maquette_.projector.html#rendernow" class="tsd-kind-icon">render<wbr>Now</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_maquette_.projector.html#replace" class="tsd-kind-icon">replace</a>
@@ -594,7 +620,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
@@ -605,7 +631,7 @@
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-58254103-1', 'auto');
+        ga('create', 'UA-58254103-1', '');
         ga('send', 'pageview');
     </script>
 </body>

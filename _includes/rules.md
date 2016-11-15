@@ -9,20 +9,20 @@ Because this mistake that is so easy to make, maquette disallows changing event 
 
 ## Rule #2 Always provide the same set of properties
 
-If you render `h("div", {tabIndex:"0"})` and then you want to clear the tabIndex attribute, 
-you need to use either `h("div", {tabIndex:undefined})`, `h("div", {tabIndex:null})` or `h("div", {tabIndex:""})`.
-If you use `h("div", {})` maquette will not clear the tabIndex attribute. 
+If you render `h('a', {href: '.' target: '_blank'})` and then you want to clear the `target` attribute,
+you need to use either `h('a', {href: '.' target: undefined})`, `h('a', {href: '.' target: null})` or `h('a', {href: '.' target: ''})`.
+If you use `h('a', {href: '.'})` maquette will **not** clear the `target` attribute.
 This is because maquette does not sacrifice performance searching for properties that you left out.
 This makes you responsible to always provide the same set of properties. The same principe applies to the nested `classes` and `styles` objects.
 
 ## Rule #3 Distinguishable children
 
-The last rule states that if a node has multiple childnodes with the same selector 
-*and* these childnodes are added or removed dynamically, 
+The last rule states that if a node has multiple childnodes with the same selector
+**and** these childnodes are added or removed dynamically,
 then they must have unique key properties.
-      
-      
-A key property is typically used as follows: 
+
+
+A key property is typically used as follows:
 (If you are unfamilliar with the javascript map() function see <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank">this description on MDN</a>)
 
     h("ul", [

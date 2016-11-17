@@ -275,6 +275,9 @@ export interface VNodeProperties {
   readonly method?: string;
   readonly name?: string;
   readonly target?: string;
+  // From HTMLAnchorElement
+  readonly href?: string;
+  readonly rel?: string;
   // From HTMLElement
   onblur?(ev?: FocusEvent): boolean | void;
   onchange?(ev?: Event): boolean | void;

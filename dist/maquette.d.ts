@@ -267,6 +267,8 @@ export interface VNodeProperties {
     readonly method?: string;
     readonly name?: string;
     readonly target?: string;
+    readonly href?: string;
+    readonly rel?: string;
     onblur?(ev?: FocusEvent): boolean | void;
     onchange?(ev?: Event): boolean | void;
     onclick?(ev?: MouseEvent): boolean | void;
@@ -460,5 +462,5 @@ export interface Component {
     /**
      * A function that returns the DOM representation of the component.
      */
-    renderMaquette(): VNode;
+    renderMaquette(): VNode | null | undefined;
 }

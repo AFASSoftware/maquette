@@ -2,9 +2,11 @@ var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var inquirer = require('inquirer');
 
+var win = /^win/.test(process.platform);
+let gulp = win ? 'gulp.cmd' : 'gulp';
+let npm = win ? 'npm.cmd' : 'npm';
 
-
-spawn("gulp", ["compress", "dist-min", "declaration"], { stdio: 'inherit' }).on('close', function (code) {
+spawn(gulp, ["compress", "dist-min", "declaration"], { stdio: 'inherit' }).on('close', function (code) {
   if(code !== 0) {
     process.exit(code);
   }
@@ -28,7 +30,7 @@ spawn("gulp", ["compress", "dist-min", "declaration"], { stdio: 'inherit' }).on(
       message: 'What type of bump would you like to do?',
       choices: ['patch', 'minor', 'major']
     }]).then(function (answers) {
-      spawn("gulp", ["bump-" + answers.bump], { stdio: 'inherit' }).on("close", function (code2) {
+      spawn(gulp, ["bump-" + answers.bump], { stdio: 'inherit' }).on("close", function (code2) {
         if(code2 !== 0) { process.exit(code2); }
         spawn("git", ["push"], { stdio: 'inherit' }).on("close", function (code3) {
           if(code3 !== 0) { process.exit(code3); }
@@ -36,7 +38,7 @@ spawn("gulp", ["compress", "dist-min", "declaration"], { stdio: 'inherit' }).on(
             if(code4 !== 0) {
               process.exit(code4);
             }
-            spawn('npm', ['publish'], { stdio: 'inherit' }).on('close', function (code5) {
+            spawn(npm, ['publish'], { stdio: 'inherit' }).on('close', function (code5) {
               process.exit(code5);
             });
           });

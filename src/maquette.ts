@@ -1241,5 +1241,5 @@ export interface Component {
   /**
    * A function that returns the DOM representation of the component.
    */
-  renderMaquette(): VNode;
+  renderMaquette(): VNode | null | undefined;
 }

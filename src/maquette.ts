@@ -993,8 +993,23 @@ export let dom = {
     vnode.domNode = element;
     initPropertiesAndChildren(element, vnode, projectionOptions);
     return createProjection(vnode, projectionOptions);
-  }
+  },
 
+  /**
+   * Replaces an existing DOM node with a node generated from a [[VNode]].
+   * This is a low-level method. Users will typically use a [[Projector]] instead.
+   * @param element - The node for the [[VNode]] to replace.
+   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+   * objects may only be rendered once.
+   * @param projectionOptions - Options to be used to create and update the [[Projection]].
+   * @returns The [[Projection]] that was created.
+   */
+  replace: function(element: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection {
+    projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+    createDom(vnode, element.parentNode, element, projectionOptions);
+    element.parentNode.removeChild(element);
+    return createProjection(vnode, projectionOptions);
+  }
 };
 
 /**
@@ -1207,10 +1222,7 @@ export let createProjector = function(projectorOptions?: ProjectorOptions): Proj
     },
 
     replace: function(domNode, renderMaquetteFunction) {
-      let vnode = renderMaquetteFunction();
-      createDom(vnode, domNode.parentNode, domNode, projectionOptions);
-      domNode.parentNode.removeChild(domNode);
-      projections.push(createProjection(vnode, projectionOptions));
+      projections.push(dom.replace(domNode, renderMaquetteFunction(), projectionOptions));
       renderFunctions.push(renderMaquetteFunction);
     },
 

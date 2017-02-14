@@ -373,6 +373,7 @@ export declare let dom: {
     append: (parentNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions | undefined) => Projection;
     insertBefore: (beforeNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions | undefined) => Projection;
     merge: (element: Element, vnode: VNode, projectionOptions?: ProjectionOptions | undefined) => Projection;
+    replace: (element: Element, vnode: VNode, projectionOptions?: ProjectionOptions | undefined) => Projection;
 };
 /**
  * A CalculationCache object remembers the previous outcome of a calculation along with the inputs.

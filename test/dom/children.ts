@@ -279,7 +279,7 @@ describe('dom', function() {
       let projection = dom.create(renderMaquette());
 
       // The user clears the value
-      projection.domNode.removeChild(projection.domNode.firstChild);
+      projection.domNode.removeChild(projection.domNode.firstChild!);
       handleInput(<any>{currentTarget: projection.domNode});
       projection.update(renderMaquette());
 
@@ -301,13 +301,13 @@ describe('dom', function() {
           ]),
           h('span')
         ]));
-        let svg = projection.domNode.firstChild;
+        let svg = projection.domNode.firstChild!;
         expect(svg.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-        let circle = svg.firstChild;
+        let circle = svg.firstChild!;
         expect(circle.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-        let image = svg.lastChild;
+        let image = svg.lastChild!;
         expect(image.attributes[0].namespaceURI).to.equal('http://www.w3.org/1999/xlink');
-        let span = projection.domNode.lastChild;
+        let span = projection.domNode.lastChild!;
         expect(span.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
 
         projection.update(h('div', [
@@ -318,7 +318,7 @@ describe('dom', function() {
           h('span')
         ]));
 
-        let blueCircle = svg.firstChild;
+        let blueCircle = svg.firstChild!;
         expect(blueCircle.namespaceURI).to.equal('http://www.w3.org/2000/svg');
       });
 

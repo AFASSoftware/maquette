@@ -796,7 +796,7 @@ updateDom = function(previous, vnode, projectionOptions) {
   if (vnode.vnodeSelector === '') {
     if (vnode.text !== previous.text) {
       let newVNode = document.createTextNode(vnode.text!);
-      domNode.parentNode.replaceChild(newVNode, domNode);
+      domNode.parentNode!.replaceChild(newVNode, domNode);
       vnode.domNode = newVNode;
       textUpdated = true;
       return textUpdated;
@@ -808,7 +808,7 @@ updateDom = function(previous, vnode, projectionOptions) {
     if (previous.text !== vnode.text) {
       updated = true;
       if (vnode.text === undefined) {
-        domNode.removeChild(domNode.firstChild); // the only textnode presumably
+        domNode.removeChild(domNode.firstChild!); // the only textnode presumably
       } else {
         domNode.textContent = vnode.text;
       }
@@ -973,7 +973,7 @@ export let dom = {
    */
   insertBefore: function(beforeNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-    createDom(vnode, beforeNode.parentNode, beforeNode, projectionOptions);
+    createDom(vnode, beforeNode.parentNode!, beforeNode, projectionOptions);
     return createProjection(vnode, projectionOptions);
   },
 
@@ -1006,8 +1006,8 @@ export let dom = {
    */
   replace: function(element: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-    createDom(vnode, element.parentNode, element, projectionOptions);
-    element.parentNode.removeChild(element);
+    createDom(vnode, element.parentNode!, element, projectionOptions);
+    element.parentNode!.removeChild(element);
     return createProjection(vnode, projectionOptions);
   }
 };

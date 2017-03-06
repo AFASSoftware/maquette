@@ -201,6 +201,23 @@ describe('dom', function() {
 
     });
 
+    it('does not clear a value that was set by a testing tool (like Ranorex) which manipulates input.value directly', () => {
+      let typedKeys = '';
+      let handleInput = (evt: Event) => {
+        typedKeys = (evt.target as HTMLInputElement).value;
+      };
+
+      let renderFunction = () => h('input', { value: typedKeys, oninput: handleInput });
+
+      let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
+      let inputElement = (projection.domNode as HTMLInputElement);
+      expect(inputElement.value).to.equal(typedKeys);
+
+      inputElement.value = 'value written by a testing tool without invoking the input event';
+
+      projection.update(renderFunction());
+      expect(inputElement.value).not.to.equal(typedKeys); // no resetting should have taken place
+    });
   });
 
 });

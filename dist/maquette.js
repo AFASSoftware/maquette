@@ -221,7 +221,7 @@
                     propValue = '';
                 }
                 if (propName === 'value') {
-                    if (domNode[propName] !== propValue && domNode['oninput-value'] !== propValue) {
+                    if (domNode[propName] !== propValue && domNode['oninput-value'] && domNode['oninput-value'] !== propValue) {
                         domNode[propName] = propValue;
                         // Reset the value, even if the virtual DOM did not change
                         domNode['oninput-value'] = undefined;
@@ -238,6 +238,8 @@
                     if (type === 'string' && propName !== 'innerHTML') {
                         if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
                             domNode.setAttributeNS(NAMESPACE_XLINK, propName, propValue);
+                        } else if (propName === 'role' && propValue === '') {
+                            domNode.removeAttribute(propName);
                         } else {
                             domNode.setAttribute(propName, propValue);
                         }
@@ -563,9 +565,9 @@
             return createProjection(vnode, projectionOptions);
         },
         /**
-     * Appends a new childnode to the DOM which is generated from a [[VNode]].
+     * Appends a new child node to the DOM which is generated from a [[VNode]].
      * This is a low-level method. Users will typically use a [[Projector]] instead.
-     * @param parentNode - The parent node for the new childNode.
+     * @param parentNode - The parent node for the new child node.
      * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
      * objects may only be rendered once.
      * @param projectionOptions - Options to be used to create and update the [[Projection]].
@@ -595,7 +597,7 @@
      * This means that the virtual DOM and the real DOM will have one overlapping element.
      * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided.
      * This is a low-level method. Users wil typically use a [[Projector]] instead.
-     * @param element - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
+     * @param element - The existing element to adopt as the root of the new virtual DOM. Existing attributes and child nodes are preserved.
      * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]] objects
      * may only be rendered once.
      * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].

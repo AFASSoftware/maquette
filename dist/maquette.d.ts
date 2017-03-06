@@ -21,7 +21,7 @@ export interface VNode {
      */
     readonly children: Array<VNode> | undefined;
     /**
-     * Used in a special case when a [[VNode]] only has one childnode which is a textnode. Only used in combination with children === undefined.
+     * Used in a special case when a [[VNode]] only has one child node which is a text node. Only used in combination with children === undefined.
      */
     readonly text: string | undefined;
     /**
@@ -45,9 +45,9 @@ export interface VNode {
  */
 export interface Projector {
     /**
-     * Appends a new childnode to the DOM using the result from the provided `renderMaquetteFunction`.
+     * Appends a new child node to the DOM using the result from the provided `renderMaquetteFunction`.
      * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
-     * @param parentNode - The parent node for the new childNode.
+     * @param parentNode - The parent node for the new child node.
      * @param renderMaquetteFunction - Function with zero arguments that returns a [[VNode]] tree.
      */
     append(parentNode: Element, renderMaquetteFunction: () => VNode): void;
@@ -63,7 +63,7 @@ export interface Projector {
      * This means that the virtual DOM and real DOM have one overlapping element.
      * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided
      * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
-     * @param domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
+     * @param domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and child nodes are preserved.
      * @param renderMaquetteFunction - Function with zero arguments that returns a [[VNode]] tree.
      */
     merge(domNode: Element, renderMaquetteFunction: () => VNode): void;
@@ -124,7 +124,7 @@ export interface TransitionStrategy {
     /**
      * Function that is called when a [[VNode]] with an `exitAnimation` string is removed from a existing parent [[VNode]] that remains.
      *
-     * @param element         Element that ought to be removed from to the DOM.
+     * @param element         Element that ought to be removed from the DOM.
      * @param properties      The properties object that was supplied to the [[h]] method that rendered this [[VNode]] the previous time.
      * @param exitAnimation   The string that was passed to [[VNodeProperties.exitAnimation]].
      * @param removeElement   Function that removes the element from the DOM.
@@ -212,20 +212,20 @@ export interface VNodeProperties {
      */
     updateAnimation?: (element: Element, properties?: VNodeProperties, previousProperties?: VNodeProperties) => void;
     /**
-     * Callback that is executed after this node is added to the DOM. Childnodes and properties have
+     * Callback that is executed after this node is added to the DOM. Child nodes and properties have
      * already been applied.
      * @param element - The element that was added to the DOM.
-     * @param projectionOptions - The projection options that were used see [[createProjector]].
+     * @param projectionOptions - The projection options that were used, see [[createProjector]].
      * @param vnodeSelector - The selector passed to the [[h]] function.
      * @param properties - The properties passed to the [[h]] function.
      * @param children - The children that were created.
      */
     afterCreate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties, children: VNode[]): void;
     /**
-     * Callback that is executed every time this node may have been updated. Childnodes and properties
+     * Callback that is executed every time this node may have been updated. Child nodes and properties
      * have already been updated.
      * @param element - The element that may have been updated in the DOM.
-     * @param projectionOptions - The projection options that were used see [[createProjector]].
+     * @param projectionOptions - The projection options that were used, see [[createProjector]].
      * @param vnodeSelector - The selector passed to the [[h]] function.
      * @param properties - The properties passed to the [[h]] function.
      * @param children - The children for this node.
@@ -305,7 +305,7 @@ export interface VNodeProperties {
     readonly alt?: string;
     readonly srcset?: string;
     /**
-     * Puts a non-interactive piece of html inside the DOM node.
+     * Puts a non-interactive string of html inside the DOM node.
      *
      * Note: if you use innerHTML, maquette cannot protect you from XSS vulnerabilities and you must make sure that the innerHTML value is safe.
      */

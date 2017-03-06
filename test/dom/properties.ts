@@ -218,6 +218,21 @@ describe('dom', function() {
       projection.update(renderFunction());
       expect(inputElement.value).not.to.equal(typedKeys); // no resetting should have taken place
     });
+
+    it('removes the attribute when a role property is set to undefined', () => {
+      let role: string | undefined = 'button';
+      let renderFunction = () => h('div', { role: role });
+
+      let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
+      let element = projection.domNode;
+
+      expect(element.attributes).to.have.property('role');
+      expect(element.getAttribute('role')).to.equal(role);
+
+      role = undefined;
+      projection.update(renderFunction());
+      expect(element.attributes).to.not.have.property('role');
+    });
   });
 
 });

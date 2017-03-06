@@ -578,6 +578,8 @@ let updateProperties = function(domNode: Node, previousProperties: VNodeProperti
         if (type === 'string' && propName !== 'innerHTML') {
           if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
             (domNode as Element).setAttributeNS(NAMESPACE_XLINK, propName, propValue);
+          } else if (propName === 'role' && propValue === '') {
+              (domNode as any).removeAttribute(propName);
           } else {
             (domNode as Element).setAttribute(propName, propValue);
           }

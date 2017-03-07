@@ -201,6 +201,21 @@ describe('dom', function() {
 
     });
 
+    it('updates the value property', () => {
+      let typedKeys = '';
+      let handleInput = (evt: Event) => {
+        typedKeys = (evt.target as HTMLInputElement).value;
+      };
+
+      let renderFunction = () => h('input', { value: typedKeys, oninput: handleInput });
+      let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
+      let inputElement = (projection.domNode as HTMLInputElement);
+      expect(inputElement.value).to.equal(typedKeys);
+      typedKeys = 'value1';
+      projection.update(renderFunction());
+      expect(inputElement.value).to.equal(typedKeys);
+    });
+
     it('does not clear a value that was set by a testing tool (like Ranorex) which manipulates input.value directly', () => {
       let typedKeys = '';
       let handleInput = (evt: Event) => {

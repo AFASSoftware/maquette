@@ -562,7 +562,14 @@ let updateProperties = function(domNode: Node, previousProperties: VNodeProperti
         propValue = '';
       }
       if (propName === 'value') { // value can be manipulated by the user directly and using event.preventDefault() is not an option
-        if ((domNode as any)[propName] !== propValue && (domNode as any)['oninput-value'] && (domNode as any)['oninput-value'] !== propValue) {
+        let domValue = (domNode as any)[propName];
+        if ( // The edge cases are described in the tests
+          domValue !== propValue // The 'value' in the DOM tree !== newValue
+          && ((domNode as any)['oninput-value']
+            ? domValue === (domNode as any)['oninput-value'] // If the last reported value to 'oninput' does not match domValue, do nothing and wait for oninput
+            : propValue !== previousValue // Only update the value if the vdom changed
+          )
+        ) {
           (domNode as any)[propName] = propValue; // Reset the value, even if the virtual DOM did not change
           (domNode as any)['oninput-value'] = undefined;
         } // else do not update the domNode, otherwise the cursor position would be changed

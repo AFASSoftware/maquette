@@ -221,7 +221,11 @@
                     propValue = '';
                 }
                 if (propName === 'value') {
-                    if (domNode[propName] !== propValue && domNode['oninput-value'] && domNode['oninput-value'] !== propValue) {
+                    var domValue = domNode[propName];
+                    if (domValue !== propValue    // The 'value' in the DOM tree !== newValue
+&& (domNode['oninput-value'] ? domValue === domNode['oninput-value']    // If the last reported value to 'oninput' does not match domValue, do nothing and wait for oninput
+ : propValue !== previousValue    // Only update the value if the vdom changed
+)) {
                         domNode[propName] = propValue;
                         // Reset the value, even if the virtual DOM did not change
                         domNode['oninput-value'] = undefined;

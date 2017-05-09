@@ -19,6 +19,11 @@ describe('Projector', () => {
     let parentElement = {
       appendChild: sinon.stub(),
       insertBefore: sinon.stub(),
+      ownerDocument: {
+        createElement: sinon.spy((tag: string) => {
+          return document.createElement(tag);
+        })
+      },
       removeChild: sinon.stub()
     };
     let renderFunction = sinon.stub().returns(
@@ -32,6 +37,7 @@ describe('Projector', () => {
     projector.append(parentElement as any, renderFunction);
 
     expect(renderFunction).to.have.been.calledOnce;
+    expect(parentElement.ownerDocument.createElement).to.have.been.calledOnce;
     expect(parentElement.appendChild).to.have.been.calledOnce;
     expect(parentElement.appendChild.lastCall.args[0]).to.deep.include({ tagName: 'DIV' });
 
@@ -49,12 +55,18 @@ describe('Projector', () => {
 
     // Merge
     let existingElement = {
-      appendChild: sinon.stub()
+      appendChild: sinon.stub(),
+      ownerDocument: {
+        createElement: sinon.spy((tag: string) => {
+          return document.createElement(tag);
+        })
+      }
     };
 
     projector.merge(existingElement as any, renderFunction);
 
     expect(renderFunction).to.have.been.calledThrice;
+    expect(existingElement.ownerDocument.createElement).to.have.been.calledOnce;
     expect(existingElement.appendChild).to.have.been.calledOnce;
     expect(existingElement.appendChild.lastCall.args[0]).to.deep.include({ tagName: 'SPAN' });
 
@@ -68,6 +80,7 @@ describe('Projector', () => {
     expect(renderFunction).to.have.callCount(4);
     expect(parentElement.removeChild).to.have.been.calledOnce;
     expect(parentElement.removeChild.lastCall.args[0]).to.equal(oldElement);
+    expect(parentElement.ownerDocument.createElement).to.have.been.calledThrice;
     expect(parentElement.insertBefore).to.have.been.calledTwice;
     expect(parentElement.insertBefore.lastCall.args[0]).to.deep.include({ tagName: 'DIV' });
     expect(parentElement.insertBefore.lastCall.args[1]).to.equal(oldElement);
@@ -107,7 +120,7 @@ describe('Projector', () => {
 
   it('Stops when an error during rendering is encountered', () => {
     let projector = createProjector({});
-    let parentElement = { appendChild: sinon.stub() };
+    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
     let renderFunction = sinon.stub().returns(h('div'));
     projector.append(parentElement as any, renderFunction);
     renderFunction.throws('Rendering error');
@@ -132,7 +145,7 @@ describe('Projector', () => {
 
   it('schedules a render when event handlers are called', () => {
     let projector = createProjector({});
-    let parentElement = { appendChild: sinon.stub() };
+    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
     let handleClick = sinon.stub();
     let renderFunction = () => h('button', { onclick: handleClick });
     projector.append(parentElement as any, renderFunction);
@@ -150,7 +163,7 @@ describe('Projector', () => {
   });
 
   it('invokes the eventHandler with "this" set to the DOM node when no bind is present', () => {
-    let parentElement = { appendChild: sinon.stub() };
+    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
     let projector = createProjector({});
     let handleClick = sinon.stub();
     let renderFunction = () => h('button', { onclick: handleClick });
@@ -191,7 +204,7 @@ describe('Projector', () => {
     let clicked = sinon.stub();
     let button = new ButtonComponent('Click me', clicked);
 
-    let parentElement = { appendChild: sinon.stub() };
+    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
     let projector = createProjector({});
     projector.append(parentElement as any, () => button.renderMaquette());
 
@@ -203,7 +216,7 @@ describe('Projector', () => {
   });
 
   it('can detach a projection', () => {
-    let parentElement = { appendChild: sinon.stub() };
+    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
     let projector = createProjector({});
     let renderFunction = () => h('textarea#t1');
     let renderFunction2 = () => h('textarea#t2');

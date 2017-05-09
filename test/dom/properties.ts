@@ -127,10 +127,16 @@ describe('dom', function() {
       let parentNode = {
         appendChild: sinon.spy((child: HTMLElement) => {
           expect(child.getAttribute('type')).to.equal('file');
-        })
+        }),
+        ownerDocument: {
+          createElement: sinon.spy((tag: string) => {
+            return document.createElement(tag);
+          })
+        }
       }
       let projection = dom.append(<any>parentNode, h('input', { type: 'file' }));
       expect(parentNode.appendChild).to.have.been.called;
+      expect(parentNode.ownerDocument.createElement).to.have.been.called;
     });
 
     describe('event handlers', () => {

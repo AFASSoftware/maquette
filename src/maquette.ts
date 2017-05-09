@@ -752,8 +752,9 @@ let initPropertiesAndChildren = function(domNode: Node, vnode: VNode, projection
 createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
   let domNode: Node | undefined, i: number, c: string, start = 0, type: string, found: string;
   let vnodeSelector = vnode.vnodeSelector;
+  let doc = parentNode.ownerDocument;
   if (vnodeSelector === '') {
-    domNode = vnode.domNode = document.createTextNode(vnode.text!);
+    domNode = vnode.domNode = doc.createTextNode(vnode.text!);
     if (insertBefore !== undefined) {
       parentNode.insertBefore(domNode, insertBefore);
     } else {
@@ -774,9 +775,9 @@ createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
             projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });
           }
           if (projectionOptions.namespace !== undefined) {
-            domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, found);
+            domNode = vnode.domNode = doc.createElementNS(projectionOptions.namespace, found);
           } else {
-            domNode = vnode.domNode = document.createElement(found);
+            domNode = vnode.domNode = doc.createElement(found);
             if (found === 'input' && vnode.properties && vnode.properties.type !== undefined) {
               // IE8 and older don't support setting input type after the DOM Node has been added to the document
               (domNode as Element).setAttribute("type", vnode.properties.type);
@@ -804,7 +805,7 @@ updateDom = function(previous, vnode, projectionOptions) {
   let updated = false;
   if (vnode.vnodeSelector === '') {
     if (vnode.text !== previous.text) {
-      let newVNode = document.createTextNode(vnode.text!);
+      let newVNode = domNode.ownerDocument.createTextNode(vnode.text!);
       domNode.parentNode!.replaceChild(newVNode, domNode);
       vnode.domNode = newVNode;
       textUpdated = true;

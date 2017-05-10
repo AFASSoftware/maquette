@@ -381,7 +381,11 @@
             return;
         }
         for (var i = 0; i < children.length; i++) {
-            createDom(children[i], domNode, undefined, projectionOptions);
+            if (!children[i].domNode) {
+                createDom(children[i], domNode, undefined, projectionOptions);
+            } else {
+                initPropertiesAndChildren(children[i].domNode, children[i], projectionOptions);
+            }
         }
     };
     var initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
@@ -404,8 +408,9 @@
     createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
         var domNode, i, c, start = 0, type, found;
         var vnodeSelector = vnode.vnodeSelector;
+        var doc = parentNode.ownerDocument;
         if (vnodeSelector === '') {
-            domNode = vnode.domNode = document.createTextNode(vnode.text);
+            domNode = vnode.domNode = doc.createTextNode(vnode.text);
             if (insertBefore !== undefined) {
                 parentNode.insertBefore(domNode, insertBefore);
             } else {
@@ -426,9 +431,9 @@
                             projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });
                         }
                         if (projectionOptions.namespace !== undefined) {
-                            domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, found);
+                            domNode = vnode.domNode = doc.createElementNS(projectionOptions.namespace, found);
                         } else {
-                            domNode = vnode.domNode = document.createElement(found);
+                            domNode = vnode.domNode = doc.createElement(found);
                             if (found === 'input' && vnode.properties && vnode.properties.type !== undefined) {
                                 // IE8 and older don't support setting input type after the DOM Node has been added to the document
                                 domNode.setAttribute('type', vnode.properties.type);
@@ -455,7 +460,7 @@
         var updated = false;
         if (vnode.vnodeSelector === '') {
             if (vnode.text !== previous.text) {
-                var newVNode = document.createTextNode(vnode.text);
+                var newVNode = domNode.ownerDocument.createTextNode(vnode.text);
                 domNode.parentNode.replaceChild(newVNode, domNode);
                 vnode.domNode = newVNode;
                 textUpdated = true;

@@ -54,6 +54,12 @@ describe('Projector', () => {
     expect(parentElement.insertBefore.lastCall.args[1]).to.equal(siblingElement);
 
     // Merge
+    let cleanRenderFunction = sinon.stub().returns(
+      h('div', [
+        h('span')
+      ])
+    );
+
     let existingElement = {
       appendChild: sinon.stub(),
       ownerDocument: {
@@ -63,9 +69,9 @@ describe('Projector', () => {
       }
     };
 
-    projector.merge(existingElement as any, renderFunction);
+    projector.merge(existingElement as any, cleanRenderFunction);
 
-    expect(renderFunction).to.have.been.calledThrice;
+    expect(cleanRenderFunction).to.have.been.calledOnce;
     expect(existingElement.ownerDocument.createElement).to.have.been.calledOnce;
     expect(existingElement.appendChild).to.have.been.calledOnce;
     expect(existingElement.appendChild.lastCall.args[0]).to.deep.include({ tagName: 'SPAN' });
@@ -77,7 +83,7 @@ describe('Projector', () => {
 
     projector.replace(oldElement as any, renderFunction);
 
-    expect(renderFunction).to.have.callCount(4);
+    expect(renderFunction).to.have.been.calledThrice;
     expect(parentElement.removeChild).to.have.been.calledOnce;
     expect(parentElement.removeChild.lastCall.args[0]).to.equal(oldElement);
     expect(parentElement.ownerDocument.createElement).to.have.been.calledThrice;
@@ -88,11 +94,47 @@ describe('Projector', () => {
     // ScheduleRender
 
     projector.scheduleRender();
-    expect(renderFunction).to.have.callCount(4);
+    expect(renderFunction).to.have.been.calledThrice;
     expect(global.requestAnimationFrame).to.have.been.calledOnce;
     global.requestAnimationFrame.callArg(0);
-    expect(renderFunction).to.have.callCount(8);
+    expect(renderFunction).to.have.callCount(6);
+  });
 
+  it('can reuse existing dom', () => {
+    let parentNode = {
+      tagName: 'DIV'
+    };
+    let childNode = {
+      onclick: function () { },
+      ownerDocument: {
+        createElement: sinon.spy((tag: string) => {
+          return document.createElement(tag);
+        })
+      },
+      tagName: 'SPAN',
+      textContent: undefined
+    };
+    let handleClick = sinon.stub();
+    let renderFunction = sinon.stub().returns({
+      vnodeSelector: 'div',
+      properties: {},
+      children: [ {
+        vnodeSelector: 'span',
+        properties: { onclick: handleClick },
+        children: undefined,
+        text: 'text',
+        domNode: childNode
+      } ],
+      text: undefined,
+      domNode: null
+    });
+    let projector = createProjector({});
+
+    projector.merge(parentNode as any, renderFunction);
+
+    childNode.onclick();
+    expect(handleClick).to.have.been.calledOnce;
+    expect(childNode.textContent).to.equal('text');
   });
 
   it('Can stop and resume', () => {

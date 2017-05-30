@@ -781,7 +781,7 @@ createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
           if (projectionOptions.namespace !== undefined) {
             domNode = vnode.domNode = doc.createElementNS(projectionOptions.namespace, found);
           } else {
-            domNode = vnode.domNode = doc.createElement(found);
+            domNode = vnode.domNode = (vnode.domNode || doc.createElement(found));
             if (found === 'input' && vnode.properties && vnode.properties.type !== undefined) {
               // IE8 and older don't support setting input type after the DOM Node has been added to the document
               (domNode as Element).setAttribute("type", vnode.properties.type);

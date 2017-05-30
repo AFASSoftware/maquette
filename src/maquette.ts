@@ -241,6 +241,16 @@ export interface VNodeProperties {
   afterUpdate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties,
     children: VNode[]): void;
   /**
+   * Callback that is executed before a node is removed from the DOM.
+   * @param element - The element that is about to be removed from the DOM.
+   * @param projectionOptions - The projection options that were used, see [[createProjector]].
+   * @param vnodeSelector - The selector passed to the [[h]] function.
+   * @param properties - The properties passed to the [[h]] function.
+   * @param children - The children for this node.
+   */
+  beforeRemove?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties,
+    children: VNode[]): void;
+  /**
    * When specified, the event handlers will be invoked with 'this' pointing to the value.
    * This is useful when using the prototype/class based implementation of Components.
    *
@@ -614,7 +624,8 @@ let findIndexOfChild = function(children: VNode[], sameAs: VNode, start: number)
   return -1;
 };
 
-let nodeAdded = function(vNode: VNode, transitions: TransitionStrategy) {
+let nodeAdded = function(vNode: VNode, projectionOptions: ProjectionOptions) {
+  let transitions: TransitionStrategy = projectionOptions.transitions!;
   if (vNode.properties) {
     let enterAnimation = vNode.properties.enterAnimation;
     if (enterAnimation) {
@@ -627,9 +638,14 @@ let nodeAdded = function(vNode: VNode, transitions: TransitionStrategy) {
   }
 };
 
-let nodeToRemove = function(vNode: VNode, transitions: TransitionStrategy) {
+let nodeToRemove = function(vNode: VNode, projectionOptions: ProjectionOptions) {
+  let transitions: TransitionStrategy = projectionOptions.transitions!;
   let domNode: Node = vNode.domNode!;
   if (vNode.properties) {
+    let beforeRemove = vNode.properties.beforeRemove;
+    if (beforeRemove) {
+      beforeRemove.apply(vNode.properties.bind || vNode.properties, [<Element>domNode, projectionOptions, vNode.vnodeSelector, vNode.properties, vNode.children]);
+    }
     let exitAnimation = vNode.properties.exitAnimation;
     if (exitAnimation) {
       (domNode as HTMLElement).style.pointerEvents = 'none';
@@ -688,8 +704,6 @@ let updateChildren = function(vnode: VNode, domNode: Node, oldChildren: VNode[] 
   newChildren = newChildren || emptyArray;
   let oldChildrenLength = oldChildren.length;
   let newChildrenLength = newChildren.length;
-  let transitions = projectionOptions.transitions!;
-
   let oldIndex = 0;
   let newIndex = 0;
   let i: number;
@@ -705,7 +719,7 @@ let updateChildren = function(vnode: VNode, domNode: Node, oldChildren: VNode[] 
       if (findOldIndex >= 0) {
         // Remove preceding missing children
         for (i = oldIndex; i < findOldIndex; i++) {
-          nodeToRemove(oldChildren[i], transitions);
+          nodeToRemove(oldChildren[i], projectionOptions);
           checkDistinguishable(oldChildren, i, vnode, 'removed');
         }
         textUpdated = updateDom(oldChildren[findOldIndex], newChild, projectionOptions) || textUpdated;
@@ -713,7 +727,7 @@ let updateChildren = function(vnode: VNode, domNode: Node, oldChildren: VNode[] 
       } else {
         // New child
         createDom(newChild, domNode, (oldIndex < oldChildrenLength) ? oldChildren[oldIndex].domNode : undefined, projectionOptions);
-        nodeAdded(newChild, transitions);
+        nodeAdded(newChild, projectionOptions);
         checkDistinguishable(newChildren, newIndex, vnode, 'added');
       }
     }
@@ -722,7 +736,7 @@ let updateChildren = function(vnode: VNode, domNode: Node, oldChildren: VNode[] 
   if (oldChildrenLength > oldIndex) {
     // Remove child fragments
     for (i = oldIndex; i < oldChildrenLength; i++) {
-      nodeToRemove(oldChildren[i], transitions);
+      nodeToRemove(oldChildren[i], projectionOptions);
       checkDistinguishable(oldChildren, i, vnode, 'removed');
     }
   }

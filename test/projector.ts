@@ -86,7 +86,6 @@ describe('Projector', () => {
     expect(renderFunction).to.have.been.calledThrice;
     expect(parentElement.removeChild).to.have.been.calledOnce;
     expect(parentElement.removeChild.lastCall.args[0]).to.equal(oldElement);
-    expect(parentElement.ownerDocument.createElement).to.have.been.calledThrice;
     expect(parentElement.insertBefore).to.have.been.calledTwice;
     expect(parentElement.insertBefore.lastCall.args[0]).to.deep.include({ tagName: 'DIV' });
     expect(parentElement.insertBefore.lastCall.args[1]).to.equal(oldElement);

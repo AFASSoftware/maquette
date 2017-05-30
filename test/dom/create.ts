@@ -62,5 +62,16 @@ describe('dom', function() {
       }).to.throw(/may not be changed/);
     });
 
+    it('should allow an existing dom node to be used', () => {
+      const node = document.createElement('div');
+      (node as any).foo = 'bar';
+      const vnode = h('div', { id: 'id' });
+      vnode.domNode = node;
+      const projection = dom.create(vnode);
+      const root = projection.domNode as any;
+      expect(root.outerHTML).to.equal('<div id="id"></div>');
+      expect(root.foo).to.equal('bar');
+    });
+
   });
 });

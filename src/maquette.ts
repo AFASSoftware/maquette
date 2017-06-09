@@ -734,11 +734,7 @@ let addChildren = function(domNode: Node, children: VNode[] | undefined, project
     return;
   }
   for (let i = 0; i < children.length; i++) {
-    if (!children[i].domNode) {
       createDom(children[i], domNode, undefined, projectionOptions);
-    } else {
-      initPropertiesAndChildren(children[i].domNode!, children[i], projectionOptions);
-    }
   }
 };
 
@@ -789,7 +785,7 @@ createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
           }
           if (insertBefore !== undefined) {
             parentNode.insertBefore(domNode, insertBefore);
-          } else {
+          } else if (domNode.parentNode !== parentNode) {
             parentNode.appendChild(domNode);
           }
         }

@@ -1,5 +1,5 @@
 import {expect, sinon, jsdom} from './utilities';
-import {createProjector, h, Component} from '../src/maquette';
+import {createProjector, h, Component, VNode} from '../src/maquette';
 
 describe('Projector', () => {
 
@@ -97,43 +97,6 @@ describe('Projector', () => {
     expect(global.requestAnimationFrame).to.have.been.calledOnce;
     global.requestAnimationFrame.callArg(0);
     expect(renderFunction).to.have.callCount(6);
-  });
-
-  it('can reuse existing dom', () => {
-    let parentNode = {
-      tagName: 'DIV'
-    };
-    let childNode = {
-      onclick: function () { },
-      ownerDocument: {
-        createElement: sinon.spy((tag: string) => {
-          return document.createElement(tag);
-        })
-      },
-      tagName: 'SPAN',
-      textContent: undefined
-    };
-    let handleClick = sinon.stub();
-    let renderFunction = sinon.stub().returns({
-      vnodeSelector: 'div',
-      properties: {},
-      children: [ {
-        vnodeSelector: 'span',
-        properties: { onclick: handleClick },
-        children: undefined,
-        text: 'text',
-        domNode: childNode
-      } ],
-      text: undefined,
-      domNode: null
-    });
-    let projector = createProjector({});
-
-    projector.merge(parentNode as any, renderFunction);
-
-    childNode.onclick();
-    expect(handleClick).to.have.been.calledOnce;
-    expect(childNode.textContent).to.equal('text');
   });
 
   it('Can stop and resume', () => {

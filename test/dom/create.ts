@@ -1,4 +1,4 @@
-import {expect, jsdom} from '../utilities';
+import {expect, sinon, jsdom} from '../utilities';
 import {h, dom} from '../../src/maquette';
 
 describe('dom', function() {
@@ -64,13 +64,24 @@ describe('dom', function() {
 
     it('should allow an existing dom node to be used', () => {
       const node = document.createElement('div');
-      (node as any).foo = 'bar';
-      const vnode = h('div', { id: 'id' });
+      (node as any).foo = 'foo';
+      const childNode = document.createElement('span');
+      (childNode as any).bar = 'bar';
+      node.appendChild(childNode);
+      const spy = sinon.spy(node, 'appendChild');
+
+      const childVNode = h('span', { id: 'b' });
+      childVNode.domNode = childNode;
+      const vnode = h('div', { id: 'a' }, [ childVNode ]);
       vnode.domNode = node;
+
       const projection = dom.create(vnode);
       const root = projection.domNode as any;
-      expect(root.outerHTML).to.equal('<div id="id"></div>');
-      expect(root.foo).to.equal('bar');
+      expect(root.outerHTML).to.equal('<div id="a"><span id="b"></span></div>');
+      expect(root.foo).to.equal('foo');
+      expect(root.children[0].bar).to.equal('bar');
+      // should not append child again, if it has a parent that matches
+      expect(spy.called).to.be.false;
     });
 
   });

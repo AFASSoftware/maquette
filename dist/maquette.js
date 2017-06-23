@@ -141,9 +141,8 @@
                                 // record the evt.target.value, because IE and Edge sometimes do a requestAnimationFrame between changing value and running oninput
                                 var oldPropValue = propValue;
                                 propValue = function (evt) {
-                                    evt.target['oninput-value'] = evt.target.value;
-                                    // may be HTMLTextAreaElement as well
                                     oldPropValue.apply(this, [evt]);
+                                    evt.target['oninput-value'] = evt.target.value;    // may be HTMLTextAreaElement as well
                                 };
                             }());
                         }
@@ -381,11 +380,7 @@
             return;
         }
         for (var i = 0; i < children.length; i++) {
-            if (!children[i].domNode) {
-                createDom(children[i], domNode, undefined, projectionOptions);
-            } else {
-                initPropertiesAndChildren(children[i].domNode, children[i], projectionOptions);
-            }
+            createDom(children[i], domNode, undefined, projectionOptions);
         }
     };
     var initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
@@ -441,7 +436,7 @@
                         }
                         if (insertBefore !== undefined) {
                             parentNode.insertBefore(domNode, insertBefore);
-                        } else {
+                        } else if (domNode.parentNode !== parentNode) {
                             parentNode.appendChild(domNode);
                         }
                     }

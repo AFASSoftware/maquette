@@ -240,6 +240,40 @@ describe('dom', function() {
       expect(inputElement.value).not.to.equal(typedKeys); // no resetting should have taken place
     });
 
+    it('Can handle oninput event handlers which pro-actively change element.value to correct user input when typing faster than 60 keys per second', () => {
+      let model = '';
+      let handleInput = (evt: Event) => {
+        let inputElement = evt.target as HTMLInputElement;
+        model = inputElement.value;
+        if (model.indexOf(',') > 0) {
+          model = model.replace(/,/g, '.');
+          inputElement.value = model; // To allow a user to type faster than 60 keys per second
+          // in reality, selectionStart would now also be reset
+        }
+      };
+
+      let renderFunction = () => h('input', { value: model, oninput: handleInput });
+      let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
+
+      let inputElement = (projection.domNode as HTMLInputElement);
+      expect(inputElement.value).to.equal(model);
+
+      inputElement.value = '4';
+      inputElement.oninput({target: inputElement} as any as Event);
+      projection.update(renderFunction());
+
+      inputElement.value = '4,';
+      inputElement.oninput({target: inputElement} as any as Event);
+      projection.update(renderFunction());
+
+      expect(inputElement.value).to.equal('4.');
+
+      model = '';
+      projection.update(renderFunction());
+
+      expect(inputElement.value).to.equal('');
+    });
+
     it('removes the attribute when a role property is set to undefined', () => {
       let role: string | undefined = 'button';
       let renderFunction = () => h('div', { role: role });

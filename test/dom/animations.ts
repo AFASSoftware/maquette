@@ -1,11 +1,9 @@
-import {expect, jsdom, sinon} from '../utilities';
-import {h, dom} from '../../src/maquette';
+import { expect, sinon } from '../../test-utilities';
+import { dom, h } from '../../src/maquette';
 
 describe('dom', () => {
 
   describe('animations', () => {
-
-    jsdom();
 
     describe('updateAnimation', () => {
 

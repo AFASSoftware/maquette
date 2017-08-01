@@ -1,4 +1,4 @@
-import {expect} from './utilities';
+import {expect} from '../test-utilities';
 import {createMapping, Mapping} from '../src/maquette';
 
 let addAllPermutations = function(results: number[][], result: number[], unusedNumbers: number[], numbersToAdd: number) {

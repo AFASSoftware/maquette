@@ -1,4 +1,4 @@
-import {expect} from './utilities';
+import {expect} from '../test-utilities';
 import {h, VNode} from '../src/maquette';
 
 describe('h', function() {

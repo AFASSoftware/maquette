@@ -2,11 +2,9 @@ var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var del = require('del');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
 var sourcemaps = require('gulp-sourcemaps');
-var merge = require('merge2');
 var path = require('path');
+var shell = require('gulp-shell');
 
 var git = require('gulp-git');
 var bump = require('gulp-bump');
@@ -16,9 +14,6 @@ var tag_version = require('gulp-tag-version');
 var ts = require('gulp-typescript');
 var wrapJS = require('gulp-wrap-js');
 
-var browserify = require('browserify');
-var tsify = require('tsify');
-var gutil = require('gulp-util');
 var plumber = require('gulp-plumber');
 
 var browserSync = require('browser-sync');
@@ -297,7 +292,7 @@ var coverage = function(cb) {
     });
 }
 
-gulp.task('coverage', ['compile'], coverage);
+gulp.task('coverage', shell.task(['npm run coverage']));
 
 gulp.task('dev', function() {
   var bs = null;

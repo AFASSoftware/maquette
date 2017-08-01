@@ -1,4 +1,5 @@
 /* tslint:disable:no-require-imports no-unused-variable */
+
 import chai = require('chai');
 import chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
@@ -8,6 +9,6 @@ import sinon = require('sinon');
 import sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
-let jsdom = require('mocha-jsdom');
+require('jsdom-global/register');
 
-export {chai, expect, sinon, jsdom};
+export { chai, expect, sinon };

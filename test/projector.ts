@@ -1,4 +1,4 @@
-import {expect, sinon, jsdom} from './utilities';
+import {expect, sinon} from '../test-utilities';
 import {createProjector, h, Component, VNode} from '../src/maquette';
 
 describe('Projector', () => {
@@ -12,8 +12,6 @@ describe('Projector', () => {
     delete global.requestAnimationFrame;
     delete global.cancelAnimationFrame;
   });
-
-  jsdom();
 
   it('renders the virtual DOM immediately when adding renderFunctions', () => {
     let parentElement = {
@@ -39,7 +37,7 @@ describe('Projector', () => {
     expect(renderFunction).to.have.been.calledOnce;
     expect(parentElement.ownerDocument.createElement).to.have.been.calledOnce;
     expect(parentElement.appendChild).to.have.been.calledOnce;
-    expect(parentElement.appendChild.lastCall.args[0]).to.deep.include({ tagName: 'DIV' });
+    expect(parentElement.appendChild.lastCall.args[0].tagName).to.equal('DIV');
 
     // InsertBefore
     let siblingElement = {
@@ -50,7 +48,7 @@ describe('Projector', () => {
 
     expect(renderFunction).to.have.been.calledTwice;
     expect(parentElement.insertBefore).to.have.been.calledOnce;
-    expect(parentElement.insertBefore.lastCall.args[0]).to.deep.include({ tagName: 'DIV' });
+    expect(parentElement.insertBefore.lastCall.args[0].tagName).to.equal('DIV');
     expect(parentElement.insertBefore.lastCall.args[1]).to.equal(siblingElement);
 
     // Merge
@@ -74,7 +72,7 @@ describe('Projector', () => {
     expect(cleanRenderFunction).to.have.been.calledOnce;
     expect(existingElement.ownerDocument.createElement).to.have.been.calledOnce;
     expect(existingElement.appendChild).to.have.been.calledOnce;
-    expect(existingElement.appendChild.lastCall.args[0]).to.deep.include({ tagName: 'SPAN' });
+    expect(existingElement.appendChild.lastCall.args[0].tagName).to.equal('SPAN');
 
     // Replace
     let oldElement = {
@@ -87,7 +85,7 @@ describe('Projector', () => {
     expect(parentElement.removeChild).to.have.been.calledOnce;
     expect(parentElement.removeChild.lastCall.args[0]).to.equal(oldElement);
     expect(parentElement.insertBefore).to.have.been.calledTwice;
-    expect(parentElement.insertBefore.lastCall.args[0]).to.deep.include({ tagName: 'DIV' });
+    expect(parentElement.insertBefore.lastCall.args[0].tagName).to.equal('DIV');
     expect(parentElement.insertBefore.lastCall.args[1]).to.equal(oldElement);
 
     // ScheduleRender

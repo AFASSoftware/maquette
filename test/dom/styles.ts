@@ -1,11 +1,9 @@
-import {expect, jsdom} from '../utilities';
-import {h, dom} from '../../src/maquette';
+import { expect } from '../../test-utilities';
+import { dom, h } from '../../src/maquette';
 
 describe('dom', function() {
 
   describe('styles', function() {
-
-    jsdom();
 
     it('should not allow non-string values', function() {
       try {

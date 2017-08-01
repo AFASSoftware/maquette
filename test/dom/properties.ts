@@ -1,5 +1,5 @@
-import {expect, jsdom, sinon} from '../utilities';
-import {h, dom} from '../../src/maquette';
+import { expect, sinon } from '../../test-utilities';
+import { dom, h } from '../../src/maquette';
 
 let noopEventHandlerInterceptor = (propertyName: string, functionPropertyArgument: Function) => {
   return function(this: Node) {
@@ -10,8 +10,6 @@ let noopEventHandlerInterceptor = (propertyName: string, functionPropertyArgumen
 describe('dom', function() {
 
   describe('properties', function() {
-
-    jsdom();
 
     describe('classes', () => {
 

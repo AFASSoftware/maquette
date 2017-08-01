@@ -11,6 +11,13 @@
     }
 }(this, function (exports) {
     'use strict';
+    // Comment that is displayed in the API documentation for the maquette module:
+    /**
+ * Welcome to the API documentation of the **maquette** library.
+ *
+ * [[http://maquettejs.org/|To the maquette homepage]]
+ */
+    Object.defineProperty(exports, '__esModule', { value: true });
     var NAMESPACE_W3 = 'http://www.w3.org/';
     var NAMESPACE_SVG = NAMESPACE_W3 + '2000/svg';
     var NAMESPACE_XLINK = NAMESPACE_W3 + '1999/xlink';

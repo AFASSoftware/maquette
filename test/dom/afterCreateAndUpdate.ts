@@ -1,9 +1,7 @@
-import {expect, jsdom, sinon} from '../utilities';
+import {expect, sinon} from '../../test-utilities';
 import {h, dom} from '../../src/maquette';
 
 describe('dom', () => {
-
-  jsdom();
 
   describe('afterCreate', () => {
 

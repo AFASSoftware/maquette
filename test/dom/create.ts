@@ -1,10 +1,8 @@
-import {expect, sinon, jsdom} from '../utilities';
-import {h, dom} from '../../src/maquette';
+import { expect, sinon } from '../../test-utilities';
+import { dom, h } from '../../src/maquette';
 
 describe('dom', function() {
   describe('create', function() {
-
-    jsdom();
 
     it('should create and update single textnodes', function() {
       let projection = dom.create(h('div', ['text']));

@@ -18,6 +18,6 @@ addons:
     packages:
       - g++-4.8
 
-before_install: npm install -g grunt-cli bower
+before_install: npm install -g bower
 
 sudo: false

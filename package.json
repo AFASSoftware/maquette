@@ -17,8 +17,8 @@
   "main": "./dist/maquette.js",
   "typings": "./dist/maquette.d.ts",
   "scripts": {
-    "test": "gulp test",
     "test-also-with-browser": "gulp test && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js",
+    "test": "cross-env TS_NODE_FAST=true mocha --compilers ts:ts-node/register --recursive",
     "coverage": "cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive"
   },
   "license": "MIT",

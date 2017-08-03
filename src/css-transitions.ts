@@ -19,7 +19,7 @@ let determineBrowserSpecificStyleNames = function (element: HTMLElement) {
 };
 
 let init = function (testElement: Element) {
-  if (browserSpecificTransitionEndEventName === null) {
+  if (!browserSpecificTransitionEndEventName) {
     determineBrowserSpecificStyleNames(testElement as HTMLElement);
   }
 };

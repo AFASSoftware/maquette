@@ -14,7 +14,7 @@ let determineBrowserSpecificStyleNames = function (element: HTMLElement) {
     browserSpecificTransitionEndEventName = "transitionend";
     browserSpecificAnimationEndEventName = "animationend";
   } else {
-    throw new Error("Your browser is not supported");
+    throw new Error("Your browser is not supported!");
   }
 };
 
@@ -27,41 +27,41 @@ let init = function (testElement: Element) {
 export let cssTransitions: TransitionStrategy;
 
 cssTransitions = {
-  exit: function (node: Element, properties: VNodeProperties, exitAnimation: string, removeNode: () => void): void {
-    init(node);
+  exit: function (element: Element, properties: VNodeProperties, exitAnimation: string, removeElement: () => void): void {
+    init(element);
     let finished = false;
     let transitionEnd = function (evt: TransitionEvent) {
       if (!finished) {
         finished = true;
-        node.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
-        node.removeEventListener(browserSpecificAnimationEndEventName, transitionEnd);
-        removeNode();
+        element.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+        element.removeEventListener(browserSpecificAnimationEndEventName, transitionEnd);
+        removeElement();
       }
     };
-    node.classList.add(exitAnimation);
-    node.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
-    node.addEventListener(browserSpecificAnimationEndEventName, transitionEnd);
+    element.classList.add(exitAnimation);
+    element.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+    element.addEventListener(browserSpecificAnimationEndEventName, transitionEnd);
     requestAnimationFrame(function () {
-      node.classList.add(exitAnimation + "-active");
+      element.classList.add(exitAnimation + "-active");
     });
   },
-  enter: function (node: Element, properties: VNodeProperties, enterAnimation: string): void {
-    init(node);
+  enter: function (element: Element, properties: VNodeProperties, enterAnimation: string): void {
+    init(element);
     let finished = false;
     let transitionEnd = function (evt: TransitionEvent) {
       if (!finished) {
         finished = true;
-        node.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
-        node.removeEventListener(browserSpecificAnimationEndEventName, transitionEnd);
-        node.classList.remove(enterAnimation);
-        node.classList.remove(enterAnimation + "-active");
+        element.removeEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+        element.removeEventListener(browserSpecificAnimationEndEventName, transitionEnd);
+        element.classList.remove(enterAnimation);
+        element.classList.remove(enterAnimation + "-active");
       }
     };
-    node.classList.add(enterAnimation);
-    node.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
-    node.addEventListener(browserSpecificAnimationEndEventName, transitionEnd);
+    element.classList.add(enterAnimation);
+    element.addEventListener(browserSpecificTransitionEndEventName, transitionEnd);
+    element.addEventListener(browserSpecificAnimationEndEventName, transitionEnd);
     requestAnimationFrame(function () {
-      node.classList.add(enterAnimation + "-active");
+      element.classList.add(enterAnimation + "-active");
     });
   }
 };

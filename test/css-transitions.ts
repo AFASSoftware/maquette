@@ -1,4 +1,4 @@
-import {cssTransitions} from "../src/css-transitions";
+import {cssTransitions} from '../src/css-transitions';
 import {expect, sinon} from '../test-utilities';
 
 describe('CSS Transitions', () => {

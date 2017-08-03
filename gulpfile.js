@@ -93,7 +93,8 @@ gulp.task('test', ['compile'], function() {
 });
 
 // This seems to be the most lightweight solution to create an UMD wrapper and working sourcemaps
-var umdTemplate = "(function (root, factory) {" +
+var umdTemplate = function(windowGlobalName) {
+  return "(function (root, factory) {" +
   "\n  if (typeof define === 'function' && define.amd) {" +
   "\n      // AMD. Register as an anonymous module." +
   "\n      define(['exports'], factory);" +
@@ -102,31 +103,59 @@ var umdTemplate = "(function (root, factory) {" +
   "\n      factory(exports);" +
   "\n  } else {" +
   "\n      // Browser globals" +
-  "\n      factory((root.maquette = {}));" +
+  "\n      factory(root." + windowGlobalName + " = {});" +
   "\n  }" +
   "\n}(this, function (exports){%= body %}));";
+};
 
-gulp.task('dist', ['compile'], function() {
+gulp.task('distMaquette', ['compile'], function() {
   return gulp.src('build/js/src/maquette.js')
     .pipe(sourcemaps.init({
       loadMaps: true
     }))
-    .pipe(wrapJS(umdTemplate))
+    .pipe(wrapJS(umdTemplate('maquette')))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest('./dist'));
+
+});
+
+gulp.task('distCssTransitions', ['compile'], function() {
+  return gulp.src('build/js/src/css-transitions.js')
+    .pipe(sourcemaps.init({
+      loadMaps: true
+    }))
+    .pipe(wrapJS(umdTemplate('cssTransitions')))
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('dist-min', ['dist'], function() {
+gulp.task('dist', ['distMaquette', 'distCssTransitions']);
+
+gulp.task('dist-min-maquette', ['compile'], function() {
   return gulp.src('build/js/src/maquette.js')
     .pipe(sourcemaps.init({
       loadMaps: true
     }))
-    .pipe(wrapJS(umdTemplate))
+    .pipe(wrapJS(umdTemplate('maquette')))
     .pipe(uglify())
     .pipe(rename({extname: '.min.js'}))
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./dist'));
 });
+
+gulp.task('dist-min-cssTransitions', ['compile'], function() {
+  return gulp.src('build/js/src/css-transitions.js')
+    .pipe(sourcemaps.init({
+      loadMaps: true
+    }))
+    .pipe(wrapJS(umdTemplate('cssTransitions')))
+    .pipe(uglify())
+    .pipe(rename({extname: '.min.js'}))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('dist-min', ['dist', 'dist-min-maquette', 'dist-min-cssTransitions']);
 
 gulp.task('check-size', ['dist-min'], function(callback) {
   var zlib = require('zlib');

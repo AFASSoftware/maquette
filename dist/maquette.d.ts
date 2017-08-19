@@ -232,6 +232,14 @@ export interface VNodeProperties {
      */
     afterUpdate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties, children: VNode[]): void;
     /**
+     * Callback that is executed after this node has been created, but before it is added to the DOM. Child nodes and
+     * properties have not yet been applied.
+     * @param element - The element that was added to the DOM.
+     * @param parentNode - The parent the element will be added to this node
+     * @param beforeNode - The node that the element will be inserted before
+     */
+    beforeAttach?(element: Element, parentNode: Node, beforeNode?: Node): boolean;
+    /**
      * When specified, the event handlers will be invoked with 'this' pointing to the value.
      * This is useful when using the prototype/class based implementation of Components.
      *
@@ -310,6 +318,7 @@ export interface VNodeProperties {
      * Note: if you use innerHTML, maquette cannot protect you from XSS vulnerabilities and you must make sure that the innerHTML value is safe.
      */
     readonly innerHTML?: string;
+    readonly delayAttach?: boolean;
     /**
      * Everything that is not explicitly listed (properties and attributes that are either uncommon or custom).
      */

@@ -407,16 +407,28 @@
             ]);
         }
     };
+    var insertNode = function (parentNode, domNode, vnode, beforeNode) {
+        if (vnode.properties && vnode.properties.beforeAttach) {
+            vnode.properties.beforeAttach.apply(vnode.properties.bind || vnode.properties, [
+                parentNode,
+                domNode
+            ]);
+        }
+        if (beforeNode) {
+            parentNode.insertBefore(domNode, beforeNode);
+        } else if (domNode.parentNode !== parentNode) {
+            parentNode.appendChild(domNode);
+        }
+    };
     createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
+        var delayAttach = !!(vnode.properties && vnode.properties.delayAttach);
         var domNode, i, c, start = 0, type, found;
         var vnodeSelector = vnode.vnodeSelector;
         var doc = parentNode.ownerDocument;
         if (vnodeSelector === '') {
             domNode = vnode.domNode = doc.createTextNode(vnode.text);
-            if (insertBefore !== undefined) {
-                parentNode.insertBefore(domNode, insertBefore);
-            } else {
-                parentNode.appendChild(domNode);
+            if (!delayAttach) {
+                insertNode(parentNode, domNode, vnode, insertBefore);
             }
         } else {
             for (i = 0; i <= vnodeSelector.length; ++i) {
@@ -441,16 +453,17 @@
                                 domNode.setAttribute('type', vnode.properties.type);
                             }
                         }
-                        if (insertBefore !== undefined) {
-                            parentNode.insertBefore(domNode, insertBefore);
-                        } else if (domNode.parentNode !== parentNode) {
-                            parentNode.appendChild(domNode);
+                        if (!delayAttach) {
+                            insertNode(parentNode, domNode, vnode, insertBefore);
                         }
                     }
                     start = i + 1;
                 }
             }
             initPropertiesAndChildren(domNode, vnode, projectionOptions);
+            if (delayAttach) {
+                insertNode(parentNode, domNode, vnode, insertBefore);
+            }
         }
     };
     updateDom = function (previous, vnode, projectionOptions) {

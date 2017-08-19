@@ -331,6 +331,8 @@ export interface VNodeProperties {
    */
   readonly innerHTML?: string;
 
+  readonly delayAttach?: boolean;
+
   /**
    * Everything that is not explicitly listed (properties and attributes that are either uncommon or custom).
    */
@@ -757,30 +759,30 @@ let initPropertiesAndChildren = function(domNode: Node, vnode: VNode, projection
   }
 };
 
-let insertNode = function (parentNode: Node, domNode: Node, vnode: VNode, beforeNode?: Node | null) {
-  let attach = true;
+let insertNode = function (parentNode: Node, domNode: Node, vnode: VNode, beforeNode?: Node | null): void {
   if (vnode.properties && vnode.properties.beforeAttach) {
-    attach = vnode.properties.beforeAttach.apply(vnode.properties.bind || vnode.properties, [
+    vnode.properties.beforeAttach.apply(vnode.properties.bind || vnode.properties, [
       parentNode,
       domNode as Element
     ]);
   }
-  if (attach !== false) {
-    if (beforeNode) {
-      parentNode.insertBefore(domNode, beforeNode);
-    } else if (domNode.parentNode !== parentNode) {
-      parentNode.appendChild(domNode);
-    }
+  if (beforeNode) {
+    parentNode.insertBefore(domNode, beforeNode);
+  } else if (domNode.parentNode !== parentNode) {
+    parentNode.appendChild(domNode);
   }
 };
 
 createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
+  let delayAttach: boolean = !!(vnode.properties && vnode.properties.delayAttach);
   let domNode: Node | undefined, i: number, c: string, start = 0, type: string, found: string;
   let vnodeSelector = vnode.vnodeSelector;
   let doc = parentNode.ownerDocument;
   if (vnodeSelector === '') {
     domNode = vnode.domNode = doc.createTextNode(vnode.text!);
-    insertNode(parentNode, domNode, vnode, insertBefore);
+    if (!delayAttach) {
+      insertNode(parentNode, domNode, vnode, insertBefore);
+    }
   } else {
     for (i = 0; i <= vnodeSelector.length; ++i) {
       c = vnodeSelector.charAt(i);
@@ -804,12 +806,18 @@ createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
               (domNode as Element).setAttribute("type", vnode.properties.type);
             }
           }
-          insertNode(parentNode, domNode, vnode, insertBefore);
+          if (!delayAttach) {
+            insertNode(parentNode, domNode, vnode, insertBefore);
+          }
         }
         start = i + 1;
       }
     }
     initPropertiesAndChildren(domNode!, vnode, projectionOptions);
+
+    if (delayAttach) {
+      insertNode(parentNode, domNode!, vnode, insertBefore);
+    }
   }
 };
 

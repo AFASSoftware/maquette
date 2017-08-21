@@ -69,8 +69,8 @@ window.createLiveEditor = function (projector) {
   };
 
   var handleEditOnCodepen = function() {
-    maquette.dom.append(document.body, h("form", {action: "http://codepen.io/pen/define/", method: "POST", target:"_blank"}, [
-      h("input", {name: "data", value: JSON.stringify({
+    maquette.dom.append(document.body, h("form", {action: "https://codepen.io/pen/define/", method: "POST", target:"_blank"}, [
+      h("input", {type: "hidden", name: "data", value: JSON.stringify({
         title: "New pen using maquette",
         js: "document.addEventListener('DOMContentLoaded', function () {\n" +
         "  var h = maquette.h;\n" +

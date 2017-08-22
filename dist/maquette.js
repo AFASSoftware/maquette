@@ -408,28 +408,26 @@
         }
     };
     var insertNode = function (parentNode, domNode, vnode, beforeNode) {
-        if (vnode.properties && vnode.properties.beforeAttach) {
-            vnode.properties.beforeAttach.apply(vnode.properties.bind || vnode.properties, [
-                parentNode,
-                domNode
-            ]);
-        }
         if (beforeNode) {
             parentNode.insertBefore(domNode, beforeNode);
         } else if (domNode.parentNode !== parentNode) {
             parentNode.appendChild(domNode);
         }
     };
+    /**
+ * Identifies custom element tags as defined in custom elements v1 draft spec
+ *
+ * @see https://www.w3.org/TR/custom-elements/#custom-elements-core-concepts
+ */
+    var customElementRegex = /^[a-z][^-]*-/;
     createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
-        var delayAttach = !!(vnode.properties && vnode.properties.delayAttach);
         var domNode, i, c, start = 0, type, found;
         var vnodeSelector = vnode.vnodeSelector;
+        var delayAttach = customElementRegex.test(vnodeSelector);
         var doc = parentNode.ownerDocument;
         if (vnodeSelector === '') {
             domNode = vnode.domNode = doc.createTextNode(vnode.text);
-            if (!delayAttach) {
-                insertNode(parentNode, domNode, vnode, insertBefore);
-            }
+            insertNode(parentNode, domNode, vnode, insertBefore);
         } else {
             for (i = 0; i <= vnodeSelector.length; ++i) {
                 c = vnodeSelector.charAt(i);

@@ -760,12 +760,6 @@ let initPropertiesAndChildren = function(domNode: Node, vnode: VNode, projection
 };
 
 let insertNode = function (parentNode: Node, domNode: Node, vnode: VNode, beforeNode?: Node | null): void {
-  if (vnode.properties && vnode.properties.beforeAttach) {
-    vnode.properties.beforeAttach.apply(vnode.properties.bind || vnode.properties, [
-      parentNode,
-      domNode as Element
-    ]);
-  }
   if (beforeNode) {
     parentNode.insertBefore(domNode, beforeNode);
   } else if (domNode.parentNode !== parentNode) {
@@ -773,16 +767,21 @@ let insertNode = function (parentNode: Node, domNode: Node, vnode: VNode, before
   }
 };
 
+/**
+ * Identifies custom element tags as defined in custom elements v1 draft spec
+ *
+ * @see https://www.w3.org/TR/custom-elements/#custom-elements-core-concepts
+ */
+const customElementRegex = /^[a-z][^-]*-/;
+
 createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
-  let delayAttach: boolean = !!(vnode.properties && vnode.properties.delayAttach);
   let domNode: Node | undefined, i: number, c: string, start = 0, type: string, found: string;
   let vnodeSelector = vnode.vnodeSelector;
+  const delayAttach = customElementRegex.test(vnodeSelector);
   let doc = parentNode.ownerDocument;
   if (vnodeSelector === '') {
     domNode = vnode.domNode = doc.createTextNode(vnode.text!);
-    if (!delayAttach) {
-      insertNode(parentNode, domNode, vnode, insertBefore);
-    }
+    insertNode(parentNode, domNode, vnode, insertBefore);
   } else {
     for (i = 0; i <= vnodeSelector.length; ++i) {
       c = vnodeSelector.charAt(i);
@@ -803,7 +802,7 @@ createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
             domNode = vnode.domNode = (vnode.domNode || doc.createElement(found));
             if (found === 'input' && vnode.properties && vnode.properties.type !== undefined) {
               // IE8 and older don't support setting input type after the DOM Node has been added to the document
-              (domNode as Element).setAttribute("type", vnode.properties.type);
+              (domNode as Element).setAttribute('type', vnode.properties.type);
             }
           }
           if (!delayAttach) {

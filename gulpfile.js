@@ -227,7 +227,7 @@ gulp.task('bump-major', ['compress'], function () { return inc('major'); });
 
 gulp.task('reload', reload);
 
-gulp.task('serve', ['default'], function () {
+gulp.task('serve', ['compress', 'dist-min'], function () {
   browserSync({
     port: BROWSERSYNC_PORT,
     host: BROWSERSYNC_HOST,

@@ -1,4 +1,9 @@
-import {h, Component, createMapping, VNode, dom} from '../../../src/maquette';
+import { Component, VNode } from '../../../dist/maquette';
+import * as Maquette from '../../../dist/maquette';
+
+let maquette: typeof Maquette = (window as any).maquette;
+
+let { h, createMapping, dom } = maquette;
 
 let createTableCell = (text: string): Component => {
   let handleClick = (evt: MouseEvent) => {
@@ -25,7 +30,7 @@ let createTableRow = (state: TableItemState): TableRow  => {
       mapping.map(newState.props);
     },
     renderMaquette: () => {
-      return h('tr.TableRow', { 'data-id': state.id, key: state.id, classes: { active: state.active } }, [
+      return h('tr.TableRow', { 'data-id': `${state.id}`, key: state.id, classes: { active: state.active } }, [
         firstCell.renderMaquette(),
         mapping.results.map(cell => cell.renderMaquette())
       ]);
@@ -54,7 +59,7 @@ let createTable = (state: TableState): Table => {
 let renderAnimBox = (state: AnimBoxState): VNode => {
   const time = state.time;
   return h('div.AnimBox', {
-    'data-id': state.id,
+    'data-id': `${state.id}`,
     styles: {
       'background': 'rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')',
       'border-radius': (time % 10) + 'px'
@@ -68,11 +73,11 @@ let renderAnim = (state: AnimState): VNode => {
 };
 
 let renderTreeLeaf = (state: TreeNodeState): VNode => {
-  return h('li.TreeLeaf', [ state.id ]);
+  return h('li.TreeLeaf', { key: state.id }, [ `${state.id}` ]);
 };
 
 let renderTreeNode = (state: TreeNodeState): VNode => {
-  return h('ul.TreeNode', state.children.map(child => {
+  return h('ul.TreeNode', { key: state.id },  state.children.map(child => {
     if (child.container) {
       return renderTreeNode(child);
     } else {
@@ -88,7 +93,7 @@ let renderTree = (state: TreeState): VNode => {
 let createMain = (state: AppState | null) => {
   let table: Table | undefined;
   let updateTable = () => {
-    if (state.location !== 'table') {
+    if (!state || state.location !== 'table') {
       table = undefined;
     } else {
       if (table) {
@@ -105,11 +110,11 @@ let createMain = (state: AppState | null) => {
       updateTable();
     },
     renderMaquette: () => {
-      let children: VNode[] | undefined;
+      let children: (VNode | null | undefined)[] | null | undefined;
       if (state) {
         switch (state.location) {
           case 'table':
-            children = [ table.renderMaquette() ];
+            children = [ table!.renderMaquette() ];
             break;
           case 'anim':
             children = [ renderAnim(state.anim) ];
@@ -139,7 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
       projection.update(main.renderMaquette());
     },
     (samples) => {
-      projection.update(h('pre', [JSON.stringify(samples, undefined, 2)]));
+      projection.domNode.remove();
+
+      dom.append(container, h('pre', [JSON.stringify(samples, undefined, 2)]));
     }
   );
 });

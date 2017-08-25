@@ -242,28 +242,28 @@ describe('dom', function() {
 
     it('will throw an error when maquette is not sure which node is added', () => {
       let projection = dom.create(h('div', [
-        h('span', 'a'),
-        h('span', 'c')
+        h('span', ['a']),
+        h('span', ['c'])
       ]));
       expect(() => {
         projection.update(h('div', [
-          h('span', 'a'),
-          h('span', 'b'),
-          h('span', 'c')
+          h('span', ['a']),
+          h('span', ['b']),
+          h('span', ['c'])
         ]));
       }).to.throw();
     });
 
     it('will throw an error when maquette is not sure which node is removed', () => {
       let projection = dom.create(h('div', [
-        h('span', 'a'),
-        h('span', 'b'),
-        h('span', 'c')
+        h('span', ['a']),
+        h('span', ['b']),
+        h('span', ['c'])
       ]));
       expect(() => {
         projection.update(h('div', [
-          h('span', 'a'),
-          h('span', 'c')
+          h('span', ['a']),
+          h('span', ['c'])
         ]));
       }).to.throw();
     });

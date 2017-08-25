@@ -382,7 +382,7 @@ let same = (vnode1: VNode, vnode2: VNode) => {
   return !vnode1.properties && !vnode2.properties;
 };
 
-let toTextVNode = (data: any): VNode => {
+let toTextVNode = (data: string): VNode => {
   return {
     vnodeSelector: '',
     properties: undefined,
@@ -392,14 +392,14 @@ let toTextVNode = (data: any): VNode => {
   };
 };
 
-let appendChildren = function(parentSelector: string, insertions: any[], main: VNode[]) {
+let appendChildren = function(parentSelector: string, insertions: VNodeChild[], main: VNode[]) {
   for (let i = 0, length = insertions.length; i < length; i++) {
     let item = insertions[i];
     if (Array.isArray(item)) {
       appendChildren(parentSelector, item, main);
     } else {
       if (item !== null && item !== undefined) {
-        if (!item.hasOwnProperty('vnodeSelector')) {
+        if (typeof item === 'string') {
           item = toTextVNode(item);
         }
         main.push(item);
@@ -876,8 +876,8 @@ export interface H {
    *
    * @returns           A VNode object, used to render a real DOM later.
    */
-  (selector: string, properties?: VNodeProperties, ...children: VNodeChild[]): VNode;
-  (selector: string, ...children: VNodeChild[]): VNode;
+  (selector: string, children: VNodeChild[]): VNode;
+  (selector: string, properties?: VNodeProperties, children?: VNodeChild[]): VNode;
 }
 
 /**
@@ -889,51 +889,27 @@ export interface H {
  *
  * NOTE: There are {@link http://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
  */
-export let h: H;
-
-// The other two parameters are not added here, because the Typescript compiler creates surrogate code for destructuring 'children'.
-h = function(selector: string): VNode {
-  let properties = arguments[1];
-  if (typeof selector !== 'string') {
-    throw new Error();
-  }
-  let childIndex = 1;
-  if (properties && !properties.hasOwnProperty('vnodeSelector') && !Array.isArray(properties) && typeof properties === 'object') {
-    childIndex = 2;
-  } else {
-    // Optional properties argument was omitted
+export let h: H = (selector: string, properties?: VNodeProperties, children?: VNodeChild[]): VNode => {
+  if (Array.isArray(properties)) {
+    children = properties;
     properties = undefined;
   }
   let text: string | undefined;
-  let children: VNode[] | undefined;
-  let argsLength = arguments.length;
+  let flattenedChildren: VNode[] | undefined;
   // Recognize a common special case where there is only a single text node
-  if (argsLength === childIndex + 1) {
-    let onlyChild = arguments[childIndex];
-    if (typeof onlyChild === 'string') {
-      text = onlyChild;
-    } else if (onlyChild !== undefined && onlyChild !== null && onlyChild.length === 1 && typeof onlyChild[0] === 'string') {
-      text = onlyChild[0];
-    }
-  }
-  if (text === undefined) {
-    children = [];
-    for (; childIndex < argsLength; childIndex++) {
-      let child = arguments[childIndex];
-      if (child === null || child === undefined) {
-      } else if (Array.isArray(child)) {
-        appendChildren(selector, child, children);
-      } else if (child.hasOwnProperty('vnodeSelector')) {
-        children.push(child);
-      } else {
-        children.push(toTextVNode(child));
-      }
+  if (children !== undefined && children.length ===  1 && typeof children[0] === 'string') {
+    text = children[0] as string;
+  } else if (children) {
+    flattenedChildren = [];
+    appendChildren(selector, children, flattenedChildren);
+    if (flattenedChildren.length === 0) {
+      flattenedChildren = undefined;
     }
   }
   return {
     vnodeSelector: selector,
     properties: properties,
-    children: children,
+    children: flattenedChildren,
     text: (text === '') ? undefined : text,
     domNode: null
   };

@@ -353,8 +353,8 @@ export interface H {
      *
      * @returns           A VNode object, used to render a real DOM later.
      */
-    (selector: string, properties?: VNodeProperties, ...children: VNodeChild[]): VNode;
-    (selector: string, ...children: VNodeChild[]): VNode;
+    (selector: string, children: VNodeChild[]): VNode;
+    (selector: string, properties?: VNodeProperties, children?: VNodeChild[]): VNode;
 }
 /**
  * The `h` function is used to create a virtual DOM node.

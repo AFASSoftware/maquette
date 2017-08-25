@@ -65,7 +65,7 @@
                 appendChildren(parentSelector, item, main);
             } else {
                 if (item !== null && item !== undefined) {
-                    if (!item.hasOwnProperty('vnodeSelector')) {
+                    if (typeof item === 'string') {
                         item = toTextVNode(item);
                     }
                     main.push(item);
@@ -511,49 +511,36 @@
             domNode: vnode.domNode
         };
     };
-    // The other two parameters are not added here, because the Typescript compiler creates surrogate code for destructuring 'children'.
-    exports.h = function (selector) {
-        var properties = arguments[1];
-        if (typeof selector !== 'string') {
-            throw new Error();
-        }
-        var childIndex = 1;
-        if (properties && !properties.hasOwnProperty('vnodeSelector') && !Array.isArray(properties) && typeof properties === 'object') {
-            childIndex = 2;
-        } else {
-            // Optional properties argument was omitted
+    /**
+ * The `h` function is used to create a virtual DOM node.
+ * This function is largely inspired by the mercuryjs and mithril frameworks.
+ * The `h` stands for (virtual) hyperscript.
+ *
+ * All possible method signatures of this function can be found in the [[H]] 'interface'.
+ *
+ * NOTE: There are {@link http://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
+ */
+    exports.h = function (selector, properties, children) {
+        if (Array.isArray(properties)) {
+            children = properties;
             properties = undefined;
         }
         var text;
-        var children;
-        var argsLength = arguments.length;
+        var flattenedChildren;
         // Recognize a common special case where there is only a single text node
-        if (argsLength === childIndex + 1) {
-            var onlyChild = arguments[childIndex];
-            if (typeof onlyChild === 'string') {
-                text = onlyChild;
-            } else if (onlyChild !== undefined && onlyChild !== null && onlyChild.length === 1 && typeof onlyChild[0] === 'string') {
-                text = onlyChild[0];
-            }
-        }
-        if (text === undefined) {
-            children = [];
-            for (; childIndex < argsLength; childIndex++) {
-                var child = arguments[childIndex];
-                if (child === null || child === undefined) {
-                } else if (Array.isArray(child)) {
-                    appendChildren(selector, child, children);
-                } else if (child.hasOwnProperty('vnodeSelector')) {
-                    children.push(child);
-                } else {
-                    children.push(toTextVNode(child));
-                }
+        if (children !== undefined && children.length === 1 && typeof children[0] === 'string') {
+            text = children[0];
+        } else if (children) {
+            flattenedChildren = [];
+            appendChildren(selector, children, flattenedChildren);
+            if (flattenedChildren.length === 0) {
+                flattenedChildren = undefined;
             }
         }
         return {
             vnodeSelector: selector,
             properties: properties,
-            children: children,
+            children: flattenedChildren,
             text: text === '' ? undefined : text,
             domNode: null
         };

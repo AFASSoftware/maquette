@@ -82,5 +82,11 @@ describe('dom', function() {
       expect(spy.called).to.be.false;
     });
 
+    it('should delay attaching custom elements until after attribute and properties have been added', () => {
+      let projection = dom.create(h('custom-element', {
+        'data-attr': 'attribute'
+      }));
+      expect(projection.domNode.outerHTML).to.equal('<custom-element data-attr="attribute"></custom-element>');
+    });
   });
 });

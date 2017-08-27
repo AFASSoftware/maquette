@@ -757,17 +757,10 @@ let insertNode = function (parentNode: Node, domNode: Node, vnode: VNode, before
   }
 };
 
-/**
- * Identifies custom element tags as defined in custom elements v1 draft spec
- *
- * @see https://www.w3.org/TR/custom-elements/#custom-elements-core-concepts
- */
-const customElementRegex = /^[a-z][^-]*-/;
-
 createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
   let domNode: Node | undefined, i: number, c: string, start = 0, type: string, found: string;
   let vnodeSelector = vnode.vnodeSelector;
-  const delayAttach = customElementRegex.test(vnodeSelector);
+  let delayAttach = false;
   let doc = parentNode.ownerDocument;
   if (vnodeSelector === '') {
     domNode = vnode.domNode = doc.createTextNode(vnode.text!);
@@ -790,6 +783,7 @@ createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
             domNode = vnode.domNode = doc.createElementNS(projectionOptions.namespace, found);
           } else {
             domNode = vnode.domNode = (vnode.domNode || doc.createElement(found));
+            delayAttach = domNode.nodeName.indexOf('-') !== -1;
             if (found === 'input' && vnode.properties && vnode.properties.type !== undefined) {
               // IE8 and older don't support setting input type after the DOM Node has been added to the document
               (domNode as Element).setAttribute('type', vnode.properties.type);

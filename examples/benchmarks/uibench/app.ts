@@ -110,7 +110,7 @@ let createMain = (state: AppState | null) => {
       updateTable();
     },
     renderMaquette: () => {
-      let children: (VNode | null | undefined)[] | null | undefined;
+      let children: (VNode | null | undefined)[] | undefined;
       if (state) {
         switch (state.location) {
           case 'table':

@@ -18,6 +18,7 @@
  * [[http://maquettejs.org/|To the maquette homepage]]
  */
     Object.defineProperty(exports, '__esModule', { value: true });
+    exports.version = '3.0-begin';
     var NAMESPACE_W3 = 'http://www.w3.org/';
     var NAMESPACE_SVG = NAMESPACE_W3 + '2000/svg';
     var NAMESPACE_XLINK = NAMESPACE_W3 + '1999/xlink';
@@ -770,30 +771,30 @@
                 renderCompleted = true;
                 projector.scheduleRender();
             },
-            append: function (parentNode, renderMaquetteFunction) {
-                projections.push(exports.dom.append(parentNode, renderMaquetteFunction(), projectionOptions));
-                renderFunctions.push(renderMaquetteFunction);
+            append: function (parentNode, renderFunction) {
+                projections.push(exports.dom.append(parentNode, renderFunction(), projectionOptions));
+                renderFunctions.push(renderFunction);
             },
-            insertBefore: function (beforeNode, renderMaquetteFunction) {
-                projections.push(exports.dom.insertBefore(beforeNode, renderMaquetteFunction(), projectionOptions));
-                renderFunctions.push(renderMaquetteFunction);
+            insertBefore: function (beforeNode, renderFunction) {
+                projections.push(exports.dom.insertBefore(beforeNode, renderFunction(), projectionOptions));
+                renderFunctions.push(renderFunction);
             },
-            merge: function (domNode, renderMaquetteFunction) {
-                projections.push(exports.dom.merge(domNode, renderMaquetteFunction(), projectionOptions));
-                renderFunctions.push(renderMaquetteFunction);
+            merge: function (domNode, renderFunction) {
+                projections.push(exports.dom.merge(domNode, renderFunction(), projectionOptions));
+                renderFunctions.push(renderFunction);
             },
-            replace: function (domNode, renderMaquetteFunction) {
-                projections.push(exports.dom.replace(domNode, renderMaquetteFunction(), projectionOptions));
-                renderFunctions.push(renderMaquetteFunction);
+            replace: function (domNode, renderFunction) {
+                projections.push(exports.dom.replace(domNode, renderFunction(), projectionOptions));
+                renderFunctions.push(renderFunction);
             },
-            detach: function (renderMaquetteFunction) {
+            detach: function (renderFunction) {
                 for (var i = 0; i < renderFunctions.length; i++) {
-                    if (renderFunctions[i] === renderMaquetteFunction) {
+                    if (renderFunctions[i] === renderFunction) {
                         renderFunctions.splice(i, 1);
                         return projections.splice(i, 1)[0];
                     }
                 }
-                throw new Error('renderMaquetteFunction was not found');
+                throw new Error('renderFunction was not found');
             }
         };
         return projector;

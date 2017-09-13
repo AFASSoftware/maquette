@@ -3,6 +3,7 @@
  *
  * [[http://maquettejs.org/|To the maquette homepage]]
  */
+export declare let version: string;
 /**
  * A virtual representation of a DOM Node. Maquette assumes that [[VNode]] objects are never modified externally.
  * Instances of [[VNode]] can be created using [[h]].
@@ -33,8 +34,8 @@ export interface VNode {
  * A projector is used to create the real DOM from the the virtual DOM and to keep it up-to-date afterwards.
  *
  * You can call [[append]], [[merge]], [[insertBefore]] and [[replace]] to add the virtual DOM to the real DOM.
- * The `renderMaquetteFunction` callbacks will be called to create the real DOM immediately.
- * Afterwards, the `renderMaquetteFunction` callbacks will be called again to update the DOM on the next animation-frame after:
+ * The `renderFunction` callbacks will be called to create the real DOM immediately.
+ * Afterwards, the `renderFunction` callbacks will be called again to update the DOM on the next animation-frame after:
  *
  *  - The Projector's [[scheduleRender]] function  was called
  *  - An event handler (like `onclick`) on a rendered [[VNode]] was called.
@@ -45,35 +46,35 @@ export interface VNode {
  */
 export interface Projector {
     /**
-     * Appends a new child node to the DOM using the result from the provided `renderMaquetteFunction`.
-     * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
+     * Appends a new child node to the DOM using the result from the provided `renderFunction`.
+     * The `renderFunction` will be invoked again to update the DOM when needed.
      * @param parentNode - The parent node for the new child node.
-     * @param renderMaquetteFunction - Function with zero arguments that returns a [[VNode]] tree.
+     * @param renderFunction - Function with zero arguments that returns a [[VNode]] tree.
      */
-    append(parentNode: Element, renderMaquetteFunction: () => VNode): void;
+    append(parentNode: Element, renderFunction: () => VNode): void;
     /**
-     * Inserts a new DOM node using the result from the provided `renderMaquetteFunction`.
-     * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
+     * Inserts a new DOM node using the result from the provided `renderFunction`.
+     * The `renderFunction` will be invoked again to update the DOM when needed.
      * @param beforeNode - The node that the DOM Node is inserted before.
-     * @param renderMaquetteFunction - Function with zero arguments that returns a [[VNode]] tree.
+     * @param renderFunction - Function with zero arguments that returns a [[VNode]] tree.
      */
-    insertBefore(beforeNode: Element, renderMaquetteFunction: () => VNode): void;
+    insertBefore(beforeNode: Element, renderFunction: () => VNode): void;
     /**
-     * Merges a new DOM node using the result from the provided `renderMaquetteFunction` with an existing DOM Node.
+     * Merges a new DOM node using the result from the provided `renderFunction` with an existing DOM Node.
      * This means that the virtual DOM and real DOM have one overlapping element.
      * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided
-     * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
+     * The `renderFunction` will be invoked again to update the DOM when needed.
      * @param domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and child nodes are preserved.
-     * @param renderMaquetteFunction - Function with zero arguments that returns a [[VNode]] tree.
+     * @param renderFunction - Function with zero arguments that returns a [[VNode]] tree.
      */
-    merge(domNode: Element, renderMaquetteFunction: () => VNode): void;
+    merge(domNode: Element, renderFunction: () => VNode): void;
     /**
-     * Replaces an existing DOM node with the result from the provided `renderMaquetteFunction`.
-     * The `renderMaquetteFunction` will be invoked again to update the DOM when needed.
+     * Replaces an existing DOM node with the result from the provided `renderFunction`.
+     * The `renderFunction` will be invoked again to update the DOM when needed.
      * @param domNode - The DOM node to replace.
-     * @param renderMaquetteFunction - Function with zero arguments that returns a [[VNode]] tree.
+     * @param renderFunction - Function with zero arguments that returns a [[VNode]] tree.
      */
-    replace(domNode: Element, renderMaquetteFunction: () => VNode): void;
+    replace(domNode: Element, renderFunction: () => VNode): void;
     /**
      * Resumes the projector. Use this method to resume rendering after [[stop]] was called or an error occurred during rendering.
      */
@@ -93,13 +94,13 @@ export interface Projector {
      */
     renderNow(): void;
     /**
-     * Stops running the `renderMaquetteFunction` to update the DOM. The `renderMaquetteFunction` must have been
+     * Stops running the `renderFunction` to update the DOM. The `renderFunction` must have been
      * registered using [[append]], [[merge]], [[insertBefore]] or [[replace]].
      *
-     * @returns The [[Projection]] which was created using this `renderMaquetteFunction`.
+     * @returns The [[Projection]] which was created using this `renderFunction`.
      * The [[Projection]] contains a reference to the DOM Node that was rendered.
      */
-    detach(renderMaquetteFunction: () => VNode): Projection;
+    detach(renderFunction: () => VNode): Projection;
     /**
      * Stops the projector. This means that the registered `renderMaquette` functions will not be called anymore.
      *
@@ -451,6 +452,13 @@ export declare let createMapping: <Source, Target>(getSourceKey: (source: Source
  */
 export declare let createProjector: (projectorOptions?: ProjectorOptions | undefined) => Projector;
 /**
+ * @deprecated
+ * Use the MaquetteComponent introduced in maquette 3.0
+ */
+export interface Component {
+    renderMaquette(): VNode | null | undefined;
+}
+/**
  * A component is a pattern with which you can split up your web application into self-contained parts.
  *
  * A component may contain other components.
@@ -459,9 +467,9 @@ export declare let createProjector: (projectorOptions?: ProjectorOptions | undef
  *
  * This interface is not used anywhere in the maquette sourcecode, but this is a widely used pattern.
  */
-export interface Component {
+export interface MaquetteComponent {
     /**
      * A function that returns the DOM representation of the component.
      */
-    renderMaquette(): VNode | null | undefined;
+    render(): VNode | null | undefined;
 }

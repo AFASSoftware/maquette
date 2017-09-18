@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/minimal.css" rel="stylesheet" />
+  <title><%- title -%></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+
+<%- contents %>
+
+<aside class="top-bar">
+  <nav>
+    <a class="logo" href="/"><img src="/img/MaquetteLogoSmall.svg" alt="maquette logo"/> Maquette</a>
+    <div class="tiny-menu menu">
+      <a href="/menu.html">Menu</a>
+    </div>
+    <div class="normal-menu menu">
+      <a href="/menu.html">Documentation</a>
+      <a href="/download.html">Download</a>
+      <a href="/support.html">Support</a>
+      <a href="https://github.com/AFASSoftware/maquette">Github</a>
+    </div>
+  </nav>
+</aside>
+
+<footer>
+  Created at <a href="http://dev.afas.nl">AFAS Software</a> (Dutch site)
+</footer>
+
+<%
+  if (liveEditors) {
+%>
+<script>
+  function enhance() {
+    if(window.maquette && window.createLiveEditor && window.ace
+<%
+  if (liveEditorsVelocity) {
+-%>
+  && window.Velocity
+<%
+  } if (liveEditorsCss) {
+-%>
+  && window.cssTransitions
+<%
+  }
+-%>
+  ) {
+      var editors = document.querySelectorAll(".live-editor")
+      for (var i=0;i<editors.length;i++) {
+        var projector = maquette.createProjector(); // each editor has its own projector
+        var editorElement = editors[i];
+        var liveEditor = createLiveEditor(projector);
+        projector.merge(editorElement.querySelector(".live-editor-editor"), liveEditor.renderEditor);
+        projector.merge(editorElement.querySelector(".live-editor-result"), liveEditor.renderResult);
+        projector.append(editorElement.querySelector(".col-2"), liveEditor.renderExtras);
+      }
+      var mochaEditors = document.querySelectorAll(".mocha-editor");
+      for (var j=0;j<mochaEditors.length;j++) {
+        var textArea = mochaEditors[j];
+        var content = textArea.textContent;
+        var value = textArea.value;
+        editor = ace.edit(textArea);
+        editor.setOptions({minLines: 5, maxLines: 50});
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode({ path: "ace/mode/javascript" });
+        editor.getSession().setTabSize(2);
+        editor.getSession().setUseSoftTabs(true);
+        editor.setShowPrintMargin(false);
+        editor.setBehavioursEnabled(true);
+        if (content && value.charCodeAt(0)===1) {
+          // Happens sometimes in chrome while navigatiing using browser back
+          editor.setValue(content, 0);
+          editor.clearSelection();
+        }
+      }
+    }
+  }
+</script>
+<%
+    if (liveEditorsVelocity) {
+%>
+<script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js" async onload="enhance()"></script>
+<%
+    }
+    if (liveEditorsCss) {
+%>
+<script src="//cdnjs.cloudflare.com/ajax/libs/maquette/<%-maquetteVersion-%>/css-transitions.min.js" async onload="enhance()"></script>
+<%
+    }
+%>
+<script src="//cdnjs.cloudflare.com/ajax/libs/maquette/<%-maquetteVersion-%>/maquette.min.js" async onload="enhance()" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js" async onload=" enhance()" />
+<script src="/script.js" async onload="enhance()" />
+<%
+  } // if liveEditors
+%>
+
+<%- include('analytics') %>
+</body>
+</html>

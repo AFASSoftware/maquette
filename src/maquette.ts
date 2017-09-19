@@ -264,10 +264,10 @@ export interface VNodeProperties {
   readonly styles?: { [index: string]: string | null | undefined };
 
   // From Element
-  ontouchcancel?(ev?: TouchEvent): boolean | void;
-  ontouchend?(ev?: TouchEvent): boolean | void;
-  ontouchmove?(ev?: TouchEvent): boolean | void;
-  ontouchstart?(ev?: TouchEvent): boolean | void;
+  ontouchcancel?(ev: TouchEvent): boolean | void;
+  ontouchend?(ev: TouchEvent): boolean | void;
+  ontouchmove?(ev: TouchEvent): boolean | void;
+  ontouchstart?(ev: TouchEvent): boolean | void;
   // From HTMLFormElement
   readonly action?: string;
   readonly encoding?: string;
@@ -279,26 +279,26 @@ export interface VNodeProperties {
   readonly href?: string;
   readonly rel?: string;
   // From HTMLElement
-  onblur?(ev?: FocusEvent): boolean | void;
-  onchange?(ev?: Event): boolean | void;
-  onclick?(ev?: MouseEvent): boolean | void;
-  ondblclick?(ev?: MouseEvent): boolean | void;
-  onfocus?(ev?: FocusEvent): boolean | void;
-  oninput?(ev?: Event): boolean | void;
-  onkeydown?(ev?: KeyboardEvent): boolean | void;
-  onkeypress?(ev?: KeyboardEvent): boolean | void;
-  onkeyup?(ev?: KeyboardEvent): boolean | void;
-  onload?(ev?: Event): boolean | void;
-  onmousedown?(ev?: MouseEvent): boolean | void;
-  onmouseenter?(ev?: MouseEvent): boolean | void;
-  onmouseleave?(ev?: MouseEvent): boolean | void;
-  onmousemove?(ev?: MouseEvent): boolean | void;
-  onmouseout?(ev?: MouseEvent): boolean | void;
-  onmouseover?(ev?: MouseEvent): boolean | void;
-  onmouseup?(ev?: MouseEvent): boolean | void;
-  onmousewheel?(ev?: WheelEvent | MouseWheelEvent): boolean | void;
-  onscroll?(ev?: UIEvent): boolean | void;
-  onsubmit?(ev?: Event): boolean | void;
+  onblur?(ev: FocusEvent): boolean | void;
+  onchange?(ev: Event): boolean | void;
+  onclick?(ev: MouseEvent): boolean | void;
+  ondblclick?(ev: MouseEvent): boolean | void;
+  onfocus?(ev: FocusEvent): boolean | void;
+  oninput?(ev: Event): boolean | void;
+  onkeydown?(ev: KeyboardEvent): boolean | void;
+  onkeypress?(ev: KeyboardEvent): boolean | void;
+  onkeyup?(ev: KeyboardEvent): boolean | void;
+  onload?(ev: Event): boolean | void;
+  onmousedown?(ev: MouseEvent): boolean | void;
+  onmouseenter?(ev: MouseEvent): boolean | void;
+  onmouseleave?(ev: MouseEvent): boolean | void;
+  onmousemove?(ev: MouseEvent): boolean | void;
+  onmouseout?(ev: MouseEvent): boolean | void;
+  onmouseover?(ev: MouseEvent): boolean | void;
+  onmouseup?(ev: MouseEvent): boolean | void;
+  onmousewheel?(ev: WheelEvent | MouseWheelEvent): boolean | void;
+  onscroll?(ev: UIEvent): boolean | void;
+  onsubmit?(ev: Event): boolean | void;
   readonly spellcheck?: boolean;
   readonly tabIndex?: number;
   readonly disabled?: boolean;

@@ -1,0 +1,39 @@
+.live-editor {
+
+  pre {
+    margin: 0;
+  }
+  
+  .live-editor-result {
+    position: relative;
+    
+    &.error {
+      border: solid 1px red;
+      color: red;
+    }
+    
+    input {
+      padding: 7px;
+      width: 100%;
+    }
+    
+    textarea {
+      width: 100%;
+    }
+  }
+
+  > .col-2 {
+    position:relative;
+    > .extras {
+      position:absolute;
+      right:0;
+      bottom:8px;
+      font-size:12px;
+      line-height:1;
+      padding: 2px 24px 2px 2px;
+      > a {
+        color:white;
+      }
+    }
+  }
+}

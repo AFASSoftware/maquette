@@ -2,6 +2,7 @@ var Metalsmith  = require('metalsmith');
 var layouts     = require('metalsmith-layouts');
 var markdown    = require('metalsmith-markdown');
 var inPlace     = require('metalsmith-in-place');
+var postcss     = require('metalsmith-postcss');
 
 Metalsmith(__dirname)
   .metadata({
@@ -20,6 +21,11 @@ Metalsmith(__dirname)
   .use(layouts({
     engine: 'ejs',
     directory: 'layouts'
+  }))
+  .use(postcss({
+    plugins: {
+      'precss': {}
+    }
   }))
   .build(function(err) {
     if (err) throw err;

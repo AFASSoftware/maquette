@@ -15,15 +15,12 @@ Metalsmith(__dirname)
   .source('source')
   .destination('../build/website')
   .clean(true)
+  .use(inPlace())
   .use(markdown())
   .use(layouts({
     engine: 'ejs',
-    directory: 'layouts',
-//    rename: true,
-    pattern: '**/*.ejs',
-    partials: 'partials'
+    directory: 'layouts'
   }))
-  .use(inPlace())
   .build(function(err) {
     if (err) throw err;
   });

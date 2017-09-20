@@ -29,4 +29,4 @@ $content-width: 1040px;
 $card-width: 1040px;
 $small-content-width: 670px;
 $gutter-width: 10px;
-$column-width: ($card-width - 2 * $gutter-width) / 3;
+$column-width: calc(($card-width - 2 * $gutter-width) / 3);

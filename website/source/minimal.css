@@ -42,20 +42,20 @@ main {
 }
 
 .row {
-  margin: 0 -$gutter-width/2;
+  margin: 0 calc(-$gutter-width / 2);
   display: flex;
   flex-wrap: wrap;
 
   > .col-2 {
-    max-width: 2 * ($column-width + $gutter-width);
+    max-width: calc(2 * ($column-width + $gutter-width));
     flex: 2 0 500px;
-    padding: 0 $gutter-width/2;
+    padding: 0 calc($gutter-width / 2);
   }
 
   > .col-1 {
-    max-width: $column-width + $gutter-width;
+    max-width: calc($column-width + $gutter-width);
     flex: 1 0 250px;
-    padding: 0 $gutter-width/2;
+    padding: 0 calc($gutter-width / 2);
   }
 }
 
@@ -73,11 +73,11 @@ main {
   }
 
   &:hover {
-    background-color: lighten($primary-color, 30%);
+    background-color: #aae3c6; /* lighten($primary-color, 30%); */
   }
 
   &:active {
-    background-color: lighten($primary-color, 15%);
+    background-color: #70d09f; /* lighten($primary-color, 15%); */
   }
 }
 

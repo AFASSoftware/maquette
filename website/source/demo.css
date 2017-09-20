@@ -1,6 +1,6 @@
-/* Used as external CSS for editing on codepen. */
+@import "../postcss/demo";
 
-@import "../postcss/demo.css";
+/* Used as external CSS for editing on codepen */
 
 * {
   box-sizing: border-box;

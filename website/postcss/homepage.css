@@ -52,13 +52,13 @@
   .teasers {
     display: flex;
     justify-content: space-around;
-    flex-wrap: wrap
-    margin: 0 (-$gutter-width/2);
+    flex-wrap: wrap;
+    margin: 0 calc(-$gutter-width / 2);
     padding-bottom: 80px;
     > aside {
-      max-width: $column-width + $gutter-width;
+      max-width: calc($column-width + $gutter-width);
       flex: 1 0 250px;
-      margin: 0 $gutter-width/2;
+      margin: 0 calc($gutter-width / 2);
       padding: 6px;
       display: flex;
 

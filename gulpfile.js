@@ -19,8 +19,6 @@ var plumber = require('gulp-plumber');
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 
-var typedoc = require('gulp-typedoc');
-
 const mocha = require('gulp-mocha');
 var istanbul = require('gulp-istanbul');
 var remapIstanbul = require('remap-istanbul/lib/gulpRemapIstanbul');

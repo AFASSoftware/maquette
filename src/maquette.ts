@@ -165,6 +165,7 @@ export interface ProjectorOptions {
 /**
  * Options that influence how the DOM is rendered and updated.
  */
+type EventHandlerInterceptor = (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function | undefined;
 export interface ProjectionOptions extends ProjectorOptions {
   /**
    * Only for internal use. Used for rendering SVG Nodes.
@@ -181,7 +182,7 @@ export interface ProjectionOptions extends ProjectorOptions {
    * @param properties               The whole set of properties that was put on the VNode
    * @returns                        The function that is to be placed on the DOM node as the event handler, instead of `eventHandler`.
    */
-  eventHandlerInterceptor?: (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function | undefined;
+  eventHandlerInterceptor?: EventHandlerInterceptor;
 }
 
 /**
@@ -342,6 +343,7 @@ export interface Projection {
    * @param updatedVnode The updated virtual DOM tree. Note: The selector for the root of the [[VNode]] tree may not change.
    */
   update(updatedVnode: VNode): void;
+  getLastRender(): VNode;
 }
 
 const NAMESPACE_W3 = 'http://www.w3.org/';
@@ -854,6 +856,7 @@ updateDom = function(previous, vnode, projectionOptions) {
 
 let createProjection = function(vnode: VNode, projectionOptions: ProjectionOptions): Projection {
   return {
+    getLastRender: () => vnode,
     update: function(updatedVnode: VNode) {
       if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
         throw new Error('The selector for the root VNode may not be changed. (consider using dom.merge and add one extra level to the virtual DOM)');
@@ -1151,6 +1154,45 @@ export let createMapping = <Source, Target>(
   };
 };
 
+let createParentNodePath = (node: Node, parentNode: Element) => {
+  let parentNodePath: Node[] = [];
+  while (node.parentNode) {
+    node = node.parentNode;
+    parentNodePath.push(node);
+    if (node === parentNode) {
+      break;
+    }
+  }
+
+  return parentNodePath;
+};
+
+let findVNodeByParentNodePath = (vnode: VNode, parentNodePath: Node[]): VNode => {
+  let currentVNode = vnode;
+  parentNodePath.slice(1).forEach(node => {
+    currentVNode = vnode.children!.find(child => {
+      return child.domNode === node;
+    })!;
+  });
+
+  return currentVNode;
+};
+
+let createEventHandlerInterceptor = (projector: Projector, getProjection: () => Projection | undefined): EventHandlerInterceptor => {
+  return function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
+    return function(this: Node, evt: Event) {
+      let projection = getProjection()!;
+      let parentNodePath = createParentNodePath(this, evt.currentTarget as Element);
+
+      // intercept function calls (event handlers) to do a render afterwards.
+      let myVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
+      projector.scheduleRender();
+      return myVNode.properties![propertyName].apply(properties.bind || this, arguments);
+      // make sure 'eventHandler' is the same simple function everywhere
+    };
+  };
+};
+
 /**
  * Creates a [[Projector]] instance using the provided projectionOptions.
  *
@@ -1161,13 +1203,7 @@ export let createMapping = <Source, Target>(
 export let createProjector = function(projectorOptions?: ProjectorOptions): Projector {
   let projector: Projector;
   let projectionOptions = applyDefaultProjectionOptions(projectorOptions);
-  projectionOptions.eventHandlerInterceptor = function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
-    return function(this: Node) {
-      // intercept function calls (event handlers) to do a render afterwards.
-      projector.scheduleRender();
-      return eventHandler.apply(properties.bind || this, arguments);
-    };
-  };
+
   let renderCompleted = true;
   let scheduled: number | undefined;
   let stopped = false;
@@ -1209,22 +1245,39 @@ export let createProjector = function(projectorOptions?: ProjectorOptions): Proj
     },
 
     append: function(parentNode, renderFunction) {
-      projections.push(dom.append(parentNode, renderFunction(), projectionOptions));
+      let projection: Projection | undefined;
+      let getProjection = () => projection;
+      projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
+      projection = dom.append(parentNode, renderFunction(), projectionOptions);
+
+      projections.push(projection);
       renderFunctions.push(renderFunction);
     },
 
     insertBefore: function(beforeNode, renderFunction) {
-      projections.push(dom.insertBefore(beforeNode, renderFunction(), projectionOptions));
+      let projection: Projection | undefined;
+      let getProjection = () => projection;
+      projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
+      projection = dom.insertBefore(beforeNode, renderFunction(), projectionOptions);
+      projections.push(projection);
       renderFunctions.push(renderFunction);
     },
 
     merge: function(domNode, renderFunction) {
-      projections.push(dom.merge(domNode, renderFunction(), projectionOptions));
+      let projection: Projection | undefined;
+      let getProjection = () => projection;
+      projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
+      projection = dom.merge(domNode, renderFunction(), projectionOptions);
+      projections.push(projection);
       renderFunctions.push(renderFunction);
     },
 
     replace: function(domNode, renderFunction) {
-      projections.push(dom.replace(domNode, renderFunction(), projectionOptions));
+      let projection: Projection | undefined;
+      let getProjection = () => projection;
+      projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
+      projection = dom.replace(domNode, renderFunction(), projectionOptions);
+      projections.push(projection);
       renderFunctions.push(renderFunction);
     },
 

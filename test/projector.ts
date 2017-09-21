@@ -1,5 +1,6 @@
 import {expect, sinon} from '../test-utilities';
 import {createProjector, h, Component, VNode} from '../src/maquette';
+import { VNodeProperties } from '../dist/maquette';
 
 describe('Projector', () => {
 
@@ -161,7 +162,6 @@ describe('Projector', () => {
 
     expect(global.requestAnimationFrame).to.be.calledOnce;
     expect(handleClick).to.be.calledOn(button).calledWith(evt);
-
   });
 
   it('invokes the eventHandler with "this" set to the DOM node when no bind is present', () => {
@@ -184,7 +184,6 @@ describe('Projector', () => {
    * NOTE: This is not our recommended way, but this is completely supported (using VNodeProperties.bind).
    */
   class ButtonComponent implements Component {
-
     private text: string;
     private clicked: (sender: ButtonComponent) => void;
 
@@ -231,6 +230,35 @@ describe('Projector', () => {
     expect(() => {
       projector.detach(renderFunction);
     }).to.throw();
+  });
+
+  it('allows for eventHandlers to be changed', () => {
+    let projector = createProjector({});
+    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+    let firstEventHandler = sinon.stub();
+    let secondEventHandler = sinon.stub();
+
+    let properties: VNodeProperties = {
+      onclick: firstEventHandler
+    };
+    let renderFunction = () => h('button', properties);
+    projector.append(parentElement as any, renderFunction);
+
+    let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+    let evt = {};
+
+    expect(firstEventHandler).to.have.not.been.called;
+
+    button.onclick.apply(button, [evt]);
+
+    expect(firstEventHandler).to.be.calledOnce;
+
+    properties.onclick = secondEventHandler;
+    firstEventHandler.reset();
+    button.onclick.apply(button, [evt]);
+
+    expect(firstEventHandler).to.have.not.been.called;
+    expect(secondEventHandler).to.be.calledOnce;
   });
 
 });

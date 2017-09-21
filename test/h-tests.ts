@@ -14,7 +14,6 @@ describe('h', function() {
   };
 
   it('should flatten nested arrays', function() {
-
     let vnode = h('div', [
       'text',
       null,
@@ -34,11 +33,9 @@ describe('h', function() {
       toTextVNode('deep'),
       toTextVNode('here')
     ]);
-
   });
 
   it('Should be very flexible when accepting arguments', function() {
-
     let vnode = h(
       'div', [
         'text',
@@ -77,7 +74,6 @@ describe('h', function() {
       h('p'),
       h('p')
     ]);
-
   });
 
   it('Should render a string as text', function() {

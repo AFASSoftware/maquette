@@ -11,7 +11,7 @@ describe('CSS Transitions', () => {
     delete global.requestAnimationFrame;
   });
 
-  let activeModifier = "-active";
+  let activeModifier = '-active';
 
   let createFakeElement = function () {
     return {
@@ -30,7 +30,7 @@ describe('CSS Transitions', () => {
   it('it applies active modifier to enterAnimation class on enter()', () => {
     let element = createFakeElement();
     let props = {};
-    let animationClass = "enter";
+    let animationClass = 'enter';
 
     cssTransitions.enter(element as any, props, animationClass);
 
@@ -39,11 +39,11 @@ describe('CSS Transitions', () => {
 
     let transitionEnd = element.addEventListener.getCall(0).args[1];
 
-    expect(transitionEnd).to.be.a("function");
+    expect(transitionEnd).to.be.a('function');
 
     expect(element.addEventListener).to.have.been.calledTwice;
-    expect(element.addEventListener).calledWith("transitionend", transitionEnd);
-    expect(element.addEventListener).calledWith("animationend", transitionEnd);
+    expect(element.addEventListener).calledWith('transitionend', transitionEnd);
+    expect(element.addEventListener).calledWith('animationend', transitionEnd);
 
     let addModifier = global.requestAnimationFrame.lastCall.args[0];
 
@@ -56,8 +56,8 @@ describe('CSS Transitions', () => {
     transitionEnd.apply(element);
 
     expect(element.removeEventListener).to.have.been.calledTwice;
-    expect(element.removeEventListener).calledWith("transitionend", transitionEnd);
-    expect(element.removeEventListener).calledWith("animationend", transitionEnd);
+    expect(element.removeEventListener).calledWith('transitionend', transitionEnd);
+    expect(element.removeEventListener).calledWith('animationend', transitionEnd);
 
     expect(element.classList.remove).to.be.calledTwice;
     expect(element.classList.remove).calledWith(animationClass);
@@ -67,7 +67,7 @@ describe('CSS Transitions', () => {
   it('it applies active modifier to exitAnimation class on exit()', () => {
     let element = createFakeElement();
     let props = {};
-    let animationClass = "exit";
+    let animationClass = 'exit';
     let removeElement = sinon.stub();
 
     cssTransitions.exit(element as any, props, animationClass, removeElement);
@@ -77,11 +77,11 @@ describe('CSS Transitions', () => {
 
     let transitionEnd = element.addEventListener.getCall(0).args[1];
 
-    expect(transitionEnd).to.be.a("function");
+    expect(transitionEnd).to.be.a('function');
 
     expect(element.addEventListener).to.have.been.calledTwice;
-    expect(element.addEventListener).calledWith("transitionend", transitionEnd);
-    expect(element.addEventListener).calledWith("animationend", transitionEnd);
+    expect(element.addEventListener).calledWith('transitionend', transitionEnd);
+    expect(element.addEventListener).calledWith('animationend', transitionEnd);
 
     let addModifier = global.requestAnimationFrame.lastCall.args[0];
 
@@ -96,8 +96,8 @@ describe('CSS Transitions', () => {
     transitionEnd.apply(element);
 
     expect(element.removeEventListener).to.have.been.calledTwice;
-    expect(element.removeEventListener).calledWith("transitionend", transitionEnd);
-    expect(element.removeEventListener).calledWith("animationend", transitionEnd);
+    expect(element.removeEventListener).calledWith('transitionend', transitionEnd);
+    expect(element.removeEventListener).calledWith('animationend', transitionEnd);
 
     expect(removeElement).to.have.been.called;
   });

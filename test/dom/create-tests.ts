@@ -33,7 +33,6 @@ describe('dom', function() {
     });
 
     it('should parse the selector', function() {
-
       let projection = dom.create(h('div'));
       expect(projection.domNode.outerHTML).to.equal('<div></div>');
 

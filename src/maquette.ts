@@ -229,8 +229,7 @@ export interface VNodeProperties {
    * @param properties - The properties passed to the [[h]] function.
    * @param children - The children that were created.
    */
-  afterCreate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties,
-    children: VNode[]): void;
+  afterCreate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties, children: VNode[]): void;
   /**
    * Callback that is executed every time this node may have been updated. Child nodes and properties
    * have already been updated.
@@ -240,8 +239,7 @@ export interface VNodeProperties {
    * @param properties - The properties passed to the [[h]] function.
    * @param children - The children for this node.
    */
-  afterUpdate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties,
-    children: VNode[]): void;
+  afterUpdate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties, children: VNode[]): void;
   /**
    * When specified, the event handlers will be invoked with 'this' pointing to the value.
    * This is useful when using the prototype/class based implementation of Components.
@@ -507,7 +505,11 @@ let setProperties = function(domNode: Node, properties: VNodeProperties | undefi
   }
 };
 
-let updateProperties = function(domNode: Node, previousProperties: VNodeProperties | undefined, properties: VNodeProperties | undefined, projectionOptions: ProjectionOptions) {
+let updateProperties = (
+  domNode: Node, previousProperties: VNodeProperties | undefined,
+  properties: VNodeProperties | undefined,
+  projectionOptions: ProjectionOptions
+) => {
   if (!properties) {
     return;
   }
@@ -682,7 +684,13 @@ let checkDistinguishable = function(childNodes: VNode[], indexToCheck: number, p
 let createDom: (vnode: VNode, parentNode: Node, insertBefore: Node | null | undefined, projectionOptions: ProjectionOptions) => void;
 let updateDom: (previous: VNode, vnode: VNode, projectionOptions: ProjectionOptions) => boolean;
 
-let updateChildren = function(vnode: VNode, domNode: Node, oldChildren: VNode[] | undefined, newChildren: VNode[] | undefined, projectionOptions: ProjectionOptions) {
+let updateChildren = (
+  vnode: VNode,
+  domNode: Node,
+  oldChildren: VNode[] | undefined,
+  newChildren: VNode[] | undefined,
+  projectionOptions: ProjectionOptions
+) => {
   if (oldChildren === newChildren) {
     return false;
   }
@@ -747,7 +755,10 @@ let initPropertiesAndChildren = function(domNode: Node, vnode: VNode, projection
   }
   setProperties(domNode, vnode.properties, projectionOptions);
   if (vnode.properties && vnode.properties.afterCreate) {
-    vnode.properties.afterCreate.apply(vnode.properties.bind || vnode.properties, [domNode as Element, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children]);
+    vnode.properties.afterCreate.apply(
+      vnode.properties.bind || vnode.properties,
+      [domNode as Element, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children]
+    );
   }
 };
 
@@ -782,7 +793,7 @@ createDom = function(vnode, parentNode, insertBefore, projectionOptions) {
             domNode = vnode.domNode = (vnode.domNode || doc.createElement(found));
             if (found === 'input' && vnode.properties && vnode.properties.type !== undefined) {
               // IE8 and older don't support setting input type after the DOM Node has been added to the document
-              (domNode as Element).setAttribute("type", vnode.properties.type);
+              (domNode as Element).setAttribute('type', vnode.properties.type);
             }
           }
           if (insertBefore !== undefined) {
@@ -828,7 +839,10 @@ updateDom = function(previous, vnode, projectionOptions) {
     updated = updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions) || updated;
     updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
     if (vnode.properties && vnode.properties.afterUpdate) {
-      vnode.properties.afterUpdate.apply(vnode.properties.bind || vnode.properties, [<Element>domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children]);
+      vnode.properties.afterUpdate.apply(
+        vnode.properties.bind || vnode.properties,
+        [<Element>domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children]
+      );
     }
   }
   if (updated && vnode.properties && vnode.properties.updateAnimation) {

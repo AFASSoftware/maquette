@@ -165,7 +165,7 @@ export interface ProjectorOptions {
 /**
  * Options that influence how the DOM is rendered and updated.
  */
-type EventHandlerInterceptor = (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function | undefined;
+export type EventHandlerInterceptor = (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function | undefined;
 export interface ProjectionOptions extends ProjectorOptions {
   /**
    * Only for internal use. Used for rendering SVG Nodes.

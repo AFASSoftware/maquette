@@ -158,6 +158,7 @@ export interface ProjectorOptions {
 /**
  * Options that influence how the DOM is rendered and updated.
  */
+export declare type EventHandlerInterceptor = (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function | undefined;
 export interface ProjectionOptions extends ProjectorOptions {
     /**
      * Only for internal use. Used for rendering SVG Nodes.
@@ -174,7 +175,7 @@ export interface ProjectionOptions extends ProjectorOptions {
      * @param properties               The whole set of properties that was put on the VNode
      * @returns                        The function that is to be placed on the DOM node as the event handler, instead of `eventHandler`.
      */
-    eventHandlerInterceptor?: (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function | undefined;
+    eventHandlerInterceptor?: EventHandlerInterceptor;
 }
 /**
  * Object containing attributes, properties, event handlers and more that can be put on DOM nodes.
@@ -329,6 +330,7 @@ export interface Projection {
      * @param updatedVnode The updated virtual DOM tree. Note: The selector for the root of the [[VNode]] tree may not change.
      */
     update(updatedVnode: VNode): void;
+    getLastRender(): VNode;
 }
 /**
  * Only needed for the definition of [[VNodeChild]].

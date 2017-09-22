@@ -501,6 +501,9 @@
     };
     var createProjection = function (vnode, projectionOptions) {
         return {
+            getLastRender: function () {
+                return vnode;
+            },
             update: function (updatedVnode) {
                 if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
                     throw new Error('The selector for the root VNode may not be changed. (consider using dom.merge and add one extra level to the virtual DOM)');
@@ -704,6 +707,38 @@
             }
         };
     };
+    var createParentNodePath = function (node, parentNode) {
+        var parentNodePath = [];
+        while (node.parentNode) {
+            node = node.parentNode;
+            parentNodePath.push(node);
+            if (node === parentNode) {
+                break;
+            }
+        }
+        return parentNodePath;
+    };
+    var findVNodeByParentNodePath = function (vnode, parentNodePath) {
+        var currentVNode = vnode;
+        parentNodePath.slice(1).forEach(function (node) {
+            currentVNode = vnode.children.find(function (child) {
+                return child.domNode === node;
+            });
+        });
+        return currentVNode;
+    };
+    var createEventHandlerInterceptor = function (projector, getProjection) {
+        return function (propertyName, eventHandler, domNode, properties) {
+            return function (evt) {
+                var projection = getProjection();
+                var parentNodePath = createParentNodePath(this, evt.currentTarget);
+                var matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
+                projector.scheduleRender();
+                // Intercept function calls (event handlers)
+                return matchingVNode.properties[propertyName].apply(properties.bind || this, arguments);
+            };
+        };
+    };
     /**
  * Creates a [[Projector]] instance using the provided projectionOptions.
  *
@@ -714,13 +749,6 @@
     exports.createProjector = function (projectorOptions) {
         var projector;
         var projectionOptions = applyDefaultProjectionOptions(projectorOptions);
-        projectionOptions.eventHandlerInterceptor = function (propertyName, eventHandler, domNode, properties) {
-            return function () {
-                // intercept function calls (event handlers) to do a render afterwards.
-                projector.scheduleRender();
-                return eventHandler.apply(properties.bind || this, arguments);
-            };
-        };
         var renderCompleted = true;
         var scheduled;
         var stopped = false;
@@ -759,19 +787,43 @@
                 projector.scheduleRender();
             },
             append: function (parentNode, renderFunction) {
-                projections.push(exports.dom.append(parentNode, renderFunction(), projectionOptions));
+                var projection;
+                var getProjection = function () {
+                    return projection;
+                };
+                projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
+                projection = exports.dom.append(parentNode, renderFunction(), projectionOptions);
+                projections.push(projection);
                 renderFunctions.push(renderFunction);
             },
             insertBefore: function (beforeNode, renderFunction) {
-                projections.push(exports.dom.insertBefore(beforeNode, renderFunction(), projectionOptions));
+                var projection;
+                var getProjection = function () {
+                    return projection;
+                };
+                projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
+                projection = exports.dom.insertBefore(beforeNode, renderFunction(), projectionOptions);
+                projections.push(projection);
                 renderFunctions.push(renderFunction);
             },
             merge: function (domNode, renderFunction) {
-                projections.push(exports.dom.merge(domNode, renderFunction(), projectionOptions));
+                var projection;
+                var getProjection = function () {
+                    return projection;
+                };
+                projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
+                projection = exports.dom.merge(domNode, renderFunction(), projectionOptions);
+                projections.push(projection);
                 renderFunctions.push(renderFunction);
             },
             replace: function (domNode, renderFunction) {
-                projections.push(exports.dom.replace(domNode, renderFunction(), projectionOptions));
+                var projection;
+                var getProjection = function () {
+                    return projection;
+                };
+                projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
+                projection = exports.dom.replace(domNode, renderFunction(), projectionOptions);
+                projections.push(projection);
                 renderFunctions.push(renderFunction);
             },
             detach: function (renderFunction) {

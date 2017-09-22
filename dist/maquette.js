@@ -723,15 +723,16 @@
         return vnode;
     };
     var createEventHandlerInterceptor = function (projector, getProjection) {
+        var modifiedEventHandler = function (evt) {
+            var projection = getProjection();
+            var parentNodePath = createParentNodePath(evt.currentTarget, projection.domNode);
+            var matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
+            projector.scheduleRender();
+            // Intercept function calls (event handlers)
+            return matchingVNode.properties['on' + evt.type].apply(matchingVNode.properties.bind || this, arguments);
+        };
         return function (propertyName, eventHandler, domNode, properties) {
-            return function (evt) {
-                var projection = getProjection();
-                var parentNodePath = createParentNodePath(evt.currentTarget, projection.domNode);
-                var matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
-                projector.scheduleRender();
-                // Intercept function calls (event handlers)
-                return matchingVNode.properties[propertyName].apply(properties.bind || this, arguments);
-            };
+            return modifiedEventHandler;
         };
     };
     /**
@@ -750,6 +751,16 @@
         var projections = [];
         var renderFunctions = [];
         // matches the projections array
+        var addProjection = function (domFunction, node, renderFunction) {
+            var projection;
+            var getProjection = function () {
+                return projection;
+            };
+            projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
+            projection = domFunction(node, renderFunction(), projectionOptions);
+            projections.push(projection);
+            renderFunctions.push(renderFunction);
+        };
         var doRender = function () {
             scheduled = undefined;
             if (!renderCompleted) {
@@ -782,44 +793,16 @@
                 projector.scheduleRender();
             },
             append: function (parentNode, renderFunction) {
-                var projection;
-                var getProjection = function () {
-                    return projection;
-                };
-                projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
-                projection = exports.dom.append(parentNode, renderFunction(), projectionOptions);
-                projections.push(projection);
-                renderFunctions.push(renderFunction);
+                addProjection(exports.dom.append, parentNode, renderFunction);
             },
             insertBefore: function (beforeNode, renderFunction) {
-                var projection;
-                var getProjection = function () {
-                    return projection;
-                };
-                projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
-                projection = exports.dom.insertBefore(beforeNode, renderFunction(), projectionOptions);
-                projections.push(projection);
-                renderFunctions.push(renderFunction);
+                addProjection(exports.dom.insertBefore, beforeNode, renderFunction);
             },
             merge: function (domNode, renderFunction) {
-                var projection;
-                var getProjection = function () {
-                    return projection;
-                };
-                projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
-                projection = exports.dom.merge(domNode, renderFunction(), projectionOptions);
-                projections.push(projection);
-                renderFunctions.push(renderFunction);
+                addProjection(exports.dom.merge, domNode, renderFunction);
             },
             replace: function (domNode, renderFunction) {
-                var projection;
-                var getProjection = function () {
-                    return projection;
-                };
-                projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
-                projection = exports.dom.replace(domNode, renderFunction(), projectionOptions);
-                projections.push(projection);
-                renderFunctions.push(renderFunction);
+                addProjection(exports.dom.replace, domNode, renderFunction);
             },
             detach: function (renderFunction) {
                 for (var i = 0; i < renderFunctions.length; i++) {

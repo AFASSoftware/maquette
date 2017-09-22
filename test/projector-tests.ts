@@ -154,7 +154,7 @@ describe('Projector', () => {
     projector.append(parentElement as any, renderFunction);
 
     let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let evt = {currentTarget: button};
+    let evt = {currentTarget: button, type: 'click'};
 
     expect(global.requestAnimationFrame).not.to.be.called;
 
@@ -172,7 +172,7 @@ describe('Projector', () => {
     projector.append(parentElement as any, renderFunction);
 
     let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let clickEvent = { currentTarget: button };
+    let clickEvent = { currentTarget: button, type: 'click' };
     button.onclick(clickEvent as any);  // Invoking onclick like this sets 'this' to the ButtonElement
 
     expect(handleClick).to.be.calledOn(button).calledWithExactly(clickEvent);
@@ -210,26 +210,10 @@ describe('Projector', () => {
     projector.append(parentElement as any, () => button.renderMaquette());
 
     let buttonElement = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let clickEvent = {currentTarget: buttonElement};
+    let clickEvent = {currentTarget: buttonElement, type: 'click'};
     buttonElement.onclick(clickEvent as any); // Invoking onclick like this sets 'this' to the ButtonElement
 
     expect(clicked).to.be.calledWithExactly(button);
-  });
-
-  it('can detach a projection', () => {
-    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
-    let projector = createProjector({});
-    let renderFunction = () => h('textarea#t1');
-    let renderFunction2 = () => h('textarea#t2');
-    projector.append(parentElement as any, renderFunction);
-    projector.append(parentElement as any, renderFunction2);
-
-    let projection = projector.detach(renderFunction);
-    expect(projection.domNode.id).to.equal('t1');
-
-    expect(() => {
-      projector.detach(renderFunction);
-    }).to.throw();
   });
 
   it('allows for eventHandlers to be changed', () => {
@@ -249,7 +233,7 @@ describe('Projector', () => {
 
     let div = parentElement.appendChild.lastCall.args[0] as HTMLElement;
     let button = div!.firstChild!.firstChild! as HTMLElement;
-    let evt = { currentTarget: button };
+    let evt = { currentTarget: button, type: 'click' };
 
     expect(eventHandler).to.have.not.been.called;
     button.onclick.apply(button, [evt]);
@@ -263,4 +247,19 @@ describe('Projector', () => {
     expect(eventHandler).to.have.been.calledOnce;
   });
 
+  it('can detach a projection', () => {
+    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+    let projector = createProjector({});
+    let renderFunction = () => h('textarea#t1');
+    let renderFunction2 = () => h('textarea#t2');
+    projector.append(parentElement as any, renderFunction);
+    projector.append(parentElement as any, renderFunction2);
+
+    let projection = projector.detach(renderFunction);
+    expect(projection.domNode.id).to.equal('t1');
+
+    expect(() => {
+      projector.detach(renderFunction);
+    }).to.throw();
+  });
 });

@@ -1169,16 +1169,17 @@ let findVNodeByParentNodePath = (vnode: VNode, parentNodePath: Node[]): VNode =>
 };
 
 let createEventHandlerInterceptor = (projector: Projector, getProjection: () => Projection | undefined): EventHandlerInterceptor => {
-  return function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
-    return function(this: Node, evt: Event) {
-      let projection = getProjection()!;
-      let parentNodePath = createParentNodePath(evt.currentTarget as Element, projection.domNode);
-      let matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
+  let modifiedEventHandler = function(this: Node, evt: Event) {
+    let projection = getProjection()!;
+    let parentNodePath = createParentNodePath(evt.currentTarget as Element, projection.domNode);
+    let matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
 
-      projector.scheduleRender();
-      // Intercept function calls (event handlers)
-      return matchingVNode.properties![propertyName].apply(properties.bind || this, arguments);
-    };
+    projector.scheduleRender();
+    // Intercept function calls (event handlers)
+    return matchingVNode.properties![`on${evt.type}`].apply(matchingVNode.properties!.bind || this, arguments);
+  };
+  return function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
+    return modifiedEventHandler;
   };
 };
 
@@ -1197,6 +1198,21 @@ export let createProjector = function(projectorOptions?: ProjectorOptions): Proj
   let stopped = false;
   let projections = [] as Projection[];
   let renderFunctions = [] as (() => VNode)[]; // matches the projections array
+
+  let addProjection = (
+    /** one of: dom.append, dom.insertBefore, dom.replace, dom.merge */
+    domFunction: (node: Element, vnode: VNode, projectionOptions: ProjectionOptions) => Projection,
+    /** the parameter of the domFunction */
+    node: Element,
+    renderFunction: () => VNode
+  ): void => {
+    let projection: Projection | undefined;
+    let getProjection = () => projection;
+    projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
+    projection = domFunction(node, renderFunction(), projectionOptions);
+    projections.push(projection);
+    renderFunctions.push(renderFunction);
+  };
 
   let doRender = function() {
     scheduled = undefined;
@@ -1232,41 +1248,20 @@ export let createProjector = function(projectorOptions?: ProjectorOptions): Proj
       projector.scheduleRender();
     },
 
-    append: function(parentNode, renderFunction) {
-      let projection: Projection | undefined;
-      let getProjection = () => projection;
-      projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
-      projection = dom.append(parentNode, renderFunction(), projectionOptions);
-
-      projections.push(projection);
-      renderFunctions.push(renderFunction);
+    append: (parentNode, renderFunction) => {
+      addProjection(dom.append, parentNode, renderFunction);
     },
 
     insertBefore: function(beforeNode, renderFunction) {
-      let projection: Projection | undefined;
-      let getProjection = () => projection;
-      projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
-      projection = dom.insertBefore(beforeNode, renderFunction(), projectionOptions);
-      projections.push(projection);
-      renderFunctions.push(renderFunction);
+      addProjection(dom.insertBefore, beforeNode, renderFunction);
     },
 
     merge: function(domNode, renderFunction) {
-      let projection: Projection | undefined;
-      let getProjection = () => projection;
-      projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
-      projection = dom.merge(domNode, renderFunction(), projectionOptions);
-      projections.push(projection);
-      renderFunctions.push(renderFunction);
+      addProjection(dom.merge, domNode, renderFunction);
     },
 
     replace: function(domNode, renderFunction) {
-      let projection: Projection | undefined;
-      let getProjection = () => projection;
-      projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
-      projection = dom.replace(domNode, renderFunction(), projectionOptions);
-      projections.push(projection);
-      renderFunctions.push(renderFunction);
+      addProjection(dom.replace, domNode, renderFunction);
     },
 
     detach: function(renderFunction) {

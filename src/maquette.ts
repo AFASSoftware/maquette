@@ -1183,12 +1183,11 @@ let createEventHandlerInterceptor = (projector: Projector, getProjection: () => 
     return function(this: Node, evt: Event) {
       let projection = getProjection()!;
       let parentNodePath = createParentNodePath(this, evt.currentTarget as Element);
+      let matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
 
-      // intercept function calls (event handlers) to do a render afterwards.
-      let myVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
       projector.scheduleRender();
-      return myVNode.properties![propertyName].apply(properties.bind || this, arguments);
-      // make sure 'eventHandler' is the same simple function everywhere
+      // Intercept function calls (event handlers)
+      return matchingVNode.properties![propertyName].apply(properties.bind || this, arguments);
     };
   };
 };
@@ -1203,7 +1202,6 @@ let createEventHandlerInterceptor = (projector: Projector, getProjection: () => 
 export let createProjector = function(projectorOptions?: ProjectorOptions): Projector {
   let projector: Projector;
   let projectionOptions = applyDefaultProjectionOptions(projectorOptions);
-
   let renderCompleted = true;
   let scheduled: number | undefined;
   let stopped = false;

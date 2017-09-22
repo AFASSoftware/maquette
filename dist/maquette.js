@@ -243,23 +243,22 @@
                     }
                 } else if (propValue !== previousValue) {
                     var type = typeof propValue;
-                    if (type === 'function') {
-                        throw new Error('Functions may not be updated on subsequent renders (property: ' + propName + '). Hint: declare event handler functions outside the render() function.');
-                    }
-                    if (type === 'string' && propName !== 'innerHTML') {
-                        if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
-                            domNode.setAttributeNS(NAMESPACE_XLINK, propName, propValue);
-                        } else if (propName === 'role' && propValue === '') {
-                            domNode.removeAttribute(propName);
+                    if (type !== 'function' || !projectionOptions.eventHandlerInterceptor) {
+                        if (type === 'string' && propName !== 'innerHTML') {
+                            if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
+                                domNode.setAttributeNS(NAMESPACE_XLINK, propName, propValue);
+                            } else if (propName === 'role' && propValue === '') {
+                                domNode.removeAttribute(propName);
+                            } else {
+                                domNode.setAttribute(propName, propValue);
+                            }
                         } else {
-                            domNode.setAttribute(propName, propValue);
+                            if (domNode[propName] !== propValue) {
+                                domNode[propName] = propValue;
+                            }
                         }
-                    } else {
-                        if (domNode[propName] !== propValue) {
-                            domNode[propName] = propValue;
-                        }
+                        propertiesUpdated = true;
                     }
-                    propertiesUpdated = true;
                 }
             }
         }
@@ -707,31 +706,27 @@
             }
         };
     };
-    var createParentNodePath = function (node, parentNode) {
+    var createParentNodePath = function (node, rootNode) {
         var parentNodePath = [];
-        while (node.parentNode) {
-            node = node.parentNode;
+        while (node !== rootNode) {
             parentNodePath.push(node);
-            if (node === parentNode) {
-                break;
-            }
+            node = node.parentNode;
         }
         return parentNodePath;
     };
     var findVNodeByParentNodePath = function (vnode, parentNodePath) {
-        var currentVNode = vnode;
-        parentNodePath.slice(1).forEach(function (node) {
-            currentVNode = vnode.children.find(function (child) {
+        parentNodePath.forEach(function (node) {
+            vnode = vnode.children.find(function (child) {
                 return child.domNode === node;
             });
         });
-        return currentVNode;
+        return vnode;
     };
     var createEventHandlerInterceptor = function (projector, getProjection) {
         return function (propertyName, eventHandler, domNode, properties) {
             return function (evt) {
                 var projection = getProjection();
-                var parentNodePath = createParentNodePath(this, evt.currentTarget);
+                var parentNodePath = createParentNodePath(evt.currentTarget, projection.domNode);
                 var matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
                 projector.scheduleRender();
                 // Intercept function calls (event handlers)

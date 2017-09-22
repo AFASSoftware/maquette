@@ -584,24 +584,22 @@ let updateProperties = (
         }
       } else if (propValue !== previousValue) {
         let type = typeof propValue;
-        if (type === 'function') {
-          throw new Error('Functions may not be updated on subsequent renders (property: ' + propName +
-            '). Hint: declare event handler functions outside the render() function.');
-        }
-        if (type === 'string' && propName !== 'innerHTML') {
-          if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
-            (domNode as Element).setAttributeNS(NAMESPACE_XLINK, propName, propValue);
-          } else if (propName === 'role' && propValue === '') {
-              (domNode as any).removeAttribute(propName);
+        if (type !== 'function' || !projectionOptions.eventHandlerInterceptor) { // Function updates are expected to be handled by the EventHandlerInterceptor
+          if (type === 'string' && propName !== 'innerHTML') {
+            if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
+              (domNode as Element).setAttributeNS(NAMESPACE_XLINK, propName, propValue);
+            } else if (propName === 'role' && propValue === '') {
+                (domNode as any).removeAttribute(propName);
+            } else {
+              (domNode as Element).setAttribute(propName, propValue);
+            }
           } else {
-            (domNode as Element).setAttribute(propName, propValue);
+            if ((domNode as any)[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop
+              (domNode as any)[propName] = propValue;
+            }
           }
-        } else {
-          if ((domNode as any)[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop
-            (domNode as any)[propName] = propValue;
-          }
+          propertiesUpdated = true;
         }
-        propertiesUpdated = true;
       }
     }
   }
@@ -1154,35 +1152,27 @@ export let createMapping = <Source, Target>(
   };
 };
 
-let createParentNodePath = (node: Node, parentNode: Element) => {
+let createParentNodePath = (node: Node, rootNode: Element) => {
   let parentNodePath: Node[] = [];
-  while (node.parentNode) {
-    node = node.parentNode;
+  while (node !== rootNode) {
     parentNodePath.push(node);
-    if (node === parentNode) {
-      break;
-    }
+    node = node.parentNode!;
   }
-
   return parentNodePath;
 };
 
 let findVNodeByParentNodePath = (vnode: VNode, parentNodePath: Node[]): VNode => {
-  let currentVNode = vnode;
-  parentNodePath.slice(1).forEach(node => {
-    currentVNode = vnode.children!.find(child => {
-      return child.domNode === node;
-    })!;
+  parentNodePath.forEach(node => {
+    vnode = vnode.children!.find(child => child.domNode === node)!;
   });
-
-  return currentVNode;
+  return vnode;
 };
 
 let createEventHandlerInterceptor = (projector: Projector, getProjection: () => Projection | undefined): EventHandlerInterceptor => {
   return function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
     return function(this: Node, evt: Event) {
       let projection = getProjection()!;
-      let parentNodePath = createParentNodePath(this, evt.currentTarget as Element);
+      let parentNodePath = createParentNodePath(evt.currentTarget as Element, projection.domNode);
       let matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
 
       projector.scheduleRender();

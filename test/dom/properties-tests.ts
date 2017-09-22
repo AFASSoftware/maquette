@@ -193,16 +193,6 @@ describe('dom', function() {
         expect(typedKeys).to.equal('ab');
         projection.update(renderFunction());
       });
-
-      it('does not allow event handlers to be updated, for performance reasons', () => {
-        let handler1 = () => undefined as void;
-        let handler2 = () => undefined as void;
-        let projection = dom.create(h('button', { onclick: handler1 }));
-        expect(() => {
-          projection.update(h('button', { onclick: handler2 }));
-        }).to.throw();
-      });
-
     });
 
     it('updates the value property', () => {

@@ -154,7 +154,7 @@ describe('Projector', () => {
     projector.append(parentElement as any, renderFunction);
 
     let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let evt = {};
+    let evt = {currentTarget: button};
 
     expect(global.requestAnimationFrame).not.to.be.called;
 
@@ -172,7 +172,7 @@ describe('Projector', () => {
     projector.append(parentElement as any, renderFunction);
 
     let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let clickEvent = {};
+    let clickEvent = { currentTarget: button };
     button.onclick(clickEvent as any);  // Invoking onclick like this sets 'this' to the ButtonElement
 
     expect(handleClick).to.be.calledOn(button).calledWithExactly(clickEvent);
@@ -210,7 +210,7 @@ describe('Projector', () => {
     projector.append(parentElement as any, () => button.renderMaquette());
 
     let buttonElement = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let clickEvent = {};
+    let clickEvent = {currentTarget: buttonElement};
     buttonElement.onclick(clickEvent as any); // Invoking onclick like this sets 'this' to the ButtonElement
 
     expect(clicked).to.be.calledWithExactly(button);
@@ -235,30 +235,32 @@ describe('Projector', () => {
   it('allows for eventHandlers to be changed', () => {
     let projector = createProjector({});
     let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
-    let firstEventHandler = sinon.stub();
-    let secondEventHandler = sinon.stub();
+    let eventHandler = sinon.stub();
 
-    let properties: VNodeProperties = {
-      onclick: firstEventHandler
-    };
-    let renderFunction = () => h('button', properties);
+    let renderFunction = () => h('div', [
+      h('span', [
+        h('button', {
+          onclick: eventHandler
+        })
+      ])
+    ]);
+
     projector.append(parentElement as any, renderFunction);
 
-    let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let evt = {};
+    let div = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+    let button = div!.firstChild!.firstChild! as HTMLElement;
+    let evt = { currentTarget: button };
 
-    expect(firstEventHandler).to.have.not.been.called;
+    expect(eventHandler).to.have.not.been.called;
+    button.onclick.apply(button, [evt]);
+    expect(eventHandler).to.have.been.calledOnce;
+
+    // Simulate changing the event handler
+    eventHandler = sinon.stub();
+    projector.renderNow();
 
     button.onclick.apply(button, [evt]);
-
-    expect(firstEventHandler).to.be.calledOnce;
-
-    properties.onclick = secondEventHandler;
-    firstEventHandler.reset();
-    button.onclick.apply(button, [evt]);
-
-    expect(firstEventHandler).to.have.not.been.called;
-    expect(secondEventHandler).to.be.calledOnce;
+    expect(eventHandler).to.have.been.calledOnce;
   });
 
 });

@@ -15,6 +15,8 @@
     "url": "https://github.com/AFASSoftware/maquette"
   },
   "main": "./dist/maquette.js",
+  "browser": "./dist/maquette.umd.js",
+  "module": "./dist/maquette.esm.js",
   "typings": "./dist/maquette.d.ts",
   "scripts": {
     "release": "tsa release",

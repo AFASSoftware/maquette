@@ -1,70 +1,12 @@
+dist
+build
+node_modules
+*.log
+
 # useful file for debugging a mocha unit test from cloud9, file contents: var Mocha = require("mocha");var mocha = new Mocha();mocha.addFile("test/createDom");mocha.run();
 sandbox.js
 
-bower_components
-node_modules
-coverage
-build
-*.log
-
-# Linux gedit temp files
-*~
-
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
-
-# Folder config file
-Desktop.ini
-
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
-
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# Visual Studio
-Web.config
-
-# IntelliJ IDEA
+# IDEs
 /.idea
-/*.iml
-
-# OSX
-
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Icon must end with two \r
-Icon
-
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-*.cmd
-
-# Files for NodeJS plugin for visual studio
-maquette.njsproj
-.ntvs_analysis.dat
-bin
-obj
-
-# Other
-.vscode
-docs
-.c9
+/.vscode
+/.c9

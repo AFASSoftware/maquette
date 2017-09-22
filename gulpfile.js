@@ -155,6 +155,24 @@ gulp.task('dist-min-cssTransitions', ['compile'], function() {
 
 gulp.task('dist-min', ['dist', 'dist-min-maquette', 'dist-min-cssTransitions']);
 
+gulp.task('check-size-new', [], function(callback) {
+  var zlib = require('zlib');
+  var fs = require('fs');
+  var input = fs.createReadStream('./dist/maquette.umd.min.js');
+  var stream = input.pipe(zlib.createGzip());
+  var length = 0;
+  stream.on('data', function(chunk) {
+    length += chunk.length;
+  });
+  stream.on('end', function() {
+    console.log('gzipped size in kB:', length/1024);
+    if (length >= 3.5 * 1024) {
+      return callback(new Error('Claim that maquette is only 3 kB gzipped no longer holds'));
+    }
+    callback();
+  });
+});
+
 gulp.task('check-size', ['dist-min'], function(callback) {
   var zlib = require('zlib');
   var fs = require('fs');

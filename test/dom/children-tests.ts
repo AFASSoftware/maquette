@@ -1,4 +1,4 @@
-import { expect } from '../../test-utilities';
+import { expect } from '../test-utilities';
 import { dom, h } from '../../src/maquette';
 
 describe('dom', function() {

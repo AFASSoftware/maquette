@@ -1,4 +1,4 @@
-import { expect, sinon } from '../../test-utilities';
+import { expect, sinon } from '../test-utilities';
 import { dom, h } from '../../src/maquette';
 
 let noopEventHandlerInterceptor = (propertyName: string, functionPropertyArgument: Function) => {

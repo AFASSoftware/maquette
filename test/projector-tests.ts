@@ -1,6 +1,5 @@
-import {expect, sinon} from '../test-utilities';
-import {createProjector, h, Component, VNode} from '../src/maquette';
-import { VNodeProperties } from '../dist/maquette';
+import { expect, sinon } from './test-utilities';
+import { Component, createProjector, h } from '../src/maquette';
 
 describe('Projector', () => {
 

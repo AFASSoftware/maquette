@@ -1,4 +1,4 @@
-import {expect, sinon} from '../test-utilities';
+import {expect, sinon} from './test-utilities';
 import {createCache} from '../src/maquette';
 
 describe('Cache', function() {

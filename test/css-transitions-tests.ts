@@ -1,5 +1,5 @@
 import {cssTransitions} from '../src/css-transitions';
-import {expect, sinon} from '../test-utilities';
+import {expect, sinon} from './test-utilities';
 
 describe('CSS Transitions', () => {
 
@@ -16,7 +16,7 @@ describe('CSS Transitions', () => {
   let createFakeElement = function () {
     return {
       style: {
-        transition: null
+        transition: null as any
       },
       addEventListener: sinon.stub(),
       removeEventListener: sinon.stub(),

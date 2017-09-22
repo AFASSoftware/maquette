@@ -14,16 +14,18 @@
     "type": "git",
     "url": "https://github.com/AFASSoftware/maquette"
   },
-  "main": "./dist/maquette.js",
+  "module": "./dist/maquette.js",
+  "main": "./dist/maquette.cjs.js",
   "browser": "./dist/maquette.umd.js",
-  "module": "./dist/maquette.esm.js",
   "typings": "./dist/maquette.d.ts",
   "scripts": {
     "release": "tsa release",
     "prepublishOnly": "gulp compress dist-min declaration",
     "test-also-with-browser": "gulp test && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js",
     "test": "cross-env TS_NODE_FAST=true mocha --compilers ts:ts-node/register --recursive",
-    "coverage": "cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive"
+    "coverage": "cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive",
+    "dist": "tsc -p ./src/tsconfig.json && rollup -c && uglifyjs ./dist/maquette.umd.js -c unsafe=true -m -o ./dist/maquette.umd.min.js",
+    "ci": "tsa ci"
   },
   "license": "MIT",
   "tonicExampleFilename": "examples/tonic-example.js",
@@ -46,10 +48,10 @@
     "check-coverage": true,
     "report-dir": "./build/coverage",
     "es-module": false,
-    "lines": 100,
-    "statements": 100,
-    "functions": 100,
-    "branches": 100,
+    "lines": 97,
+    "statements": 97,
+    "functions": 97,
+    "branches": 97,
     "watermarks": {
       "lines": [
         75,
@@ -104,8 +106,10 @@
     "mocha-jsdom": "1.1.0",
     "nyc": "11.1.0",
     "remap-istanbul": "0.9.5",
+    "rollup": "0.50.0",
     "sinon": "2.4.1",
     "sinon-chai": "2.12.0",
-    "typescript-assistant": "0.18.6"
+    "typescript-assistant": "0.18.6",
+    "uglify-js": "3.1.1"
   }
 }

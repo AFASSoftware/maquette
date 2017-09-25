@@ -1,0 +1,80 @@
+---
+layout: tutorial.ejs
+workbench: true
+---
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    var h = maquette.h;
+
+    var projector = maquette.createProjector();
+
+    var changeCount = 0;
+    var lastRotation = 0;
+    var objective1 = {
+      title: "Analyze the problem",
+      isAchieved: function () {
+        return changeCount > 40;
+      },
+      onSceneUpdate: function (contentWindow) {
+        var rotation = contentWindow.rotation;
+        if(rotation && rotation !== lastRotation) {
+          lastRotation = rotation;
+          changeCount++;
+        }
+      },
+      renderMaquette: function () {
+        return h("p", ["Move the rotation slider up and down to get a feeling of what is wrong."]);
+      }
+    };
+
+    var achieved2 = false;
+    var objective2 = {
+      title: "Fix the problem",
+      isAchieved: function () {
+        return achieved2;
+      },
+      onSceneUpdate: function (contentWindow) {
+        var oldProjector = contentWindow.projector;
+        var tick = contentWindow.tick;
+        if(oldProjector && tick && !achieved2) {
+          try {
+            contentWindow.projector = {
+              scheduleRender: function () {
+                achieved2 = true;
+              }
+            };
+            tick();
+          } catch(e) {
+          }
+          contentWindow.projector = oldProjector;
+        }
+      },
+      renderMaquette: function () {
+        return h("p", ["Make sure the projectector schedules a render after each update to the position."]);
+      }
+    };
+
+    var workbench;
+
+    var getallObjectivesAchieved = function () {
+      return workbench.allObjectivesAchieved();
+    };
+
+    var navigation = window.createNavigation(projector, getallObjectivesAchieved);
+
+    workbench = createWorkbench(projector, "assets/saucer-orbit.js", [
+      objective1,
+      objective2
+    ]);
+
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+
+    var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+  });
+</script>
+
+<div class="work"></div>
+<div class="navigation-bar"></div>

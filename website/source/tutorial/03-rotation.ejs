@@ -1,0 +1,68 @@
+---
+layout: tutorial.ejs
+workbench: true
+---
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    var h = maquette.h;
+
+    var projector = maquette.createProjector();
+
+    var hasStyleAttribute = false;
+    var usesRotation = false;
+    var rotationOk = false;
+
+    var objective = {
+      title: "Render the DOM",
+      isAchieved: function () {
+        return hasStyleAttribute && usesRotation && rotationOk;
+      },
+      onSceneUpdate: function (contentWindow) {
+        hasStyleAttribute = false;
+        usesRotation = false;
+        rotationOk = false;
+        var oldRotation = contentWindow.rotation;
+        try {
+          var vnode = contentWindow.renderMaquette();
+          var saucer = vnode.children[0];
+          var style = saucer.properties.style;
+          hasStyleAttribute = typeof style === "string";
+          if (hasStyleAttribute) {
+            rotationOk = style === "transform:rotate(45deg)";
+            contentWindow.rotation = 615243;
+            style = contentWindow.renderMaquette().children[0].properties.style;
+            usesRotation = style.indexOf("615243") !== -1;
+            contentWindow.rotation = oldRotation;
+          }
+        } catch(e) {
+          contentWindow.rotation = oldRotation;
+        }
+      },
+      renderMaquette: function () {
+        return h("ul", [
+          h("li", { key: 1, classes: { complete: hasStyleAttribute } }, ["The saucer has a style attribute"]),
+          h("li", { key: 2, classes: { complete: rotationOk } }, ["The style attribute equals ", h("code", ["transform:rotate(45deg)"])]),
+          h("li", { key: 3, classes: { complete: usesRotation } }, ["The style attribute uses the rotation variable"])
+      ]);
+      }
+    };
+
+    var getallObjectivesAchieved = function () {
+      return workbench.allObjectivesAchieved();
+    };
+
+    var workbench = createWorkbench(projector, "assets/saucer-rotation.js", [
+      objective
+    ]);
+
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+
+    var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+  });
+</script>
+
+<div class="work"></div>
+<div class="navigation-bar"></div>

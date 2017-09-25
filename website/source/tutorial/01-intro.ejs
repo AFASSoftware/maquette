@@ -1,0 +1,76 @@
+---
+layout: tutorial.ejs
+workbench: true
+---
+
+
+<script src="/tutorial/components/markup-matcher.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var h = maquette.h;
+    var projector = maquette.createProjector();
+    var markupMatcher = window.createMarkupMatcher(projector, '<div class="landscape">\n  <div class="saucer">Greetings</div>\n</div>');
+    var getallObjectivesAchieved = function () {
+      return workbench.allObjectivesAchieved();
+    };
+
+    //var navigation = window.createNavigation(projector, getallObjectivesAchieved);
+    var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
+      markupMatcher
+    ]);
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+
+    var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+  });
+</script>
+
+<main>
+  <article>
+    <h1>
+      The maquette tutorial
+    </h1>
+    <p>
+      This tutorial will teach you how to use the maquette library.
+      The application we are building in this tutorial is a remote control for a flying saucer.
+      This tutorial is made for people who are already familiar with HTML and Javascript.
+    </p>
+
+    <h2>
+      Objective
+    </h2>
+    <p>
+      In this first exercise you will create the flying saucer we are going to control.
+      Thanks to some alien piece of CSS, all that is needed to create the the flying saucer is the following markup:
+      <code>&lt;div class="saucer"&gt;Greetings&lt;/div&gt;</code>
+    </p>
+
+    <h2>
+      Hyperscript 101
+    </h2>
+    <p>
+      Because maquette allows you to use data to create the right browser DOM, it does not use HTML.
+      Maquette uses a notation called <strong>hyperscript</strong>.
+      Hyperscript is essentially just a javascript function, <code>h()</code>, which creates a virtual DOM node.
+    </p>
+    <p>
+      The first parameter of the <code>h()</code> function is a CSS selector string, like <code>"div.landscape"</code>,
+      which results in <code>&lt;div class="landscape"&gt;</code>.
+      The final parameters represent the content. Strings become text, and <code>h()</code> calls create childnodes.
+    </p>
+
+    <h2>
+      The workbench
+    </h2>
+    <p>
+      In the workbench below you can edit the sourcefiles for this exercise.
+      In order to create the flying saucer, you need to complement the <code>renderMaquette()</code> function.
+      The <b>next</b> button at the bottom will be unlocked once you complete the objective. Good luck!
+    </p>
+
+  </article>
+</main>
+
+<div class="work" style="min-height:350px">
+</div>
+<div class="navigation-bar"></div>

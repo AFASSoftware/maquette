@@ -11,7 +11,8 @@ Metalsmith(__dirname)
     // defaults, can be overridden per page
     liveEditors: false,
     liveEditorsVelocity: false,
-    liveEditorsCss: false
+    liveEditorsCss: false,
+    workbench: false
   })
   .source('source')
   .destination('../build/website')

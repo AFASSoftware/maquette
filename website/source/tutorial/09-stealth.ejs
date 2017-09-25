@@ -1,0 +1,55 @@
+---
+layout: tutorial.ejs
+workbench: true
+---
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    var h = maquette.h;
+
+    var projector = maquette.createProjector();
+
+    var achieved1 = false;
+    var objective1 = {
+      title: "Apply the stealth variable",
+      isAchieved: function () {
+        return achieved1;
+      },
+      onSceneUpdate: function (contentWindow) {
+        if(contentWindow.stealth === true && contentWindow.renderMaquette) {
+          try {
+            var vnodeBefore = contentWindow.renderMaquette();
+            contentWindow.stealth = false;
+            var vnodeAfter = contentWindow.renderMaquette();
+            var beforeProperties = vnodeBefore.children[0].properties;
+            var afterProperties = vnodeAfter.children[0].properties;
+            achieved1 = beforeProperties.classes && afterProperties.classes && beforeProperties.classes.stealth === true && afterProperties.classes.stealth === false;
+          } catch (e) {
+          }
+          contentWindow.stealth = true;
+        }
+      },
+      renderMaquette: function () {
+        return h("p", ["Add the CSS class 'stealth' to the saucer conditionally, based on the 'stealth' variable."]);
+      }
+    };
+
+    var getallObjectivesAchieved = function () {
+      return workbench.allObjectivesAchieved();
+    };
+
+    var workbench = createWorkbench(projector, "assets/saucer-stealth.js", [
+      objective1
+    ]);
+
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+
+    var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+  });
+</script>
+
+<div class="work"></div>
+
+<div class="navigation-bar"></div>

@@ -17,10 +17,10 @@
   "module": "./dist/maquette.js",
   "main": "./dist/maquette.cjs.js",
   "browser": "./dist/maquette.umd.js",
-  "typings": "./dist/maquette.d.ts",
+  "typings": "./dist/index.d.ts",
   "scripts": {
     "release": "tsa release",
-    "prepublishOnly": "gulp compress dist-min declaration",
+    "prepublishOnly": "tsa clean && npm run dist",
     "test-also-with-browser": "gulp test && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js",
     "test": "cross-env TS_NODE_FAST=true mocha --compilers ts:ts-node/register --recursive",
     "coverage": "cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive",

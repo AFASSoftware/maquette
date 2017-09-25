@@ -1,6 +1,4 @@
 {
-  // Exists as a base for src/tsconfig.json and test/tsconfig.json
-  // Is also used to run mocha from tsa and IDE's
   "compilerOptions": {
     "lib": [
       "dom",

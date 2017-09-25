@@ -1,5 +1,5 @@
 import { expect, sinon } from './test-utilities';
-import { Component, createProjector, h } from '../src/maquette';
+import { Component, createProjector, h } from '../src/index';
 
 describe('Projector', () => {
 

@@ -5,7 +5,7 @@ import pkg from './package.json';
 export default [
   // browser-friendly UMD build
   {
-    input: 'dist/maquette.js',
+    input: 'dist/index.js',
     output: {
       file: pkg.browser,
       format: 'umd'
@@ -15,7 +15,7 @@ export default [
   },
   // CommonJS build for nodeJS
   {
-    input: 'dist/maquette.js',
+    input: 'dist/index.js',
     output: {
       file: pkg.main,
       format: 'cjs'

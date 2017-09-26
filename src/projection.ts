@@ -459,8 +459,9 @@ export let createProjection = function(vnode: VNode, projectionOptions: Projecti
       if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
         throw new Error('The selector for the root VNode may not be changed. (consider using dom.merge and add one extra level to the virtual DOM)');
       }
-      updateDom(vnode, updatedVnode, projectionOptions);
+      let previousVNode = vnode;
       vnode = updatedVnode;
+      updateDom(previousVNode, updatedVnode, projectionOptions);
     },
     domNode: <Element>vnode.domNode
   };

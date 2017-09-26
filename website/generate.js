@@ -15,7 +15,7 @@ Metalsmith(__dirname)
     workbench: false
   })
   .source('source')
-  .destination('../build/website')
+  .destination('./build/website')
   .clean(true)
   .use(inPlace())
   .use(markdown())

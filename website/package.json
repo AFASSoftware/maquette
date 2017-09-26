@@ -10,7 +10,7 @@
   },
   "scripts": {
     "serve": "node generate && npm run typedoc && firebase serve",
-    "typedoc": "typedoc --out ../build/website/docs/typedoc --name Maquette --target ES5 --module umd --readme none --gaID UA-58254103-1 --excludePrivate --excludeExternals --excludeNotExported ../src/maquette.ts",
+    "typedoc": "typedoc --out ./build/website/docs/typedoc --name Maquette --target ES5 --module umd --readme none --gaID UA-58254103-1 --excludePrivate --excludeExternals --excludeNotExported ../src/maquette.ts",
     "postcss": "postcss website/source/*.css --dir build/website/ --use precss"
   },
   "license": "MIT",

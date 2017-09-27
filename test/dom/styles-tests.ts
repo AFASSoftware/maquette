@@ -1,5 +1,5 @@
 import { expect } from '../test-utilities';
-import { dom, h } from '../../src/maquette';
+import { dom, h } from '../../src/index';
 
 describe('dom', function() {
 

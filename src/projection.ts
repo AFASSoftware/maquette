@@ -418,9 +418,9 @@ updateDom = function(previous, vnode, projectionOptions) {
   let updated = false;
   if (vnode.vnodeSelector === '') {
     if (vnode.text !== previous.text) {
-      let newVNode = domNode.ownerDocument.createTextNode(vnode.text!);
-      domNode.parentNode!.replaceChild(newVNode, domNode);
-      vnode.domNode = newVNode;
+      let newTextNode = domNode.ownerDocument.createTextNode(vnode.text!);
+      domNode.parentNode!.replaceChild(newTextNode, domNode);
+      vnode.domNode = newTextNode;
       textUpdated = true;
       return textUpdated;
     }
@@ -436,6 +436,7 @@ updateDom = function(previous, vnode, projectionOptions) {
         domNode.textContent = vnode.text;
       }
     }
+    vnode.domNode = domNode;
     updated = updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions) || updated;
     updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
     if (vnode.properties && vnode.properties.afterUpdate) {
@@ -448,7 +449,6 @@ updateDom = function(previous, vnode, projectionOptions) {
   if (updated && vnode.properties && vnode.properties.updateAnimation) {
     vnode.properties.updateAnimation(<Element>domNode, vnode.properties, previous.properties);
   }
-  vnode.domNode = previous.domNode;
   return textUpdated;
 };
 

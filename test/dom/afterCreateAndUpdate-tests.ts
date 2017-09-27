@@ -1,5 +1,5 @@
 import {expect, sinon} from '../test-utilities';
-import {h, dom} from '../../src/maquette';
+import {h, dom} from '../../src/index';
 
 describe('dom', () => {
 

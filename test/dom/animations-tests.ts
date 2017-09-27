@@ -1,5 +1,5 @@
 import { expect, sinon } from '../test-utilities';
-import { dom, h } from '../../src/maquette';
+import { dom, h } from '../../src/index';
 
 describe('dom', () => {
 
@@ -68,48 +68,6 @@ describe('dom', () => {
         exitAnimation.lastCall.callArg(1); // arg1: removeElement
         expect(projection.domNode.childNodes).to.be.empty;
         exitAnimation.lastCall.callArg(1); // arg1: removeElement
-      });
-
-    });
-
-    describe('transitionStrategy', () => {
-
-      it('will be invoked when enterAnimation is provided as a string', () => {
-        let transitionStrategy = { enter: sinon.stub(), exit: sinon.stub() };
-        let projection = dom.create(h('div'), { transitions: transitionStrategy });
-
-        projection.update(h('div', [
-          h('span', { enterAnimation: 'fadeIn' })
-        ]));
-
-        expect(transitionStrategy.enter).to.have.been.calledWithExactly(projection.domNode.firstChild, sinon.match({}), 'fadeIn');
-      });
-
-      it('will be invoked when exitAnimation is provided as a string', () => {
-        let transitionStrategy = { enter: sinon.stub(), exit: sinon.stub() };
-        let projection = dom.create(
-          h('div', [
-            h('span', { exitAnimation: 'fadeOut' })
-          ]),
-          { transitions: transitionStrategy }
-        );
-
-        projection.update(h('div', []));
-
-        expect(transitionStrategy.exit).to.have.been.calledWithExactly(projection.domNode.firstChild, sinon.match({}), 'fadeOut', sinon.match({}));
-
-        transitionStrategy.exit.lastCall.callArg(3);
-        expect(projection.domNode.childNodes).to.be.empty;
-      });
-
-      it('will complain about a missing transitionStrategy', () => {
-        let projection = dom.create(h('div'), {});
-
-        expect(() => {
-          projection.update(h('div', [
-            h('span', { enterAnimation: 'fadeIn' })
-          ]));
-        }).to.throw();
       });
 
     });

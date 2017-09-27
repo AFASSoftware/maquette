@@ -420,6 +420,7 @@ updateDom = function(previous, vnode, projectionOptions) {
       textUpdated = true;
       return textUpdated;
     }
+    vnode.domNode = domNode;
   } else {
     if (vnode.vnodeSelector.lastIndexOf('svg', 0) === 0) { // lastIndexOf(needle,0)===0 means StartsWith
       projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });

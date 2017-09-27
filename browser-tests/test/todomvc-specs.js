@@ -3,7 +3,6 @@
 var wd = require('wd');
 var keys = wd.SPECIAL_KEYS;
 require('colors');
-var _ = require("lodash");
 var chai = require("chai");
 var chaiAsPromised = require("chai-as-promised");
 
@@ -70,7 +69,7 @@ describe('todomvc-maquette', function () {
   	  return page.assertFocussedElementId("new-todo");
 	  });
   });
-  
+
   describe('No Todos', function () {
   	it('should hide #main and #footer', function () {
   	  return page

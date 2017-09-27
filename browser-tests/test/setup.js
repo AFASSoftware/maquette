@@ -1,7 +1,7 @@
-﻿var Q = require('q');
-var expect = require("chai").expect;
-var wd = require("wd");
-var connect = require("connect");
+﻿var wd = require("wd");
+var finalhandler = require('finalhandler');
+var http = require('http');
+var serveStatic = require('serve-static');
 
 // double click is not 'natively' supported, so we need to send the
 // event direct to the element see:
@@ -10,20 +10,16 @@ var doubleClickScript = 'var evt = document.createEvent("MouseEvents");' +
   'evt.initMouseEvent("dblclick",true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0,null);' +
   'document.querySelectorAll("#todo-list li label")[arguments[0]].dispatchEvent(evt);';
 
-var finalhandler = require('finalhandler');
-var http = require('http');
-var serveStatic = require('serve-static');
- 
-// Serve up public/ftp folder 
+// Serve up public/ftp folder
 var serve = serveStatic('..', {});
- 
-// Create server 
+
+// Create server
 var server = http.createServer(function (req, res) {
   var done = finalhandler(req, res);
   serve(req, res, done);
 });
- 
-// Listen 
+
+// Listen
 console.log("starting server on port 8000");
 server.listen(8000);
 
@@ -62,7 +58,7 @@ var createBrowser = function () {
     browser = wd.promiseChainRemote("localhost", 4444, null, null);
   }
   if (true || process.env.VERBOSE) {
-    // optional logging     
+    // optional logging
     browser.on('status', function (info) {
       console.log(info.cyan);
     });
@@ -74,18 +70,7 @@ var createBrowser = function () {
     .init(desired)
     .setAsyncScriptTimeout(3000)
     .then(function () {
-      if(process.platform === "win32" && setup.rootUrl.indexOf("localhost") !== -1) {
-        // Hack needed for sauce on windows
-        var deferred = Q.defer();
-        require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-          console.log('local ip: ' + add);
-          setup.rootUrl = setup.rootUrl.replace("localhost", add);
-          deferred.resolve(browser);
-        });
-        return deferred.promise;
-      } else {
-        return browser;
-      }
+      return browser;
     });
 };
 

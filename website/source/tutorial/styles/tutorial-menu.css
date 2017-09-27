@@ -1,0 +1,84 @@
+.navigation-bar {
+  display: flex;
+  flex: 0 0 60px;
+  box-shadow: 0px -1px 1px 0px rgba(50, 50, 50, 0.1);
+  position: relative;
+}
+.menuicon {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  height: 21px;
+  width: 25px;
+}
+.menuicon span {
+  display: block;
+  top: 8px;
+  width: 25px;
+  height: 5px;
+  background-color: #000;
+  position: relative;
+  -webkit-transition-duration: 0;
+  -moz-transition-duration: 0;
+  -ms-transition-duration: 0;
+  -o-transition-duration: 0;
+  transition-duration: 0;
+  -webkit-transition-delay: 0.2s;
+  -moz-transition-delay: 0.2s;
+  -ms-transition-delay: 0.2s;
+  -o-transition-delay: 0.2s;
+  transition-delay: 0.2s;
+}
+.menuicon span::after, .menuicon span::before {
+  display: block;
+  content: '';
+  position: absolute;
+  width: 25px;
+  height: 5px;
+  background-color: #000;
+  -webkit-transition-property: margin, -webkit-transform;
+  -webkit-transition-duration: 0.2s;
+  -moz-transition-duration: 0.2s;
+  -ms-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -webkit-transition-delay: 0.2s, 0;
+  -moz-transition-delay: 0.2s, 0;
+  -ms-transition-delay: 0.2s, 0;
+  -o-transition-delay: 0.2s, 0;
+  transition-delay: 0.2s, 0;
+}
+.menuicon span::before {
+  margin-top: -8px;
+}
+.menuicon span::after {
+  margin-top: 8px;
+}
+#hamburger {
+  display: none;
+}
+#hamburger:checked ~ .menuicon span {
+  background-color: transparent;
+}
+#hamburger:checked ~ .menuicon span::before, #hamburger:checked ~ .menuicon span::after {
+  margin-top: 0px;
+  -webkit-transition-delay: 0, 0.2s;
+  -moz-transition-delay: 0, 0.2s;
+  -ms-transition-delay: 0, 0.2s;
+  -o-transition-delay: 0, 0.2s;
+  transition-delay: 0, 0.2s;
+}
+#hamburger:checked ~ .menuicon span::before {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+#hamburger:checked ~ .menuicon span::after {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}

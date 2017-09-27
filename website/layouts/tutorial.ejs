@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/minimal.css" rel="stylesheet" />
+  <link href="/tutorial/tutorial.css" rel="stylesheet" />
+  <title>Maquette tutorial</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+
+<nav class="top-bar">
+  <nav class="full-width">
+    <a class="logo" href="/"><img src="/img/MaquetteLogoSmall.svg" /> Maquette</a>
+  </nav>
+</nav>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/maquette/<%-maquetteVersion-%>/maquette.min.js"></script>
+<script src="/tutorial/components/navigation.js"></script>
+<% if (workbench) { %>
+<script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
+<script src="/tutorial/components/workbench.js"></script>
+<% } %>
+
+<div class="main-area">
+
+  <%- contents %>
+
+</div>
+
+<%- include('../partials/analytics.ejs') %>
+
+</body>
+</html>

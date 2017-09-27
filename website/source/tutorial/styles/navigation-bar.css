@@ -1,0 +1,108 @@
+.navigation-bar {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  z-index: 2000;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding: 10px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.navigation-bar .navigate-button.menu {
+  margin: 10px;
+  padding-top: 10px;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 280px;
+          flex: 0 0 280px;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  display:-webkit-box;
+  display:-ms-flexbox;
+  display:flex;
+  bottom: 0px;
+  border-top: solid 1px #D8D8D8;
+}
+
+.navigation-bar .navigate-button {
+  padding: 5px 15px;
+  margin-left: 10px;
+  color: white;
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  border: solid 1px #D8D8D8;
+  background: #2c6cbe;
+  font-size: 18px;
+  text-decoration: none;
+  font-weight: 300;
+  -webkit-transition: border-color 0.4s linear;
+  transition: border-color 0.4s linear;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-preferred-size: 100px;
+      flex-basis: 100px;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.navigation-bar .navigate-button.locked {
+  opacity: .5;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  background: #E3E6E6;
+  color: grey;
+  position: relative;
+}
+
+.navigation-bar .navigate-button.unlocked {
+  position: relative;
+  background: #43A047;
+}
+
+.navigation-bar .navigate-button.secondary {
+  background: #E3E6E6;
+  color: #444444;
+}
+
+.navigation-bar .navigate-button > svg {
+  position:absolute; /* may disappear using an animation without the button itself being changed */
+  fill: #2c6cbe;
+  left: 10px;
+  top: 10px;
+}
+
+.navigation-bar .navigate-button.unlocked:hover,
+.navigation-bar .navigate-button.secondary:hover {
+  border-color: #2c6cbe;
+}
+.navigation-bar > .menu-button,
+.navigation-bar > .navigation-buttons {
+  -ms-flex-preferred-size: 50%;
+      flex-basis: 50%;
+  -ms-flex-negative: 1;
+      flex-shrink: 1;
+}
+.navigation-bar > .navigation-buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+.navigation-bar > .table-of-content {
+  height: calc(100vh - 40px);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 300px;
+}

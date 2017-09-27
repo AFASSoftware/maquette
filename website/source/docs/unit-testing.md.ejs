@@ -1,0 +1,77 @@
+---
+layout: default.ejs
+title: Unit testing
+liveEditors: true
+---
+When you create a component as described in [component approach](component-approach.html),
+you may want to use unit tests to verify its behavior and to make sure the behavior
+is not accidentally broken when doing maintenance.
+
+Maquette provides the [maquette-query](https://github.com/AFASSoftware/maquette-query) npm package
+to facilitate unit testing. In order to explain how it works, let's start with the button component
+that we used in [component approach](component-approach.html):
+
+<%- include('../../partials/live-editor-start.ejs') -%>
+// Creates a button component
+function createMyButton(text, onClick) {
+  var handleClick = function(evt) {
+    evt.preventDefault();
+    onClick();
+  };
+
+  var myButton = {
+    renderMaquette: function() {
+      return h('my-button', {key: myButton}, [
+        h('button', { onclick: handleClick }, [text])
+      ]);
+    }
+  };
+  return myButton;
+}
+
+// how the button component is used
+var button = createMyButton("click me", function(){ alert("clicked"); });
+
+projector.append(domNode, button.renderMaquette);
+<%- include('../../partials/live-editor-end.ejs') -%>
+
+To explain how we can unit-test this component, we will use
+[NodeJS](https://nodejs.org/), [mocha](http://mochajs.org/),
+[chai](http://chaijs.com/) and [sinon](http://sinonjs.org/),
+but any other set of libraries will do as well. Maquette-query provides a test-projector
+that can be reused between tests. The test-projector allows you to create queries that
+are also reusable. Before each test, the test-projector can be initialized with a fresh
+instance of the component under test. This looks as follows in code.
+
+
+<div>
+    <code><textarea class="mocha-editor" rows="20" cols="90" spellcheck="false"
+                    style="line-height:16px;font-size:12px">
+describe('myButton', function() {
+  var projector = exports.createTestProjector(); // Reusable test-projector from maquette-query
+  var myButtonComponent; // We create a fresh instance of our component in the beforeEach
+  var button = projector.query('button'); // A query which will find the button element inside the component
+  var clickHandler = sinon.stub();
+
+  beforeEach(function() {
+    clickHandler.reset();
+    myButtonComponent = createMyButton('ButtonText', clickHandler);
+    projector.initialize(myButtonComponent.renderMaquette);
+  });
+
+  it('displays the configured text', function() {
+    expect(button.textContent).to.equal('ButtonText');
+  });
+
+  it('calls the handler when clicked', function() {
+    button.simulate.click();
+    expect(clickHandler.callCount).to.equal(1);
+  });
+});
+</textarea></code>
+</div>
+
+
+[Edit on codepen](http://codepen.io/johan-gorter/pen/MyyPQX).
+
+For more information, see [maquette-query on github](https://github.com/AFASSoftware/maquette-query).

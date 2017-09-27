@@ -1,0 +1,171 @@
+@import "../postcss/brand.css";
+@import "../postcss/normalize.css";
+@import "../postcss/top-bar.css";
+@import "../postcss/homepage.css";
+@import "../postcss/live-editor.css";
+@import "../postcss/demo.css";
+
+body {
+  padding-top: 50px; /* Leave room for the topbar */
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    flex-shrink: 0;
+  }
+}
+
+h1 {
+  font-weight: 100;
+  color: $text-color-dark;
+}
+
+h1 {
+  font-weight: 100;
+}
+
+h2, h3 {
+  font-weight: 400;
+}
+
+
+main {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 48px 0;
+
+  > article {
+    width: $card-width;
+    max-width: 96%;
+  }
+}
+
+.row {
+  margin: 0 calc(-$gutter-width / 2);
+  display: flex;
+  flex-wrap: wrap;
+
+  > .col-2 {
+    max-width: calc(2 * ($column-width + $gutter-width));
+    flex: 2 0 500px;
+    padding: 0 calc($gutter-width / 2);
+  }
+
+  > .col-1 {
+    max-width: calc($column-width + $gutter-width);
+    flex: 1 0 250px;
+    padding: 0 calc($gutter-width / 2);
+  }
+}
+
+.button {
+  text-decoration:none;
+  display:inline-block;
+  background-color: $primary-color;
+  color: $white;
+  padding: 0 16px;
+  line-height: 32px;
+  font-size: 16px;
+
+  &:visited {
+    color:$white;
+  }
+
+  &:hover {
+    background-color: #aae3c6; /* lighten($primary-color, 30%); */
+  }
+
+  &:active {
+    background-color: #70d09f; /* lighten($primary-color, 15%); */
+  }
+}
+
+
+body > footer {
+  background-color: #272822;
+  color: #AAAAAA;
+  text-align: center;
+  padding: 20px 0 20px 0;
+
+  > a {
+    color: $white;
+    text-decoration: underline;
+
+    &:visited {
+      color:$white;
+    }
+  }
+}
+
+.menu-cols {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -20px;
+
+  > section {
+    max-width: 240px;
+    flex: 1 0 192px;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+
+    > h3 {
+      display: block;
+      line-height: 48px;
+      margin: 0;
+    }
+
+    > a {
+      display:block;
+      line-height: 48px;
+      font-size: 14px;
+      text-decoration: underline;
+    }
+  }
+}
+
+.full-menu {
+  background-color: #272822;
+  color: $white;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  padding-top: 40px; /* matches top bar */
+
+  a {
+    color: $white;
+    text-decoration: underline;
+
+    &:visited {
+      color: $white;
+    }
+  }
+
+  > nav {
+    flex: 0 1 $small-content-width;
+    padding: 0 20px;
+
+    > h2 {
+      color: #AAAAAA;
+    }
+
+    > .cols {
+
+      > section {
+
+        > h3 {
+          color: #AAAAAA;
+        }
+      }
+    }
+  }
+
+  > footer {
+    padding-top:40px;
+    color: #AAAAAA;
+  }
+}

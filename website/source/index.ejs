@@ -1,0 +1,204 @@
+---
+layout: bare.ejs
+title: Maquette
+liveEditors: true
+---
+
+<main class="homepage">
+  <header>
+    <div class="container">
+      <img class="logo" src="img/MaquetteLogoInside.svg" alt="maquette logo" />
+      <div class="texts">
+        <h1>Maquette</h1>
+        <p class="subtitle">Pure and simple virtual DOM library</p>
+      </div>
+    </div>
+  </header>
+  <div class="teasers">
+    <aside>
+      <svg viewBox="0 0 32 32"><path d="M1,1v30h30V1H1zM17.326,24.398c0,2.92-1.712,4.248-4.209,4.248c-2.255,0-3.564-1.168-4.229-2.576l0,0l0,0l0,0l2.296-1.391c0.443,0.777,0.846,1.442,1.812,1.442c0.926,0,1.511-0.354,1.511-1.771V14.77h2.819V24.398zM23.992,28.646c-2.618,0-4.311-1.248-5.135-2.879l2.295-1.328c0.604,0.979,1.39,1.711,2.779,1.711c1.168,0,1.904-0.584,1.904-1.396c0-0.966-0.766-1.311-2.054-1.865L23.08,22.58c-2.034-0.865-3.383-1.953-3.383-4.249c0-2.114,1.604-3.726,4.128-3.726c1.792,0,3.081,0.625,4.008,2.254l-2.19,1.406c-0.479-0.861-1.006-1.209-1.812-1.209c-0.825,0-1.353,0.521-1.353,1.209c0,0.852,0.521,1.188,1.729,1.711l0.704,0.309c2.396,1.021,3.746,2.07,3.746,4.43C28.664,27.259,26.671,28.646,23.992,28.646z"></path></svg>
+      <div>
+        <h2>Pure Javascript</h2>
+        <p>
+          No new templating language to learn, just pure Javascript (or Typescript, Coffeescript. etc.)
+        </p>
+      </div>
+    </aside>
+    <aside>
+      <svg viewBox="0 0 32 32"><path d="M24.485,2c0,8-18,4-18,20c0,6,2,8,2,8h2c0,0-3-2-3-8c0-4,9-8,9-8s-7.981,4.328-7.981,8.436C21.239,24.431,28.288,9.606,24.485,2z"></path></svg>
+      <div>
+        <h2>Lightweight</h2>
+        <p>
+          Only weighs 3Kb gzipped. Compare this to React (36Kb) or AngularJS (50Kb).
+        </p>
+      </div>
+    </aside>
+    <aside>
+      <svg viewBox="0 0 32 32"><path d="M27.188,4.875v1.094h-4.5V4.875H8.062v1.094h-4.5V4.875h-1v21.25h1v-1.094h4.5v1.094h14.625v-1.094h4.5v1.094h1.25V4.875H27.188zM8.062,23.719h-4.5v-3.125h4.5V23.719zM8.062,19.281h-4.5v-3.125h4.5V19.281zM8.062,14.844h-4.5v-3.125h4.5V14.844zM8.062,10.406h-4.5V7.281h4.5V10.406zM11.247,20.59V9.754l9.382,5.418L11.247,20.59zM27.188,23.719h-4.5v-3.125h4.5V23.719zM27.188,19.281h-4.5v-3.125h4.5V19.281zM27.188,14.844h-4.5v-3.125h4.5V14.844zM27.188,10.406h-4.5V7.281h4.5V10.406z"></path></svg>
+      <div>
+        <h2>Animations</h2>
+        <p>
+          Add animations when the user-interface changes.
+          Animations do not interfere with application logic.
+        </p>
+      </div>
+    </aside>
+  </div>
+  <div class="live-demonstration">
+    <div class="live-editor row">
+      <div class="col-2">
+        <h2>Code:</h2>
+        <code><textarea class="live-editor-editor" rows="20" cols="90" spellcheck="false"
+                        style="height:310px;line-height:16px;font-size:12px">var yourName = ''; // Piece of data
+
+// Plain event handler
+function handleNameInput(evt) {
+  yourName = evt.target.value;
+}
+
+// This function uses the 'hyperscript' notation to create the virtual DOM.
+function renderMaquette() {
+  return h('div', [
+    h('input', {
+      type: 'text', placeholder: 'What is your name?',
+      value: yourName, oninput: handleNameInput
+    }),
+    h('p.output', ['Hello ' + (yourName || 'you') + '!'])
+  ]);
+}
+
+projector.append(domNode, renderMaquette);</textarea></code>
+      </div>
+      <div class="col-1">
+        <h2>Live result:</h2>
+        <div class="live-editor-result"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row why-maquette">
+    <section>
+      <h2>Why Maquette</h2>
+      <p>
+        Maquette is a virtual DOM implementation that excels in both speed and simplicity.
+        It solves the problem of keeping the user interface in sync with underlying data.
+      </p>
+      <p>
+        Maquette allows you to specify the UI using plain Javascript.
+        This makes maquette easy to learn, easy to debug and easy to deploy.
+        Maquette is very unopionated by design,
+        making integration with other frameworks and libraries as painless as possible.
+      </p>
+      <h2>Get started</h2>
+      <p>
+        Are you ready to get started with maquette? <br />
+        We have created a fun tutorial which will teach you everything you need to know.
+      </p>
+      <a href="/tutorial/01-intro.html" class="button">Start the tutorial</a>
+    </section>
+  </div>
+  <div class="news-section">
+    <div class="row">
+      <section class="news">
+        <h2>News</h2>
+        <ul>
+          <li>
+            <span class="date">15 Aug 2017</span>
+            <div>
+              <a href="https://dev.afas.nl/blog-dev/unit-testing-ui-components"><h3>Blog: Unit testing UI components</h3></a>
+              <p>
+                ...how do we protect ourselves from accidentally breaking existing features while adding new ones?...
+                <a href="https://dev.afas.nl/blog-dev/unit-testing-ui-components">read more</a>
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="date">1 Oct 2016</span>
+            <div>
+              <a href="https://medium.com/maquette-news/maquette-2-4-brings-typescript-2-enhancements-d0b4435c9d67"><h3>Maquette 2.4 brings Typescript 2 enhancements</h3></a>
+              <p>
+                Now that Typescript2 is released, we finally had something to improve...
+                <a href="https://medium.com/maquette-news/maquette-2-4-brings-typescript-2-enhancements-d0b4435c9d67">read more</a>
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="date">22 Mar 2016</span>
+            <div>
+              <a href="http://dev.afas.nl/insite-afas/virtual-dom-how-inefficiency-can-lead-to-better-performance"><h3>Blog: How inefficiency can lead to better performance</h3></a>
+              <p>
+                Virtual DOM is an algorithm where the entire web page is reconstructed from scratch every time something...
+                <a href="http://dev.afas.nl/insite-afas/virtual-dom-how-inefficiency-can-lead-to-better-performance">read more</a>
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="date">18 Mar 2016</span>
+            <div>
+              <a href="https://medium.com/maquette-news/maquette-2-3-and-unit-testing-e5349ba73f64"><h3>Maquette 2.3 and unit testing</h3></a>
+              <p>
+                We consider maquette to be mainly feature-complete, which means that this minor update only contains a...
+                <a href="https://medium.com/maquette-news/maquette-2-3-and-unit-testing-e5349ba73f64">read more</a>
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <span class="date">8 Feb 2016</span>
+            <div>
+              <a href="https://medium.com/maquette-news/maquette-2-2-now-supports-jsx-7da7b0a1dc98"><h3>Maquette 2.2 now also supports JSX</h3></a>
+              <p>
+                A lot of code has changed in maquette 2.2, but there are almost no API changes since version 2.1. This is because...
+                <a href="https://medium.com/maquette-news/maquette-2-2-now-supports-jsx-7da7b0a1dc98">read more</a>
+              </p>
+
+            </div>
+          </li>
+          <li>
+            <span class="date">15 Dec 2015</span>
+            <div>
+              <a href="https://medium.com/maquette-news/maquette-with-typescript-quick-start-ac63149fc971"><h3>Maquette with Typescript quick-start</h3></a>
+              <p>
+                I am very enthusiastic about writing web applications using Typescript combined with maquette. I think a typed...
+                <a href="https://medium.com/maquette-news/maquette-with-typescript-quick-start-ac63149fc971">read more</a>
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="date">15 Jul 2015</span>
+            <div>
+              <a href="https://medium.com/maquette-news/maquette-loves-typescript-4f43bc0ff5dd"><h3>Maquette loves Typescript</h3></a>
+              <p>
+                We recently gained some experience using Maquette with Typescript. We were very impressed by how well...
+                <a href="https://medium.com/maquette-news/maquette-loves-typescript-4f43bc0ff5dd">read more</a>
+              </p>
+            </div>
+          </li>
+        </ul>
+        <a href="https://medium.com/maquette-news" class="more-news">More news</a>
+      </section>
+    </div>
+  </div>
+  <aside>
+    <div class="row">
+      <div class="credits">
+        <h2>Credits</h2>
+        <p>
+          We are grateful for the following projects which inspired maquette:
+        </p>
+
+        <ul>
+          <li><strong><a href="http://facebook.github.io/react/">React</a></strong> for inventing the virtual DOM technology.</li>
+          <li><strong><a href="http://lhorie.github.io/mithril/">Mithril</a></strong> for showing how simple and lightweight a virtual DOM can be.</li>
+          <li><strong><a href="https://github.com/Raynos/mercury">Mercury</a></strong> for exploring several techniques and optimizations.</li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<aside class="full-menu">
+  <nav>
+    <h2>Menu</h2>
+    <%- include('../partials/menu-content.ejs') %>
+  </nav>
+</aside>

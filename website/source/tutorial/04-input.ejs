@@ -1,0 +1,43 @@
+---
+layout: tutorial.ejs
+---
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var projector = maquette.createProjector();
+
+    var tableOfContent = window.createTableOfContent();
+    projector.merge(document.querySelector(".table-of-content"), tableOfContent.renderMaquette);
+
+    var navigation = window.createNavigationBar(projector);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+  });
+</script>
+<div class="content-container">
+  <div class="table-of-content"></div>
+  <main>
+    <article>
+      <h1>Events</h1>
+      <p>
+        Now that you know your way around hyperscript you are ready to experience the true power of virtual DOM.
+        All that is needed to control the rotation of the flying saucer is an input element.
+        In order to work, the input element needs two properties.
+      </p>
+      <ul>
+        <li><b>value</b> should be set to the rotation variable</li>
+        <li><b>oninput</b> should be set to an event handler function that updates the rotation variable</li>
+      </ul>
+      <p>
+        In the helloworld example this construction looks as follows:
+      </p>
+      <pre>h("input", { type: "text", value: name, oninput: handleNameInput })</pre>
+      <p>
+        We have already prepared the DOM tree and provided the oninput event handler. All that is left to do is wire up the input element as described above.
+      </p>
+      <p>
+        Press next to start. Good luck.
+      </p>
+    </article>
+  </main>
+</div>
+<div class="navigation-bar"></div>

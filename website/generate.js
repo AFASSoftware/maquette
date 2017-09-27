@@ -7,7 +7,7 @@ var postcss     = require('metalsmith-postcss');
 Metalsmith(__dirname)
   .metadata({
     googleAnalyticsKey: 'UA-58254103-1',
-    maquetteVersion: '2.4.1',
+    maquetteVersion: require('../package.json').version,
     // defaults, can be overridden per page
     liveEditors: false,
     liveEditorsVelocity: false,

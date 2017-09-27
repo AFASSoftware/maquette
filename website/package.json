@@ -1,7 +1,7 @@
 {
   "name": "maquette-website",
   "description": "Website for maquette",
-  "homepage": "http://maquettejs.org/",
+  "homepage": "https://maquettejs.org/",
   "version": "1.0.0",
   "author": "Johan Gorter <johan@johangorter.com>",
   "repository": {

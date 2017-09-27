@@ -2,7 +2,7 @@
 /**
  * Welcome to the API documentation of the **maquette** library.
  *
- * [[http://maquettejs.org/|To the maquette homepage]]
+ * [[https://maquettejs.org/|To the maquette homepage]]
  */
 
 /**
@@ -193,7 +193,7 @@ export interface VNodeProperties {
    * The animation to perform when this node is added to an already existing parent.
    * When this value is a string, you must pass a `projectionOptions.transitions` object when creating the
    * projector using [[createProjector]].
-   * {@link http://maquettejs.org/docs/animations.html|More about animations}.
+   * {@link https://maquettejs.org/docs/animations.html|More about animations}.
    * @param element - Element that was just added to the DOM.
    * @param properties - The properties object that was supplied to the [[h]] method
    */
@@ -201,7 +201,7 @@ export interface VNodeProperties {
   /**
    * The animation to perform when this node is removed while its parent remains.
    * When this value is a string, you must pass a `projectionOptions.transitions` object when creating the projector using [[createProjector]].
-   * {@link http://maquettejs.org/docs/animations.html|More about animations}.
+   * {@link https://maquettejs.org/docs/animations.html|More about animations}.
    * @param element - Element that ought to be removed from to the DOM.
    * @param removeElement - Function that removes the element from the DOM.
    * This argument is provided purely for convenience.
@@ -212,7 +212,7 @@ export interface VNodeProperties {
   /**
    * The animation to perform when the properties of this node change.
    * This also includes attributes, styles, css classes. This callback is also invoked when node contains only text and that text changes.
-   * {@link http://maquettejs.org/docs/animations.html|More about animations}.
+   * {@link https://maquettejs.org/docs/animations.html|More about animations}.
    * @param element - Element that was modified in the DOM.
    * @param properties - The last properties object that was supplied to the [[h]] method
    * @param previousProperties - The previous properties object that was supplied to the [[h]] method
@@ -885,7 +885,7 @@ export interface H {
  *
  * All possible method signatures of this function can be found in the [[H]] 'interface'.
  *
- * NOTE: There are {@link http://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
+ * NOTE: There are {@link https://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
  */
 export let h: H;
 
@@ -1082,7 +1082,7 @@ export let createCache = <Result>(): CalculationCache<Result> => {
 
 /**
  * Keeps an array of result objects synchronized with an array of source objects.
- * See {@link http://maquettejs.org/docs/arrays.html|Working with arrays}.
+ * See {@link https://maquettejs.org/docs/arrays.html|Working with arrays}.
  *
  * Mapping provides a [[map]] function that updates its [[results]].
  * The [[map]] function can be called multiple times and the results will get created, removed and updated accordingly.
@@ -1107,7 +1107,7 @@ export interface Mapping<Source, Target> {
 
 /**
  * Creates a {@link Mapping} instance that keeps an array of result objects synchronized with an array of source objects.
- * See {@link http://maquettejs.org/docs/arrays.html|Working with arrays}.
+ * See {@link https://maquettejs.org/docs/arrays.html|Working with arrays}.
  *
  * @param <Source>       The type of source items. A database-record for instance.
  * @param <Target>       The type of target items. A [[Component]] for instance.

@@ -1,7 +1,7 @@
 {
   "name": "maquette",
   "description": "Minimalistic Virtual DOM implementation with support for animated transitions.",
-  "homepage": "http://maquettejs.org/",
+  "homepage": "https://maquettejs.org/",
   "keywords": [
     "virtual",
     "dom",

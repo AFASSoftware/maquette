@@ -19,11 +19,13 @@ module.exports = function (browser, chain) {
   };
 
   var getItemTexts = function () {
+    var lastPromise; // poor man's sequence
     return browser
       .elementsByCss("#todo-list li label")
       .then(function (labels) {
         return Q.all(labels.map(function (label) {
-          return label.text();
+          lastPromise = lastPromise ? lastPromise.then(function() {return label.text();}) : label.text();
+          return lastPromise;
         }));
     });
   };

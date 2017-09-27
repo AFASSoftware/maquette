@@ -10,6 +10,7 @@ This can be achieved using one of the following commands:
 
 - `phantomjs --webdriver=127.0.0.1:4444`
 - `java -jar selenium-server-standalone-2.44.0.jar -role hub -Dwebdriver.chrome.driver=chromedriver` (You can call mocha with a `--browserName=` argument to select a specific browser.)
+- /node_modules/.bin/selenium-standalone install && /node_modules/.bin/selenium-standalone start
 
 ### node sauce [desiredKey]
 

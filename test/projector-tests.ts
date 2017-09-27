@@ -177,73 +177,110 @@ describe('Projector', () => {
     expect(handleClick).to.be.calledOn(button).calledWithExactly(clickEvent);
   });
 
-  /**
-   * A class/prototype based implementation of a Component
-   *
-   * NOTE: This is not our recommended way, but this is completely supported (using VNodeProperties.bind).
-   */
-  class ButtonComponent implements Component {
-    private text: string;
-    private clicked: (sender: ButtonComponent) => void;
+  describe('Event handlers', () => {
 
-    constructor(buttonText: string, buttonClicked: (sender: ButtonComponent) => void) {
-      this.text = buttonText;
-      this.clicked = buttonClicked;
+    /**
+     * A class/prototype based implementation of a Component
+     *
+     * NOTE: This is not our recommended way, but this is completely supported (using VNodeProperties.bind).
+     */
+    class ButtonComponent implements Component {
+      private text: string;
+      private clicked: (sender: ButtonComponent) => void;
+
+      constructor(buttonText: string, buttonClicked: (sender: ButtonComponent) => void) {
+        this.text = buttonText;
+        this.clicked = buttonClicked;
+      }
+
+      public renderMaquette() {
+        return h('button', { onclick: this.handleClick, bind: this }, [this.text]);
+      }
+
+      private handleClick(evt: MouseEvent) {
+        this.clicked(this);
+      }
     }
 
-    public renderMaquette() {
-      return h('button', { onclick: this.handleClick, bind: this }, [this.text]);
-    }
+    it('invokes the eventHandler with "this" set to the value of the bind property', () => {
+      let clicked = sinon.stub();
+      let button = new ButtonComponent('Click me', clicked);
 
-    private handleClick(evt: MouseEvent) {
-      this.clicked(this);
-    }
-  }
+      let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+      let projector = createProjector({});
+      projector.append(parentElement as any, () => button.renderMaquette());
 
-  it('invokes the eventHandler with "this" set to the value of the bind property', () => {
-    let clicked = sinon.stub();
-    let button = new ButtonComponent('Click me', clicked);
+      let buttonElement = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      let clickEvent = {currentTarget: buttonElement, type: 'click'};
+      buttonElement.onclick(clickEvent as any); // Invoking onclick like this sets 'this' to the ButtonElement
 
-    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
-    let projector = createProjector({});
-    projector.append(parentElement as any, () => button.renderMaquette());
+      expect(clicked).to.be.calledWithExactly(button);
+    });
 
-    let buttonElement = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let clickEvent = {currentTarget: buttonElement, type: 'click'};
-    buttonElement.onclick(clickEvent as any); // Invoking onclick like this sets 'this' to the ButtonElement
+    it('allows for eventHandlers to be changed', () => {
+      let projector = createProjector({});
+      let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+      let eventHandler = sinon.stub();
 
-    expect(clicked).to.be.calledWithExactly(button);
-  });
+      let renderFunction = () => h('div', [
+        h('span', [
+          h('button', {
+            onclick: eventHandler
+          })
+        ])
+      ]);
 
-  it('allows for eventHandlers to be changed', () => {
-    let projector = createProjector({});
-    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
-    let eventHandler = sinon.stub();
+      projector.append(parentElement as any, renderFunction);
 
-    let renderFunction = () => h('div', [
-      h('span', [
-        h('button', {
-          onclick: eventHandler
-        })
-      ])
-    ]);
+      let div = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      let button = div!.firstChild!.firstChild! as HTMLElement;
+      let evt = { currentTarget: button, type: 'click' };
 
-    projector.append(parentElement as any, renderFunction);
+      expect(eventHandler).to.have.not.been.called;
+      button.onclick.apply(button, [evt]);
+      expect(eventHandler).to.have.been.calledOnce;
 
-    let div = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let button = div!.firstChild!.firstChild! as HTMLElement;
-    let evt = { currentTarget: button, type: 'click' };
+      // Simulate changing the event handler
+      eventHandler = sinon.stub();
+      projector.renderNow();
 
-    expect(eventHandler).to.have.not.been.called;
-    button.onclick.apply(button, [evt]);
-    expect(eventHandler).to.have.been.calledOnce;
+      button.onclick.apply(button, [evt]);
+      expect(eventHandler).to.have.been.calledOnce;
+    });
 
-    // Simulate changing the event handler
-    eventHandler = sinon.stub();
-    projector.renderNow();
+    it('will not call event handlers on domNodes which are no longer part of the rendered VNode', () => {
+      let buttonVisible = true;
+      let buttonBlur = sinon.spy();
+      let eventHandler = () => {
+        buttonVisible = false;
+      };
+      let renderFunction = () => h('div', [
+        buttonVisible ? [
+          h('button', {
+            onblur: buttonBlur,
+            onclick: eventHandler
+          })
+        ] : []
+      ]);
 
-    button.onclick.apply(button, [evt]);
-    expect(eventHandler).to.have.been.calledOnce;
+      let projector = createProjector({});
+      let parentElement = document.createElement('section');
+      projector.append(parentElement, renderFunction);
+      let div = parentElement.firstChild as HTMLElement;
+      let button = div.firstChild! as HTMLButtonElement;
+      button.onclick({ currentTarget: button, type: 'click' } as any);
+      expect(buttonVisible).to.be.false;
+      projector.renderNow();
+      // In reality, during renderNow(), the blur event fires just before its parentNode is cleared.
+      // To simulate this we recreate that state in a new button object.
+      let buttonBeforeBeingDetached = {
+        onblur: button.onblur as Function,
+        parentNode: div
+      };
+      buttonBeforeBeingDetached.onblur({ currentTarget: buttonBeforeBeingDetached, type: 'blur' } as any);
+      expect(buttonBlur).to.not.have.been.called;
+    });
+
   });
 
   it('can detach a projection', () => {

@@ -90,11 +90,12 @@ let createParentNodePath = (node: Node, rootNode: Element) => {
   return parentNodePath;
 };
 
-let findVNodeByParentNodePath = (vnode: VNode, parentNodePath: Node[]): VNode => {
+let findVNodeByParentNodePath = (vnode: VNode, parentNodePath: Node[]): VNode | undefined => {
+  let result: VNode | undefined = vnode;
   parentNodePath.forEach(node => {
-    vnode = vnode.children!.find(child => child.domNode === node)!;
+    result = (result && result.children) ? result.children!.find(child => child.domNode === node)! : undefined;
   });
-  return vnode;
+  return result;
 };
 
 let createEventHandlerInterceptor = (projector: Projector, getProjection: () => Projection | undefined): EventHandlerInterceptor => {
@@ -104,8 +105,11 @@ let createEventHandlerInterceptor = (projector: Projector, getProjection: () => 
     let matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
 
     projector.scheduleRender();
-    // Intercept function calls (event handlers)
-    return matchingVNode.properties![`on${evt.type}`].apply(matchingVNode.properties!.bind || this, arguments);
+
+    if (matchingVNode) {
+      return matchingVNode.properties![`on${evt.type}`].apply(matchingVNode.properties!.bind || this, arguments);
+    }
+    return undefined;
   };
   return function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
     return modifiedEventHandler;

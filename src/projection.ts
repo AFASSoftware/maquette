@@ -116,9 +116,7 @@ let setProperties = function(domNode: Node, properties: VNodeProperties | undefi
   let propCount = propNames.length;
   for (let i = 0; i < propCount; i++) {
     let propName = propNames[i];
-    /* tslint:disable:no-var-keyword: edge case */
     let propValue = properties[propName];
-    /* tslint:enable:no-var-keyword */
     if (propName === 'className') {
       throw new Error('Property "className" is not supported, use "class".');
     } else if (propName === 'class') {
@@ -252,7 +250,6 @@ export let createDom = (
   }
 };
 
-
 let updateDom: (previous: VNode, vnode: VNode, projectionOptions: ProjectionOptions) => boolean;
 
 let updateProperties = (
@@ -353,7 +350,6 @@ let updateProperties = (
   }
   return propertiesUpdated;
 };
-
 
 let updateChildren = (
   vnode: VNode,
@@ -466,4 +462,3 @@ export let createProjection = function(vnode: VNode, projectionOptions: Projecti
     domNode: <Element>vnode.domNode
   };
 };
-

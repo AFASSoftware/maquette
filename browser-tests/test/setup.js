@@ -1,4 +1,4 @@
-﻿var wd = require("wd");
+﻿var wd = require('wd');
 var finalhandler = require('finalhandler');
 var http = require('http');
 var serveStatic = require('serve-static');
@@ -29,6 +29,8 @@ wd.configureHttp({
   retryDelay: 15000,
   retries: 5
 });
+
+var webdriverProcess = undefined;
 
 var createBrowser = function () {
   var desired = {};
@@ -66,12 +68,38 @@ var createBrowser = function () {
       console.log(' > ' + meth.yellow, path.grey, data || '');
     });
   }
-  return browser
-    .init(desired)
-    .setAsyncScriptTimeout(3000)
-    .then(function () {
-      return browser;
+  var initBrowser = function() {
+    return browser
+      .init(desired)
+      .setAsyncScriptTimeout(3000)
+      .then(function () {
+        return browser;
+      });
+  };
+  if (setup.sauce) {
+    return initBrowser();
+  } else {
+    return new Promise(function(resolve, reject) {
+      console.log('Starting selenium');
+      require('selenium-standalone').start({
+        drivers: {
+          chrome: require('selenium-standalone/lib/default-config.js').drivers.chrome
+        },
+        spawnCb: function() {
+          console.log('selenium starting');
+        }
+      }, function(err, child) {
+        if (err) {
+          console.log('ERR')
+          reject(err);
+          return;
+        }
+        console.log('webdriver process created');
+        webdriverProcess = child;
+        resolve(initBrowser());
+      });
     });
+  }
 };
 
 var quitBrowser = function (browser, allPassed) {
@@ -79,6 +107,12 @@ var quitBrowser = function (browser, allPassed) {
     browser = browser.quit();
     if(setup.sauce) {
       browser = browser.sauceJobStatus(allPassed);
+    }
+    if (webdriverProcess) {
+      browser.then(function() {
+        console.log('Killing webdriver process');
+        webdriverProcess.kill();
+      });
     }
   }
   return browser;

@@ -2,6 +2,10 @@
   "name": "maquette-browser-tests",
   "description": "An automated test suite for maquette",
   "private": true,
+  "scripts": {
+    "prepare": "node prepare.js",
+    "test": "mocha -t 20000"
+  },
   "devDependencies": {
     "chai": "latest",
     "chai-as-promised": "latest",

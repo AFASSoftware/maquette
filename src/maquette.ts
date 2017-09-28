@@ -1071,7 +1071,7 @@ export let createCache = <Result>(): CalculationCache<Result> => {
           }
         }
       }
-      if (!cachedOutcome) {
+      if (cachedOutcome === undefined) {
         cachedOutcome = calculation();
         cachedInputs = inputs;
       }

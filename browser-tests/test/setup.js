@@ -59,7 +59,7 @@ var createBrowser = function () {
   } else {
     browser = wd.promiseChainRemote("localhost", 4444, null, null);
   }
-  if (true || process.env.VERBOSE) {
+  if (process.env.VERBOSE) {
     // optional logging
     browser.on('status', function (info) {
       console.log(info.cyan);

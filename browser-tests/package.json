@@ -7,15 +7,15 @@
     "test": "mocha -t 20000"
   },
   "devDependencies": {
-    "chai": "latest",
-    "chai-as-promised": "latest",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
     "colors": "latest",
-    "connect": "^2.27.1",
+    "connect": "3.6.5",
     "wd": "1.4.1"
   },
   "dependencies": {
-    "finalhandler": "^0.3.3",
-    "mocha": "^2.1.0",
+    "finalhandler": "1.1.0",
+    "mocha": "3.5.3",
     "selenium-standalone": "6.9.0",
     "serve-static": "^1.8.1"
   }

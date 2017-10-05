@@ -2,9 +2,7 @@ import { expect } from '../test-utilities';
 import { dom, h } from '../../src/index';
 
 describe('dom', function() {
-
   describe('children', function() {
-
     it('can remove childnodes', () => {
       let projection = dom.create(h('div', [
         h('span', { key: 1 }),
@@ -273,17 +271,17 @@ describe('dom', function() {
       let handleInput = (evt: Event) => {
         text = (evt.currentTarget as HTMLElement).innerHTML;
       };
-      let renderMaquette = () => h('div', {contentEditable: true, oninput: handleInput, innerHTML: text});
+      let renderMaquette = () => h('div', { contentEditable: true, oninput: handleInput, innerHTML: text });
       let projection = dom.create(renderMaquette());
 
       // The user clears the value
       projection.domNode.removeChild(projection.domNode.firstChild!);
-      handleInput(<any>{currentTarget: projection.domNode});
+      handleInput(<any>{ currentTarget: projection.domNode });
       projection.update(renderMaquette());
 
       // The user enters a new value
       projection.domNode.innerHTML = 'changed <i>value</i>';
-      handleInput(<any>{currentTarget: projection.domNode});
+      handleInput(<any>{ currentTarget: projection.domNode });
       projection.update(renderMaquette());
 
       expect(projection.domNode.innerHTML).to.equal('changed <i>value</i>');

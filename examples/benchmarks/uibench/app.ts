@@ -12,7 +12,7 @@ let createTableCell = (text: string): Component => {
 
   return {
     renderMaquette: () => {
-      return h('td.TableCell', { key: text, onclick: handleClick }, [ text ]);
+      return h('td.TableCell', { key: text, onclick: handleClick }, [text]);
     }
   };
 };
@@ -21,7 +21,7 @@ interface TableRow extends Component {
   update(state: TableItemState): void;
 }
 
-let createTableRow = (state: TableItemState): TableRow  => {
+let createTableRow = (state: TableItemState): TableRow => {
   let firstCell = createTableCell('#' + state.id);
   let mapping = createMapping<string, Component>(text => text, createTableCell, () => undefined);
   mapping.map(state.props);
@@ -61,7 +61,7 @@ let renderAnimBox = (state: AnimBoxState): VNode => {
   return h('div.AnimBox', {
     'data-id': `${state.id}`,
     styles: {
-      'background': 'rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')',
+      background: 'rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')',
       'border-radius': (time % 10) + 'px'
     }
   });
@@ -73,11 +73,11 @@ let renderAnim = (state: AnimState): VNode => {
 };
 
 let renderTreeLeaf = (state: TreeNodeState): VNode => {
-  return h('li.TreeLeaf', { key: state.id }, [ `${state.id}` ]);
+  return h('li.TreeLeaf', { key: state.id }, [`${state.id}`]);
 };
 
 let renderTreeNode = (state: TreeNodeState): VNode => {
-  return h('ul.TreeNode', { key: state.id },  state.children.map(child => {
+  return h('ul.TreeNode', { key: state.id }, state.children.map(child => {
     if (child.container) {
       return renderTreeNode(child);
     } else {
@@ -114,13 +114,13 @@ let createMain = (state: AppState | null) => {
       if (state) {
         switch (state.location) {
           case 'table':
-            children = [ table!.renderMaquette() ];
+            children = [table!.renderMaquette()];
             break;
           case 'anim':
-            children = [ renderAnim(state.anim) ];
+            children = [renderAnim(state.anim)];
             break;
           default: // 'tree'
-            children = [ renderTree(state.tree) ];
+            children = [renderTree(state.tree)];
             break;
         }
       }

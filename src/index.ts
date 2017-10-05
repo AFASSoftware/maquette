@@ -8,7 +8,7 @@
 export let version = '3.0-begin';
 
 export * from './interfaces';
-export {dom} from './dom';
+export { dom } from './dom';
 export * from './h';
 export * from './projector';
 export * from './cache';

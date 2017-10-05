@@ -1,5 +1,5 @@
-import {expect, sinon} from './test-utilities';
-import {createCache} from '../src/index';
+import { expect, sinon } from './test-utilities';
+import { createCache } from '../src/index';
 
 describe('Cache', function() {
 

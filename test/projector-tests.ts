@@ -153,7 +153,7 @@ describe('Projector', () => {
     projector.append(parentElement as any, renderFunction);
 
     let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let evt = {currentTarget: button, type: 'click'};
+    let evt = { currentTarget: button, type: 'click' };
 
     expect(global.requestAnimationFrame).not.to.be.called;
 
@@ -211,7 +211,7 @@ describe('Projector', () => {
       projector.append(parentElement as any, () => button.renderMaquette());
 
       let buttonElement = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-      let clickEvent = {currentTarget: buttonElement, type: 'click'};
+      let clickEvent = { currentTarget: buttonElement, type: 'click' };
       buttonElement.onclick(clickEvent as any); // Invoking onclick like this sets 'this' to the ButtonElement
 
       expect(clicked).to.be.calledWithExactly(button);

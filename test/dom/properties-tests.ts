@@ -131,7 +131,7 @@ describe('dom', function() {
             return document.createElement(tag);
           })
         }
-      }
+      };
       let projection = dom.append(<any>parentNode, h('input', { type: 'file' }));
       expect(parentNode.appendChild).to.have.been.called;
       expect(parentNode.ownerDocument.createElement).to.have.been.called;
@@ -247,11 +247,11 @@ describe('dom', function() {
       expect(inputElement.value).to.equal(model);
 
       inputElement.value = '4';
-      inputElement.oninput({target: inputElement} as any as Event);
+      inputElement.oninput({ target: inputElement } as any as Event);
       projection.update(renderFunction());
 
       inputElement.value = '4,';
-      inputElement.oninput({target: inputElement} as any as Event);
+      inputElement.oninput({ target: inputElement } as any as Event);
       projection.update(renderFunction());
 
       expect(inputElement.value).to.equal('4.');

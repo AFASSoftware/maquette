@@ -1,5 +1,5 @@
-import {expect} from './test-utilities';
-import {h, VNode} from '../src/index';
+import { expect } from './test-utilities';
+import { h, VNode } from '../src/index';
 
 describe('h', function() {
 

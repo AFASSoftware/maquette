@@ -68,8 +68,8 @@ let checkDistinguishable = (childNodes: VNode[], indexToCheck: number, parentVNo
         let node = childNodes[i];
         if (same(node, childNode)) {
           throw new Error(`${parentVNode.vnodeSelector} had a ${childNode.vnodeSelector} child ${
-            operation === 'added' ? operation : 'removed' 
-          }, but there is now more than one. You must add unique key properties to make them distinguishable.`);
+            operation === 'added' ? operation : 'removed'
+            }, but there is now more than one. You must add unique key properties to make them distinguishable.`);
         }
       }
     }
@@ -157,7 +157,7 @@ let setProperties = (domNode: Node, properties: VNodeProperties | undefined, pro
                 oldPropValue.apply(this, [evt]);
                 (evt.target as any)['oninput-value'] = (evt.target as HTMLInputElement).value; // may be HTMLTextAreaElement as well
               };
-            } ());
+            }());
             /* tslint:enable */
           }
           (domNode as any)[propName] = propValue;

@@ -13,6 +13,6 @@ stream.on('end', function() {
     console.error('Claim that maquette is only 3 kB gzipped no longer holds');
     process.exit(1);
   }
-  console.log('File size OK')
+  console.log('File size OK');
   process.exit(0);
 });

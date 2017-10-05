@@ -61,7 +61,7 @@ export let h: H = (selector: string, properties?: VNodeProperties, children?: VN
   let text: string | undefined;
   let flattenedChildren: VNode[] | undefined;
   // Recognize a common special case where there is only a single text node
-  if (children !== undefined && children.length ===  1 && typeof children[0] === 'string') {
+  if (children !== undefined && children.length === 1 && typeof children[0] === 'string') {
     text = children[0] as string;
   } else if (children) {
     flattenedChildren = [];

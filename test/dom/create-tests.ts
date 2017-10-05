@@ -69,7 +69,7 @@ describe('dom', function() {
 
       const childVNode = h('span', { id: 'b' });
       childVNode.domNode = childNode;
-      const vnode = h('div', { id: 'a' }, [ childVNode ]);
+      const vnode = h('div', { id: 'a' }, [childVNode]);
       vnode.domNode = node;
 
       const projection = dom.create(vnode);

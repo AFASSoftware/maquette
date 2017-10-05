@@ -3,16 +3,15 @@ import { dom, h } from '../../src/index';
 
 let noopEventHandlerInterceptor = (propertyName: string, functionPropertyArgument: Function) => {
   return function(this: Node) {
+    /* tslint:disable no-invalid-this */
     return functionPropertyArgument.apply(this, arguments);
+    /* tslint:enable no-invalid-this */
   };
 };
 
-describe('dom', function() {
-
-  describe('properties', function() {
-
+describe('dom', () => {
+  describe('properties', () => {
     describe('classes', () => {
-
       it('adds and removes classes', () => {
         let projection = dom.create(h('div', { classes: { a: true, b: false } }));
         let div = projection.domNode as HTMLDivElement;
@@ -132,13 +131,12 @@ describe('dom', function() {
           })
         }
       };
-      let projection = dom.append(<any>parentNode, h('input', { type: 'file' }));
+      dom.append(<any>parentNode, h('input', { type: 'file' }));
       expect(parentNode.appendChild).to.have.been.called;
       expect(parentNode.ownerDocument.createElement).to.have.been.called;
     });
 
     describe('event handlers', () => {
-
       it('allows one to correct the value while being typed', () => {
         // Here we are trying to trim the value to 2 characters
         let typedKeys = '';
@@ -231,11 +229,11 @@ describe('dom', function() {
     it('Can handle oninput event handlers which pro-actively change element.value to correct user input when typing faster than 60 keys per second', () => {
       let model = '';
       let handleInput = (evt: Event) => {
-        let inputElement = evt.target as HTMLInputElement;
-        model = inputElement.value;
+        let element = evt.target as HTMLInputElement;
+        model = element.value;
         if (model.indexOf(',') > 0) {
           model = model.replace(/,/g, '.');
-          inputElement.value = model; // To allow a user to type faster than 60 keys per second
+          element.value = model; // To allow a user to type faster than 60 keys per second
           // in reality, selectionStart would now also be reset
         }
       };

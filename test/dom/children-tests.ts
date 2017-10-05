@@ -1,8 +1,9 @@
+/* tslint:disable no-inner-html no-http-string */
 import { expect } from '../test-utilities';
 import { dom, h } from '../../src/index';
 
-describe('dom', function() {
-  describe('children', function() {
+describe('dom', () => {
+  describe('children', () => {
     it('can remove childnodes', () => {
       let projection = dom.create(h('div', [
         h('span', { key: 1 }),
@@ -66,15 +67,15 @@ describe('dom', function() {
 
     it('uses "bind" instead of "key" when no "key" is present', () => {
       let projection = dom.create(h('div', [
-        h('span', { bind: 2 })
+        h('span', { bind: {} })
       ]));
 
       let div = projection.domNode as HTMLDivElement;
       expect(div.children.length).to.equal(1);
 
       projection.update(h('div', [
-        h('span', { bind: 1 }),
-        h('span', { bind: 2 })
+        h('span', { bind: {} }),
+        h('span', { bind: {} })
       ]));
 
       expect(div.children.length).to.equal(2);
@@ -288,7 +289,6 @@ describe('dom', function() {
     });
 
     describe('svg', () => {
-
       it('creates and updates svg dom nodes with the right namespace', () => {
         let projection = dom.create(h('div', [
           h('svg', [

@@ -1,8 +1,7 @@
 import { expect } from './test-utilities';
 import { h, VNode } from '../src/index';
 
-describe('h', function() {
-
+describe('h', () => {
   let toTextVNode = (text: string): VNode => {
     return {
       vnodeSelector: '',
@@ -13,7 +12,7 @@ describe('h', function() {
     };
   };
 
-  it('should flatten nested arrays', function() {
+  it('should flatten nested arrays', () => {
     let vnode = h('div', [
       'text',
       null,
@@ -35,7 +34,7 @@ describe('h', function() {
     ]);
   });
 
-  it('Should be very flexible when accepting arguments', function() {
+  it('Should be very flexible when accepting arguments', () => {
     let vnode = h(
       'div', [
         'text',
@@ -76,7 +75,7 @@ describe('h', function() {
     ]);
   });
 
-  it('Should render a string as text', function() {
+  it('Should render a string as text', () => {
     expect(h('div', [['1']])).to.deep.equal({ vnodeSelector: 'div', properties: undefined, text: undefined, children: [toTextVNode('1')], domNode: null });
   });
 

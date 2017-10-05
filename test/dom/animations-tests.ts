@@ -2,11 +2,8 @@ import { expect, sinon } from '../test-utilities';
 import { dom, h } from '../../src/index';
 
 describe('dom', () => {
-
   describe('animations', () => {
-
     describe('updateAnimation', () => {
-
       it('is invoked when a node contains only text and that text changes', () => {
         let updateAnimation = sinon.stub();
         let projection = dom.create(h('div', { updateAnimation }, ['text']));
@@ -36,7 +33,6 @@ describe('dom', () => {
     });
 
     describe('enterAnimation', () => {
-
       it('is invoked when a new node is added to an existing parent node', () => {
         let enterAnimation = sinon.stub();
         let projection = dom.create(h('div', [
@@ -52,7 +48,6 @@ describe('dom', () => {
     });
 
     describe('exitAnimation', () => {
-
       it('is invoked when a node is removed from an existing parent node', () => {
         let exitAnimation = sinon.stub();
         let projection = dom.create(h('div', [

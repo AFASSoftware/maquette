@@ -1,9 +1,8 @@
 import { expect, sinon } from './test-utilities';
 import { createCache } from '../src/index';
 
-describe('Cache', function() {
-
-  it('should execute calculate() on the first invocation', function() {
+describe('Cache', () => {
+  it('should execute calculate() on the first invocation', () => {
     let cache = createCache();
     let calculate = sinon.stub().returns('calculation result');
     let result = cache.result([1], calculate);
@@ -11,7 +10,7 @@ describe('Cache', function() {
     expect(result).to.equal('calculation result');
   });
 
-  it('should only execute calculate() on next invocations when the inputs are different', function() {
+  it('should only execute calculate() on next invocations when the inputs are different', () => {
     let cache = createCache();
     let calculate = sinon.stub().returns('calculation result');
     cache.result([1], calculate);

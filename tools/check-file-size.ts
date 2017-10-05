@@ -1,13 +1,14 @@
+/* tslint:disable no-console */
 import * as fs from 'fs';
 import * as zlib from 'zlib';
 
-let input = fs.createReadStream(__dirname + '/../dist/maquette.umd.min.js');
+let input = fs.createReadStream(`${__dirname}/../dist/maquette.umd.min.js`);
 let stream = input.pipe(zlib.createGzip());
 let length = 0;
-stream.on('data', function(chunk: any) {
+stream.on('data', chunk => {
   length += chunk.length;
 });
-stream.on('end', function() {
+stream.on('end', () => {
   console.log('gzipped size in kB:', length / 1024);
   if (length >= 3.5 * 1024) {
     console.error('Claim that maquette is only 3 kB gzipped no longer holds');

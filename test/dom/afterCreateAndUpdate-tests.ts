@@ -2,9 +2,7 @@ import { expect, sinon } from '../test-utilities';
 import { h, dom } from '../../src/index';
 
 describe('dom', () => {
-
   describe('afterCreate', () => {
-
     it('is always invoked when a new node is rendered', () => {
       let afterCreate = sinon.stub();
       let projection = dom.create(h('div', { afterCreate }));
@@ -14,14 +12,13 @@ describe('dom', () => {
     it('invokes afterCreate with "this" set to the value of the bind property', () => {
       let afterCreate = sinon.stub();
       let thisObject = sinon.stub();
-      let projection = dom.create(h('div', { afterCreate: afterCreate, bind: thisObject }));
+      dom.create(h('div', { afterCreate: afterCreate, bind: thisObject }));
       expect(afterCreate).to.be.calledOn(thisObject);
     });
 
   });
 
   describe('afterUpdate', () => {
-
     it('is always invoked when the dom is being rendered, regardless of updates to the node itself', () => {
       let afterUpdate = sinon.stub();
       let projection = dom.create(h('div', { afterUpdate }));

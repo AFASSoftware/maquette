@@ -1,10 +1,9 @@
 import { expect, sinon } from '../test-utilities';
 import { dom, h } from '../../src/index';
 
-describe('dom', function() {
-  describe('create', function() {
-
-    it('should create and update single textnodes', function() {
+describe('dom', () => {
+  describe('create', () => {
+    it('should create and update single textnodes', () => {
       let projection = dom.create(h('div', ['text']));
       expect(projection.domNode.outerHTML).to.equal('<div>text</div>');
 
@@ -21,7 +20,7 @@ describe('dom', function() {
       expect(projection.domNode.outerHTML).to.equal('<div>text</div>');
     });
 
-    it('should work correctly with adjacent textnodes', function() {
+    it('should work correctly with adjacent textnodes', () => {
       let projection = dom.create(h('div', ['', '1', '']));
       expect(projection.domNode.outerHTML).to.equal('<div>1</div>');
 
@@ -32,7 +31,7 @@ describe('dom', function() {
       expect(projection.domNode.outerHTML).to.equal('<div>1</div>');
     });
 
-    it('should parse the selector', function() {
+    it('should parse the selector', () => {
       let projection = dom.create(h('div'));
       expect(projection.domNode.outerHTML).to.equal('<div></div>');
 

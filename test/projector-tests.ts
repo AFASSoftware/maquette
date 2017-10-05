@@ -2,13 +2,12 @@ import { expect, sinon } from './test-utilities';
 import { Component, createProjector, h } from '../src/index';
 
 describe('Projector', () => {
-
-  beforeEach(function() {
+  beforeEach(() => {
     global.requestAnimationFrame = sinon.stub().returns(5);
     global.cancelAnimationFrame = sinon.stub();
   });
 
-  afterEach(function() {
+  afterEach(() => {
     delete global.requestAnimationFrame;
     delete global.cancelAnimationFrame;
   });
@@ -178,7 +177,6 @@ describe('Projector', () => {
   });
 
   describe('Event handlers', () => {
-
     /**
      * A class/prototype based implementation of a Component
      *

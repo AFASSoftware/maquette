@@ -102,7 +102,8 @@ let createEventHandlerInterceptor = (projector: Projector, getProjection: () => 
   let modifiedEventHandler = function(this: Node, evt: Event) {
     let projection = getProjection()!;
     let parentNodePath = createParentNodePath(evt.currentTarget as Element, projection.domNode);
-    let matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath.reverse());
+    parentNodePath.reverse();
+    let matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath);
 
     projector.scheduleRender();
 

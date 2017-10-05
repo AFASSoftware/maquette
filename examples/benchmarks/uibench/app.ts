@@ -1,5 +1,6 @@
-import { Component, VNode } from '../../../dist/maquette';
-import * as Maquette from '../../../dist/maquette';
+/* tslint:disable no-console */
+import { Component, VNode } from '../../../dist/index';
+import * as Maquette from '../../../dist/index';
 
 let maquette: typeof Maquette = (window as any).maquette;
 
@@ -22,7 +23,7 @@ interface TableRow extends Component {
 }
 
 let createTableRow = (state: TableItemState): TableRow => {
-  let firstCell = createTableCell('#' + state.id);
+  let firstCell = createTableCell(`#${state.id}`);
   let mapping = createMapping<string, Component>(text => text, createTableCell, () => undefined);
   mapping.map(state.props);
   return {
@@ -61,8 +62,8 @@ let renderAnimBox = (state: AnimBoxState): VNode => {
   return h('div.AnimBox', {
     'data-id': `${state.id}`,
     styles: {
-      background: 'rgba(0,0,0,' + (0.5 + ((time % 10) / 10)) + ')',
-      'border-radius': (time % 10) + 'px'
+      background: `rgba(0,0,0,${0.5 + ((time % 10) / 10)})`,
+      'border-radius': `${time % 10}px`
     }
   });
 };

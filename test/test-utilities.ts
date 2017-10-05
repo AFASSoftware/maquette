@@ -1,4 +1,4 @@
-/* tslint:disable:no-require-imports no-unused-variable */
+/* tslint:disable:no-require-imports no-unused-variable no-var-requires */
 
 import chai = require('chai');
 import chaiAsPromised = require('chai-as-promised');

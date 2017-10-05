@@ -149,7 +149,7 @@ let setProperties = (domNode: Node, properties: VNodeProperties | undefined, pro
             propValue = eventHandlerInterceptor(propName, propValue, domNode, properties); // intercept eventhandlers
           }
           if (propName === 'oninput') {
-            /* tslint:disable no-this-keyword no-invalid-this only-arrow-functions */
+            /* tslint:disable no-this-keyword no-invalid-this only-arrow-functions no-void-expression */
             (function() {
               // record the evt.target.value, because IE and Edge sometimes do a requestAnimationFrame between changing value and running oninput
               let oldPropValue = propValue;

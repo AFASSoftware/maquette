@@ -51,7 +51,7 @@ export interface H {
  *
  * All possible method signatures of this function can be found in the [[H]] 'interface'.
  *
- * NOTE: There are {@link http://maquettejs.org/docs/rules.html|three basic rules} you should be aware of when updating the virtual DOM.
+ * NOTE: There are {@link http://maquettejs.org/docs/rules.html|two basic rules} you should be aware of when updating the virtual DOM.
  */
 export let h: H = (selector: string, properties?: VNodeProperties, children?: VNodeChild[]): VNode => {
   if (Array.isArray(properties)) {

@@ -1,13 +1,8 @@
-<p>Before you are ready to start using maquette, you need to be aware of three rules, which are all easy to follow.
+<p>Before you are ready to start using maquette, you need to be aware of two rules, which are all easy to follow.
   These rules are there to make sure maquette can generally render and diff very large pages at 60 frames per second on
   every device.</p>
 
-<h2 id="rule-1-do-not-change-event-handlers">Rule #1 Do not change event handlers</h2>
-<p>Changing event handlers, like <code>onclick</code> for example, is rarely useful.
-  Updating an event handler is costly if you accidentally change them on every render.
-  Because this mistake that is so easy to make, maquette disallows changing event handlers completely.</p>
-
-<h2 id="rule-2-always-provide-the-same-set-of-properties">Rule #2 Always provide the same set of properties</h2>
+<h2 id="rule-1-always-provide-the-same-set-of-properties">Rule #1 Always provide the same set of properties</h2>
 <p>If you render <code>h('a',{href:'.',target:'_blank'})</code> and then you want to clear the <code>target</code>
   attribute,
   you need to use either <code>h('a',{href:'.',target:undefined})</code>, <code>h('a',{href: '.',target:null})</code> or
@@ -17,7 +12,7 @@
   This makes you responsible to always provide the same set of properties. The same principe applies to the nested
   <code>classes</code> and <code>styles</code> objects.</p>
 
-<h2 id="rule-3-distinguishable-children">Rule #3 Distinguishable children</h2>
+<h2 id="rule-2-distinguishable-children">Rule #2 Distinguishable children</h2>
 <p>The last rule states that if a node has multiple childnodes with the same selector
   <strong>and</strong> these childnodes are added or removed dynamically,
   then they must have unique key properties.</p>

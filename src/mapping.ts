@@ -14,13 +14,13 @@ export interface Mapping<Source, Target> {
   /**
    * The array of results. These results will be synchronized with the latest array of sources that were provided using [[map]].
    */
-  results: Array<Target>;
+  results: Target[];
   /**
    * Maps a new array of sources and updates [[results]].
    *
    * @param newSources   The new array of sources.
    */
-  map(newSources: Array<Source>): void;
+  map(newSources: Source[]): void;
 }
 
 /**
@@ -43,7 +43,7 @@ export let createMapping = <Source, Target>(
 
   return {
     results: results,
-    map: function(newSources: Source[]) {
+    map: (newSources: Source[]) => {
       let newKeys = newSources.map(getSourceKey);
       let oldTargets = results.slice();
       let oldIndex = 0;

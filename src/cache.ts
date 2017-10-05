@@ -32,14 +32,14 @@ export interface CalculationCache<Result> {
 export let createCache = <Result>(): CalculationCache<Result> => {
   let cachedInputs: Object[] | undefined;
   let cachedOutcome: Result | undefined;
-  return {
 
-    invalidate: function() {
+  return {
+    invalidate: () => {
       cachedOutcome = undefined;
       cachedInputs = undefined;
     },
 
-    result: function(inputs: Object[], calculation: () => Result) {
+    result: (inputs: Object[], calculation: () => Result) => {
       if (cachedInputs) {
         for (let i = 0; i < inputs.length; i++) {
           if (cachedInputs[i] !== inputs[i]) {

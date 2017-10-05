@@ -3,15 +3,17 @@
  */
 import { Projection, ProjectionOptions, VNode, VNodeProperties } from './interfaces';
 
+/* tslint:disable no-http-string */
 const NAMESPACE_W3 = 'http://www.w3.org/';
-const NAMESPACE_SVG = NAMESPACE_W3 + '2000/svg';
-const NAMESPACE_XLINK = NAMESPACE_W3 + '1999/xlink';
+/* tslint:enable no-http-string */
+const NAMESPACE_SVG = `${NAMESPACE_W3}2000/svg`;
+const NAMESPACE_XLINK = `${NAMESPACE_W3}1999/xlink`;
 
 let emptyArray = <VNode[]>[];
 
 export let extend = <T>(base: T, overrides: any): T => {
   let result = {} as any;
-  Object.keys(base).forEach(function(key) {
+  Object.keys(base).forEach((key) => {
     result[key] = (base as any)[key];
   });
   if (overrides) {
@@ -41,7 +43,7 @@ let checkStyleValue = (styleValue: Object) => {
   }
 };
 
-let findIndexOfChild = function(children: VNode[], sameAs: VNode, start: number) {
+let findIndexOfChild = (children: VNode[], sameAs: VNode, start: number) => {
   if (sameAs.vnodeSelector !== '') {
     // Never scan for text-nodes
     for (let i = start; i < children.length; i++) {
@@ -53,7 +55,7 @@ let findIndexOfChild = function(children: VNode[], sameAs: VNode, start: number)
   return -1;
 };
 
-let checkDistinguishable = function(childNodes: VNode[], indexToCheck: number, parentVNode: VNode, operation: string) {
+let checkDistinguishable = (childNodes: VNode[], indexToCheck: number, parentVNode: VNode, operation: string) => {
   let childNode = childNodes[indexToCheck];
   if (childNode.vnodeSelector === '') {
     return; // Text nodes need not be distinguishable
@@ -65,20 +67,16 @@ let checkDistinguishable = function(childNodes: VNode[], indexToCheck: number, p
       if (i !== indexToCheck) {
         let node = childNodes[i];
         if (same(node, childNode)) {
-          if (operation === 'added') {
-            throw new Error(parentVNode.vnodeSelector + ' had a ' + childNode.vnodeSelector + ' child ' +
-              'added, but there is now more than one. You must add unique key properties to make them distinguishable.');
-          } else {
-            throw new Error(parentVNode.vnodeSelector + ' had a ' + childNode.vnodeSelector + ' child ' +
-              'removed, but there were more than one. You must add unique key properties to make them distinguishable.');
-          }
+          throw new Error(`${parentVNode.vnodeSelector} had a ${childNode.vnodeSelector} child ${
+            operation === 'added' ? operation : 'removed' 
+          }, but there is now more than one. You must add unique key properties to make them distinguishable.`);
         }
       }
     }
   }
 };
 
-let nodeAdded = function(vNode: VNode) {
+let nodeAdded = (vNode: VNode) => {
   if (vNode.properties) {
     let enterAnimation = vNode.properties.enterAnimation;
     if (enterAnimation) {
@@ -87,13 +85,13 @@ let nodeAdded = function(vNode: VNode) {
   }
 };
 
-let nodeToRemove = function(vNode: VNode) {
+let nodeToRemove = (vNode: VNode) => {
   let domNode: Node = vNode.domNode!;
   if (vNode.properties) {
     let exitAnimation = vNode.properties.exitAnimation;
     if (exitAnimation) {
       (domNode as HTMLElement).style.pointerEvents = 'none';
-      let removeDomNode = function() {
+      let removeDomNode = () => {
         if (domNode.parentNode) {
           domNode.parentNode.removeChild(domNode);
         }
@@ -107,7 +105,7 @@ let nodeToRemove = function(vNode: VNode) {
   }
 };
 
-let setProperties = function(domNode: Node, properties: VNodeProperties | undefined, projectionOptions: ProjectionOptions) {
+let setProperties = (domNode: Node, properties: VNodeProperties | undefined, projectionOptions: ProjectionOptions) => {
   if (!properties) {
     return;
   }
@@ -151,6 +149,7 @@ let setProperties = function(domNode: Node, properties: VNodeProperties | undefi
             propValue = eventHandlerInterceptor(propName, propValue, domNode, properties); // intercept eventhandlers
           }
           if (propName === 'oninput') {
+            /* tslint:disable no-this-keyword no-invalid-this only-arrow-functions */
             (function() {
               // record the evt.target.value, because IE and Edge sometimes do a requestAnimationFrame between changing value and running oninput
               let oldPropValue = propValue;
@@ -159,6 +158,7 @@ let setProperties = function(domNode: Node, properties: VNodeProperties | undefi
                 (evt.target as any)['oninput-value'] = (evt.target as HTMLInputElement).value; // may be HTMLTextAreaElement as well
               };
             } ());
+            /* tslint:enable */
           }
           (domNode as any)[propName] = propValue;
         }
@@ -175,16 +175,16 @@ let setProperties = function(domNode: Node, properties: VNodeProperties | undefi
   }
 };
 
-let addChildren = function(domNode: Node, children: VNode[] | undefined, projectionOptions: ProjectionOptions) {
+let addChildren = (domNode: Node, children: VNode[] | undefined, projectionOptions: ProjectionOptions) => {
   if (!children) {
     return;
   }
-  for (let i = 0; i < children.length; i++) {
-    createDom(children[i], domNode, undefined, projectionOptions);
+  for (let child of children) {
+    createDom(child, domNode, undefined, projectionOptions);
   }
 };
 
-export let initPropertiesAndChildren = function(domNode: Node, vnode: VNode, projectionOptions: ProjectionOptions) {
+export let initPropertiesAndChildren = (domNode: Node, vnode: VNode, projectionOptions: ProjectionOptions) => {
   addChildren(domNode, vnode.children, projectionOptions); // children before properties, needed for value property of <select>.
   if (vnode.text) {
     domNode.textContent = vnode.text;
@@ -204,7 +204,8 @@ export let createDom = (
   insertBefore: Node | null | undefined,
   projectionOptions: ProjectionOptions
 ): void => {
-  let domNode: Node | undefined, i: number, c: string, start = 0, type: string, found: string;
+  let domNode: Node | undefined;
+  let start = 0;
   let vnodeSelector = vnode.vnodeSelector;
   let doc = parentNode.ownerDocument;
   if (vnodeSelector === '') {
@@ -215,15 +216,15 @@ export let createDom = (
       parentNode.appendChild(domNode);
     }
   } else {
-    for (i = 0; i <= vnodeSelector.length; ++i) {
-      c = vnodeSelector.charAt(i);
+    for (let i = 0; i <= vnodeSelector.length; ++i) {
+      let c = vnodeSelector.charAt(i);
       if (i === vnodeSelector.length || c === '.' || c === '#') {
-        type = vnodeSelector.charAt(start - 1);
-        found = vnodeSelector.slice(start, i);
+        let type = vnodeSelector.charAt(start - 1);
+        let found = vnodeSelector.slice(start, i);
         if (type === '.') {
-          (domNode as HTMLElement).classList.add(found);
+          (domNode! as HTMLElement).classList.add(found);
         } else if (type === '#') {
-          (domNode as Element).id = found;
+          (domNode! as Element).id = found;
         } else {
           if (found === 'svg') {
             projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });
@@ -314,13 +315,14 @@ let updateProperties = (
       }
       if (propName === 'value') { // value can be manipulated by the user directly and using event.preventDefault() is not an option
         let domValue = (domNode as any)[propName];
-        if ( // The edge cases are described in the tests
-        domValue !== propValue // The 'value' in the DOM tree !== newValue
-        && ((domNode as any)['oninput-value']
+        if (
+          domValue !== propValue // The 'value' in the DOM tree !== newValue
+          && ((domNode as any)['oninput-value']
             ? domValue === (domNode as any)['oninput-value'] // If the last reported value to 'oninput' does not match domValue, do nothing and wait for oninput
             : propValue !== previousValue // Only update the value if the vdom changed
-        )
+          )
         ) {
+          // The edge cases are described in the tests
           (domNode as any)[propName] = propValue; // Reset the value, even if the virtual DOM did not change
           (domNode as any)['oninput-value'] = undefined;
         } // else do not update the domNode, otherwise the cursor position would be changed
@@ -405,7 +407,7 @@ let updateChildren = (
   return textUpdated;
 };
 
-updateDom = function(previous, vnode, projectionOptions) {
+updateDom = (previous, vnode, projectionOptions) => {
   let domNode = previous.domNode!;
   let textUpdated = false;
   if (previous === vnode) {
@@ -449,10 +451,10 @@ updateDom = function(previous, vnode, projectionOptions) {
   return textUpdated;
 };
 
-export let createProjection = function(vnode: VNode, projectionOptions: ProjectionOptions): Projection {
+export let createProjection = (vnode: VNode, projectionOptions: ProjectionOptions): Projection => {
   return {
     getLastRender: () => vnode,
-    update: function(updatedVnode: VNode) {
+    update: (updatedVnode: VNode) => {
       if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
         throw new Error('The selector for the root VNode may not be changed. (consider using dom.merge and add one extra level to the virtual DOM)');
       }

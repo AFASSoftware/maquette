@@ -107,13 +107,13 @@ let createEventHandlerInterceptor = (projector: Projector, getProjection: () => 
     projector.scheduleRender();
 
     if (matchingVNode) {
+      /* tslint:disable no-invalid-this */
       return matchingVNode.properties![`on${evt.type}`].apply(matchingVNode.properties!.bind || this, arguments);
+      /* tslint:enable no-invalid-this */
     }
     return undefined;
   };
-  return function(propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) {
-    return modifiedEventHandler;
-  };
+  return (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => modifiedEventHandler;
 };
 
 /**
@@ -123,7 +123,7 @@ let createEventHandlerInterceptor = (projector: Projector, getProjection: () => 
  *
  * @param projectorOptions   Options that influence how the DOM is rendered and updated.
  */
-export let createProjector = function(projectorOptions?: ProjectorOptions): Projector {
+export let createProjector = (projectorOptions?: ProjectorOptions): Projector => {
   let projector: Projector;
   let projectionOptions = applyDefaultProjectionOptions(projectorOptions);
   let renderCompleted = true;
@@ -133,9 +133,9 @@ export let createProjector = function(projectorOptions?: ProjectorOptions): Proj
   let renderFunctions = [] as (() => VNode)[]; // matches the projections array
 
   let addProjection = (
-    /** one of: dom.append, dom.insertBefore, dom.replace, dom.merge */
+    /* one of: dom.append, dom.insertBefore, dom.replace, dom.merge */
     domFunction: (node: Element, vnode: VNode, projectionOptions: ProjectionOptions) => Projection,
-    /** the parameter of the domFunction */
+    /* the parameter of the domFunction */
     node: Element,
     renderFunction: () => VNode
   ): void => {
@@ -147,7 +147,7 @@ export let createProjector = function(projectorOptions?: ProjectorOptions): Proj
     renderFunctions.push(renderFunction);
   };
 
-  let doRender = function() {
+  let doRender = () => {
     scheduled = undefined;
     if (!renderCompleted) {
       return; // The last render threw an error, it should be logged in the browser console.
@@ -162,12 +162,12 @@ export let createProjector = function(projectorOptions?: ProjectorOptions): Proj
 
   projector = {
     renderNow: doRender,
-    scheduleRender: function() {
+    scheduleRender: () => {
       if (!scheduled && !stopped) {
         scheduled = requestAnimationFrame(doRender);
       }
     },
-    stop: function() {
+    stop: () => {
       if (scheduled) {
         cancelAnimationFrame(scheduled);
         scheduled = undefined;
@@ -175,7 +175,7 @@ export let createProjector = function(projectorOptions?: ProjectorOptions): Proj
       stopped = true;
     },
 
-    resume: function() {
+    resume: () => {
       stopped = false;
       renderCompleted = true;
       projector.scheduleRender();
@@ -185,19 +185,19 @@ export let createProjector = function(projectorOptions?: ProjectorOptions): Proj
       addProjection(dom.append, parentNode, renderFunction);
     },
 
-    insertBefore: function(beforeNode, renderFunction) {
+    insertBefore: (beforeNode, renderFunction) => {
       addProjection(dom.insertBefore, beforeNode, renderFunction);
     },
 
-    merge: function(domNode, renderFunction) {
+    merge: (domNode, renderFunction) => {
       addProjection(dom.merge, domNode, renderFunction);
     },
 
-    replace: function(domNode, renderFunction) {
+    replace: (domNode, renderFunction) => {
       addProjection(dom.replace, domNode, renderFunction);
     },
 
-    detach: function(renderFunction) {
+    detach: (renderFunction) => {
       for (let i = 0; i < renderFunctions.length; i++) {
         if (renderFunctions[i] === renderFunction) {
           renderFunctions.splice(i, 1);

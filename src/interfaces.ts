@@ -17,7 +17,7 @@ export interface VNode {
   /**
    * Array of [[VNode]]s to be used as children. This array is already flattened.
    */
-  readonly children: Array<VNode> | undefined;
+  readonly children: VNode[] | undefined;
   /**
    * Used in a special case when a [[VNode]] only has one child node which is a text node. Only used in combination with children === undefined.
    */
@@ -34,6 +34,7 @@ export interface VNode {
  * For your convenience, all common attributes, properties and event handlers are listed here and are
  * type-checked when using Typescript.
  */
+/* tslint:disable member-ordering - we order by Element type here */
 export interface VNodeProperties {
   /**
    * The animation to perform when this node is added to an already existing parent.
@@ -50,7 +51,7 @@ export interface VNodeProperties {
    * You may use this function to remove the element when the animation is done.
    * @param properties - The properties object that was supplied to the [[h]] method that rendered this [[VNode]] the previous time.
    */
-  exitAnimation?: ((element: Element, removeElement: () => void, properties?: VNodeProperties) => void);
+  exitAnimation?(element: Element, removeElement: () => void, properties?: VNodeProperties): void;
   /**
    * The animation to perform when the properties of this node change.
    * This also includes attributes, styles, css classes. This callback is also invoked when node contains only text and that text changes.
@@ -59,7 +60,7 @@ export interface VNodeProperties {
    * @param properties - The last properties object that was supplied to the [[h]] method
    * @param previousProperties - The previous properties object that was supplied to the [[h]] method
    */
-  updateAnimation?: (element: Element, properties?: VNodeProperties, previousProperties?: VNodeProperties) => void;
+  updateAnimation?(element: Element, properties?: VNodeProperties, previousProperties?: VNodeProperties): void;
   /**
    * Callback that is executed after this node is added to the DOM. Child nodes and properties have
    * already been applied.
@@ -86,13 +87,15 @@ export interface VNodeProperties {
    *
    * When no [[key]] is present, this object is also used to uniquely identify a DOM node.
    */
-  readonly bind?: Object;
+  readonly bind?: object;
+  /* tslint:disable ban-types */
   /**
    * Used to uniquely identify a DOM node among siblings.
    * A key is required when there are more children with the same selector and these children are added or removed dynamically.
    * NOTE: this does not have to be a string or number, a [[Component]] Object for instance is also possible.
    */
   readonly key?: Object;
+  /* tslint:enable ban-types */
   /**
    * An object literal like `{important:true}` which allows css classes, like `important` to be added and removed
    * dynamically.
@@ -168,6 +171,7 @@ export interface VNodeProperties {
    */
   readonly [index: string]: any;
 }
+/* tslint:enable member-ordering */
 
 /**
  * Only needed for the definition of [[VNodeChild]].
@@ -215,7 +219,6 @@ export interface ProjectorOptions {
   styleApplyer?(domNode: HTMLElement, styleName: string, value: string): void;
 }
 
-
 export interface ProjectionOptions extends ProjectorOptions {
   /**
    * Only for internal use. Used for rendering SVG Nodes.
@@ -236,7 +239,7 @@ export interface ProjectionOptions extends ProjectorOptions {
 }
 
 /**
- * @deprecated
+ * soon to be deprecated
  * Use the MaquetteComponent introduced in maquette 3.0
  */
 export interface Component {

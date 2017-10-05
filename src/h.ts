@@ -10,7 +10,7 @@ let toTextVNode = (data: string): VNode => {
   };
 };
 
-let appendChildren = function(parentSelector: string, insertions: VNodeChild[], main: VNode[]) {
+let appendChildren = (parentSelector: string, insertions: VNodeChild[], main: VNode[]) => {
   for (let i = 0, length = insertions.length; i < length; i++) {
     let item = insertions[i];
     if (Array.isArray(item)) {

@@ -2,7 +2,7 @@
 /**
  * Welcome to the API documentation of the **maquette** library.
  *
- * [[http://maquettejs.org/|To the maquette homepage]]
+ * [[https://maquettejs.org/|To the maquette homepage]]
  */
 
 export let version = '3.0-begin';

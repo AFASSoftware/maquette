@@ -1,0 +1,94 @@
+---
+layout: tutorial.ejs
+workbench: true
+---
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    var h = maquette.h;
+
+    var projector = maquette.createProjector();
+
+    var achieved1 = false;
+    var objective1 = {
+      title: "Assign the rotation variable to the value property of the input",
+      isAchieved: function () {
+        return achieved1;
+      },
+      onSceneUpdate: function (contentWindow) {
+        var oldRotation = contentWindow.rotation;
+        contentWindow.rotation = 76908;
+        try {
+          achieved1 = false;
+          var vnode = contentWindow.renderMaquette();
+          var input = vnode.children[0].children[0].children[1];
+          achieved1 = input.properties.value == contentWindow.rotation;
+        } catch (e) {
+        }
+        contentWindow.rotation = oldRotation;
+      },
+      renderMaquette: function () {
+        return h("p", ["Hint: Use the properties parameter of the h() function."]);
+      }
+    };
+
+    var achieved2 = false;
+    var objective2 = {
+      title: "Assign the handleRotationInput function to the oninput property",
+      isAchieved: function () {
+        return achieved2;
+      },
+      onSceneUpdate: function (contentWindow) {
+        try {
+          achieved2 = false;
+          var vnode = contentWindow.renderMaquette();
+          var input = vnode.children[0].children[0].children[1];
+          achieved2 = contentWindow.handleRotationInput && (input.properties.oninput === contentWindow.handleRotationInput);
+        } catch (e) {
+        }
+      },
+      renderMaquette: function () {
+        return h("p", ["Hint: Use the properties parameter of the h() function."]);
+      }
+    };
+
+    var achieved3 = false;
+    var objective3 = {
+      title: "Take the flying saucer for a testdrive",
+      isAchieved: function () {
+        return achieved3;
+      },
+      onSceneUpdate: function (contentWindow) {
+        achieved3 = false;
+        try {
+          achieved3 = (contentWindow.rotation === "360" && workbench.getScript().indexOf("360") === -1);
+        } catch(e) {
+        }
+      },
+      renderMaquette: function () {
+        return h("p", ["Rotate the flying saucer 360 degrees using the remote control"]);
+      }
+    };
+
+    var getallObjectivesAchieved = function () {
+      return workbench.allObjectivesAchieved();
+    };
+
+    var navigation = window.createNavigation(projector, getallObjectivesAchieved);
+
+    var workbench = createWorkbench(projector, "assets/saucer-rotation-input.js", [
+      objective1,
+      objective2,
+      objective3
+    ]);
+
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+
+    var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+  });
+</script>
+
+<div class="work"></div>
+<div class="navigation-bar"></div>

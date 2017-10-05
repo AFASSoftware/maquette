@@ -1,0 +1,57 @@
+---
+layout: tutorial.ejs
+workbench: true
+---
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    var h = maquette.h;
+
+    var projector = maquette.createProjector();
+
+    var achieved1 = false;
+    var objective1 = {
+      title: "Fix the crash",
+      isAchieved: function () {
+        return achieved1;
+      },
+      onSceneUpdate: function (contentWindow) {
+        achieved1 = false;
+        var works = contentWindow.document.body && contentWindow.document.body.firstChild && !contentWindow.lastError;
+        if(works) {
+          try {
+            var vnode = contentWindow.renderMaquette();
+            if (!vnode.children[0].children[1]) {
+              achieved1 = true;
+              return;
+            }
+            var function1 = vnode.children[0].children[0].properties;
+            var function2 = vnode.children[0].children[1].properties;
+            achieved1 = (function1 && function1.key) || (function2 && function2.key);
+          } catch(e) {
+          }
+        }
+      },
+      renderMaquette: function () {
+        return h("p", ["If you press the 'remove rotation' button, the wrong row will be removed. Put a unique key property on one of the 'row' divs and try again."]);
+      }
+    };
+
+    var getallObjectivesAchieved = function () {
+      return workbench.allObjectivesAchieved();
+    };
+
+    var workbench = createWorkbench(projector, "assets/saucer-rotation-and-stealth.js", [
+      objective1
+    ]);
+
+    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+
+    var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+  });
+</script>
+
+<div class="work"></div>
+<div class="navigation-bar"></div>

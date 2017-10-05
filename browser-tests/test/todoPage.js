@@ -1,6 +1,4 @@
-﻿var Q = require('q');
-var expect = require("chai").expect;
-var wd = require("wd");
+﻿var expect = require("chai").expect;
 
 // double click is not 'natively' supported, so we need to send the
 // event direct to the element see:
@@ -19,11 +17,13 @@ module.exports = function (browser, chain) {
   };
 
   var getItemTexts = function () {
+    var lastPromise; // poor man's sequence
     return browser
       .elementsByCss("#todo-list li label")
       .then(function (labels) {
-        return Q.all(labels.map(function (label) {
-          return label.text();
+        return Promise.all(labels.map(function (label) {
+          lastPromise = lastPromise ? lastPromise.then(function() {return label.text();}) : label.text();
+          return lastPromise;
         }));
     });
   };
@@ -99,9 +99,11 @@ module.exports = function (browser, chain) {
     },
 
     assertItemsToBeCompleted: function (completeds) {
+      var lastPromise; // poor man's chaining
       chain = chain.elementsByCss("#todo-list li").then(function (items) {
-        return Q.all(items.map(function (item) {
-          return item.getAttribute("class");
+        return Promise.all(items.map(function (item) {
+          lastPromise = lastPromise ? lastPromise.then(function() { return item.getAttribute("class")}) : item.getAttribute("class");
+          return lastPromise;
         })).then(function (classes) {
           expect(classes.length).to.equal(completeds.length);
           return classes.map(function (cssClass, index) {

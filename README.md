@@ -11,4 +11,4 @@ Compared to other virtual DOM implementations, maquette has 3 advantages:
 * It allows changes to be animated
 * It is optimized for speed
 
-Visit the [website](http://maquettejs.org) for more information.
+Visit the [website](https://maquettejs.org) for more information.

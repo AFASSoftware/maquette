@@ -3,7 +3,6 @@
 var wd = require('wd');
 var keys = wd.SPECIAL_KEYS;
 require('colors');
-var _ = require("lodash");
 var chai = require("chai");
 var chaiAsPromised = require("chai-as-promised");
 
@@ -21,15 +20,13 @@ describe('todomvc-maquette', function () {
   var allPassed = true;
   var pageLoaded = false;
 
-  before(function (done) {
+  before(function () {
     browser = null;
     setup.browserCapabilities.name = 'todomvc-specs';
     return setup.createBrowser().then(function (createdBrowser) {
       browser = createdBrowser;
       page = createTodoPage(browser, browser.get(setup.rootUrl + "/examples/todomvc/index.html"));
-      page.then(function () {
-        done();
-      });
+      return page;
     });
   });
 
@@ -70,7 +67,7 @@ describe('todomvc-maquette', function () {
   	  return page.assertFocussedElementId("new-todo");
 	  });
   });
-  
+
   describe('No Todos', function () {
   	it('should hide #main and #footer', function () {
   	  return page

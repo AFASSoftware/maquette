@@ -1,0 +1,26 @@
+.progress-bar {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.progress-bar a {
+  display: block;
+  width: 50px;
+  height: 8px;
+  background: #EEEEEE;
+  border: 1px solid #DDDDDD;
+  margin: 0 2px;
+}
+
+.progress-bar .achieved {
+  background: #2c6cbe;
+  border-color: #2c6cbe;
+}
+.progress-bar .active {
+  border-color: #2c6cbe;
+}

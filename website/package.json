@@ -1,0 +1,30 @@
+{
+  "name": "maquette-website",
+  "description": "Website for maquette",
+  "homepage": "https://maquettejs.org/",
+  "version": "1.0.0",
+  "author": "Johan Gorter <johan@johangorter.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AFASSoftware/maquette"
+  },
+  "scripts": {
+    "serve": "node generate && npm run typedoc && firebase serve",
+    "typedoc": "typedoc --out ./build/website/docs/typedoc --name Maquette --target ES5 --module umd --readme none --gaID UA-58254103-1 --excludePrivate --excludeExternals --excludeNotExported ../src/maquette.ts",
+    "postcss": "postcss website/source/*.css --dir build/website/ --use precss"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "ejs": "2.5.7",
+    "firebase-tools": "3.12.0",
+    "jstransformer-ejs": "0.0.3",
+    "metalsmith": "2.3.0",
+    "metalsmith-in-place": "3.0.1",
+    "metalsmith-layouts": "1.8.1",
+    "metalsmith-markdown": "0.2.1",
+    "metalsmith-postcss": "4.1.0",
+    "postcss-cli": "4.1.1",
+    "precss": "2.0.0",
+    "typedoc": "0.8.0"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "maquette",
   "description": "Minimalistic Virtual DOM implementation with support for animated transitions.",
-  "homepage": "http://maquettejs.org/",
+  "homepage": "https://maquettejs.org/",
   "keywords": [
     "virtual",
     "dom",
@@ -26,6 +26,7 @@
     "coverage": "cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive",
     "dist": "tsc -p ./src/tsconfig.json && rollup -c && uglifyjs ./dist/maquette.umd.js -c unsafe=true -m -o ./dist/maquette.umd.min.js",
     "ci": "tsa ci"
+    "publish-website": "cd website && npm install --no-optional && node generate && npm run typedoc && firebase deploy"
   },
   "license": "MIT",
   "tonicExampleFilename": "examples/tonic-example.js",
@@ -105,6 +106,7 @@
     "mocha": "3.5.0",
     "mocha-jsdom": "1.1.0",
     "nyc": "11.1.0",
+    "precss": "2.0.0",
     "remap-istanbul": "0.9.5",
     "rollup": "0.50.0",
     "sinon": "2.4.1",

@@ -1,0 +1,9 @@
+@import "../postcss/demo";
+
+/* Used as external CSS for editing on codepen */
+
+* {
+  box-sizing: border-box;
+}
+
+

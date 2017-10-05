@@ -25,7 +25,11 @@
     "test": "cross-env TS_NODE_FAST=true mocha --compilers ts:ts-node/register --recursive",
     "dist": "tsc -p ./src/tsconfig.json && rollup -c && uglifyjs ./dist/maquette.umd.js -c unsafe=true -m -o ./dist/maquette.umd.min.js",
     "ci": "tsa ci",
-    "publish-website": "cd website && npm install --no-optional && node generate && npm run typedoc && firebase deploy"
+    "publish-website": "cd website && npm install --no-optional && node generate && npm run typedoc && firebase deploy",
+    "precommit": "tsa pre-commit",
+    "prepush": "tsa pre-push",
+    "postcheckout": "node node_modules/typescript-assistant/dist/index post-checkout",
+    "postmerge": "node node_modules/typescript-assistant/dist/index post-merge"
   },
   "license": "MIT",
   "tonicExampleFilename": "examples/tonic-example.js",
@@ -110,7 +114,7 @@
     "rollup": "0.50.0",
     "sinon": "2.4.1",
     "sinon-chai": "2.12.0",
-    "typescript-assistant": "0.20.0",
+    "typescript-assistant": "0.21.0",
     "uglify-js": "3.1.1"
   }
 }

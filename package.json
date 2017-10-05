@@ -25,7 +25,7 @@
     "test": "cross-env TS_NODE_FAST=true mocha --compilers ts:ts-node/register --recursive",
     "coverage": "cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive",
     "dist": "tsc -p ./src/tsconfig.json && rollup -c && uglifyjs ./dist/maquette.umd.js -c unsafe=true -m -o ./dist/maquette.umd.min.js",
-    "ci": "tsa ci"
+    "ci": "tsa ci",
     "publish-website": "cd website && npm install --no-optional && node generate && npm run typedoc && firebase deploy"
   },
   "license": "MIT",

@@ -13,10 +13,12 @@
     "sourceMap": true,
     "outDir": "./build/js",
     "rootDir": ".",
-    "noEmitOnError": true
+    "strictNullChecks": false,
+    "noEmit": true
   },
   "include": [
     "./typings/**/*.d.ts",
-    "./tools/**/*.ts"
+    "./tools/**/*.ts",
+    "./test/**/*.ts"
   ]
 }

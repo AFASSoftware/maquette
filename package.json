@@ -30,8 +30,8 @@
     "test-also-with-browser": "gulp test && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js",
     "precommit": "tsa pre-commit",
     "prepush": "tsa pre-push",
-    "postcheckout": "node node_modules/typescript-assistant/dist/index post-checkout",
-    "postmerge": "node node_modules/typescript-assistant/dist/index post-merge"
+    "postcheckout": "tsa post-checkout || exit 0",
+    "postmerge": "tsa post-merge || exit 0"
   },
   "license": "MIT",
   "tonicExampleFilename": "examples/tonic-example.js",

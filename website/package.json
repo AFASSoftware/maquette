@@ -24,6 +24,7 @@
     "metalsmith-markdown": "0.2.1",
     "metalsmith-postcss": "4.1.0",
     "metalsmith-serve": "0.0.7",
+    "metalsmith-watch": "1.0.3",
     "postcss-cli": "4.1.1",
     "precss": "2.0.0",
     "typedoc": "0.8.0"

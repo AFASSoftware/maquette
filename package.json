@@ -107,5 +107,8 @@
     "tsd": "0.6.5",
     "tslint": "5.5.0",
     "typescript": "2.4.2"
+  },
+  "dependencies": {
+    "metalsmith-watch": "^1.0.3"
   }
 }

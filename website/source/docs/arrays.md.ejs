@@ -24,9 +24,7 @@ function renderMaquette() {
 projector.append(domNode, renderMaquette);
 <%- include('../../partials/live-editor-end.ejs') -%>
 
-It does get a little more complex if your items need to maintain state or event handlers.
-For performance reasons maquette forces you to reuse event handler functions on every render. So you need to keep track of them.
-A good approach is to map the data to components and have these components render the virtual DOM.
+It does get a little more complex if you create a component that may hold state for every item.
 The following example shows how to do this.
 
 <%- include('../../partials/live-editor-start.ejs') -%>
@@ -59,7 +57,7 @@ function renderMaquette() {
 projector.append(domNode, renderMaquette);
 <%- include('../../partials/live-editor-end.ejs') -%>
 
-There is one more advanced usecase. What if your items maintain state or event handlers but the underlying data can also get updated?
+There is one more advanced usecase. What if you use components but the underlying data can also get updated?
 This could be the case if you use real-time communication or periodic refreshes.
 Maquette provides the `createMapping` function to keep your list of components synchronized with the underlying data.
 The algorithm that maquette uses to update the array of components may look somewhat similar to how maquette updates the real DOM in order to reflect the virtual DOM,
@@ -107,7 +105,6 @@ function handleSwitch(evt) {
   data = (data === dataSnapshot1) ? dataSnapshot2 : dataSnapshot1;
   mapping.map(data);
 }
-
 
 function renderMaquette() {
   return h("div", [

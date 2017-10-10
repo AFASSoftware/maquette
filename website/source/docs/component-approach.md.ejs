@@ -104,13 +104,12 @@ projector.append(domNode, renderMaquette);
 <%- include('../../partials/live-editor-end.ejs') -%>
 
 If the user presses the next button, the next button should disappear and the finish button should appear.
-However, if you press the next button now the application event throws an error (check your browser console).
+However, if you press the next button now the text on the button gets updated.
 This is because maquette does not see one button disappearing and another button appearing,
 it sees a button changing its text and the onclick handler.
-And changing an event handler is prohibited in maquette, hence the error.
 
 We want maquette to recognize that one button disappears and another button appears.
-Not only to prevent the error, but also because it allows us to use the right animation.
+Not only to do the right animation, but also because maquette does not scan for properties gone missing.
 In order to make maquette recognize that the button did not change but got replaced by another button you need to
 provide a unique `key` property. The best value for the key property is probably the component instance itself.
 In code below you see `myButton` used as a `key` for the component instance:

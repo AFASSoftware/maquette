@@ -34,7 +34,7 @@ function renderMaquette() {
       ] : [],
       h('div.row', {exitAnimation: slideUp}, [
         'stealth: ',
-        h('input.checkbox', { type: 'checkbox', checked: stealth, onchange: handleStealthChange })
+        h('input', { type: 'checkbox', checked: stealth, onchange: handleStealthChange })
       ]),
       rotationVisible ? [
         h('button', {onclick: handleRemoveClick}, ['Remove rotation'])
@@ -46,7 +46,7 @@ function renderMaquette() {
   ]);
 }
 
-// Initializes the projector 
+// Initializes the projector
 document.addEventListener('DOMContentLoaded', function () {
   projector.append(document.body, renderMaquette);
 });

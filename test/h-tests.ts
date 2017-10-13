@@ -87,7 +87,7 @@ describe('h', () => {
     expect(() => h('div', {}, h('div') as any)).to.throw('h called with invalid arguments');
   });
 
-  it('Should throw a new error when cal the h function with a string as sencond or third argument', () => {
+  it('Should throw a new error when cal the h function with a string as second or third argument', () => {
     expect(() => h('div', 'div' as any)).to.throw('h called with invalid arguments');
     expect(() => h('div', {} as any, 'div' as any)).to.throw('h called with invalid arguments');
   });

@@ -9,6 +9,7 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "chromedriver": "2.33.1",
     "colors": "latest",
     "connect": "3.6.5",
     "wd": "1.4.1"
@@ -16,7 +17,6 @@
   "dependencies": {
     "finalhandler": "1.1.0",
     "mocha": "3.5.3",
-    "selenium-standalone": "6.9.0",
     "serve-static": "^1.8.1"
   }
 }

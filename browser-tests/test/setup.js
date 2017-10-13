@@ -33,32 +33,7 @@ wd.configureHttp({
 var webdriverProcess = undefined;
 
 var createBrowser = function () {
-  var desired = {};
-  Object.keys(setup.browserCapabilities).forEach(function (key) {
-    desired[key] = setup.browserCapabilities[key];
-  });
-  desired.tags = ['maquette'];
-  if (process.env.TRAVIS_BUILD_NUMBER) {
-    desired.build = "build-" + process.env.TRAVIS_BUILD_NUMBER;
-  }
-  if (process.env.TRAVIS_JOB_NUMBER) {
-    desired["tunnel-identifier"] = process.env.TRAVIS_JOB_NUMBER;
-  }
-  var browser;
-  if (setup.sauce) {
-    if(!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
-      throw new Error(
-        'Sauce credentials were not configured, configure your sauce credential as follows:\n\n' +
-        'export SAUCE_USERNAME=<SAUCE_USERNAME>\n' +
-        'export SAUCE_ACCESS_KEY=<SAUCE_ACCESS_KEY>\n\n'
-      );
-    }
-    var username = process.env.SAUCE_USERNAME;
-    var accessKey = process.env.SAUCE_ACCESS_KEY;
-    browser = wd.promiseChainRemote("localhost", 4445, username, accessKey);
-  } else {
-    browser = wd.promiseChainRemote("localhost", 4444, null, null);
-  }
+  var browser = wd.promiseChainRemote("localhost", 9515, null, null);
   if (process.env.VERBOSE) {
     // optional logging
     browser.on('status', function (info) {
@@ -70,7 +45,7 @@ var createBrowser = function () {
   }
   var initBrowser = function() {
     return browser
-      .init(desired)
+      .init(setup.browserCapabilities)
       .setAsyncScriptTimeout(3000)
       .then(function () {
         return browser;
@@ -81,6 +56,13 @@ var createBrowser = function () {
   } else {
     return new Promise(function(resolve, reject) {
       console.log('Starting selenium');
+      let chromedriverBinPath = require('chromedriver').path;
+      childProcess.execFile(chromedriverBinPath, [], function(err, stdout, stderr) {
+        if (err) {
+
+        }
+        // TODO
+      });
       require('selenium-standalone').start({
         drivers: {
           chrome: require('selenium-standalone/lib/default-config.js').drivers.chrome

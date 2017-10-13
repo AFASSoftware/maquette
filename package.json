@@ -29,7 +29,7 @@
     "publish-website": "cd website && npm install --no-optional && node generate && npm run typedoc && firebase deploy",
     "test-also-with-browser": "gulp test && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js",
     "precommit": "tsa pre-commit",
-    "prepush": "tsa pre-push",
+    "prepush": "npm run dist && tsa pre-push",
     "postcheckout": "tsa post-checkout || exit 0",
     "postmerge": "tsa post-merge || exit 0"
   },
@@ -116,7 +116,7 @@
     "rollup": "0.50.0",
     "sinon": "2.4.1",
     "sinon-chai": "2.12.0",
-    "typescript-assistant": "0.22.1",
+    "typescript-assistant": "0.22.2",
     "uglify-js": "3.1.1"
   }
 }

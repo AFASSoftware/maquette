@@ -46,7 +46,7 @@ var createBrowser = function () {
   }
   var initBrowser = function () {
     return browser
-      .init(setup.browserCapabilities)
+      .init()
       .setAsyncScriptTimeout(3000)
       .then(function () {
         return browser;

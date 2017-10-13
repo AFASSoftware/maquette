@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/AFASSoftware/maquette.png?branch=master)](https://travis-ci.org/AFASSoftware/maquette)
-
 Maquette
 =========
 

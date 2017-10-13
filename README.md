@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/AFASSoftware/maquette.png?branch=master)](https://travis-ci.org/AFASSoftware/maquette)
+[![Build Status](https://circleci.com/gh/AFASSoftware/maquette.svg?style=shield&circle-token=:circle-token)
 
 Maquette
 =========

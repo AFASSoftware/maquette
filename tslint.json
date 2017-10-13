@@ -4,6 +4,14 @@
   ],
   "rules": {
     "ban-types": false, /* We need to use Object sometimes when we refer to primitives or objects */
-    "no-null-keyword": false /* Although we decided at AFAS to prefer undefined to null, maquette's API needs to handle nulls in its API */
+    "no-null-keyword": false, /* Although we decided at AFAS to prefer undefined to null, maquette's API needs to handle nulls in its API */
+    "whitespace": [true, // check-separator omitted because of https://github.com/palantir/tslint/issues/3251
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-module",
+      // "check-separator",
+      "check-type"
+    ]
   }
 }

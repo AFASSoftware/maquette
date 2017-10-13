@@ -19,6 +19,7 @@
   "scripts": {
     "test-also-with-browser": "gulp test && cd examples/todomvc && bower install && cd ../../browser-tests && npm install && node sauce.js",
     "test": "cross-env TS_NODE_FAST=true mocha --compilers ts:ts-node/register --recursive",
+    "ci": "cross-env TS_NODE_FAST=true mocha --compilers ts:ts-node/register --recursive",
     "coverage": "cross-env TS_NODE_FAST=true nyc --check-coverage -- mocha --compilers ts:ts-node/register --reporter dot --recursive",
     "publish-website": "cd website && npm install --no-optional && node generate && npm run typedoc && firebase deploy"
   },

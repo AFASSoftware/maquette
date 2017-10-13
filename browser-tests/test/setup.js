@@ -34,8 +34,8 @@ wd.configureHttp({
 var webdriverProcess = undefined;
 
 var createBrowser = function () {
-  var browser = wd.promiseChainRemote('http://localhost:9515/');
-  if (process.env.VERBOSE) {
+  var browser = wd.promiseChainRemote('http://localhost:9515');
+  if (process.env.VERBOSE || true) {
     // optional logging
     browser.on('status', function (info) {
       console.log(info.cyan);

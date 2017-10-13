@@ -79,4 +79,11 @@ describe('h', () => {
     expect(h('div', [['1']])).to.deep.equal({ vnodeSelector: 'div', properties: undefined, text: undefined, children: [toTextVNode('1')], domNode: null });
   });
 
+  it('Should throw a new error when passing a h function as vnodeproperties into a h function', () => {
+    expect(() => h('div', h('div'))).to.throw('h called with invalid arguments');
+  });
+
+  it('Should throw a new error when passing a h function instead of a VNodeChild array', () => {
+    expect(() => h('div', {}, h('div') as any)).to.throw('h called with invalid arguments');
+  });
 });

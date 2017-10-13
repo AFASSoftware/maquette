@@ -57,6 +57,8 @@ export let h: H = (selector: string, properties?: VNodeProperties, children?: VN
   if (Array.isArray(properties)) {
     children = properties;
     properties = undefined;
+  } else if ((properties && properties.hasOwnProperty('vnodeSelector')) || (children && children.hasOwnProperty('vnodeSelector'))) {
+    throw new Error('h called with invalid arguments');
   }
   let text: string | undefined;
   let flattenedChildren: VNode[] | undefined;

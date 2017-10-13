@@ -69,10 +69,8 @@ var createBrowser = function () {
     webdriverProcess.stdout.on('data', function(data) {
       console.log('> ' + data.toString());
       if (!resolved) {
-        setTimeout(function() {
-          resolved = true;
-          resolve(initBrowser().catch(function(err) { webdriverProcess.kill(); throw err;}));
-        }, 2000);
+        resolved = true;
+        resolve(initBrowser().catch(function(err) { webdriverProcess.kill(); throw err;}));
       }
     });
     webdriverProcess.stderr.on('data', function(data) {

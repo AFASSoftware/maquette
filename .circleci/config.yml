@@ -36,5 +36,5 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}{{ checksum "browser-tests/package.json" }}
 
       # run tests!
-      - run: npm run ci
-      - run: cd browser-tests && npm run test
+      - run: npm -s run ci
+      - run: cd browser-tests && npm -s run test

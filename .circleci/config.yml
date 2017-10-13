@@ -37,4 +37,4 @@ jobs:
 
       # run tests!
       - run: npm -s run ci
-      - run: cd browser-tests && npm -s run test
+      # Disabled for now - run: cd browser-tests && npm -s run test

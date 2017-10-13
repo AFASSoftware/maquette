@@ -17,7 +17,7 @@ window.createTodoComponent = function (todoList, id, title) {
 
   var acceptEdit = function () {
     todoComponent.title = editingTitle.trim();
-    if(!todoComponent.title) {
+    if (!todoComponent.title) {
       todoList.editTodo(null);
       todoList.removeTodo(todoComponent);
     } else {
@@ -28,7 +28,7 @@ window.createTodoComponent = function (todoList, id, title) {
   };
 
   var focusEdit = function (domNode) {
-    if(window.setImmediate) {
+    if (window.setImmediate) {
       window.setImmediate(function () { // IE weirdness
         domNode.focus();
         domNode.selectionStart = 0;
@@ -91,14 +91,21 @@ window.createTodoComponent = function (todoList, id, title) {
       var editing = todoList.editingTodo === todoComponent;
 
       return renderCache.result([todoComponent.completed, todoComponent.title, editing], function () {
-        return h("li", { key: todoComponent, classes: { completed: todoComponent.completed, editing: editing } },
+        return h("li", {key: todoComponent, classes: {completed: todoComponent.completed, editing: editing}},
           editing ? [
-            h("input.edit", { value: editingTitle, oninput: handleEditInput, onkeyup: handleEditKeyUp, onblur: handleEditBlur, afterCreate: focusEdit })
+            h("input.edit", {
+              value: editingTitle,
+              oninput: handleEditInput,
+              onkeyup: handleEditKeyUp,
+              onblur: handleEditBlur,
+              afterCreate: focusEdit
+            })
           ] : [
-            h("div.view",
-              h("input.toggle", { type: "checkbox", checked: todoComponent.completed, onclick: handleToggleClick }),
-              h("label", { ondblclick: handleLabelDoubleClick }, todoComponent.title),
-              h("button.destroy", { onclick: handleDestroyClick })
+            h("div.view", [
+                h("input.toggle", {type: "checkbox", checked: todoComponent.completed, onclick: handleToggleClick}),
+                h("label", {ondblclick: handleLabelDoubleClick}, [todoComponent.title]),
+                h("button.destroy", {onclick: handleDestroyClick})
+              ]
             )
           ]
         );

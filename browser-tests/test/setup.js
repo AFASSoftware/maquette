@@ -2,6 +2,7 @@
 var finalhandler = require('finalhandler');
 var http = require('http');
 var serveStatic = require('serve-static');
+var childProcess = require('child_process');
 
 // double click is not 'natively' supported, so we need to send the
 // event direct to the element see:
@@ -20,7 +21,7 @@ var server = http.createServer(function (req, res) {
 });
 
 // Listen
-console.log("starting server on port 8000");
+console.log('starting server on port 8000');
 server.listen(8000);
 
 // http configuration, not needed for simple runs
@@ -33,32 +34,7 @@ wd.configureHttp({
 var webdriverProcess = undefined;
 
 var createBrowser = function () {
-  var desired = {};
-  Object.keys(setup.browserCapabilities).forEach(function (key) {
-    desired[key] = setup.browserCapabilities[key];
-  });
-  desired.tags = ['maquette'];
-  if (process.env.TRAVIS_BUILD_NUMBER) {
-    desired.build = "build-" + process.env.TRAVIS_BUILD_NUMBER;
-  }
-  if (process.env.TRAVIS_JOB_NUMBER) {
-    desired["tunnel-identifier"] = process.env.TRAVIS_JOB_NUMBER;
-  }
-  var browser;
-  if (setup.sauce) {
-    if(!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
-      throw new Error(
-        'Sauce credentials were not configured, configure your sauce credential as follows:\n\n' +
-        'export SAUCE_USERNAME=<SAUCE_USERNAME>\n' +
-        'export SAUCE_ACCESS_KEY=<SAUCE_ACCESS_KEY>\n\n'
-      );
-    }
-    var username = process.env.SAUCE_USERNAME;
-    var accessKey = process.env.SAUCE_ACCESS_KEY;
-    browser = wd.promiseChainRemote("localhost", 4445, username, accessKey);
-  } else {
-    browser = wd.promiseChainRemote("localhost", 4444, null, null);
-  }
+  var browser = wd.promiseChainRemote('http://localhost:9515/');
   if (process.env.VERBOSE) {
     // optional logging
     browser.on('status', function (info) {
@@ -68,48 +44,48 @@ var createBrowser = function () {
       console.log(' > ' + meth.yellow, path.grey, data || '');
     });
   }
-  var initBrowser = function() {
+  var initBrowser = function () {
     return browser
-      .init(desired)
+      .init(setup.browserCapabilities)
       .setAsyncScriptTimeout(3000)
       .then(function () {
         return browser;
       });
   };
-  if (setup.sauce) {
-    return initBrowser();
-  } else {
-    return new Promise(function(resolve, reject) {
-      console.log('Starting selenium');
-      require('selenium-standalone').start({
-        drivers: {
-          chrome: require('selenium-standalone/lib/default-config.js').drivers.chrome
-        },
-        spawnCb: function() {
-          console.log('selenium starting');
-        }
-      }, function(err, child) {
-        if (err) {
-          console.log('ERR')
-          reject(err);
-          return;
-        }
-        console.log('webdriver process created');
-        webdriverProcess = child;
-        resolve(initBrowser());
-      });
+  return new Promise(function (resolve, reject) {
+    console.log('Starting selenium');
+    var chromedriverBinPath = require('chromedriver').path;
+    console.log('Starting '+ chromedriverBinPath);
+    var webdriverProcess = childProcess.spawn(chromedriverBinPath, [], {});
+    var resolved = false;
+    webdriverProcess.on('close', function(code) {
+      webdriverProcess = undefined;
+      if (!resolved) {
+        console.log('chromedriver exited with code ' + code);
+      } else {
+        reject('chromedriver exited with code ' + code)
+      }
     });
-  }
+    webdriverProcess.stdout.on('data', function(data) {
+      console.log('> ' + data.toString());
+      if (!resolved) {
+        setTimeout(function() {
+          resolved = true;
+          resolve(initBrowser().catch(function(err) { webdriverProcess.kill(); throw err;}));
+        }, 2000);
+      }
+    });
+    webdriverProcess.stderr.on('data', function(data) {
+      console.log('! ' + data);
+    });
+  });
 };
 
 var quitBrowser = function (browser, allPassed) {
-  if(browser) {
+  if (browser) {
     browser = browser.quit();
-    if(setup.sauce) {
-      browser = browser.sauceJobStatus(allPassed);
-    }
     if (webdriverProcess) {
-      browser.then(function() {
+      browser.then(function () {
         console.log('Killing webdriver process');
         webdriverProcess.kill();
       });
@@ -121,7 +97,7 @@ var quitBrowser = function (browser, allPassed) {
 var setup = {
   rootUrl: 'http://localhost:8000',
   server: server,
-  browserCapabilities: { browserName: "chrome" },
+  browserCapabilities: { browserName: 'chrome' },
   sauce: false,
   createBrowser: createBrowser, // returns a promise for a browser
   quitBrowser: quitBrowser

@@ -22,7 +22,6 @@ describe('todomvc-maquette', function () {
 
   before(function () {
     browser = null;
-    setup.browserCapabilities.name = 'todomvc-specs';
     return setup.createBrowser().then(function (createdBrowser) {
       browser = createdBrowser;
       page = createTodoPage(browser, browser.get(setup.rootUrl + "/examples/todomvc/index.html"));

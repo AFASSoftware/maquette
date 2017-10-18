@@ -25,7 +25,15 @@ jobs:
           - v1-dependencies-{{ checksum "package.json" }}{{ checksum "browser-tests/package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-
+        
+      # temp workaround until chrome is updated on the base iamge 
+      # https://discuss.circleci.com/t/how-does-the-node-browsers-image-work/17449
+      - run: 
+          name: update chrome
+          command: |
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb; sudo apt-get -fy install
+          
       - run: npm install
       - run: cd browser-tests && npm install
 
@@ -37,4 +45,4 @@ jobs:
 
       # run tests!
       - run: npm -s run ci
-      # Disabled for now - run: cd browser-tests && npm -s run test
+      - run: cd browser-tests && npm -s run test

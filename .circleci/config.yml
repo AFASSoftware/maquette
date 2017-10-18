@@ -31,8 +31,8 @@ jobs:
       - run: 
           name: update chrome
           command: |
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb; sudo apt-get -fy install
+            wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+            sudo dpkg -i google-chrome-stable_current_amd64.deb; sudo apt-get -fy install
           
       - run: npm install
       - run: cd browser-tests && npm install

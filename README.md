@@ -1,3 +1,5 @@
+![Build Status](https://circleci.com/gh/AFASSoftware/maquette.svg?style=shield&circle-token=:circle-token)
+
 Maquette
 =========
 

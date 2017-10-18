@@ -54,10 +54,10 @@
     "check-coverage": true,
     "report-dir": "./build/coverage",
     "es-module": false,
-    "lines": 97,
-    "statements": 97,
-    "functions": 97,
-    "branches": 97,
+    "lines": 100,
+    "statements": 100,
+    "functions": 100,
+    "branches": 100,
     "watermarks": {
       "lines": [
         75,

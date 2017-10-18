@@ -65,6 +65,7 @@ let checkNextMapping = (results: Target[], sources: number[], previousSources: n
 };
 
 describe('Mapping', () => {
+  /* tslint:disable mocha-no-side-effect-code */
   it('works correctly for all permutations of 4 items to every other permutation of 4 items', () => {
     let permutations = createPermutations();
     for (let permutationI of permutations) {
@@ -78,6 +79,6 @@ describe('Mapping', () => {
         checkNextMapping(mapping.results, permutationJ, permutationI);
       }
     }
-  });
+  }).timeout(5000);
 
 });

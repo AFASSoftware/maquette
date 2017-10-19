@@ -152,7 +152,7 @@ window.createListComponent = function (mode, model) {
           ),
           h("footer#footer", [
               h("span#todo-count", {},
-                [h("strong", itemsLeft), itemsLeft === 1 ? " item left" : " items left"]
+                [h("strong", [ '' + itemsLeft ]), itemsLeft === 1 ? " item left" : " items left"]
               ),
               h("ul#filters", {}, [
                 h("li", {key: "all"},

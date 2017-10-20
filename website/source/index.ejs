@@ -57,7 +57,7 @@ function handleNameInput(evt) {
 }
 
 // This function uses the 'hyperscript' notation to create the virtual DOM.
-function renderMaquette() {
+function render() {
   return h('div', [
     h('input', {
       type: 'text', placeholder: 'What is your name?',
@@ -67,7 +67,7 @@ function renderMaquette() {
   ]);
 }
 
-projector.append(domNode, renderMaquette);</textarea></code>
+projector.append(domNode, render);</textarea></code>
       </div>
       <div class="col-1">
         <h2>Live result:</h2>

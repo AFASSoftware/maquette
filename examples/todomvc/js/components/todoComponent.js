@@ -2,7 +2,7 @@ window.createTodoComponent = function (todoList, id, title) {
 
   'use strict';
 
-  // Think of a component as being a View (the renderMaquette() function) combined with a ViewModel (the rest).
+  // Think of a component as being a View (the render() function) combined with a ViewModel (the rest).
 
   var h = window.maquette.h;
   var ENTER_KEY = 13;
@@ -87,7 +87,7 @@ window.createTodoComponent = function (todoList, id, title) {
     title: title,
     completed: false,
 
-    renderMaquette: function () {
+    render: function () {
       var editing = todoList.editingTodo === todoComponent;
 
       return renderCache.result([todoComponent.completed, todoComponent.title, editing], function () {

@@ -21,7 +21,7 @@ workbench: true
         var works = contentWindow.document.body && contentWindow.document.body.firstChild && !contentWindow.lastError;
         if(works) {
           try {
-            var vnode = contentWindow.renderMaquette();
+            var vnode = contentWindow.render();
             if (!vnode.children[0].children[1]) {
               achieved1 = true;
               return;
@@ -33,7 +33,7 @@ workbench: true
           }
         }
       },
-      renderMaquette: function () {
+      render: function () {
         return h("p", ["If you press the 'remove rotation' button, the wrong row will be removed. Put a unique key property on one of the 'row' divs and try again."]);
       }
     };
@@ -46,10 +46,10 @@ workbench: true
       objective1
     ]);
 
-    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.render);
 
     var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
-    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.render);
   });
 </script>
 

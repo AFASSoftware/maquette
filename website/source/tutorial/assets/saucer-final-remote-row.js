@@ -49,7 +49,7 @@
           return '';
         }
       },
-      renderMaquette: function () {
+      render: function () {
         return h('div.row', { key: remoteRow }, [
           h('select', { value: transformFunctionName, onchange: handleTransformChange }, [
             transformFunctionNames

@@ -103,7 +103,7 @@
   
   window.createTableOfContent = function() {
     return {
-      renderMaquette: function() {
+      render: function() {
         var levelCount = 0;
         return h('div', [
           h('div.header', ['Levels']),
@@ -165,10 +165,10 @@
     var progress = createProcessBar();
     var navigation = createNavigationButtons(projector, getUnlocked);
     return {
-      renderMaquette: function(){
+      render: function(){
         return h('div.navigation-bar', [
           showMenu ? [
-            h('div.table-of-content', {enterAnimation: tocAppearsAnimation, exitAnimation: tocDisappearsAnimation}, [ menu.renderMaquette() ])
+            h('div.table-of-content', {enterAnimation: tocAppearsAnimation, exitAnimation: tocDisappearsAnimation}, [ menu.render() ])
           ]: [],
           h('div.menu-button', [ 
             showMenuButton ? [
@@ -179,8 +179,8 @@
               }, [ h('span') ])
             ] : []
           ]),
-          h('div.progress-bar', [ progress.renderMaquette() ]),
-          h('div.navigation-buttons', [ navigation.renderMaquette() ])
+          h('div.progress-bar', [ progress.render() ]),
+          h('div.navigation-buttons', [ navigation.render() ])
         ]);
       }
     };
@@ -188,7 +188,7 @@
   
   var createProcessBar = function(projector) {
     return {
-      renderMaquette : function () {
+      render : function () {
         return h('div.progress-bar', [
           tableOfContent.map(function(level) {
             if (level.hidden) {
@@ -223,7 +223,7 @@
     };
   
     var navigation = {
-      renderMaquette: function () {
+      render: function () {
         if (!unlocked) {
           unlocked = getUnlocked();
           if (unlocked) {

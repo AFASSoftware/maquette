@@ -8,10 +8,10 @@ layout: tutorial.ejs
     var projector = maquette.createProjector();
 
     var tableOfContent = window.createTableOfContent();
-    projector.merge(document.querySelector(".table-of-content"), tableOfContent.renderMaquette);
+    projector.merge(document.querySelector(".table-of-content"), tableOfContent.render);
 
     var navigation = window.createNavigationBar(projector);
-    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.render);
   });
 </script>
 
@@ -29,7 +29,7 @@ layout: tutorial.ejs
       </p>
       <p>
         You will notice we split the code into "components" for you.
-        A component in maquette is simply an object which exposes a renderMaquette function.
+        A component in maquette is simply an object which exposes a render function.
         The component files are integrated using window globals, but you could also be using requirejs or browserify.
       </p>
       <p>

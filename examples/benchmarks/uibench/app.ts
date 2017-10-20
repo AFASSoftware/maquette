@@ -1,45 +1,45 @@
 /* tslint:disable no-console */
-import { Component, VNode } from '../../../dist/index';
+import { MaquetteComponent, VNode } from '../../../dist/index';
 import * as Maquette from '../../../dist/index';
 
 let maquette: typeof Maquette = (window as any).maquette;
 
 let { h, createMapping, dom } = maquette;
 
-let createTableCell = (text: string): Component => {
+let createTableCell = (text: string): MaquetteComponent => {
   let handleClick = (evt: MouseEvent) => {
     console.log('Click', { text });
   };
 
   return {
-    renderMaquette: () => {
+    render: () => {
       return h('td.TableCell', { key: text, onclick: handleClick }, [text]);
     }
   };
 };
 
-interface TableRow extends Component {
+interface TableRow extends MaquetteComponent {
   update(state: TableItemState): void;
 }
 
 let createTableRow = (state: TableItemState): TableRow => {
   let firstCell = createTableCell(`#${state.id}`);
-  let mapping = createMapping<string, Component>(text => text, createTableCell, () => undefined);
+  let mapping = createMapping<string, MaquetteComponent>(text => text, createTableCell, () => undefined);
   mapping.map(state.props);
   return {
     update: (newState) => {
       mapping.map(newState.props);
     },
-    renderMaquette: () => {
+    render: () => {
       return h('tr.TableRow', { 'data-id': `${state.id}`, key: state.id, classes: { active: state.active } }, [
-        firstCell.renderMaquette(),
-        mapping.results.map(cell => cell.renderMaquette())
+        firstCell.render(),
+        mapping.results.map(cell => cell.render())
       ]);
     }
   };
 };
 
-interface Table extends Component {
+interface Table extends MaquetteComponent {
   update(state: TableState): void;
 }
 
@@ -51,8 +51,8 @@ let createTable = (state: TableState): Table => {
       state = newState;
       mapping.map(newState.items);
     },
-    renderMaquette: () => {
-      return h('table.Table', [h('tbody', mapping.results.map(row => row.renderMaquette()))]);
+    render: () => {
+      return h('table.Table', [h('tbody', mapping.results.map(row => row.render()))]);
     }
   };
 };
@@ -110,12 +110,12 @@ let createMain = (state: AppState | null) => {
       state = newState;
       updateTable();
     },
-    renderMaquette: () => {
+    render: () => {
       let children: (VNode | null | undefined)[] | undefined;
       if (state) {
         switch (state.location) {
           case 'table':
-            children = [table!.renderMaquette()];
+            children = [table!.render()];
             break;
           case 'anim':
             children = [renderAnim(state.anim)];
@@ -139,12 +139,12 @@ let main = createMain(null);
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('#App')!;
 
-  let projection = dom.append(container, main.renderMaquette(), {});
+  let projection = dom.append(container, main.render(), {});
 
   uibench.run(
     (state) => {
       main.update(state);
-      projection.update(main.renderMaquette());
+      projection.update(main.render());
     },
     (samples) => {
       projection.domNode.remove();

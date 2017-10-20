@@ -25,14 +25,14 @@ workbench: true
         rotationOk = false;
         var oldRotation = contentWindow.rotation;
         try {
-          var vnode = contentWindow.renderMaquette();
+          var vnode = contentWindow.render();
           var saucer = vnode.children[0];
           var style = saucer.properties.style;
           hasStyleAttribute = typeof style === "string";
           if (hasStyleAttribute) {
             rotationOk = style === "transform:rotate(45deg)";
             contentWindow.rotation = 615243;
-            style = contentWindow.renderMaquette().children[0].properties.style;
+            style = contentWindow.render().children[0].properties.style;
             usesRotation = style.indexOf("615243") !== -1;
             contentWindow.rotation = oldRotation;
           }
@@ -40,7 +40,7 @@ workbench: true
           contentWindow.rotation = oldRotation;
         }
       },
-      renderMaquette: function () {
+      render: function () {
         return h("ul", [
           h("li", { key: 1, classes: { complete: hasStyleAttribute } }, ["The saucer has a style attribute"]),
           h("li", { key: 2, classes: { complete: rotationOk } }, ["The style attribute equals ", h("code", ["transform:rotate(45deg)"])]),
@@ -57,10 +57,10 @@ workbench: true
       objective
     ]);
 
-    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.render);
 
     var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
-    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.render);
   });
 </script>
 

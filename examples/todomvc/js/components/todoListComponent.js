@@ -2,7 +2,7 @@ window.createListComponent = function (mode, model) {
 
   'use strict';
 
-  // Think of a component as being a View (the renderMaquette() function) combined with a ViewModel (the rest).
+  // Think of a component as being a View (the render() function) combined with a ViewModel (the rest).
 
   var h = window.maquette.h;
 
@@ -127,7 +127,7 @@ window.createListComponent = function (mode, model) {
       model.update(todo.id, {title: todo.title, completed: todo.completed});
     },
 
-    renderMaquette: function () {
+    render: function () {
       var anyTodos = todos.length > 0;
 
       return h("section#todoapp", {key: listComponent}, [
@@ -146,7 +146,7 @@ window.createListComponent = function (mode, model) {
             h("label", {"for": "toggle-all"}, ["Mark all as complete"]),
             h("ul#todo-list",
               todos.filter(visibleInMode).map(function (todo) {
-                return todo.renderMaquette();
+                return todo.render();
               })
             )]
           ),

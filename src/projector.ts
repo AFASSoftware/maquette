@@ -51,7 +51,7 @@ export interface Projector {
    */
   resume(): void;
   /**
-   * Instructs the projector to re-render to the DOM at the next animation-frame using the registered `renderMaquette` functions.
+   * Instructs the projector to re-render to the DOM at the next animation-frame using the registered `render` functions.
    * This method is automatically called for you when event-handlers that are registered in the [[VNode]]s are invoked.
    *
    * You need to call this method when timeouts expire, when AJAX responses arrive or other asynchronous actions happen.
@@ -73,7 +73,7 @@ export interface Projector {
    */
   detach(renderFunction: () => VNode): Projection;
   /**
-   * Stops the projector. This means that the registered `renderMaquette` functions will not be called anymore.
+   * Stops the projector. This means that the registered `render` functions will not be called anymore.
    *
    * Note that calling [[stop]] is not mandatory. A projector is a passive object that will get garbage collected
    * as usual if it is no longer in scope.

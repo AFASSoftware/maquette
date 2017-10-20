@@ -26,7 +26,7 @@ workbench: true
     };
 
     var remoteFillValues = function (remote) {
-      var vnode = remote.renderMaquette();
+      var vnode = remote.render();
       // Put values into every input
       findAll("input", vnode).forEach(function (input) {
         input.properties.oninput({ target: { value: "dummyValue" } });
@@ -34,7 +34,7 @@ workbench: true
     };
 
     var remoteAddRow = function (remote) {
-      var vnode = remote.renderMaquette();
+      var vnode = remote.render();
       var button = findAll("button.add", vnode)[0];
       button.properties.onclick({ preventDefault: function () { } });
     };
@@ -52,17 +52,17 @@ workbench: true
           try {
             var remote = contentWindow.createRemote();
             remoteFillValues(remote);
-            var vnode = remote.renderMaquette();
+            var vnode = remote.render();
             var rowsBefore = findAll("div.row", vnode);
             remoteAddRow(remote);
-            vnode = remote.renderMaquette();
+            vnode = remote.render();
             var rowsAfter = findAll("div.row", vnode);
             achieved1 = rowsAfter.length === rowsBefore.length + 1;
           } catch(e) {
           }
         }
       },
-      renderMaquette: function () {
+      render: function () {
         return h("p", ["The + button should add a new row to the remote control. Use the Array.push method to add another row component."]);
       }
     };
@@ -82,7 +82,7 @@ workbench: true
             var remote = contentWindow.createRemote();
             remoteFillValues(remote);
             remoteAddRow(remote);
-            var vnode = remote.renderMaquette();
+            var vnode = remote.render();
             var dropdowns = findAll("select", vnode);
             var achieved = true;
             var optionCount = 0;
@@ -107,7 +107,7 @@ workbench: true
           }
         }
       },
-      renderMaquette: function () {
+      render: function () {
         return h("div", [
           h("p", ["It is now possible to add the same transform function twice. " +
           "Filter the option elements in remote-row.js using Array.filter and remote.hasTransform to allow only unused transforms."]),
@@ -130,10 +130,10 @@ workbench: true
       { name: "remote-row.js", url : "assets/saucer-final-remote-row.js" }
     ], [ objective1, objective2 ], navigation);
 
-    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.render);
 
     var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
-    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.render);
 
   });
 </script>

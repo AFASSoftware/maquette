@@ -1,5 +1,5 @@
 import { expect, sinon } from './test-utilities';
-import { Component, createProjector, h } from '../src/index';
+import { createProjector, h, MaquetteComponent } from '../src/index';
 
 describe('Projector', () => {
   beforeEach(() => {
@@ -182,7 +182,7 @@ describe('Projector', () => {
      *
      * NOTE: This is not our recommended way, but this is completely supported (using VNodeProperties.bind).
      */
-    class ButtonComponent implements Component {
+    class ButtonComponent implements MaquetteComponent {
       private text: string;
       private clicked: (sender: ButtonComponent) => void;
 
@@ -191,7 +191,7 @@ describe('Projector', () => {
         this.clicked = buttonClicked;
       }
 
-      public renderMaquette() {
+      public render() {
         return h('button', { onclick: this.handleClick, bind: this }, [this.text]);
       }
 
@@ -206,7 +206,7 @@ describe('Projector', () => {
 
       let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
       let projector = createProjector({});
-      projector.append(parentElement as any, () => button.renderMaquette());
+      projector.append(parentElement as any, () => button.render());
 
       let buttonElement = parentElement.appendChild.lastCall.args[0] as HTMLElement;
       let clickEvent = { currentTarget: buttonElement, type: 'click' };

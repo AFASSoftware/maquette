@@ -261,7 +261,7 @@ window.createWorkbench = function (projector, tabs, objectives) {
     getScript: function () {
       return editor.getValue();
     },
-    renderMaquette: function () {
+    render: function () {
       var currentObjectiveHad = false;
       var html = htmlStart + lastValidScript + htmlEnd;
 
@@ -280,7 +280,7 @@ window.createWorkbench = function (projector, tabs, objectives) {
               ]),
               (current || index === objectives.length-1) ? [
                 h("div.detail", [
-                  objective.renderMaquette()
+                  objective.render()
                 ])
               ] : []
             ]);

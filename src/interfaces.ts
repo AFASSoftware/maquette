@@ -83,7 +83,7 @@ export interface VNodeProperties {
   afterUpdate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties, children: VNode[]): void;
   /**
    * When specified, the event handlers will be invoked with 'this' pointing to the value.
-   * This is useful when using the prototype/class based implementation of Components.
+   * This is useful when using the prototype/class based implementation of MaquetteComponents.
    *
    * When no [[key]] is present, this object is also used to uniquely identify a DOM node.
    */
@@ -92,7 +92,7 @@ export interface VNodeProperties {
   /**
    * Used to uniquely identify a DOM node among siblings.
    * A key is required when there are more children with the same selector and these children are added or removed dynamically.
-   * NOTE: this does not have to be a string or number, a [[Component]] Object for instance is also possible.
+   * NOTE: this does not have to be a string or number, a [[MaquetteComponent]] Object for instance is also possible.
    */
   readonly key?: Object;
   /* tslint:enable ban-types */
@@ -239,8 +239,8 @@ export interface ProjectionOptions extends ProjectorOptions {
 }
 
 /**
- * soon to be deprecated
- * Use the MaquetteComponent introduced in maquette 3.0
+ * @deprecated Use [[MaquetteComponent]] instead.
+ * @since 3.0
  */
 export interface Component {
   renderMaquette(): VNode | null | undefined;
@@ -250,7 +250,7 @@ export interface Component {
  * A component is a pattern with which you can split up your web application into self-contained parts.
  *
  * A component may contain other components.
- * This can be achieved by calling the subcomponents `renderMaquette` functions during the [[renderMaquette]] function and by using the
+ * This can be achieved by calling the subcomponents `render` functions during the [[render]] function and by using the
  * resulting [[VNode]]s in the return value.
  *
  * This interface is not used anywhere in the maquette sourcecode, but this is a widely used pattern.

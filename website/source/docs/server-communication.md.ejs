@@ -29,14 +29,14 @@ var load = function() {
   xhr.send();
 };
 
-function renderMaquette() {
+function render() {
   return h('div', [
     h('button', {onclick:load}, ['Load']),
     h('p', [result])
   ]);
 }
 
-projector.append(domNode, renderMaquette);
+projector.append(domNode, render);
 <%- include('../../partials/live-editor-end.ejs') -%>
 
 #### Using fetch
@@ -65,14 +65,14 @@ var load = function() {
   });
 };
 
-function renderMaquette() {
+function render() {
   return h('div', [
     h('button', {onclick:load}, ['Load']),
     h('p', [result])
   ]);
 }
 
-projector.append(domNode, renderMaquette);
+projector.append(domNode, render);
 
 <%- include('../../partials/live-editor-end.ejs') -%>
 
@@ -102,14 +102,14 @@ var load = function() {
   });
 };
 
-function renderMaquette() {
+function render() {
   return h('div', [
     h('button', {onclick:load}, ['Load']),
     h('p', [result])
   ]);
 }
 
-projector.append(domNode, renderMaquette);
+projector.append(domNode, render);
 <%- include('../../partials/live-editor-end.ejs') -%>
 
 

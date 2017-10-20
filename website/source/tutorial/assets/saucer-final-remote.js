@@ -19,10 +19,10 @@
           return f.getTransform() === transform;
         });
       },
-      renderMaquette: function () {
+      render: function () {
         return h('div.remote', {}, [
           rowComponents.map(function (f) {
-            return f.renderMaquette();
+            return f.render();
           }),
           rowComponents.some(function (row) {
              return !row.getSaucerStyle();

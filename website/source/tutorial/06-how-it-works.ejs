@@ -7,10 +7,10 @@ layout: tutorial.ejs
     var projector = maquette.createProjector();
 
     var tableOfContent = window.createTableOfContent();
-    projector.merge(document.querySelector(".table-of-content"), tableOfContent.renderMaquette);
+    projector.merge(document.querySelector(".table-of-content"), tableOfContent.render);
 
     var navigation = window.createNavigationBar(projector);
-    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.render);
   });
 </script>
 <div class="content-container">
@@ -19,7 +19,7 @@ layout: tutorial.ejs
     <article>
       <h1>How it works</h1>
       <p>
-        You might now be concerned about how often the renderMaquette function is executed.
+        You might now be concerned about how often the render function is executed.
         Let me reassure you, it is only executed whenever the virtual DOM might have changed, not 60 times per second.
         It is also never called more than once per frame (16ms).
       </p>
@@ -29,7 +29,7 @@ layout: tutorial.ejs
       <ol>
         <li>The projector waits until its scheduleRender() function gets called one or more times.</li>
         <li>The projector waits until the browser signals it is ready to paint the next frame (using requestAnimationFrame).</li>
-        <li>The projector calls the renderMaquette function to render the virtual DOM.</li>
+        <li>The projector calls the render function to render the virtual DOM.</li>
         <li>The projector determines the differences between this virtual DOM and the previous one.</li>
         <li>The differences are applied to the real DOM, applying animations if specified.</li>
       </ol>

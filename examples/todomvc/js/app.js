@@ -11,7 +11,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     var projector = maquette.createProjector();
-    projector.merge(document.getElementsByTagName("main")[0], router.renderMaquette);
+    projector.merge(document.getElementsByTagName("main")[0], router.render);
     window.onhashchange = function (evt) {
       projector.scheduleRender();
     };

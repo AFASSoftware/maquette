@@ -272,18 +272,18 @@ describe('dom', () => {
       let handleInput = (evt: Event) => {
         text = (evt.currentTarget as HTMLElement).innerHTML;
       };
-      let renderMaquette = () => h('div', { contentEditable: true, oninput: handleInput, innerHTML: text });
-      let projection = dom.create(renderMaquette());
+      let render = () => h('div', { contentEditable: true, oninput: handleInput, innerHTML: text });
+      let projection = dom.create(render());
 
       // The user clears the value
       projection.domNode.removeChild(projection.domNode.firstChild!);
       handleInput(<any>{ currentTarget: projection.domNode });
-      projection.update(renderMaquette());
+      projection.update(render());
 
       // The user enters a new value
       projection.domNode.innerHTML = 'changed <i>value</i>';
       handleInput(<any>{ currentTarget: projection.domNode });
-      projection.update(renderMaquette());
+      projection.update(render());
 
       expect(projection.domNode.innerHTML).to.equal('changed <i>value</i>');
     });

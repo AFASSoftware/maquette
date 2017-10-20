@@ -7,7 +7,7 @@ function handleRotationInput(evt) {
   rotation = evt.target.value;
 }
 
-function renderMaquette() {
+function render() {
   return h('div.landscape', [
     h('div.remote', {}, [
       h('div.row', [
@@ -20,7 +20,7 @@ function renderMaquette() {
   ]);
 }
 
-// Initializes the projector 
+// Initializes the projector
 document.addEventListener('DOMContentLoaded', function () {
-  projector.append(document.body, renderMaquette);
+  projector.append(document.body, render);
 });

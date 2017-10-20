@@ -1,13 +1,13 @@
 var h = maquette.h;
 var projector = maquette.createProjector();
 
-function renderMaquette() {
+function render() {
   return h('div.landscape', [
     /* childnodes can be inserted here */
   ]);
 }
 
-// Initializes the projector 
+// Initializes the projector
 document.addEventListener('DOMContentLoaded', function () {
-  projector.append(document.body, renderMaquette);
+  projector.append(document.body, render);
 });

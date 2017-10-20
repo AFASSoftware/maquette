@@ -3,7 +3,7 @@ var projector = maquette.createProjector();
 
 var stealth = true;
 
-function renderMaquette() {
+function render() {
   return h('div.landscape', [
     h('div.saucer', { })
   ]);
@@ -11,5 +11,5 @@ function renderMaquette() {
 
 // Initializes the projector 
 document.addEventListener('DOMContentLoaded', function () {
-  projector.append(document.body, renderMaquette);
+  projector.append(document.body, render);
 });

@@ -16,6 +16,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "cssnano": "^3.10.0",
     "ejs": "2.5.7",
     "firebase-tools": "3.12.0",
     "jstransformer-ejs": "0.0.3",

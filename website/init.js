@@ -22,13 +22,22 @@ exports.init = (args) => {
     .clean(true)
     .use(inPlace())
     .use(markdown())
+    .use(postcss({
+      plugins: {
+        'precss': {},
+        'cssnano': {
+          preset: 'default'
+        }
+      }
+    }))
+    .use(function(files, metalsmith, done) {
+      setImmediate(done);
+      if (files['minimal.css']) {
+        metalsmith._metadata.ampInlineCssContents = files['minimal.css'].contents.toString();
+      }
+    })
     .use(layouts({
       engine: 'ejs',
       directory: 'layouts'
-    }))
-    .use(postcss({
-      plugins: {
-        'precss': {}
-      }
     }));
 };

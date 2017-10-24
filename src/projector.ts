@@ -15,7 +15,24 @@
 import { EventHandlerInterceptor, Projection, ProjectionOptions, ProjectorOptions, VNode, VNodeProperties } from './interfaces';
 import { applyDefaultProjectionOptions, dom } from './dom';
 
-export interface Projector {
+export interface ProjectorService {
+  /**
+   * Instructs the projector to re-render to the DOM at the next animation-frame using the registered `render` functions.
+   * This method is automatically called for you when event-handlers that are registered in the [[VNode]]s are invoked.
+   *
+   * You need to call this method when timeouts expire, when AJAX responses arrive or other asynchronous actions happen.
+   */
+  scheduleRender(): void;
+  /**
+   * Synchronously re-renders to the DOM. You should normally call the `scheduleRender()` function to keep the
+   * user interface more performant. There is however one good reason to call renderNow(),
+   * when you want to put the focus into a newly created element in iOS.
+   * This is only allowed when triggered by a user-event, not during requestAnimationFrame.
+   */
+  renderNow(): void;
+}
+
+export interface Projector extends ProjectorService {
   /**
    * Appends a new child node to the DOM using the result from the provided `renderFunction`.
    * The `renderFunction` will be invoked again to update the DOM when needed.
@@ -50,20 +67,6 @@ export interface Projector {
    * Resumes the projector. Use this method to resume rendering after [[stop]] was called or an error occurred during rendering.
    */
   resume(): void;
-  /**
-   * Instructs the projector to re-render to the DOM at the next animation-frame using the registered `render` functions.
-   * This method is automatically called for you when event-handlers that are registered in the [[VNode]]s are invoked.
-   *
-   * You need to call this method when timeouts expire, when AJAX responses arrive or other asynchronous actions happen.
-   */
-  scheduleRender(): void;
-  /**
-   * Synchronously re-renders to the DOM. You should normally call the `scheduleRender()` function to keep the
-   * user interface more performant. There is however one good reason to call renderNow(),
-   * when you want to put the focus into a newly created element in iOS.
-   * This is only allowed when triggered by a user-event, not during requestAnimationFrame.
-   */
-  renderNow(): void;
   /**
    * Stops running the `renderFunction` to update the DOM. The `renderFunction` must have been
    * registered using [[append]], [[merge]], [[insertBefore]] or [[replace]].

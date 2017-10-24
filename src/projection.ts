@@ -253,6 +253,19 @@ export let createDom = (
 
 let updateDom: (previous: VNode, vnode: VNode, projectionOptions: ProjectionOptions) => boolean;
 
+/**
+ * Adds or removes classes from an Element
+ * @param domNode the element
+ * @param classes a string separated list of classes
+ * @param on true means add classes, false means remove
+ */
+let toggleClasses = (domNode: HTMLElement, classes: string | null | undefined, on: boolean) => {
+  if (!classes) {
+    return;
+  }
+  classes.split(' ').forEach(c => domNode.classList.toggle(c, on));
+};
+
 let updateProperties = (
   domNode: Node, previousProperties: VNodeProperties | undefined,
   properties: VNodeProperties | undefined,
@@ -271,7 +284,8 @@ let updateProperties = (
     let previousValue = previousProperties![propName];
     if (propName === 'class') {
       if (previousValue !== propValue) {
-        throw new Error('"class" property may not be updated. Use the "classes" property for conditional css classes.');
+        toggleClasses(domNode as HTMLElement, previousValue, false);
+        toggleClasses(domNode as HTMLElement, propValue, true);
       }
     } else if (propName === 'classes') {
       let classList = (domNode as Element).classList;

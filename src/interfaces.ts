@@ -147,6 +147,7 @@ export interface VNodeProperties {
   readonly disabled?: boolean;
   readonly title?: string;
   readonly accessKey?: string;
+  readonly class?: string;
   readonly id?: string;
   // From HTMLInputElement
   readonly type?: string;
@@ -165,6 +166,11 @@ export interface VNodeProperties {
    * Note: if you use innerHTML, maquette cannot protect you from XSS vulnerabilities and you must make sure that the innerHTML value is safe.
    */
   readonly innerHTML?: string;
+
+  /**
+   * Do not use className, use class instead
+   */
+  readonly className?: never | 'Hint: do not use `className`, use `class` instead';
 
   /**
    * Everything that is not explicitly listed (properties and attributes that are either uncommon or custom).

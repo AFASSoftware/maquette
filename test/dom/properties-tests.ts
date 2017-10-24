@@ -27,23 +27,26 @@ describe('dom', () => {
       it('allows a constant class to be applied to make JSX workable', () => {
         let projection = dom.create(h('div', { class: 'extra special' }));
         expect(projection.domNode.outerHTML).to.equal('<div class="extra special"></div>');
-        projection.update(h('div', { class: 'extra special' }));
-        expect(() => {
-          // updating class is not allowed, use 'classes' for this
-          projection.update(h('div', { class: '' }));
-        }).to.throw(Error);
+        projection.update(h('div', { class: 'super special' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="super special"></div>');
+        projection.update(h('div', { class: undefined }));
+        expect(projection.domNode.outerHTML).to.equal('<div class=""></div>');
+        projection.update(h('div', { class: 'me too' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="me too"></div>');
       });
 
       it('allows classes and class to be combined', () => {
         let projection = dom.create(h('div', { classes: { extra: true }, class: 'special' }));
         expect(projection.domNode.outerHTML).to.equal('<div class="extra special"></div>');
-        projection.update(h('div', { classes: { extra: false }, class: 'special' }));
-        expect(projection.domNode.outerHTML).to.equal('<div class="special"></div>');
+        projection.update(h('div', { classes: { extra: true }, class: 'good' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="extra good"></div>');
+        projection.update(h('div', { classes: { extra: false }, class: 'good' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="good"></div>');
       });
 
       it('helps to prevent mistakes when using className', () => {
         expect(() => {
-          dom.create(h('div', { className: 'special' }));
+          dom.create(h('div', { className: 'special' } as any));
         }).to.throw(Error);
       });
 

@@ -25,7 +25,7 @@
     "fix": "tsa fix",
     "clean": "tsa clean",
     "dist": "tsc -p ./src/tsconfig.json && rollup -c && uglifyjs ./dist/maquette.umd.js -c unsafe=true -m -o ./dist/maquette.umd.min.js",
-    "ci": "tsa ci",
+    "ci": "tsa ci && ts-node ./tools/check-file-size",
     "publish-website": "cd website && npm install --no-optional && node generate && npm run typedoc && firebase deploy",
     "test-also-with-browser": "npm run dist && cd examples/todomvc && npm install --no-save bower && bower install && cd ../../browser-tests && npm install && npm test",
     "precommit": "tsa pre-commit",

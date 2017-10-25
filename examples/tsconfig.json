@@ -9,10 +9,10 @@
     "noImplicitAny": true,
     "preserveConstEnums": true,
     "sourceMap": true,
-    "outDir": ".",
-    "rootDir": ".",
+    "outDir": "../build/js",
+    "rootDir": "..",
     "target": "es5",
-    "noEmitOnError": false,
+    "noEmitOnError": true,
     "strictNullChecks": true,
     "noImplicitThis": true
   },

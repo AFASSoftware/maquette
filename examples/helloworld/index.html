@@ -2,37 +2,7 @@
 <html>
 <head>
   <title>Hello world</title>
-  <script src="../../dist/maquette.umd.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var h = maquette.h;
-
-      // Data
-      var name = "";
-
-      // Event handler for the 'input' event on the 'name' input
-      var nameInput = function (evt) {
-        name = evt.target.value;
-      };
-
-      // Renders the virtual DOM
-      var render = function () {
-        return h("body", [
-          h("p.input", [
-            h("span", ["What is your name? "]),
-            h("input", { type: "text", autofocus: true, value: name, oninput: nameInput })
-          ]),
-          name ? [
-            h("p.output", ["Hello " + name + "!"])
-          ] : []
-        ]);
-      };
-
-      // Starts the projector, which renders the virtual DOM at the right moments
-      maquette.createProjector().merge(document.body, render);
-
-    });
-  </script>
+  <script src="../../build/rollup/helloworld.umd.js"></script>
 </head>
   <body>
     <h1>Hello world</h1>

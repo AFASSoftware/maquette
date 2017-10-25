@@ -12,7 +12,7 @@
  * It is possible to use `window.onerror` to handle these errors.
  * Instances of [[Projector]] can be created using [[createProjector]].
  */
-import { EventHandlerInterceptor, Projection, ProjectionOptions, ProjectorOptions, VNode, VNodeProperties } from './interfaces';
+import { EventHandlerInterceptor, ProjectorPerformanceLogger, Projection, ProjectionOptions, ProjectorOptions, VNode, VNodeProperties } from './interfaces';
 import { applyDefaultProjectionOptions, dom } from './dom';
 
 export interface ProjectorService {
@@ -101,8 +101,13 @@ let findVNodeByParentNodePath = (vnode: VNode, parentNodePath: Node[]): VNode | 
   return result;
 };
 
-let createEventHandlerInterceptor = (projector: Projector, getProjection: () => Projection | undefined): EventHandlerInterceptor => {
+let createEventHandlerInterceptor = (
+  projector: Projector,
+  getProjection: () => Projection | undefined,
+  performanceLogger: ProjectorPerformanceLogger
+): EventHandlerInterceptor => {
   let modifiedEventHandler = function(this: Node, evt: Event) {
+    performanceLogger('domEvent', evt);
     let projection = getProjection()!;
     let parentNodePath = createParentNodePath(evt.currentTarget as Element, projection.domNode);
     parentNodePath.reverse();
@@ -110,12 +115,14 @@ let createEventHandlerInterceptor = (projector: Projector, getProjection: () => 
 
     projector.scheduleRender();
 
+    let result: any;
     if (matchingVNode) {
       /* tslint:disable no-invalid-this */
-      return matchingVNode.properties![`on${evt.type}`].apply(matchingVNode.properties!.bind || this, arguments);
+      result = matchingVNode.properties![`on${evt.type}`].apply(matchingVNode.properties!.bind || this, arguments);
       /* tslint:enable no-invalid-this */
     }
-    return undefined;
+    performanceLogger('domEventProcessed', evt);
+    return result;
   };
   return (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => modifiedEventHandler;
 };
@@ -130,6 +137,7 @@ let createEventHandlerInterceptor = (projector: Projector, getProjection: () => 
 export let createProjector = (projectorOptions?: ProjectorOptions): Projector => {
   let projector: Projector;
   let projectionOptions = applyDefaultProjectionOptions(projectorOptions);
+  let performanceLogger = projectionOptions.performanceLogger!;
   let renderCompleted = true;
   let scheduled: number | undefined;
   let stopped = false;
@@ -145,7 +153,7 @@ export let createProjector = (projectorOptions?: ProjectorOptions): Projector =>
   ): void => {
     let projection: Projection | undefined;
     let getProjection = () => projection;
-    projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection);
+    projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection, performanceLogger);
     projection = domFunction(node, renderFunction(), projectionOptions);
     projections.push(projection);
     renderFunctions.push(renderFunction);
@@ -154,13 +162,17 @@ export let createProjector = (projectorOptions?: ProjectorOptions): Projector =>
   let doRender = () => {
     scheduled = undefined;
     if (!renderCompleted) {
-      return; // The last render threw an error, it should be logged in the browser console.
+      return; // The last render threw an error, it should have been logged in the browser console.
     }
     renderCompleted = false;
+    performanceLogger('renderStart', undefined);
     for (let i = 0; i < projections.length; i++) {
       let updatedVnode = renderFunctions[i]();
+      performanceLogger('rendered', undefined);
       projections[i].update(updatedVnode);
+      performanceLogger('patched', undefined);
     }
+    performanceLogger('renderDone', undefined);
     renderCompleted = true;
   };
 

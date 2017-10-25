@@ -6,6 +6,7 @@ import { createDom, createProjection, extend, initPropertiesAndChildren } from '
 
 const DEFAULT_PROJECTION_OPTIONS: ProjectionOptions = {
   namespace: undefined,
+  performanceLogger: () => undefined,
   eventHandlerInterceptor: undefined,
   styleApplyer: (domNode: HTMLElement, styleName: string, value: string) => {
     // Provides a hook to add vendor prefixes for browsers that still need it.

@@ -1,10 +1,9 @@
 /* tslint:disable no-console */
-import { MaquetteComponent, VNode } from '../../../dist/index';
-import * as Maquette from '../../../dist/index';
-
-let maquette: typeof Maquette = (window as any).maquette;
-
-let { h, createMapping, dom } = maquette;
+import { MaquetteComponent, VNode } from '../../../src/interfaces';
+import { h } from '../../../src/h';
+import { createMapping } from '../../../src/mapping';
+import { dom } from '../../../src/dom';
+import { version } from '../../../src/index';
 
 let createTableCell = (text: string): MaquetteComponent => {
   let handleClick = (evt: MouseEvent) => {
@@ -130,9 +129,9 @@ let createMain = (state: AppState | null) => {
   };
 };
 
-document.title = maquette.version;
+document.title = version;
 
-uibench.init('Maquette', maquette.version);
+uibench.init('Maquette', version);
 
 let main = createMain(null);
 

@@ -1,3 +1,4 @@
 /**/*
 !/dist/**/*
+!/polyfills/**/*
 !/README.md

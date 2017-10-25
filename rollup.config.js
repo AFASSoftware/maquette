@@ -20,5 +20,20 @@ export default [
       file: pkg.main,
       format: 'cjs'
     }
+  },
+  // bundles for examples
+  {
+    input: 'build/js/examples/benchmarks/uibench/app.js',
+    output: {
+      file: 'build/rollup/benchmarks-uibench.umd.js',
+      format: 'umd'
+    }
+  },
+  {
+    input: 'build/js/examples/helloworld/helloworld.js',
+    output: {
+      file: 'build/rollup/helloworld.umd.js',
+      format: 'umd'
+    }
   }
 ];

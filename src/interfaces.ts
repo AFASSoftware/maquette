@@ -208,11 +208,17 @@ export interface Projection {
  * Options that influence how the DOM is rendered and updated.
  */
 export type EventHandlerInterceptor = (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function | undefined;
-
+export type PerformanceLoggerEvent = 'domEvent' | 'domEventProcessed' | 'renderStart' | 'rendered' | 'patched' | 'renderDone';
+export type ProjectorPerformanceLogger = (eventType: PerformanceLoggerEvent, trigger: Event | undefined) => void;
 /**
  * Options that may be passed when creating the [[Projector]]
  */
 export interface ProjectorOptions {
+  /**
+   * Can be used to log performance metrics
+   */
+  performanceLogger?: ProjectorPerformanceLogger;
+
   /**
    * May be used to add vendor prefixes when applying inline styles when needed.
    * This function is called when [[styles]] is used.

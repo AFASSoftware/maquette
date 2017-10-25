@@ -30,7 +30,7 @@ if (liveEditors) {
       <%
       } if (liveEditorsCss) {
         -%>
-      && window.cssTransitions
+      && window.maquetteCssTransitions
       <%
       }
         -%>
@@ -74,7 +74,7 @@ if (liveEditorsVelocity) {
 }
 if (liveEditorsCss) {
 %>
-<script src="//TODO/css-transitions.min.js" async onload="enhance()"></script>
+<script src="//unpkg.com/maquette-css-transitions@1.0.0/dist/maquette-css-transitions.umd.js" async onload="enhance()"></script>
 <%
 }
 %>

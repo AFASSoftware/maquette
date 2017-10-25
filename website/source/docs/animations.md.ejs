@@ -6,8 +6,6 @@ liveEditorsCss: true
 liveEditorsVelocity: true
 ---
 
-### Animations
-
 The ability to use animations is one of the main features of maquette.
 You can use the the following properties of a virtual DOM node to trigger animations:
 `enterAnimation`, `exitAnimation` and `updateAnimation`.
@@ -15,14 +13,14 @@ There are two ways of doing animations: programmatically and using CSS Transitio
 We will first explain how to use programmatic animations and after that we
 explain CSS Transitions.
 
-##### Programmatic animations
+### Programmatic animations
 
 Programmatic animations can be applied by assigning functions to the animation properties.
 These functions have the following signatures:
 
- *enterAnimation*  | `function(domNode, properties)`
- *exitAnimation*   | `function(domNode, removeDomNodeFunction, properties)`
- *updateAnimation* | `function(domNode, properties, previousProperties)`
+ - `enterAnimation: function(domNode, properties)`
+ - `exitAnimation: function(domNode, removeDomNodeFunction, properties)`
+ - `updateAnimation: function(domNode, properties, previousProperties)`
 
 Inside these functions, you can do whatever you wish to animate the domNode.
 You will usually use an animation library like [velocity.js](http://julian.com/research/velocity/) to start an animation.
@@ -37,11 +35,11 @@ var lastItemNr = 3;
 // Animations
 var itemEnter = function(domNode, properties) {
   var targetHeight = domNode.scrollHeight;
-  domNode.style.height="0px";
-  Velocity.animate(domNode, {height: targetHeight, opacity: [1,0]}, 400, "ease-out");
+  domNode.style.height='0px';
+  Velocity.animate(domNode, {height: targetHeight, opacity: [1,0]}, 400, 'ease-out');
 };
 var itemExit = function(domNode, removeDomNodeFunction, properties) {
-  Velocity.animate(domNode, {height: 0}, 400, "ease-out", removeDomNodeFunction);
+  Velocity.animate(domNode, {height: 0}, 400, 'ease-out', removeDomNodeFunction);
 };
 
 // Event handlers
@@ -53,26 +51,24 @@ var remove = function(evt) {
 };
 
 projector.append(domNode, function() {
-  return h("div", [
+  return h('div', [
     itemNrs.map(function(itemNr) {
-      return h("div.demo-block-item", {
+      return h('div.demo-block-item', {
         key:itemNr, enterAnimation: itemEnter, exitAnimation: itemExit
       }, [itemNr.toString()]);
     }),
-    h("button", {key: 0, onclick: add}, ["+"]),
-    h("button", {key: 1, onclick: remove}, ["-"])
+    h('button', {key: 0, onclick: add}, ['+']),
+    h('button', {key: 1, onclick: remove}, ['-'])
   ]);
 }, {});<%- include('../../partials/live-editor-end.ejs') %>
 
-##### CSS Transitions
+### CSS Transitions
 
-Those of you who are familliar with AngularJS or React know that there is a technique to use CSS Transitions to animate
+Those of you who are familiar with AngularJS or React know that there is a technique to use CSS Transitions to animate
 entering and exiting of DOM elements. You can use the same technique with maquette.
 
 Note however that this technique is less versatile than programmatic transitions.
-Both CSS Transitions and libraries like velocity.js are equally capable of delivering smooth sixty frames per second animations and using hardware accelleration.
-
-A valid reason to use CSS Transitions instead of programmatic transitions could be if you do not want to include extra javascript.
+Both CSS Transitions and libraries like velocity.js are equally capable of delivering smooth sixty frames per second animations and using hardware acceleration.
 
 The best way to explain this technique is through an example. Let us say an element with the enterAnimation `"slideUp"` is added, then the following happens:
 
@@ -81,7 +77,7 @@ The best way to explain this technique is through an example. Let us say an elem
  3. The browser waits until a CSS transition finishes on the element
  4. Both CSS classes are removed again.
 
-You can then use the following lines to the stylesheet to trigger the desired CSS Transition:
+You can then use the following css styles to trigger the desired CSS Transition:
 
     .slideDown {
       -webkit-transition: 0.5s ease-out height;
@@ -93,10 +89,14 @@ You can then use the following lines to the stylesheet to trigger the desired CS
       height: 30px;
     }
 
-CSS Transitions only work with maquette if you include the `css-transitions.js` script (provided by maquette) and you pass the option `transitions: cssTransitions` when creating the projector.
-The live example below demonstrates this.
+We provide a library [maquette-css-transitions](https://www.npmjs.com/package/maquette-css-transitions) which creates the desired
+`enterAnimation` and `exitAnimation` functions from the animation css-class (`slideDown` in our example).
+The example below shows how to this works.
 
 <%- include('../../partials/live-editor-start.ejs') -%>
+var createEnterCssTransition = maquetteCssTransitions.createEnterCssTransition;
+var createExitCssTransition = maquetteCssTransitions.createExitCssTransition;
+
 var itemNrs = [1,2,3];
 var lastItemNr = 3;
 
@@ -108,18 +108,19 @@ var remove = function(evt) {
   itemNrs.pop();
 };
 
-// We need a projector that is configured to do CSS transitions
-var projector = maquette.createProjector({transitions: cssTransitions});
+var projector = maquette.createProjector({});
 
 projector.append(domNode, function() {
-  return h("div", [
+  return h('div', [
     itemNrs.map(function(itemNr) {
-      return h("div.demo-block-item", {
-        key:itemNr, enterAnimation: "slideDown", exitAnimation: "slideUp"
+      return h('div.demo-block-item', {
+        key:itemNr,
+        enterAnimation: createEnterCssTransition('slideDown'),
+        exitAnimation: createExitCssTransition('slideUp')
       }, [itemNr.toString()]);
     }),
-    h("button", {key: 0, onclick: add}, ["+"]),
-    h("button", {key: 1, onclick: remove}, ["-"])
+    h('button', {key: 0, onclick: add}, ['+']),
+    h('button', {key: 1, onclick: remove}, ['-'])
   ]);
 });<%- include('../../partials/live-editor-end.ejs') -%>
 

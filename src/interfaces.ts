@@ -81,6 +81,12 @@ export interface VNodeProperties {
    * @param children - The children for this node.
    */
   afterUpdate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties, children: VNode[]): void;
+
+  /**
+   * Callback that is called when a node has been removed from the tree.
+   * @param element - The element that has been removed from the DOM.
+   */
+  afterRemoved?(element: Element): void;
   /**
    * When specified, the event handlers will be invoked with 'this' pointing to the value.
    * This is useful when using the prototype/class based implementation of MaquetteComponents.

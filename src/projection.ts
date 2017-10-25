@@ -95,6 +95,12 @@ let nodeToRemove = (vNode: VNode) => {
         if (domNode.parentNode) {
           domNode.parentNode.removeChild(domNode);
         }
+        if (vNode.properties && vNode.properties.afterRemoved) {
+          vNode.properties.afterRemoved.apply(
+            vNode.properties.bind || vNode.properties,
+            [<Element>domNode]
+          );
+        }
       };
       exitAnimation(domNode as Element, removeDomNode, vNode.properties);
       return;
@@ -102,6 +108,12 @@ let nodeToRemove = (vNode: VNode) => {
   }
   if (domNode.parentNode) {
     domNode.parentNode.removeChild(domNode);
+    if (vNode.properties && vNode.properties.afterRemoved) {
+      vNode.properties.afterRemoved.apply(
+        vNode.properties.bind || vNode.properties,
+        [<Element>domNode]
+      );
+    }
   }
 };
 

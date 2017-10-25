@@ -85,6 +85,33 @@ let nodeAdded = (vNode: VNode) => {
   }
 };
 
+let nodesToBeRemoved: VNode[] = [];
+let requestedIdleCallback = false;
+
+let callAfterRemoved = () => {
+  requestedIdleCallback = false;
+  nodesToBeRemoved.forEach(node => {
+    node.properties!.afterRemoved!.apply(
+      node.properties!.bind || node.properties!,
+      [<Element>node.domNode]
+    );
+  });
+  nodesToBeRemoved.length = 0;
+};
+
+let scheduleNodeRemoval = (vNode: VNode) => {
+  nodesToBeRemoved.push(vNode);
+
+  if (!requestedIdleCallback) {
+    requestedIdleCallback = true;
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      window.requestIdleCallback(callAfterRemoved, { timeout: 16 });
+    } else {
+      setTimeout(callAfterRemoved, 16);
+    }
+  }
+};
+
 let nodeToRemove = (vNode: VNode) => {
   let domNode: Node = vNode.domNode!;
   if (vNode.properties) {
@@ -96,10 +123,7 @@ let nodeToRemove = (vNode: VNode) => {
           domNode.parentNode.removeChild(domNode);
         }
         if (vNode.properties && vNode.properties.afterRemoved) {
-          vNode.properties.afterRemoved.apply(
-            vNode.properties.bind || vNode.properties,
-            [<Element>domNode]
-          );
+          scheduleNodeRemoval(vNode);
         }
       };
       exitAnimation(domNode as Element, removeDomNode, vNode.properties);
@@ -109,10 +133,7 @@ let nodeToRemove = (vNode: VNode) => {
   if (domNode.parentNode) {
     domNode.parentNode.removeChild(domNode);
     if (vNode.properties && vNode.properties.afterRemoved) {
-      vNode.properties.afterRemoved.apply(
-        vNode.properties.bind || vNode.properties,
-        [<Element>domNode]
-      );
+      scheduleNodeRemoval(vNode);
     }
   }
 };

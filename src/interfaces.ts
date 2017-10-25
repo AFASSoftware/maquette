@@ -84,6 +84,7 @@ export interface VNodeProperties {
 
   /**
    * Callback that is called when a node has been removed from the tree.
+   * The callback is called during idle state or after a timeout (fallback).
    * @param element - The element that has been removed from the DOM.
    */
   afterRemoved?(element: Element): void;

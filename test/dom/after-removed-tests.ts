@@ -18,6 +18,25 @@ describe('dom', () => {
       clock.restore();
     });
 
+    it('will call afterRemoved eventually on all nodes that are no longer in the DOM', () => {
+      let afterRemoved1 = sinon.spy();
+      let afterRemoved2 = sinon.spy();
+
+      let projection = dom.create(h('div', [
+        h('div.1', { afterRemoved: afterRemoved1 }, [
+          h('div.2', { afterRemoved: afterRemoved2 })
+        ])
+      ]));
+      projection.update(h('div', []));
+
+      expect(requestIdleCallback).to.have.been.calledOnce;
+
+      requestIdleCallback.yield();
+
+      expect(afterRemoved1).to.have.been.called;
+      expect(afterRemoved2).to.have.been.called;
+    });
+
     it('will request a single idle callback when multiple nodes are removed', () => {
       let afterRemoved1 = sinon.spy();
       let afterRemoved2 = sinon.spy();

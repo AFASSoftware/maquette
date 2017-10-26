@@ -1,6 +1,6 @@
 import { h } from '../../src/h';
 import { createProjector } from '../../src/projector';
-import { performanceObserverProjectorLogger } from '../../src/utilities/performanceobserver-projector-logger';
+import { windowPerformanceProjectorLogger } from '../../src/utilities/window-performance-projector-logger';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Data
@@ -25,6 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Starts the projector, which renders the virtual DOM at the right moments
-  createProjector({ performanceLogger: performanceObserverProjectorLogger }).merge(document.body, render);
+  createProjector({ performanceLogger: windowPerformanceProjectorLogger }).merge(document.body, render);
 
 });

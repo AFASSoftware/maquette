@@ -85,29 +85,36 @@ let nodeAdded = (vNode: VNode) => {
   }
 };
 
-let nodesToBeRemoved: VNode[] = [];
+let removedNodes: VNode[] = [];
 let requestedIdleCallback = false;
 
-let callAfterRemoved = () => {
-  requestedIdleCallback = false;
-  nodesToBeRemoved.forEach(node => {
-    node.properties!.afterRemoved!.apply(
-      node.properties!.bind || node.properties!,
+let visitRemovedNode = (node: VNode) => {
+  (node.children || []).forEach(visitRemovedNode);
+
+  if (node.properties && node.properties.afterRemoved) {
+    node.properties.afterRemoved.apply(
+      node.properties.bind || node.properties,
       [<Element>node.domNode]
     );
-  });
-  nodesToBeRemoved.length = 0;
+  }
 };
 
-let scheduleNodeRemoval = (vNode: VNode) => {
-  nodesToBeRemoved.push(vNode);
+let processPendingNodeRemovals = (): void => {
+  requestedIdleCallback = false;
+
+  removedNodes.forEach(visitRemovedNode);
+  removedNodes.length = 0;
+};
+
+let scheduleNodeRemoval = (vNode: VNode): void => {
+  removedNodes.push(vNode);
 
   if (!requestedIdleCallback) {
     requestedIdleCallback = true;
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      window.requestIdleCallback(callAfterRemoved, { timeout: 16 });
+      window.requestIdleCallback(processPendingNodeRemovals, { timeout: 16 });
     } else {
-      setTimeout(callAfterRemoved, 16);
+      setTimeout(processPendingNodeRemovals, 16);
     }
   }
 };
@@ -121,8 +128,6 @@ let nodeToRemove = (vNode: VNode) => {
       let removeDomNode = () => {
         if (domNode.parentNode) {
           domNode.parentNode.removeChild(domNode);
-        }
-        if (vNode.properties && vNode.properties.afterRemoved) {
           scheduleNodeRemoval(vNode);
         }
       };
@@ -132,9 +137,7 @@ let nodeToRemove = (vNode: VNode) => {
   }
   if (domNode.parentNode) {
     domNode.parentNode.removeChild(domNode);
-    if (vNode.properties && vNode.properties.afterRemoved) {
-      scheduleNodeRemoval(vNode);
-    }
+    scheduleNodeRemoval(vNode);
   }
 };
 

@@ -23,8 +23,12 @@ describe('dom', () => {
       let afterRemoved2 = sinon.spy();
 
       let projection = dom.create(h('div', [
-        h('div.1', { afterRemoved: afterRemoved1 }, [
-          h('div.2', { afterRemoved: afterRemoved2 })
+        h('div.1', {}, [
+          h('div.2', { afterRemoved: afterRemoved1 }, [
+            h('div.3', {}, [
+              h('div.4', { afterRemoved: afterRemoved2 }, [])
+            ])
+          ])
         ])
       ]));
       projection.update(h('div', []));

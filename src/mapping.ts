@@ -1,27 +1,4 @@
-/**
- * Keeps an array of result objects synchronized with an array of source objects.
- * See {@link http://maquettejs.org/docs/arrays.html|Working with arrays}.
- *
- * Mapping provides a [[map]] function that updates its [[results]].
- * The [[map]] function can be called multiple times and the results will get created, removed and updated accordingly.
- * A Mapping can be used to keep an array of components (objects with a `render` method) synchronized with an array of data.
- * Instances of Mapping can be created using [[createMapping]].
- *
- * @param <Source>   The type of source elements. Usually the data type.
- * @param <Target>   The type of target elements. Usually the component type.
- */
-export interface Mapping<Source, Target> {
-  /**
-   * The array of results. These results will be synchronized with the latest array of sources that were provided using [[map]].
-   */
-  results: Target[];
-  /**
-   * Maps a new array of sources and updates [[results]].
-   *
-   * @param newSources   The new array of sources.
-   */
-  map(newSources: Source[]): void;
-}
+import { Mapping } from './interfaces';
 
 /**
  * Creates a {@link Mapping} instance that keeps an array of result objects synchronized with an array of source objects.

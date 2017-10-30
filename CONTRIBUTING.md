@@ -1,11 +1,9 @@
 # Building
-Maquette is written in Typescript. The main sourcefile can be found under `src/maquette.ts`. Unit-tests are in the `test` folder.
+Maquette is written in Typescript. The main sourcefiles can be found under `src/`. Unit-tests are in the `test` folder. You can use your IDE to run
+unit tests or run `npm run assist` to run the unit tests on every save.
 
-While making modifications to maquette, we recommend you run the `gulp dev` command in the background.
-This will watch the sourcefiles to compile, test and measure code coverage constantly.
-It will also open a live updating browser-window displaying the code coverage.
-
-For `bower`, we also include a compiled and minified version in git. These can be updated using by running the `gulp` command.
+The code is formatted using the coding style we use at AFAS. You can simply use `npm run fix` to reformat the changed code and find linting problems.
+Git hooks are added during `npm install` to help you keep the code formatted before committing and thus prevent extra style-fixing commits.
 
 Happy coding!
 

@@ -3,7 +3,8 @@ import { MaquetteComponent, VNode } from '../../../src/interfaces';
 import { h } from '../../../src/h';
 import { createMapping } from '../../../src/mapping';
 import { dom } from '../../../src/dom';
-import { version } from '../../../src/index';
+
+const version = '3.0';
 
 let createTableCell = (text: string): MaquetteComponent => {
   let handleClick = (evt: MouseEvent) => {

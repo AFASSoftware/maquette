@@ -18,6 +18,7 @@
   },
   "include": [
     "./**/*.ts",
+    "../typings/**/*.d.ts",
     "./**/*.d.ts"
   ],
   "exclude": []

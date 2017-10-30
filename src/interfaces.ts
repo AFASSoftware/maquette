@@ -1,5 +1,71 @@
-// The following line is not possible in Typescript, hence the workaround in the two lines below
-// export type VNodeChild = string|VNode|Array<VNodeChild>
+export interface ProjectorService {
+  /**
+   * Instructs the projector to re-render to the DOM at the next animation-frame using the registered `render` functions.
+   * This method is automatically called for you when event-handlers that are registered in the [[VNode]]s are invoked.
+   *
+   * You need to call this method when timeouts expire, when AJAX responses arrive or other asynchronous actions happen.
+   */
+  scheduleRender(): void;
+  /**
+   * Synchronously re-renders to the DOM. You should normally call the `scheduleRender()` function to keep the
+   * user interface more performant. There is however one good reason to call renderNow(),
+   * when you want to put the focus into a newly created element in iOS.
+   * This is only allowed when triggered by a user-event, not during requestAnimationFrame.
+   */
+  renderNow(): void;
+}
+
+export interface Projector extends ProjectorService {
+  /**
+   * Appends a new child node to the DOM using the result from the provided `renderFunction`.
+   * The `renderFunction` will be invoked again to update the DOM when needed.
+   * @param parentNode - The parent node for the new child node.
+   * @param renderFunction - Function with zero arguments that returns a [[VNode]] tree.
+   */
+  append(parentNode: Element, renderFunction: () => VNode): void;
+  /**
+   * Inserts a new DOM node using the result from the provided `renderFunction`.
+   * The `renderFunction` will be invoked again to update the DOM when needed.
+   * @param beforeNode - The node that the DOM Node is inserted before.
+   * @param renderFunction - Function with zero arguments that returns a [[VNode]] tree.
+   */
+  insertBefore(beforeNode: Element, renderFunction: () => VNode): void;
+  /**
+   * Merges a new DOM node using the result from the provided `renderFunction` with an existing DOM Node.
+   * This means that the virtual DOM and real DOM have one overlapping element.
+   * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided
+   * The `renderFunction` will be invoked again to update the DOM when needed.
+   * @param domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and child nodes are preserved.
+   * @param renderFunction - Function with zero arguments that returns a [[VNode]] tree.
+   */
+  merge(domNode: Element, renderFunction: () => VNode): void;
+  /**
+   * Replaces an existing DOM node with the result from the provided `renderFunction`.
+   * The `renderFunction` will be invoked again to update the DOM when needed.
+   * @param domNode - The DOM node to replace.
+   * @param renderFunction - Function with zero arguments that returns a [[VNode]] tree.
+   */
+  replace(domNode: Element, renderFunction: () => VNode): void;
+  /**
+   * Resumes the projector. Use this method to resume rendering after [[stop]] was called or an error occurred during rendering.
+   */
+  resume(): void;
+  /**
+   * Stops running the `renderFunction` to update the DOM. The `renderFunction` must have been
+   * registered using [[append]], [[merge]], [[insertBefore]] or [[replace]].
+   *
+   * @returns The [[Projection]] which was created using this `renderFunction`.
+   * The [[Projection]] contains a reference to the DOM Node that was rendered.
+   */
+  detach(renderFunction: () => VNode): Projection;
+  /**
+   * Stops the projector. This means that the registered `render` functions will not be called anymore.
+   *
+   * Note that calling [[stop]] is not mandatory. A projector is a passive object that will get garbage collected
+   * as usual if it is no longer in scope.
+   */
+  stop(): void;
+}
 
 /**
  * A virtual representation of a DOM Node. Maquette assumes that [[VNode]] objects are never modified externally.
@@ -85,6 +151,7 @@ export interface VNodeProperties {
   /**
    * Callback that is called when a node has been removed from the tree.
    * The callback is called during idle state or after a timeout (fallback).
+   * {@link https://maquettejs.org/docs/dom-node-removal.html|More info}
    * @param element - The element that has been removed from the DOM.
    */
   afterRemoved?(element: Element): void;
@@ -95,14 +162,12 @@ export interface VNodeProperties {
    * When no [[key]] is present, this object is also used to uniquely identify a DOM node.
    */
   readonly bind?: object;
-  /* tslint:disable ban-types */
   /**
    * Used to uniquely identify a DOM node among siblings.
    * A key is required when there are more children with the same selector and these children are added or removed dynamically.
-   * NOTE: this does not have to be a string or number, a [[MaquetteComponent]] Object for instance is also possible.
+   * NOTE: this does not have to be a string or number, a [[MaquetteComponent]] Object for instance is also common.
    */
   readonly key?: Object;
-  /* tslint:enable ban-types */
   /**
    * An object literal like `{important:true}` which allows css classes, like `important` to be added and removed
    * dynamically.
@@ -258,6 +323,55 @@ export interface ProjectionOptions extends ProjectorOptions {
 }
 
 /**
+ * Keeps an array of result objects synchronized with an array of source objects.
+ * See {@link http://maquettejs.org/docs/arrays.html|Working with arrays}.
+ *
+ * Mapping provides a [[map]] function that updates its [[results]].
+ * The [[map]] function can be called multiple times and the results will get created, removed and updated accordingly.
+ * A Mapping can be used to keep an array of components (objects with a `render` method) synchronized with an array of data.
+ * Instances of Mapping can be created using [[createMapping]].
+ *
+ * @param <Source>   The type of source elements. Usually the data type.
+ * @param <Target>   The type of target elements. Usually the component type.
+ */
+export interface Mapping<Source, Target> {
+  /**
+   * The array of results. These results will be synchronized with the latest array of sources that were provided using [[map]].
+   */
+  results: Target[];
+  /**
+   * Maps a new array of sources and updates [[results]].
+   *
+   * @param newSources   The new array of sources.
+   */
+  map(newSources: Source[]): void;
+}
+
+/**
+ * A CalculationCache object remembers the previous outcome of a calculation along with the inputs.
+ * On subsequent calls the previous outcome is returned if the inputs are identical.
+ * This object can be used to bypass both rendering and diffing of a virtual DOM subtree.
+ * Instances of CalculationCache can be created using [[createCache]].
+ *
+ * @param <Result> The type of the value that is cached.
+ */
+export interface CalculationCache<Result> {
+  /**
+   * Manually invalidates the cached outcome.
+   */
+  invalidate(): void;
+  /**
+   * If the inputs array matches the inputs array from the previous invocation, this method returns the result of the previous invocation.
+   * Otherwise, the calculation function is invoked and its result is cached and returned.
+   * Objects in the inputs array are compared using ===.
+   * @param inputs - Array of objects that are to be compared using === with the inputs from the previous invocation.
+   * These objects are assumed to be immutable primitive values.
+   * @param calculation - Function that takes zero arguments and returns an object (A [[VNode]] presumably) that can be cached.
+   */
+  result(inputs: Object[], calculation: () => Result): Result;
+}
+
+/**
  * @deprecated Use [[MaquetteComponent]] instead.
  * @since 3.0
  */
@@ -279,4 +393,63 @@ export interface MaquetteComponent {
    * A function that returns the DOM representation of the component.
    */
   render(): VNode | null | undefined;
+}
+
+export interface Dom {
+  /**
+   * Creates a real DOM tree from `vnode`. The [[Projection]] object returned will contain the resulting DOM Node in
+   * its [[Projection.domNode|domNode]] property.
+   * This is a low-level method. Users will typically use a [[Projector]] instead.
+   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+   * objects may only be rendered once.
+   * @param projectionOptions - Options to be used to create and update the projection.
+   * @returns The [[Projection]] which also contains the DOM Node that was created.
+   */
+  create(vnode: VNode, projectionOptions?: ProjectionOptions): Projection;
+
+  /**
+   * Appends a new child node to the DOM which is generated from a [[VNode]].
+   * This is a low-level method. Users will typically use a [[Projector]] instead.
+   * @param parentNode - The parent node for the new child node.
+   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+   * objects may only be rendered once.
+   * @param projectionOptions - Options to be used to create and update the [[Projection]].
+   * @returns The [[Projection]] that was created.
+   */
+  append(parentNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection;
+
+  /**
+   * Inserts a new DOM node which is generated from a [[VNode]].
+   * This is a low-level method. Users wil typically use a [[Projector]] instead.
+   * @param beforeNode - The node that the DOM Node is inserted before.
+   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function.
+   * NOTE: [[VNode]] objects may only be rendered once.
+   * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
+   * @returns The [[Projection]] that was created.
+   */
+  insertBefore(beforeNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection;
+
+  /**
+   * Merges a new DOM node which is generated from a [[VNode]] with an existing DOM Node.
+   * This means that the virtual DOM and the real DOM will have one overlapping element.
+   * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided.
+   * This is a low-level method. Users wil typically use a [[Projector]] instead.
+   * @param element - The existing element to adopt as the root of the new virtual DOM. Existing attributes and child nodes are preserved.
+   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]] objects
+   * may only be rendered once.
+   * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
+   * @returns The [[Projection]] that was created.
+   */
+  merge(element: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection;
+
+  /**
+   * Replaces an existing DOM node with a node generated from a [[VNode]].
+   * This is a low-level method. Users will typically use a [[Projector]] instead.
+   * @param element - The node for the [[VNode]] to replace.
+   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+   * objects may only be rendered once.
+   * @param projectionOptions - Options to be used to create and update the [[Projection]].
+   * @returns The [[Projection]] that was created.
+   */
+  replace(element: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection;
 }

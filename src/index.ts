@@ -4,12 +4,9 @@
  *
  * [[https://maquettejs.org/|To the maquette homepage]]
  */
-
-export let version = '3.0-begin';
-
 export * from './interfaces';
 export { dom } from './dom';
-export * from './h';
-export * from './projector';
-export * from './cache';
-export * from './mapping';
+export { h } from './h';
+export { createProjector } from './projector';
+export { createCache } from './cache';
+export { createMapping } from './mapping';

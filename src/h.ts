@@ -1,3 +1,5 @@
+/* tslint:disable function-name */
+
 import { VNode, VNodeChild, VNodeProperties } from './interfaces';
 
 let toTextVNode = (data: string): VNode => {
@@ -27,33 +29,40 @@ let appendChildren = (parentSelector: string, insertions: VNodeChild[], main: VN
 };
 
 /**
- * Contains all valid method signatures for the [[h]] function.
+ * The `h` function is used to create a virtual DOM node.
+ * This function is largely inspired by the mercuryjs and mithril frameworks.
+ * The `h` stands for (virtual) hyperscript.
+ *
+ * @param selector    Contains the tagName, id and fixed css classnames in CSS selector format.
+ *                    It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
+ * @param properties  An object literal containing properties that will be placed on the DOM node.
+ * @param children    Virtual DOM nodes and strings to add as child nodes.
+ *                    `children` may contain [[VNode]]s, `string`s, nested arrays, `null` and `undefined`.
+ *                    Nested arrays are flattened, `null` and `undefined` are removed.
+ *
+ * @returns           A VNode object, used to render a real DOM later.
+ *
+ * NOTE: There are {@link http://maquettejs.org/docs/rules.html|two basic rules} you should be aware of when updating the virtual DOM.
  */
-export interface H {
-  /**
-   * @param selector    Contains the tagName, id and fixed css classnames in CSS selector format.
-   *                    It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
-   * @param properties  An object literal containing properties that will be placed on the DOM node.
-   * @param children    Virtual DOM nodes and strings to add as child nodes.
-   *                    `children` may contain [[VNode]]s, `string`s, nested arrays, `null` and `undefined`.
-   *                    Nested arrays are flattened, `null` and `undefined` are removed.
-   *
-   * @returns           A VNode object, used to render a real DOM later.
-   */
-  (selector: string, children: VNodeChild[]): VNode;
-  (selector: string, properties?: VNodeProperties, children?: VNodeChild[]): VNode;
-}
-
+export function h(selector: string, properties?: VNodeProperties, children?: VNodeChild[]): VNode;
 /**
  * The `h` function is used to create a virtual DOM node.
  * This function is largely inspired by the mercuryjs and mithril frameworks.
  * The `h` stands for (virtual) hyperscript.
  *
- * All possible method signatures of this function can be found in the [[H]] 'interface'.
+ * @param selector    Contains the tagName, id and fixed css classnames in CSS selector format.
+ *                    It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
+ * @param children    Virtual DOM nodes and strings to add as child nodes.
+ *                    `children` may contain [[VNode]]s, `string`s, nested arrays, `null` and `undefined`.
+ *                    Nested arrays are flattened, `null` and `undefined` are removed.
+ *
+ * @returns           A VNode object, used to render a real DOM later.
  *
  * NOTE: There are {@link http://maquettejs.org/docs/rules.html|two basic rules} you should be aware of when updating the virtual DOM.
  */
-export let h: H = (selector: string, properties?: VNodeProperties, children?: VNodeChild[]): VNode => {
+export function h(selector: string, children: VNodeChild[]): VNode;
+
+export function h(selector: string, properties?: VNodeProperties, children?: VNodeChild[]): VNode {
   if (Array.isArray(properties)) {
     children = properties;
     properties = undefined;
@@ -81,4 +90,4 @@ export let h: H = (selector: string, properties?: VNodeProperties, children?: VN
     text: (text === '') ? undefined : text,
     domNode: null
   };
-};
+}

@@ -85,6 +85,40 @@ let nodeAdded = (vNode: VNode) => {
   }
 };
 
+let removedNodes: VNode[] = [];
+let requestedIdleCallback = false;
+
+let visitRemovedNode = (node: VNode) => {
+  (node.children || []).forEach(visitRemovedNode);
+
+  if (node.properties && node.properties.afterRemoved) {
+    node.properties.afterRemoved.apply(
+      node.properties.bind || node.properties,
+      [<Element>node.domNode]
+    );
+  }
+};
+
+let processPendingNodeRemovals = (): void => {
+  requestedIdleCallback = false;
+
+  removedNodes.forEach(visitRemovedNode);
+  removedNodes.length = 0;
+};
+
+let scheduleNodeRemoval = (vNode: VNode): void => {
+  removedNodes.push(vNode);
+
+  if (!requestedIdleCallback) {
+    requestedIdleCallback = true;
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      window.requestIdleCallback(processPendingNodeRemovals, { timeout: 16 });
+    } else {
+      setTimeout(processPendingNodeRemovals, 16);
+    }
+  }
+};
+
 let nodeToRemove = (vNode: VNode) => {
   let domNode: Node = vNode.domNode!;
   if (vNode.properties) {
@@ -94,6 +128,7 @@ let nodeToRemove = (vNode: VNode) => {
       let removeDomNode = () => {
         if (domNode.parentNode) {
           domNode.parentNode.removeChild(domNode);
+          scheduleNodeRemoval(vNode);
         }
       };
       exitAnimation(domNode as Element, removeDomNode, vNode.properties);
@@ -102,6 +137,7 @@ let nodeToRemove = (vNode: VNode) => {
   }
   if (domNode.parentNode) {
     domNode.parentNode.removeChild(domNode);
+    scheduleNodeRemoval(vNode);
   }
 };
 

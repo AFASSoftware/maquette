@@ -5,7 +5,7 @@ describe('dom', () => {
   describe('animations', () => {
     describe('updateAnimation', () => {
       it('is invoked when a node contains only text and that text changes', () => {
-        let updateAnimation = sinon.stub();
+        let updateAnimation = sinon.spy();
         let projection = dom.create(h('div', { updateAnimation }, ['text']));
         projection.update(h('div', { updateAnimation }, ['text2']));
         expect(updateAnimation).to.have.been.calledOnce;
@@ -13,7 +13,7 @@ describe('dom', () => {
       });
 
       it('is invoked when a node contains text and other nodes and the text changes', () => {
-        let updateAnimation = sinon.stub();
+        let updateAnimation = sinon.spy();
         let projection = dom.create(h('div', { updateAnimation }, ['textBefore', h('span'), 'textAfter']));
         projection.update(h('div', { updateAnimation }, ['textBefore', h('span'), 'newTextAfter']));
         expect(updateAnimation).to.have.been.calledOnce;
@@ -24,7 +24,7 @@ describe('dom', () => {
       });
 
       it('is invoked when a property changes', () => {
-        let updateAnimation = sinon.stub();
+        let updateAnimation = sinon.spy();
         let projection = dom.create(h('a', { updateAnimation, href: '#1' }));
         projection.update(h('a', { updateAnimation, href: '#2' }));
         expect(updateAnimation).to.have.been.calledWith(projection.domNode, sinon.match({ href: '#2' }), sinon.match({ href: '#1' }));
@@ -34,7 +34,7 @@ describe('dom', () => {
 
     describe('enterAnimation', () => {
       it('is invoked when a new node is added to an existing parent node', () => {
-        let enterAnimation = sinon.stub();
+        let enterAnimation = sinon.spy();
         let projection = dom.create(h('div', [
         ]));
 
@@ -49,7 +49,7 @@ describe('dom', () => {
 
     describe('exitAnimation', () => {
       it('is invoked when a node is removed from an existing parent node', () => {
-        let exitAnimation = sinon.stub();
+        let exitAnimation = sinon.spy();
         let projection = dom.create(h('div', [
           h('span', { exitAnimation })
         ]));
@@ -64,9 +64,6 @@ describe('dom', () => {
         expect(projection.domNode.childNodes).to.be.empty;
         exitAnimation.lastCall.callArg(1); // arg1: removeElement
       });
-
     });
-
   });
-
 });

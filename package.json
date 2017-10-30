@@ -94,7 +94,6 @@
     "jsdom": "11.3.0",
     "jsdom-global": "3.0.2",
     "mocha": "3.5.0",
-    "mocha-jsdom": "1.1.0",
     "nyc": "11.2.1",
     "precss": "2.0.0",
     "remap-istanbul": "0.9.5",

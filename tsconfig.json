@@ -6,20 +6,19 @@
       "es6"
     ],
     "module": "commonjs",
-    "noImplicitAny": true,
+    "target": "es5",
+    "declaration": false,
+    "strict": true,
     "preserveConstEnums": true,
     "sourceMap": true,
     "outDir": "./build/js",
     "rootDir": ".",
-    "target": "es5",
-    "noEmitOnError": true,
-    "strictNullChecks": true,
-    "noImplicitThis": true
+    "strictNullChecks": false,
+    "noEmit": true
   },
   "include": [
-    "src/**/*",
-    "test/**/*",
-    "test-utilities/**/*",
-    "typings/**/*"
+    "./typings/**/*.d.ts",
+    "./tools/**/*.ts",
+    "./test/**/*.ts"
   ]
 }

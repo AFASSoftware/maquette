@@ -10,7 +10,7 @@ window.createRouter = function (model) {
 
   var todoRouter = {
 
-    renderMaquette: function () {
+    render: function () {
       var hash = document.location.hash;
 
       if(hash !== currentHash) {
@@ -28,7 +28,7 @@ window.createRouter = function (model) {
       }
 
       return h("main", [
-        currentPage.renderMaquette()
+        currentPage.render()
       ]);
     }
   };

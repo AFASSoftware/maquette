@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "es6",
+    "strictNullChecks": true,
+    "noEmitOnError": true,
+    "noEmit": false,
+    "declaration": true,
+    "outDir": "../dist",
+    "rootDir": "."
+  },
+  "include": [
+    "./**/*.ts",
+    "../typings/extensions.d.ts"
+  ]
+}

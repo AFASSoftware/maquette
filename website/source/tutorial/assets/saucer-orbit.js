@@ -18,7 +18,7 @@ function tick() {
   requestAnimationFrame(tick);
 }
 
-function renderMaquette() {
+function render() {
   return h('div.landscape', [
     h('div.remote', {}, [
       h('div.row', [
@@ -34,6 +34,6 @@ function renderMaquette() {
 
 // Initializes the projector 
 document.addEventListener('DOMContentLoaded', function () {
-  projector.append(document.body, renderMaquette);
+  projector.append(document.body, render);
   tick();
 });

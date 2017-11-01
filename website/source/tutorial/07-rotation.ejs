@@ -24,7 +24,7 @@ workbench: true
           changeCount++;
         }
       },
-      renderMaquette: function () {
+      render: function () {
         return h("p", ["Move the rotation slider up and down to get a feeling of what is wrong."]);
       }
     };
@@ -51,7 +51,7 @@ workbench: true
           contentWindow.projector = oldProjector;
         }
       },
-      renderMaquette: function () {
+      render: function () {
         return h("p", ["Make sure the projectector schedules a render after each update to the position."]);
       }
     };
@@ -69,10 +69,10 @@ workbench: true
       objective2
     ]);
 
-    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.render);
 
     var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
-    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.render);
   });
 </script>
 

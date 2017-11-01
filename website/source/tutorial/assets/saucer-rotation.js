@@ -3,13 +3,13 @@ var projector = maquette.createProjector();
 
 var rotation = 45;
 
-function renderMaquette() {
+function render() {
   return h('div.landscape', [
     h('div.saucer', {})
   ]);
 }
 
-// Initializes the projector 
+// Initializes the projector
 document.addEventListener('DOMContentLoaded', function () {
-  projector.append(document.body, renderMaquette);
+  projector.append(document.body, render);
 });

@@ -1,0 +1,57 @@
+---
+layout: default.ejs
+title: DOM node removal
+liveEditors: true
+---
+
+### DOM node removal
+
+When virtual DOM nodes are removed, there is normally no need to take any action. But for example when global event listener were added during
+creation of the DOM Node, a cleanup action is required. To this end, the `afterRemoved` callback is used.
+
+This callback is called asynchronously during an idle period (using `requestIdleCallback` and falling back to a `setTimeout`).
+This means it is possible that an event listener might still be called after the DOM node was actually removed from the DOM but the `afterRemoved` callback
+wasn't called yet.
+
+The example below shows how the `afterRemoved` callback can be used.
+
+<%- include('../../partials/live-editor-start.ejs') -%>
+var styles = {
+  box: {
+    margin: '10px 0',
+    width: '100px',
+    height: '100px',
+    backgroundColor: '#f00'
+  }
+};
+var showBox = true;
+
+function doSomething() {
+  console.log('doing something');
+}
+
+function handleAfterCreateBox(element) {
+  element.ownerDocument.addEventListener('mousemove', doSomething);
+}
+
+function handleAfterRemovedBox(element) {
+  element.ownerDocument.removeEventListener('mousemove', doSomething);
+}
+
+function render() {
+  return h('div', [
+    h('button', { onclick: () => showBox = !showBox }, [
+      showBox ? 'Hide box' : 'Show box'
+    ]),
+    showBox
+      ? h('div', {
+          styles: styles.box,
+          afterCreate: handleAfterCreateBox,
+          afterRemoved: handleAfterRemovedBox
+        })
+      : undefined
+  ]);
+}
+
+projector.append(domNode, render);
+<%- include('../../partials/live-editor-end.ejs') -%>

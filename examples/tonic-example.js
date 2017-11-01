@@ -9,12 +9,12 @@ function handleNameInput(evt) {
   yourName = evt.target.value;
 }
 
-// This function uses the 'hyperscript' notation to create the virtual DOM. 
-function renderMaquette() {
+// This function uses the 'hyperscript' notation to create the virtual DOM.
+function render() {
   return h('div', [
-    h('input', { 
-      type: 'text', placeholder: 'What is your name?', 
-      value: yourName, oninput: handleNameInput 
+    h('input', {
+      type: 'text', placeholder: 'What is your name?',
+      value: yourName, oninput: handleNameInput
     }),
     h('p.output', ['Hello ' + (yourName || 'you') + '!'])
   ]);
@@ -24,7 +24,7 @@ function renderMaquette() {
 
 let {createTestProjector} = require("maquette-query");
 
-let testProjector = createTestProjector(renderMaquette);
+let testProjector = createTestProjector(render);
 let output = testProjector.query('.output');
 
 output.textContent;

@@ -12,7 +12,7 @@ mapping from the data to the virtual DOM nodes directly. This looks as follows:
 <%- include('../../partials/live-editor-start.ejs') -%>
 var data = [1,2,3];
 
-function renderMaquette() {
+function render() {
   return h("div", [
     // The javascript map function creates virtual DOM nodes from the data
     data.map(function(item, index) {
@@ -21,12 +21,10 @@ function renderMaquette() {
   ]);
 }
 
-projector.append(domNode, renderMaquette);
+projector.append(domNode, render);
 <%- include('../../partials/live-editor-end.ejs') -%>
 
-It does get a little more complex if your items need to maintain state or event handlers.
-For performance reasons maquette forces you to reuse event handler functions on every render. So you need to keep track of them.
-A good approach is to map the data to components and have these components render the virtual DOM.
+It does get a little more complex if you create a component that may hold state for every item.
 The following example shows how to do this.
 
 <%- include('../../partials/live-editor-start.ejs') -%>
@@ -39,7 +37,7 @@ var components = data.map(function(item) {
     clickCount++;
   }
   return {
-    renderMaquette: function() {
+    render: function() {
       return h("button.demo-block-item", {key: item, onclick: handleClick}, [
         "" + item + " (clicked " + clickCount + " times)"
       ]);
@@ -47,19 +45,19 @@ var components = data.map(function(item) {
   };
 });
 
-function renderMaquette() {
+function render() {
   return h("div", [
     // Render the components
     components.map(function(component) {
-      return component.renderMaquette();
+      return component.render();
     })
   ]);
 }
 
-projector.append(domNode, renderMaquette);
+projector.append(domNode, render);
 <%- include('../../partials/live-editor-end.ejs') -%>
 
-There is one more advanced usecase. What if your items maintain state or event handlers but the underlying data can also get updated?
+There is one more advanced usecase. What if you use components but the underlying data can also get updated?
 This could be the case if you use real-time communication or periodic refreshes.
 Maquette provides the `createMapping` function to keep your list of components synchronized with the underlying data.
 The algorithm that maquette uses to update the array of components may look somewhat similar to how maquette updates the real DOM in order to reflect the virtual DOM,
@@ -89,7 +87,7 @@ var mapping = maquette.createMapping(
       clickCount++;
     }
     return {
-      renderMaquette: function() {
+      render: function() {
         return h("button.demo-block-item", {key: source, onclick: handleClick}, [
           "" + source + " (clicked " + clickCount + " times)"
         ]);
@@ -108,18 +106,17 @@ function handleSwitch(evt) {
   mapping.map(data);
 }
 
-
-function renderMaquette() {
+function render() {
   return h("div", [
     // Render the components
     mapping.results.map(function(component) {
-      return component.renderMaquette();
+      return component.render();
     }),
     h("button", {onclick: handleSwitch}, ["Switch"])
   ]);
 }
 
-projector.append(domNode, renderMaquette);
+projector.append(domNode, render);
 <%- include('../../partials/live-editor-end.ejs') -%>
 
 More information about `createMapping` can be found in the [API](/docs/typedoc/modules/_maquette_.html#createmapping) documentation.

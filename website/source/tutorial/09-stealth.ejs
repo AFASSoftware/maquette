@@ -17,11 +17,11 @@ workbench: true
         return achieved1;
       },
       onSceneUpdate: function (contentWindow) {
-        if(contentWindow.stealth === true && contentWindow.renderMaquette) {
+        if(contentWindow.stealth === true && contentWindow.render) {
           try {
-            var vnodeBefore = contentWindow.renderMaquette();
+            var vnodeBefore = contentWindow.render();
             contentWindow.stealth = false;
-            var vnodeAfter = contentWindow.renderMaquette();
+            var vnodeAfter = contentWindow.render();
             var beforeProperties = vnodeBefore.children[0].properties;
             var afterProperties = vnodeAfter.children[0].properties;
             achieved1 = beforeProperties.classes && afterProperties.classes && beforeProperties.classes.stealth === true && afterProperties.classes.stealth === false;
@@ -30,7 +30,7 @@ workbench: true
           contentWindow.stealth = true;
         }
       },
-      renderMaquette: function () {
+      render: function () {
         return h("p", ["Add the CSS class 'stealth' to the saucer conditionally, based on the 'stealth' variable."]);
       }
     };
@@ -43,10 +43,10 @@ workbench: true
       objective1
     ]);
 
-    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.render);
 
     var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
-    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.render);
   });
 </script>
 

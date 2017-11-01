@@ -18,10 +18,10 @@ workbench: true
     var workbench = createWorkbench(projector, "assets/saucer-intro.js", [
       markupMatcher
     ]);
-    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.render);
 
     var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
-    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.render);
   });
 </script>
 
@@ -64,7 +64,7 @@ workbench: true
     </h2>
     <p>
       In the workbench below you can edit the sourcefiles for this exercise.
-      In order to create the flying saucer, you need to complement the <code>renderMaquette()</code> function.
+      In order to create the flying saucer, you need to complement the <code>render()</code> function.
       The <b>next</b> button at the bottom will be unlocked once you complete the objective. Good luck!
     </p>
 

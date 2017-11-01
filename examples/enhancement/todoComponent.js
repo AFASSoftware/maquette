@@ -12,7 +12,7 @@
     isCompleted: function () {
       return completed;
     },
-    renderMaquette: function () {
+    render: function () {
       return h("todo-component", [
         h("div.message", [message]),
         h("input", { type: "checkbox", checked: completed, onclick: handleCompletedClick })

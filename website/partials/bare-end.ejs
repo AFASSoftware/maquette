@@ -14,7 +14,7 @@
 </aside>
 
 <footer>
-  Created at <a href="http://dev.afas.nl">AFAS Software</a> (Dutch site)
+  Created with ❤ at <a href="http://dev.afas.nl">AFAS Software</a> (Dutch site)
 </footer>
 
 <%
@@ -30,7 +30,7 @@ if (liveEditors) {
       <%
       } if (liveEditorsCss) {
         -%>
-      && window.cssTransitions
+      && window.maquetteCssTransitions
       <%
       }
         -%>
@@ -74,11 +74,11 @@ if (liveEditorsVelocity) {
 }
 if (liveEditorsCss) {
 %>
-<script src="//cdnjs.cloudflare.com/ajax/libs/maquette/<%-maquetteVersion-%>/css-transitions.min.js" async onload="enhance()"></script>
+<script src="//unpkg.com/maquette-css-transitions@1.0.0/dist/maquette-css-transitions.umd.js" async onload="enhance()"></script>
 <%
 }
 %>
-<script src="//cdnjs.cloudflare.com/ajax/libs/maquette/<%-maquetteVersion-%>/maquette.min.js" async onload="enhance()"></script>
+<script src="//unpkg.com/maquette@<%-maquetteVersion-%>/dist/maquette.umd.js" async onload="enhance()"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js" async onload=" enhance()"></script>
 <script src="/script.js" async onload="enhance()"></script>
 <%

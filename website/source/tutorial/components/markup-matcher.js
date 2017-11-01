@@ -70,7 +70,7 @@ window.createMarkupMatcher = function (projector, desiredMarkup) {
         achieved = (markupWrong === "" && markupMissing === "");
       }
     },
-    renderMaquette: function () {
+    render: function () {
       return [
         h("p", ["Make sure the DOM matches the following markup"]),
         h("code.markup-matcher", [

@@ -20,7 +20,7 @@ function createMyButton(text, onClick) {
   };
 
   var myButton = {
-    renderMaquette: function() {
+    render: function() {
       return h('my-button', {key: myButton}, [
         h('button', { onclick: handleClick }, [text])
       ]);
@@ -32,7 +32,7 @@ function createMyButton(text, onClick) {
 // how the button component is used
 var button = createMyButton("click me", function(){ alert("clicked"); });
 
-projector.append(domNode, button.renderMaquette);
+projector.append(domNode, button.render);
 <%- include('../../partials/live-editor-end.ejs') -%>
 
 To explain how we can unit-test this component, we will use
@@ -56,7 +56,7 @@ describe('myButton', function() {
   beforeEach(function() {
     clickHandler.reset();
     myButtonComponent = createMyButton('ButtonText', clickHandler);
-    projector.initialize(myButtonComponent.renderMaquette);
+    projector.initialize(myButtonComponent.render);
   });
 
   it('displays the configured text', function() {

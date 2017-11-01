@@ -6,13 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/node:7.10.0-browsers
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
 
     working_directory: ~/repo
 
@@ -25,16 +19,16 @@ jobs:
           - v1-dependencies-{{ checksum "package.json" }}{{ checksum "browser-tests/package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-        
-      # temp workaround until chrome is updated on the base iamge 
+
+      # temp workaround until chrome is updated on the base iamge
       # https://discuss.circleci.com/t/how-does-the-node-browsers-image-work/17449
-      - run: 
+      - run:
           name: update chrome
           command: |
             sudo apt-get install lsb-release
             wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
             sudo dpkg -i google-chrome-stable_current_amd64.deb
-          
+
       - run: npm install
       - run: cd browser-tests && npm install
 

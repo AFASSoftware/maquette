@@ -7,10 +7,10 @@ layout: tutorial.ejs
     var projector = maquette.createProjector();
 
     var tableOfContent = window.createTableOfContent();
-    projector.merge(document.querySelector(".table-of-content"), tableOfContent.renderMaquette);
+    projector.merge(document.querySelector(".table-of-content"), tableOfContent.render);
 
     var navigation = window.createNavigationBar(projector);
-    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.render);
   });
 </script>
 <div class="content-container">

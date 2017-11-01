@@ -21,14 +21,14 @@ workbench: true
         contentWindow.rotation = 76908;
         try {
           achieved1 = false;
-          var vnode = contentWindow.renderMaquette();
+          var vnode = contentWindow.render();
           var input = vnode.children[0].children[0].children[1];
           achieved1 = input.properties.value == contentWindow.rotation;
         } catch (e) {
         }
         contentWindow.rotation = oldRotation;
       },
-      renderMaquette: function () {
+      render: function () {
         return h("p", ["Hint: Use the properties parameter of the h() function."]);
       }
     };
@@ -42,13 +42,13 @@ workbench: true
       onSceneUpdate: function (contentWindow) {
         try {
           achieved2 = false;
-          var vnode = contentWindow.renderMaquette();
+          var vnode = contentWindow.render();
           var input = vnode.children[0].children[0].children[1];
           achieved2 = contentWindow.handleRotationInput && (input.properties.oninput === contentWindow.handleRotationInput);
         } catch (e) {
         }
       },
-      renderMaquette: function () {
+      render: function () {
         return h("p", ["Hint: Use the properties parameter of the h() function."]);
       }
     };
@@ -66,7 +66,7 @@ workbench: true
         } catch(e) {
         }
       },
-      renderMaquette: function () {
+      render: function () {
         return h("p", ["Rotate the flying saucer 360 degrees using the remote control"]);
       }
     };
@@ -83,10 +83,10 @@ workbench: true
       objective3
     ]);
 
-    projector.merge(document.querySelector(".work"), workbench.renderMaquette);
+    projector.merge(document.querySelector(".work"), workbench.render);
 
     var navigation = window.createNavigationBar(projector, true, getallObjectivesAchieved);
-    projector.merge(document.querySelector(".navigation-bar"), navigation.renderMaquette);
+    projector.merge(document.querySelector(".navigation-bar"), navigation.render);
   });
 </script>
 

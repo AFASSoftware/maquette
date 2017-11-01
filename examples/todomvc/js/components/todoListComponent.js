@@ -2,7 +2,7 @@ window.createListComponent = function (mode, model) {
 
   'use strict';
 
-  // Think of a component as being a View (the renderMaquette() function) combined with a ViewModel (the rest).
+  // Think of a component as being a View (the render() function) combined with a ViewModel (the rest).
 
   var h = window.maquette.h;
 
@@ -31,7 +31,7 @@ window.createListComponent = function (mode, model) {
   };
 
   var visibleInMode = function (todo) {
-    switch(mode) {
+    switch (mode) {
       case "completed":
         return todo.completed === true;
       case "active":
@@ -49,16 +49,16 @@ window.createListComponent = function (mode, model) {
 
   var handleNewTodoKeypress = function (evt) {
     newTodoTitle = evt.target.value;
-    if(evt.keyCode === 13 /* Enter */) {
+    if (evt.keyCode === 13 /* Enter */) {
       addTodo();
       newTodoTitle = "";
       evt.preventDefault();
-    } else if(evt.keyCode === 27 /* Esc */) {
+    } else if (evt.keyCode === 27 /* Esc */) {
       newTodoTitle = "";
       evt.preventDefault();
     }
   };
-  
+
   var handleNewTodoInput = function (evt) {
     newTodoTitle = evt.target.value;
   };
@@ -67,12 +67,12 @@ window.createListComponent = function (mode, model) {
     evt.preventDefault();
     checkedAll = !checkedAll;
     todos.forEach(function (todo) {
-      if(todo.completed !== checkedAll) {
+      if (todo.completed !== checkedAll) {
         todo.completed = checkedAll;
-        model.update(todo.id, { title: todo.title, completed: checkedAll });
+        model.update(todo.id, {title: todo.title, completed: checkedAll});
       }
     });
-    if(checkedAll) {
+    if (checkedAll) {
       itemsLeft = 0;
       completedCount = todos.length;
     } else {
@@ -82,8 +82,8 @@ window.createListComponent = function (mode, model) {
   };
 
   var handleClearCompletedClick = function (evt) {
-    for(var i = todos.length - 1; i >= 0; i--) {
-      if(todos[i].completed) {
+    for (var i = todos.length - 1; i >= 0; i--) {
+      if (todos[i].completed) {
         listComponent.removeTodo(todos[i]);
       }
     }
@@ -111,7 +111,7 @@ window.createListComponent = function (mode, model) {
     },
 
     todoCompletedUpdated: function (todo, completed) {
-      if(completed) {
+      if (completed) {
         completedCount++;
         checkedAll = completedCount === todos.length;
         itemsLeft--;
@@ -120,55 +120,60 @@ window.createListComponent = function (mode, model) {
         checkedAll = false;
         itemsLeft++;
       }
-      model.update(todo.id, { title: todo.title, completed: completed });
+      model.update(todo.id, {title: todo.title, completed: completed});
     },
 
     todoTitleUpdated: function (todo) {
-      model.update(todo.id, { title: todo.title, completed: todo.completed });
+      model.update(todo.id, {title: todo.title, completed: todo.completed});
     },
 
-    renderMaquette: function () {
+    render: function () {
       var anyTodos = todos.length > 0;
 
-      return h("section#todoapp", {key: listComponent},
-        h("header#header",
-          h("h1", "todos"),
+      return h("section#todoapp", {key: listComponent}, [
+        h("header#header", [
+          h("h1", ["todos"]),
           h("input#new-todo", {
             autofocus: true,
             placeholder: "What needs to be done?",
             onkeypress: handleNewTodoKeypress, oninput: handleNewTodoInput,
             value: newTodoTitle, afterCreate: focus
-          })
+          })]
         ),
         anyTodos ? [
-          h("section#main", { key: mode },
-            h("input#toggle-all", { type: "checkbox", checked: checkedAll, onclick: handleToggleAllClick }),
-            h("label", { "for": "toggle-all" }, "Mark all as complete"),
+          h("section#main", {key: mode}, [
+            h("input#toggle-all", {type: "checkbox", checked: checkedAll, onclick: handleToggleAllClick}),
+            h("label", {"for": "toggle-all"}, ["Mark all as complete"]),
             h("ul#todo-list",
               todos.filter(visibleInMode).map(function (todo) {
-                return todo.renderMaquette();
+                return todo.render();
               })
-            )
+            )]
           ),
-          h("footer#footer",
-            h("span#todo-count", {},
-              h("strong", itemsLeft), itemsLeft === 1 ? " item left" : " items left"
-            ),
-            h("ul#filters", {},
-              h("li", { key: "all" },
-                h("a", { classes: {selected: mode === "all"}, href: "#/all" }, "All")
+          h("footer#footer", [
+              h("span#todo-count", {},
+                [h("strong", [ '' + itemsLeft ]), itemsLeft === 1 ? " item left" : " items left"]
               ),
-              h("li", { key: "active" },
-                h("a", { classes: { selected: mode === "active" }, href: "#/active" }, "Active")
+              h("ul#filters", {}, [
+                h("li", {key: "all"},
+                  [
+                    h("a", {classes: {selected: mode === "all"}, href: "#/all"}, ["All"])
+                  ]
+                ),
+                h("li", {key: "active"}, [
+                    h("a", {classes: {selected: mode === "active"}, href: "#/active"}, ["Active"])
+                  ]
+                ),
+                h("li", {key: "completed"}, [
+                    h("a", {classes: {selected: mode === "completed"}, href: "#/completed"}, ["Completed"])
+                  ]
+                )]
               ),
-              h("li", { key: "completed" },
-                h("a", { classes: { selected: mode === "completed" }, href: "#/completed" }, "Completed")
-              )
-            ),
-            completedCount > 0 ? h("button#clear-completed", { onclick: handleClearCompletedClick }, "Clear completed (" + completedCount + ")") : null
+              completedCount > 0 ? h("button#clear-completed", {onclick: handleClearCompletedClick}, ["Clear completed (" + completedCount + ")"]) : null
+            ]
           )
         ] : null
-      );
+      ]);
     }
   };
 
@@ -178,7 +183,7 @@ window.createListComponent = function (mode, model) {
     data.forEach(function (dataItem) {
       var todo = createTodoComponent(listComponent, dataItem.id, dataItem.title);
       todos.push(todo);
-      if(dataItem.completed) {
+      if (dataItem.completed) {
         todo.completed = true;
         completedCount++;
       } else {

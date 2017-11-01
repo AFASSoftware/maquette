@@ -35,7 +35,7 @@
     return h("ul#todo-list", [
       todos.map(function (todo) {
         return h("li", {key:todo}, [
-          todo.renderMaquette()
+          todo.render()
         ]);
       })
     ]);

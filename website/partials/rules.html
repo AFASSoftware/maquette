@@ -4,11 +4,13 @@
   every device.
 </p>
 
-<h2 id="rule-1-always-provide-the-same-set-of-properties">Rule #1 Always provide the same set of properties</h2>
+<h2 id="rule-1-always-provide-the-same-set-of-properties">Rule #1 Same set of properties</h2>
 
 <p>
-  If you render <code>h('a',{href:'.',target:'_blank'})</code> and then you want to clear the <code>target</code>
-  attribute, you may not omit the <code>target</code> attribute. You need to use one of the following:
+  Never just omit a property that you provided on a previous render, but set it to <code>undefined</code>, <code>null</code> or empty string.
+  This means that if you first render <code>h('a',{href:'.',target:'_blank'})</code>
+  and on a subsequent render you want to clear the <code>target</code> attribute,
+  you need to use one of the following:
 </p>
 <ul>
   <li><code>h('a', {href: '.', target: undefined})</code></li>
@@ -25,9 +27,9 @@
 
 <h2 id="rule-2-distinguishable-children">Rule #2 Distinguishable children</h2>
 
-<p>The second rule states that if a node has multiple childnodes with the same selector
+<p>If a node has multiple childnodes with the same selector
   <strong>and</strong> these childnodes are added or removed dynamically,
-  then they must have unique key properties.</p>
+  then they must have a unique key property.</p>
 <p>A key property is typically used as follows:
   (If you are unfamilliar with the javascript map() function see <a
     href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank">this

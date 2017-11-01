@@ -24,7 +24,7 @@
     "release": "tsa release",
     "fix": "tsa fix",
     "clean": "tsa clean",
-    "dist": "tsc -p ./src/tsconfig.json && rollup -c && uglifyjs ./dist/maquette.umd.js -c unsafe=true -m -o ./dist/maquette.umd.min.js",
+    "dist": "tsc -p ./src/tsconfig.json && tsc -p ./examples/tsconfig.json && rollup -c && uglifyjs ./dist/maquette.umd.js -c unsafe=true -m -o ./dist/maquette.umd.min.js",
     "test": "tsa ci",
     "ci": "tsa ci && npm -s run dist && ts-node ./tools/check-file-size",
     "publish-website": "cd website && npm install --no-optional && node generate && npm run typedoc && firebase deploy",

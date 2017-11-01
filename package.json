@@ -8,7 +8,7 @@
     "animation",
     "transitions"
   ],
-  "version": "3.0.0-alpha.11",
+  "version": "3.0.0",
   "author": "Johan Gorter <johan@johangorter.com>",
   "repository": {
     "type": "git",

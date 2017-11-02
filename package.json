@@ -24,7 +24,7 @@
     "release": "tsa release",
     "fix": "tsa fix",
     "clean": "tsa clean",
-    "dist": "tsc -p ./src/tsconfig.json && tsc -p ./examples/tsconfig.json && rollup -c && uglifyjs ./dist/maquette.umd.js -c unsafe=true -m -o ./dist/maquette.umd.min.js",
+    "dist": "tsc -p ./src/tsconfig.json && tsc -p ./examples/tsconfig.json && rollup -c && uglifyjs ./dist/maquette.umd.js -c unsafe=true,unsafe_comps=true,unsafe_math=true,passes=3 -m -o ./dist/maquette.umd.min.js",
     "test": "tsa ci",
     "ci": "tsa ci && npm -s run dist && ts-node ./tools/check-file-size",
     "publish-website": "cd website && npm install --no-optional && node generate && npm run typedoc && firebase deploy",
@@ -102,6 +102,6 @@
     "sinon": "4.0.1",
     "sinon-chai": "2.14.0",
     "typescript-assistant": "0.23.2",
-    "uglify-js": "3.1.4"
+    "uglify-js": "3.1.6"
   }
 }

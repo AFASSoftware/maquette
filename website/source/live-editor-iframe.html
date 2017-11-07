@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/minimal.css" rel="stylesheet" />
+  <title>Live code editor</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body class="embedded-iframe">
+
+<div class="homepage">
+  <div class="live-demonstration">
+    <div class="live-editor row">
+      <div class="col-2">
+        <h2>Code:</h2>
+        <code><textarea class="live-editor-editor" rows="20" cols="90" spellcheck="false"
+                        style="height:310px;line-height:16px;font-size:12px">var yourName = ''; // Piece of data
+
+// Plain event handler
+function handleNameInput(evt) {
+  yourName = evt.target.value;
+}
+
+// This function uses the 'hyperscript' notation to create the virtual DOM.
+function renderMaquette() {
+  return h('div', [
+    h('input', {
+      type: 'text', placeholder: 'What is your name?',
+      value: yourName, oninput: handleNameInput
+    }),
+    h('p.output', ['Hello ' + (yourName || 'you') + '!'])
+  ]);
+}
+
+projector.append(domNode, renderMaquette);</textarea></code>
+      </div>
+      <div class="col-1">
+        <h2>Live result:</h2>
+        <div class="live-editor-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function enhance() {
+    if(window.maquette && window.createLiveEditor && window.ace) {
+      var editors = document.querySelectorAll(".live-editor")
+      for (var i=0;i<editors.length;i++) {
+        var projector = maquette.createProjector(); // each editor has its own projector
+        var editorElement = editors[i];
+        var liveEditor = createLiveEditor(projector);
+        projector.merge(editorElement.querySelector(".live-editor-editor"), liveEditor.renderEditor);
+        projector.merge(editorElement.querySelector(".live-editor-result"), liveEditor.renderResult);
+        projector.append(editorElement.querySelector(".col-2"), liveEditor.renderExtras);
+      }
+      var mochaEditors = document.querySelectorAll(".mocha-editor");
+      for (var j=0;j<mochaEditors.length;j++) {
+        var textArea = mochaEditors[j];
+        var content = textArea.textContent;
+        var value = textArea.value;
+        editor = ace.edit(textArea);
+        editor.setOptions({minLines: 5, maxLines: 50});
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode({ path: "ace/mode/javascript" });
+        editor.getSession().setTabSize(2);
+        editor.getSession().setUseSoftTabs(true);
+        editor.setShowPrintMargin(false);
+        editor.setBehavioursEnabled(true);
+        if (content && value.charCodeAt(0)===1) {
+          // Happens sometimes in chrome while navigatiing using browser back
+          editor.setValue(content, 0);
+          editor.clearSelection();
+        }
+      }
+    }
+  }
+</script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/maquette/2.5.4/maquette.min.js" async onload="enhance()"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js" async onload=" enhance()"></script>
+<script src="/script.js" async onload="enhance()"></script>
+
+</body>
+</html>
+

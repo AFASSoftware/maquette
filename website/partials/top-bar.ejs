@@ -1,6 +1,10 @@
 <aside class="top-bar">
   <nav>
+<% if (amp) { %>
+    <a class="logo" href="/"><amp-img width="42" height="42" src="/img/MaquetteLogoSmall.svg" alt="maquette logo"/> Maquette</a>
+<% } else { %>
     <a class="logo" href="/"><img src="/img/MaquetteLogoSmall.svg" alt="maquette logo"/> Maquette</a>
+<% } %>
     <div class="tiny-menu menu">
       <a href="/menu.html">Menu</a>
     </div>

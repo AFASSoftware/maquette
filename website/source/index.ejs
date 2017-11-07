@@ -1,6 +1,7 @@
 ---
 layout: amp.ejs
 title: Maquette
+amp: true
 ---
 
 <main class="homepage">
@@ -47,12 +48,16 @@ title: Maquette
       </div>
     </aside>
   </div>
-  <div class="live-demonstration">
-    <div class="live-editor row">
-      <div class="col-2">
+
+  <amp-iframe title="Code sample"
+              height="451"
+              layout="fixed-height"
+              frameborder="0"
+              src="live-editor-iframe.html">
+    <div class="live-demonstration" placeholder>
+      <div class="live-editor row">
         <h2>Code:</h2>
-        <code><textarea class="live-editor-editor" rows="20" cols="90" spellcheck="false"
-                        style="height:310px;line-height:16px;font-size:12px">var yourName = ''; // Piece of data
+        <code><pre>var yourName = ''; // Piece of data
 
 // Plain event handler
 function handleNameInput(evt) {
@@ -70,14 +75,11 @@ function render() {
   ]);
 }
 
-projector.append(domNode, render);</textarea></code>
-      </div>
-      <div class="col-1">
-        <h2>Live result:</h2>
-        <div class="live-editor-result"></div>
+projector.append(domNode, render);</pre></code>
       </div>
     </div>
-  </div>
+  </amp-iframe>
+
   <div class="row why-maquette">
     <section>
       <h2>Why Maquette</h2>

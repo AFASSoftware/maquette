@@ -15,7 +15,8 @@ exports.init = (args) => {
       liveEditors: false,
       liveEditorsVelocity: false,
       liveEditorsCss: false,
-      workbench: false
+      workbench: false,
+      amp: false
     })
     .source('source')
     .destination('./build/website')

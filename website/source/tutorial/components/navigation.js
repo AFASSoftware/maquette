@@ -1,10 +1,10 @@
 (function(){
 
   var h = maquette.h;
-  
+
   var currentpage = document.location.pathname;
   currentpage = currentpage.substr(currentpage.lastIndexOf('/')+1);
-  
+
   var tableOfContent = [
     {
       id: 'intro',
@@ -47,7 +47,7 @@
     },
     {
       id: 'rules',
-      title: '3 Rules',
+      title: '2 Rules',
       pages: [
         '10-distinguishable.html',
         '11-rotation-and-stealth.html'
@@ -71,7 +71,7 @@
       ]
     }
   ];
-  
+
   var pages = [];
   var pageLevelIds = [];
   tableOfContent.forEach(function(entry) {
@@ -80,9 +80,9 @@
       pageLevelIds.push(entry.id);
     });
   });
-  
+
   var levelsAchieved;
-  
+
   var isLevelAchieved = function(levelName) {
     if(!levelsAchieved) {
       levelsAchieved = [];
@@ -93,14 +93,14 @@
     }
     return levelsAchieved.indexOf(levelName) !== -1;
   };
-  
+
   var setLevelAchieved = function(levelName) {
     if(!isLevelAchieved(levelName)) {
       levelsAchieved.push(levelName);
       localStorage.levelsAchieved = JSON.stringify(levelsAchieved);
     }
   };
-  
+
   window.createTableOfContent = function() {
     return {
       render: function() {
@@ -122,7 +122,7 @@
                   active: link === currentpage
                 }
               }, [
-                h('a', { 
+                h('a', {
                   href: link,
                   classes: {
                     achieved: achieved
@@ -138,9 +138,9 @@
       }
     };
   };
-  
+
   var lockPath = 'M24.875,15.334v-4.876c0-4.894-3.981-8.875-8.875-8.875s-8.875,3.981-8.875,8.875v4.876H5.042v15.083h21.916V15.334H24.875zM10.625,10.458c0-2.964,2.411-5.375,5.375-5.375s5.375,2.411,5.375,5.375v4.876h-10.75V10.458zM18.272,26.956h-4.545l1.222-3.667c-0.782-0.389-1.324-1.188-1.324-2.119c0-1.312,1.063-2.375,2.375-2.375s2.375,1.062,2.375,2.375c0,0.932-0.542,1.73-1.324,2.119L18.272,26.956z';
-  
+
   var tocDisappearsAnimation = function(element, removeElement) {
     window.Velocity.animate(element, { translateX: [-300, 'easeInCubic', 0]}, 200, removeElement);
   };
@@ -151,10 +151,10 @@
   };
 
   window.createNavigationBar = function(projector, showMenuButton, getUnlocked) {
-    
+
     var menu;
     var showMenu = false;
-    
+
     var toggleMenu = function(){
       if(!menu) {
         menu = window.createTableOfContent();
@@ -170,10 +170,10 @@
           showMenu ? [
             h('div.table-of-content', {enterAnimation: tocAppearsAnimation, exitAnimation: tocDisappearsAnimation}, [ menu.render() ])
           ]: [],
-          h('div.menu-button', [ 
+          h('div.menu-button', [
             showMenuButton ? [
               h('input', { type: 'checkbox', id: 'hamburger' }),
-              h('label.menuicon', { 
+              h('label.menuicon', {
                 for: 'hamburger',
                 onclick: toggleMenu
               }, [ h('span') ])
@@ -185,7 +185,7 @@
       }
     };
   };
-  
+
   var createProcessBar = function(projector) {
     return {
       render : function () {
@@ -209,7 +209,7 @@
       }
     }
   };
-  
+
   var createNavigationButtons = function (projector, getUnlocked) {
 
     var pageIndex = pages.indexOf(currentpage);
@@ -217,11 +217,11 @@
       throw new Error('page not registered: ' + currentpage);
     }
     var unlocked = !getUnlocked || !!isLevelAchieved(pageLevelIds[pageIndex]);
-  
+
     var removeLockAnimation = function(element, removeElement) {
       window.Velocity.animate(element, { opacity: [0, 'easeInCubic', 1], scale: [4, 'easeOutQuad', 1]}, 1000, removeElement);
     };
-  
+
     var navigation = {
       render: function () {
         if (!unlocked) {
@@ -250,10 +250,10 @@
         ];
       }
     };
-  
+
     return navigation;
   };
-  
+
   window.createNavigation = createNavigationButtons;
 
 }());

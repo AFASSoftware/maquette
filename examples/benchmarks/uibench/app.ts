@@ -63,7 +63,7 @@ let renderAnimBox = (state: AnimBoxState): VNode => {
     'data-id': `${state.id}`,
     styles: {
       background: `rgba(0,0,0,${0.5 + ((time % 10) / 10)})`,
-      'border-radius': `${time % 10}px`
+      borderRadius: `${time % 10}px`
     }
   });
 };

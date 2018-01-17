@@ -176,7 +176,7 @@ export interface VNodeProperties {
   /**
    * An object literal like `{height:'100px'}` which allows styles to be changed dynamically. All values must be strings.
    */
-  readonly styles?: { [index: string]: string | null | undefined };
+  readonly styles?: Partial<CSSStyleDeclaration>;
 
   // From Element
   ontouchcancel?(ev: TouchEvent): boolean | void;

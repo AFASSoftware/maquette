@@ -4,6 +4,7 @@
  *
  * [[https://maquettejs.org/|To the maquette homepage]]
  */
+import './polyfills';
 export * from './interfaces';
 export { dom } from './dom';
 export { h } from './h';

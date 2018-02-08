@@ -26,10 +26,12 @@ let createParentNodePath = (node: Node, rootNode: Element) => {
   return parentNodePath;
 };
 
+let find = <T>(items: T[], predicate: (item: T) => boolean) => items.filter(predicate)[0];
+
 let findVNodeByParentNodePath = (vnode: VNode, parentNodePath: Node[]): VNode | undefined => {
   let result: VNode | undefined = vnode;
   parentNodePath.forEach(node => {
-    result = (result && result.children) ? result.children!.find(child => child.domNode === node)! : undefined;
+    result = (result && result.children) ? find(result.children, child => child.domNode === node) : undefined;
   });
   return result;
 };

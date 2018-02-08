@@ -1,5 +1,6 @@
 import { expect, sinon } from './test-utilities';
-import { createProjector, h, MaquetteComponent } from '../src/index';
+import { createProjector, h, MaquetteComponent, Projector } from '../src/index';
+import * as path from 'path';
 
 describe('Projector', () => {
   beforeEach(() => {
@@ -215,8 +216,8 @@ describe('Projector', () => {
       expect(clicked).to.be.calledWithExactly(button);
     });
 
-    it('allows for eventHandlers to be changed', () => {
-      let projector = createProjector({});
+    let allowsForEventHandlersToBeChanged = (createProjectorImpl: (arg: any) => Projector) => {
+      let projector = createProjectorImpl({});
       let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
       let eventHandler = sinon.stub();
 
@@ -244,6 +245,21 @@ describe('Projector', () => {
 
       button.onclick.apply(button, [evt]);
       expect(eventHandler).to.have.been.calledOnce;
+    };
+
+    it('allows for eventHandlers to be changed', () => allowsForEventHandlersToBeChanged(createProjector));
+
+    it('allows for eventHandlers to be changed on IE11', () => {
+      let apFind = Array.prototype.find;
+      try {
+        delete Array.prototype.find;
+        // re-require projector.ts
+        delete require.cache[path.normalize(path.join(__dirname, '../src/projector.ts'))];
+        let createProjectorImpl = require('../src/projector').createProjector;
+        allowsForEventHandlersToBeChanged(createProjectorImpl);
+      } finally {
+        Array.prototype.find = apFind;
+      }
     });
 
     it('will not call event handlers on domNodes which are no longer part of the rendered VNode', () => {

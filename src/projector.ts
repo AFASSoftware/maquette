@@ -26,7 +26,12 @@ let createParentNodePath = (node: Node, rootNode: Element) => {
   return parentNodePath;
 };
 
-let find = <T>(items: T[], predicate: (item: T) => boolean) => items.filter(predicate)[0];
+let find: <T>(items: T[], predicate: (item: T) => boolean) => T | undefined;
+if (Array.prototype.find) {
+  find = (items, predicate) => items.find(predicate);
+} else {
+  find = (items, predicate) => items.filter(predicate)[0];
+}
 
 let findVNodeByParentNodePath = (vnode: VNode, parentNodePath: Node[]): VNode | undefined => {
   let result: VNode | undefined = vnode;

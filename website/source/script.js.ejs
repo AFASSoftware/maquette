@@ -70,14 +70,14 @@ window.createLiveEditor = function (projector) {
     maquette.dom.append(document.body, h("form", {action: "https://codepen.io/pen/define/", method: "POST", target:"_blank"}, [
       h("input", {type: "hidden", name: "data", value: JSON.stringify({
         title: "New pen using maquette",
-        js: "document.addEventListener('DOMContentLoaded', function () {\n" +
-        "  var h = maquette.h;\n" +
-        "  var domNode = document.body;\n" +
-        "  var projector = maquette.createProjector();\n\n" +
-        editor.getValue() +
-        "\n\n});",
+        editors: "001",
+        js: "var h = maquette.h;\n" +
+        "var domNode = document.body;\n" +
+        "var projector = maquette.createProjector();\n\n" +
+        editor.getValue() + "\n",
         js_external: "//unpkg.com/maquette@<%-maquetteVersion-%>/dist/maquette.umd.js;" +
-        "//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js",
+        "//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js;" +
+        "//unpkg.com/maquette-css-transitions@1.1.0/dist/maquette-css-transitions.umd.js",
         css_external: "//maquettejs.org/demo.css"
       })})
     ])).domNode.submit();

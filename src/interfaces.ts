@@ -258,7 +258,7 @@ export interface VNodeChildren extends Array<VNodeChild> { }
 /**
  * These are valid values for the children parameter of the [[h]] function.
  */
-export type VNodeChild = string | VNode | VNodeChildren | null | undefined;
+export type VNodeChild = string | VNode | VNodeChildren | false | null | undefined;
 
 /**
  * Represents a [[VNode]] tree that has been rendered to a real DOM tree.

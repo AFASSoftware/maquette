@@ -131,6 +131,15 @@ describe('dom', () => {
       expect(newSpan).not.to.equal(fourthSpan);
     });
 
+    it('hides _false_ values to allow using && in render functions', () => {
+      let showMore = false;
+      let render = () => h('div', [
+        h('div.summary'),
+        showMore && h('div.rest')
+      ]);
+      expect(render().children).to.have.length(1);
+    });
+
     it('can distinguish between string keys when deleting', () => {
       let projection = dom.create(h('div', [
         h('span', { key: 'one' }),

@@ -18,7 +18,7 @@ let appendChildren = (parentSelector: string, insertions: VNodeChild[], main: VN
     if (Array.isArray(item)) {
       appendChildren(parentSelector, item, main);
     } else {
-      if (item !== null && item !== undefined) {
+      if (item !== null && item !== undefined && item !== false) {
         if (typeof item === 'string') {
           item = toTextVNode(item);
         }

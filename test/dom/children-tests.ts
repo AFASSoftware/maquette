@@ -285,7 +285,7 @@ describe('dom', () => {
       let projection = dom.create(render());
 
       // The user clears the value
-      projection.domNode.removeChild(projection.domNode.firstChild!);
+      projection.domNode.removeChild(projection.domNode.firstChild);
       handleInput(<any>{ currentTarget: projection.domNode });
       projection.update(render());
 
@@ -306,13 +306,13 @@ describe('dom', () => {
           ]),
           h('span')
         ]));
-        let svg = projection.domNode.firstChild!;
+        let svg = projection.domNode.firstChild;
         expect(svg.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-        let circle = svg.firstChild!;
+        let circle = svg.firstChild;
         expect(circle.namespaceURI).to.equal('http://www.w3.org/2000/svg');
-        let image = svg.lastChild!;
+        let image = svg.lastChild;
         expect(image.attributes[0].namespaceURI).to.equal('http://www.w3.org/1999/xlink');
-        let span = projection.domNode.lastChild!;
+        let span = projection.domNode.lastChild;
         expect(span.namespaceURI).to.equal('http://www.w3.org/1999/xhtml');
 
         projection.update(h('div', [
@@ -323,10 +323,33 @@ describe('dom', () => {
           h('span')
         ]));
 
-        let blueCircle = svg.firstChild!;
+        let blueCircle = svg.firstChild;
         expect(blueCircle.namespaceURI).to.equal('http://www.w3.org/2000/svg');
       });
 
+      it('updates svg dom properties with numbers', () => {
+        let projection = dom.create(h('div', [
+          h('svg', [
+            h('circle', { cx: 20, cy: 30, r: 40, fill: 'yellow' }),
+            h('rect', { width: 50, height: 60, x: 70, y: 80, fill: 'black' })
+          ])
+        ]));
+        let svg = projection.domNode.firstChild;
+        let circle = svg.firstChild as SVGCircleElement;
+        expect(circle.getAttribute('cx')).to.equal('20');
+        expect(circle.getAttribute('fill')).to.equal('yellow');
+        let rect = svg.lastChild as SVGRectElement;
+        expect(rect.getAttribute('height')).to.equal('60');
+        expect(rect.getAttribute('y')).to.equal('80');
+
+        projection.update(h('div', [
+          h('svg', [
+            h('circle', { cx: 20, cy: 120, r: 40, fill: 'yellow' }),
+            h('rect', { width: 50, height: 60, x: 70, y: 80, fill: 'black' })
+          ])
+        ]));
+        expect(circle.getAttribute('cy')).to.equal('120');
+      });
     });
 
   });

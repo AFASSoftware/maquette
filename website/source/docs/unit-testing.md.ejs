@@ -54,7 +54,7 @@ describe('myButton', function() {
   var clickHandler = sinon.stub();
 
   beforeEach(function() {
-    clickHandler.reset();
+    clickHandler.resetHistory();
     myButtonComponent = createMyButton('ButtonText', clickHandler);
     projector.initialize(myButtonComponent.render);
   });

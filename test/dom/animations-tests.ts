@@ -17,7 +17,7 @@ describe('dom', () => {
         let projection = dom.create(h('div', { updateAnimation }, ['textBefore', h('span'), 'textAfter']));
         projection.update(h('div', { updateAnimation }, ['textBefore', h('span'), 'newTextAfter']));
         expect(updateAnimation).to.have.been.calledOnce;
-        updateAnimation.reset();
+        updateAnimation.resetHistory();
 
         projection.update(h('div', { updateAnimation }, ['textBefore', h('span'), 'newTextAfter']));
         expect(updateAnimation).to.not.have.been.called;

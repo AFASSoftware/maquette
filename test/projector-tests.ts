@@ -133,12 +133,12 @@ describe('Projector', () => {
 
     global.requestAnimationFrame.callArg(0);
 
-    renderFunction.reset();
+    renderFunction.resetHistory();
     projector.scheduleRender();
     global.requestAnimationFrame.callArg(0);
     expect(renderFunction).not.to.be.called;
 
-    global.requestAnimationFrame.reset();
+    global.requestAnimationFrame.resetHistory();
     renderFunction.returns(h('div'));
     projector.resume();
     global.requestAnimationFrame.callArg(0);
@@ -232,7 +232,7 @@ describe('Projector', () => {
       projector.append(parentElement as any, renderFunction);
 
       let div = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-      let button = div!.firstChild!.firstChild! as HTMLElement;
+      let button = div.firstChild.firstChild as HTMLElement;
       let evt = { currentTarget: button, type: 'click' };
 
       expect(eventHandler).to.have.not.been.called;
@@ -281,7 +281,7 @@ describe('Projector', () => {
       let parentElement = document.createElement('section');
       projector.append(parentElement, renderFunction);
       let div = parentElement.firstChild as HTMLElement;
-      let button = div.firstChild! as HTMLButtonElement;
+      let button = div.firstChild as HTMLButtonElement;
       button.onclick({ currentTarget: button, type: 'click' } as any);
       expect(buttonVisible).to.be.false;
       projector.renderNow();

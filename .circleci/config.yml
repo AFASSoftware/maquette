@@ -27,7 +27,7 @@ jobs:
           paths:
             - node_modules
             - browser-tests/node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}{{ checksum "browser-tests/package.json" }}
+          key: v2-dependencies-{{ checksum "package.json" }}{{ checksum "browser-tests/package.json" }}
 
       # run tests!
       - run: npm -s run ci

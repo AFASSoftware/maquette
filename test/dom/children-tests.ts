@@ -327,6 +327,29 @@ describe('dom', () => {
         expect(blueCircle.namespaceURI).to.equal('http://www.w3.org/2000/svg');
       });
 
+      it('updates svg dom properties with numbers', () => {
+        let projection = dom.create(h('div', [
+          h('svg', [
+            h('circle', { cx: 20, cy: 30, r: 40, fill: 'yellow' }),
+            h('rect', { width: 50, height: 60, x: 70, y: 80, fill: 'black' })
+          ])
+        ]));
+        let svg = projection.domNode.firstChild;
+        let circle = svg.firstChild as SVGCircleElement;
+        expect(circle.getAttribute('cx')).to.equal('20');
+        expect(circle.getAttribute('fill')).to.equal('yellow');
+        let rect = svg.lastChild as SVGRectElement;
+        expect(rect.getAttribute('height')).to.equal('60');
+        expect(rect.getAttribute('y')).to.equal('80');
+
+        projection.update(h('div', [
+          h('svg', [
+            h('circle', { cx: 20, cy: 120, r: 40, fill: 'yellow' }),
+            h('rect', { width: 50, height: 60, x: 70, y: 80, fill: 'black' })
+          ])
+        ]));
+        expect(circle.getAttribute('cy')).to.equal('120');
+      });
     });
 
   });

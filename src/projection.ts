@@ -198,12 +198,15 @@ let setProperties = (domNode: Node, properties: VNodeProperties | undefined, pro
           }
           (domNode as any)[propName] = propValue;
         }
-      } else if (type === 'string' && propName !== 'value' && propName !== 'innerHTML') {
-        if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
+      } else if (projectionOptions.namespace === NAMESPACE_SVG) {
+        if (propName === 'href') {
           (domNode as Element).setAttributeNS(NAMESPACE_XLINK, propName, propValue);
         } else {
+          // all SVG attributes are read-only in DOM, so...
           (domNode as Element).setAttribute(propName, propValue);
         }
+      } else if (type === 'string' && propName !== 'value' && propName !== 'innerHTML') {
+        (domNode as Element).setAttribute(propName, propValue);
       } else {
         (domNode as any)[propName] = propValue;
       }
@@ -382,19 +385,23 @@ let updateProperties = (
       } else if (propValue !== previousValue) {
         let type = typeof propValue;
         if (type !== 'function' || !projectionOptions.eventHandlerInterceptor) { // Function updates are expected to be handled by the EventHandlerInterceptor
-          if (type === 'string' && propName !== 'innerHTML') {
-            if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
+          if (projectionOptions.namespace === NAMESPACE_SVG) {
+            if (propName === 'href') {
               (domNode as Element).setAttributeNS(NAMESPACE_XLINK, propName, propValue);
-            } else if (propName === 'role' && propValue === '') {
+            } else {
+              // all SVG attributes are read-only in DOM, so...
+              (domNode as Element).setAttribute(propName, propValue);
+            }
+          } else if (type === 'string' && propName !== 'innerHTML') {
+            if (propName === 'role' && propValue === '') {
               (domNode as any).removeAttribute(propName);
             } else {
               (domNode as Element).setAttribute(propName, propValue);
             }
-          } else {
-            if ((domNode as any)[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop
-              (domNode as any)[propName] = propValue;
-            }
+          } else if ((domNode as any)[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop
+            (domNode as any)[propName] = propValue;
           }
+
           propertiesUpdated = true;
         }
       }

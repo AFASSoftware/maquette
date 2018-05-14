@@ -74,7 +74,6 @@ describe('Mapping', () => {
         mapping.map(permutationI);
         checkInitialMapping(mapping.results, permutationI);
         mapping.results.forEach(target => { target.alreadyPresent = true; });
-        // console.log('--> ', permutations[i], permutations[j]);
         mapping.map(permutationJ);
         checkNextMapping(mapping.results, permutationJ, permutationI);
       }

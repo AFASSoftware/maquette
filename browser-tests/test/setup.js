@@ -56,7 +56,7 @@ var createBrowser = function () {
     console.log('Starting selenium');
     var chromedriverBinPath = require('chromedriver').path;
     console.log('Starting '+ chromedriverBinPath);
-    var webdriverProcess = childProcess.spawn(chromedriverBinPath, [], {});
+    webdriverProcess = childProcess.spawn(chromedriverBinPath, [], {});
     var resolved = false;
     webdriverProcess.on('close', function(code) {
       webdriverProcess = undefined;
@@ -87,6 +87,9 @@ var quitBrowser = function (browser, allPassed) {
         console.log('Killing webdriver process');
         webdriverProcess.kill();
       });
+    }
+    if (server) {
+      server.close();
     }
   }
   return browser;

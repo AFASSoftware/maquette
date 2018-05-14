@@ -16,9 +16,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}{{ checksum "browser-tests/package.json" }}
+          - v2-dependencies-{{ checksum "package.json" }}{{ checksum "browser-tests/package.json" }}
           # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - v2-dependencies-
 
       - run: npm install
       - run: cd browser-tests && npm install

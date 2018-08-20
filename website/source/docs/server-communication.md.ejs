@@ -13,7 +13,7 @@ one gotcha. You must tell the maquette projector to rerender the DOM when data a
 
 First let me show you how this can be done when you use plain XMLHttpRequest
 
-<%- include('../../partials/live-editor-start.ejs') -%>
+<%- include('/partials/live-editor-start.ejs') -%>
 var result;
 
 var load = function() {
@@ -37,14 +37,14 @@ function render() {
 }
 
 projector.append(domNode, render);
-<%- include('../../partials/live-editor-end.ejs') -%>
+<%- include('/partials/live-editor-end.ejs') -%>
 
 #### Using fetch
 
 If you want tu use the modern `fetch API` (Needs polyfilling for IE, Edge and Safari)
 you can use a function similar to the `fetchText` function below:
 
-<%- include('../../partials/live-editor-start.ejs') -%>
+<%- include('/partials/live-editor-start.ejs') -%>
 var result;
 
 var fetchText = function(url) {
@@ -74,7 +74,7 @@ function render() {
 
 projector.append(domNode, render);
 
-<%- include('../../partials/live-editor-end.ejs') -%>
+<%- include('/partials/live-editor-end.ejs') -%>
 
 
 #### Using a library
@@ -85,7 +85,7 @@ You can use such a hook to call `projector.scheduleRender()`.
 I will show how this works with the lightweight promise-based [axios](https://github.com/mzabriskie/axios) library.
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js"></script>
-<%- include('../../partials/live-editor-start.ejs') -%>
+<%- include('/partials/live-editor-start.ejs') -%>
 var result;
 
 // This axios instance calls scheduleRender automatically when data arrives
@@ -110,7 +110,7 @@ function render() {
 }
 
 projector.append(domNode, render);
-<%- include('../../partials/live-editor-end.ejs') -%>
+<%- include('/partials/live-editor-end.ejs') -%>
 
 
 More information about `scheduleRender` can be found in the [API](/typedoc/interfaces/projector.html#schedulerender) documentation.

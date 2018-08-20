@@ -10,25 +10,26 @@
   },
   "scripts": {
     "serve": "node serve",
-    "deploy": "node generate && npm run typedoc && firebase deploy",
+    "build": "node generate && npm run typedoc",
+    "deploy": "npm run build && firebase deploy",
     "typedoc": "typedoc --out ./build/website/typedoc --name maquette --target ES6 --module ES6 --mode file --readme none --gaID UA-58254103-1 --excludePrivate --excludeExternals --excludeNotExported ../typings/extensions.d.ts ../src/interfaces.ts ../src/mapping.ts ../src/h.ts ../src/cache.ts ../src/projector.ts ../src/dom.ts ../src/utilities/window-performance-projector-logger.ts",
-    "postcss": "postcss website/source/*.css --dir build/website/ --use precss"
+    "postcss": "postcss source/*.css --dir build/website/ --use precss"
   },
   "license": "MIT",
   "devDependencies": {
-    "ejs": "2.5.7",
-    "firebase-tools": "3.12.0",
-    "jstransformer-ejs": "0.0.3",
+    "ejs": "2.6.1",
+    "firebase-tools": "4.1.2",
+    "jstransformer-ejs": "0.2.0",
     "metalsmith": "2.3.0",
-    "metalsmith-in-place": "3.0.1",
-    "metalsmith-layouts": "1.8.1",
-    "metalsmith-markdown": "0.2.1",
-    "metalsmith-postcss": "4.1.0",
+    "metalsmith-in-place": "4.2.0",
+    "metalsmith-layouts": "2.1.0",
+    "metalsmith-markdown": "0.2.2",
+    "metalsmith-postcss": "4.2.0",
     "metalsmith-serve": "0.0.7",
     "metalsmith-watch": "1.0.3",
-    "postcss-cli": "4.1.1",
-    "precss": "2.0.0",
-    "typedoc": "0.9.0",
-    "typescript": "2.5.3"
+    "postcss-cli": "6.0.0",
+    "precss": "3.1.2",
+    "typedoc": "0.12.0",
+    "typescript": "3.0.1"
   }
 }

@@ -15,7 +15,7 @@ wasn't called yet.
 
 The example below shows how the `afterRemoved` callback can be used.
 
-<%- include('../../partials/live-editor-start.ejs') -%>
+<%- include('/partials/live-editor-start.ejs') -%>
 var styles = {
   box: {
     margin: '10px 0',
@@ -54,4 +54,4 @@ function render() {
 }
 
 projector.append(domNode, render);
-<%- include('../../partials/live-editor-end.ejs') -%>
+<%- include('/partials/live-editor-end.ejs') -%>

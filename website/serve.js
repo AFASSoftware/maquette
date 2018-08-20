@@ -20,4 +20,5 @@ init({injectScript: '<script src="http://localhost:5001/livereload.js"></script>
     if (err) {
       throw err;
     }
+    console.log('Please run `npm run typedoc` in a separate shell to regenerate the typedoc that was just cleaned')
   });

@@ -11,7 +11,7 @@ Maquette provides the [maquette-query](https://github.com/AFASSoftware/maquette-
 to facilitate unit testing. In order to explain how it works, let's start with the button component
 that we used in [component approach](component-approach.html):
 
-<%- include('../../partials/live-editor-start.ejs') -%>
+<%- include('/partials/live-editor-start.ejs') -%>
 // Creates a button component
 function createMyButton(text, onClick) {
   var handleClick = function(evt) {
@@ -33,7 +33,7 @@ function createMyButton(text, onClick) {
 var button = createMyButton("click me", function(){ alert("clicked"); });
 
 projector.append(domNode, button.render);
-<%- include('../../partials/live-editor-end.ejs') -%>
+<%- include('/partials/live-editor-end.ejs') -%>
 
 To explain how we can unit-test this component, we will use
 [NodeJS](https://nodejs.org/), [mocha](http://mochajs.org/),

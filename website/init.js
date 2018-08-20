@@ -20,11 +20,18 @@ exports.init = (args) => {
     .source('source')
     .destination('./build/website')
     .clean(true)
-    .use(inPlace())
+    .use(inPlace({
+      engineOptions: {
+        root: __dirname
+      }
+    }))
     .use(markdown())
     .use(layouts({
       engine: 'ejs',
-      directory: 'layouts'
+      directory: 'layouts',
+      engineOptions: {
+        root: __dirname
+      }
     }))
     .use(postcss({
       plugins: {

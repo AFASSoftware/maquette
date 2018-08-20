@@ -9,7 +9,7 @@ liveEditors: true
 Working with arrays of data in maquette can simply  be accomplished by using the javascript `map` function,
 mapping from the data to the virtual DOM nodes directly. This looks as follows:
 
-<%- include('../../partials/live-editor-start.ejs') -%>
+<%- include('/partials/live-editor-start.ejs') -%>
 var data = [1,2,3];
 
 function render() {
@@ -22,12 +22,12 @@ function render() {
 }
 
 projector.append(domNode, render);
-<%- include('../../partials/live-editor-end.ejs') -%>
+<%- include('/partials/live-editor-end.ejs') -%>
 
 It does get a little more complex if you create a component that may hold state for every item.
 The following example shows how to do this.
 
-<%- include('../../partials/live-editor-start.ejs') -%>
+<%- include('/partials/live-editor-start.ejs') -%>
 var data = [1,2,3];
 
 // Create a component instance for every item in our data
@@ -55,7 +55,7 @@ function render() {
 }
 
 projector.append(domNode, render);
-<%- include('../../partials/live-editor-end.ejs') -%>
+<%- include('/partials/live-editor-end.ejs') -%>
 
 There is one more advanced usecase. What if you use components but the underlying data can also get updated?
 This could be the case if you use real-time communication or periodic refreshes.
@@ -66,7 +66,7 @@ but there are subtle differences. For example, the components will be reordered,
 The `createMapping` function serves the same purpose as the Javascript `map` function, but with the ability
 to call `map` multiple times and reusing the previous results where possible. The code below demonstrates this behavior.
 
-<%- include('../../partials/live-editor-start.ejs') -%>
+<%- include('/partials/live-editor-start.ejs') -%>
 var dataSnapshot1 = [1, 3];
 var dataSnapshot2 = [1, 2, 3];
 
@@ -117,7 +117,7 @@ function render() {
 }
 
 projector.append(domNode, render);
-<%- include('../../partials/live-editor-end.ejs') -%>
+<%- include('/partials/live-editor-end.ejs') -%>
 
 More information about `createMapping` can be found in the [API](/typedoc/index.html#createmapping) documentation.
 

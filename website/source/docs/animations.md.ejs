@@ -28,7 +28,7 @@ With exit animations you need to make sure that you call the provided `removeDom
 
 The following live example demonstrates programmatic animations using velocity.js.
 
-<%- include('../../partials/live-editor-start.ejs') -%>
+<%- include('/partials/live-editor-start.ejs') -%>
 var itemNrs = [1,2,3];
 var lastItemNr = 3;
 
@@ -60,7 +60,7 @@ projector.append(domNode, function() {
     h('button', {key: 0, onclick: add}, ['+']),
     h('button', {key: 1, onclick: remove}, ['-'])
   ]);
-}, {});<%- include('../../partials/live-editor-end.ejs') %>
+}, {});<%- include('/partials/live-editor-end.ejs') %>
 
 ### CSS Transitions
 
@@ -94,7 +94,7 @@ We provide a library [maquette-css-transitions](https://www.npmjs.com/package/ma
 `enterAnimation` and `exitAnimation` functions from the animation css-class (`slideDown` in our example).
 The example below shows how this works.
 
-<%- include('../../partials/live-editor-start.ejs') -%>
+<%- include('/partials/live-editor-start.ejs') -%>
 var createEnterCssTransition = maquetteCssTransitions.createEnterCssTransition;
 var createExitCssTransition = maquetteCssTransitions.createExitCssTransition;
 
@@ -123,7 +123,7 @@ projector.append(domNode, function() {
     h('button', {key: 0, onclick: add}, ['+']),
     h('button', {key: 1, onclick: remove}, ['-'])
   ]);
-});<%- include('../../partials/live-editor-end.ejs') -%>
+});<%- include('/partials/live-editor-end.ejs') -%>
 
 
 If you want to see a demonstration of what else is possible with animations in maquette, have a look at the [hero-transition demo](http://johan-gorter.github

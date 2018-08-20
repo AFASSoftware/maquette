@@ -1,6 +1,7 @@
 import { expect } from './test-utilities';
 import { h, VNode } from '../src/index';
 
+/* tslint:disable:no-undefined-argument */
 describe('h', () => {
   let toTextVNode = (text: string): VNode => {
     return {

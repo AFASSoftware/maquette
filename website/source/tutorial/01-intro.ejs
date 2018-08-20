@@ -50,13 +50,14 @@ workbench: true
     </h2>
     <p>
       Because maquette allows you to use data to create the right browser DOM, it does not use HTML.
-      Maquette uses a notation called <strong>hyperscript</strong>.
-      Hyperscript is essentially just a javascript function, <code>h()</code>, which creates a virtual DOM node.
+      Maquette uses a dialect of <strong>hyperscript</strong>, which means that you use a javascript function,
+      <code>h()</code> to create a virtual DOM node.
     </p>
     <p>
       The first parameter of the <code>h()</code> function is a CSS selector string, like <code>"div.landscape"</code>,
-      which results in <code>&lt;div class="landscape"&gt;</code>.
-      The final parameters represent the content. Strings become text, and <code>h()</code> calls create childnodes.
+      which produces <code>&lt;div class="landscape"&gt;</code>.
+      The final parameter is an array producing the contents of the node. The array may contain strings which produce text,
+      and <code>h()</code> calls which produce childnodes.
     </p>
 
     <h2>

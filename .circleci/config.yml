@@ -32,3 +32,6 @@ jobs:
       # run tests!
       - run: npm -s run ci
       - run: cd browser-tests && npm -s run test
+notify:
+  webhooks:
+    - url: https://outlook.office.com/webhook/7b3d1482-ae73-40b1-8790-b6ac7b4a5c71@e7397b50-73eb-4db7-84c5-cbd8fece46a7/CircleCI/67d70c7360d64838ad0cf059582115f7/55bbc8ab-532a-448f-8494-f789021d614e

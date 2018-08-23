@@ -44,6 +44,22 @@ describe('dom', () => {
         expect(projection.domNode.outerHTML).to.equal('<div class="good"></div>');
       });
 
+      it('can update class, even when class was initially empty', () => {
+        let projection = dom.create(h('div', { class: '' }));
+        expect(projection.domNode.outerHTML).to.equal('<div></div>');
+        projection.update(h('div', { class: 'good' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="good"></div>');
+        projection.update(h('div', { class: undefined }));
+        expect(projection.domNode.outerHTML).to.equal('<div class=""></div>');
+      });
+
+      it('can update class, even when class was initially undefined', () => {
+        let projection = dom.create(h('div', { class: undefined }));
+        expect(projection.domNode.outerHTML).to.equal('<div></div>');
+        projection.update(h('div', { class: 'good' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="good"></div>');
+      });
+
       it('helps to prevent mistakes when using className', () => {
         expect(() => {
           dom.create(h('div', { className: 'special' } as any));

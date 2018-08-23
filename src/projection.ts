@@ -154,7 +154,7 @@ let setProperties = (domNode: Node, properties: VNodeProperties | undefined, pro
     if (propName === 'className') {
       throw new Error('Property "className" is not supported, use "class".');
     } else if (propName === 'class') {
-      (propValue as string).split(/\s+/).forEach(token => (domNode as Element).classList.add(token));
+      toggleClasses(domNode as HTMLElement, propValue as string, true);
     } else if (propName === 'classes') {
       // object with string keys and boolean values
       let classNames = Object.keys(propValue);

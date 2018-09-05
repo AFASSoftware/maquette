@@ -1,4 +1,6 @@
-[![CircleCI](https://circleci.com/gh/AFASSoftware/maquette.svg?style=svg)](https://circleci.com/gh/AFASSoftware/maquette)
+![NpmLicense](https://img.shields.io/npm/l/maquette.svg)
+![npmBundleSize](https://img.shields.io/bundlephobia/minzip/maquette.svg)
+[![CircleCI branch](https://img.shields.io/circleci/project/github/AFASSoftware/maquette/master.svg)](https://circleci.com/gh/AFASSoftware/maquette)
 
 Maquette
 =========
@@ -7,7 +9,7 @@ Maquette is a Javascript utility which makes it easy to synchronize the DOM tree
 It uses a technique called 'Virtual DOM'.
 Compared to other virtual DOM implementations, maquette has 3 advantages:
 
-* It is very lightweight (3.5Kb gzipped)
+* It is very lightweight (3.6Kb gzipped)
 * It allows changes to be animated
 * It is optimized for speed
 

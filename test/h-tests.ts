@@ -56,7 +56,9 @@ describe('h', () => {
           h('p', undefined, undefined),
           h('p', [undefined, undefined]),
           h('p', [null, null]),
-          h('p', [null])
+          h('p', [null]),
+          h('p', null),
+          h('p', {}, null)
         ]
       ]
     );
@@ -72,7 +74,9 @@ describe('h', () => {
       h('p'),
       h('p'),
       h('p'),
-      h('p')
+      h('p'),
+      h('p', null),
+      h('p', {})
     ]);
   });
 

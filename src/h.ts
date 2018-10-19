@@ -44,7 +44,7 @@ let appendChildren = (parentSelector: string, insertions: VNodeChild[], main: VN
  *
  * NOTE: There are {@link http://maquettejs.org/docs/rules.html|two basic rules} you should be aware of when updating the virtual DOM.
  */
-export function h(selector: string, properties?: VNodeProperties, children?: VNodeChild[]): VNode;
+export function h(selector: string, properties?: VNodeProperties, children?: VNodeChild[] | null): VNode;
 /**
  * The `h` function is used to create a virtual DOM node.
  * This function is largely inspired by the mercuryjs and mithril frameworks.
@@ -62,7 +62,7 @@ export function h(selector: string, properties?: VNodeProperties, children?: VNo
  */
 export function h(selector: string, children: VNodeChild[]): VNode;
 
-export function h(selector: string, properties?: VNodeProperties, children?: VNodeChild[]): VNode {
+export function h(selector: string, properties?: VNodeProperties, children?: VNodeChild[] | null): VNode {
   if (Array.isArray(properties)) {
     children = properties;
     properties = undefined;
@@ -74,7 +74,7 @@ export function h(selector: string, properties?: VNodeProperties, children?: VNo
   let text: string | undefined;
   let flattenedChildren: VNode[] | undefined;
   // Recognize a common special case where there is only a single text node
-  if (children !== undefined && children.length === 1 && typeof children[0] === 'string') {
+  if (children && children.length === 1 && typeof children[0] === 'string') {
     text = children[0] as string;
   } else if (children) {
     flattenedChildren = [];

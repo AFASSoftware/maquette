@@ -198,6 +198,13 @@ export interface VNodeProperties {
   onchange?(ev: Event): boolean | void;
   onclick?(ev: MouseEvent): boolean | void;
   ondblclick?(ev: MouseEvent): boolean | void;
+  ondrag?(ev: DragEvent): boolean | void;
+  ondragend?(ev: DragEvent): boolean | void;
+  ondragenter?(ev: DragEvent): boolean | void;
+  ondragleave?(ev: DragEvent): boolean | void;
+  ondragover?(ev: DragEvent): boolean | void;
+  ondragstart?(ev: DragEvent): boolean | void;
+  ondrop?(ev: DragEvent): boolean | void;
   onfocus?(ev: FocusEvent): boolean | void;
   oninput?(ev: Event): boolean | void;
   onkeydown?(ev: KeyboardEvent): boolean | void;
@@ -221,6 +228,7 @@ export interface VNodeProperties {
   readonly accessKey?: string;
   readonly class?: string;
   readonly id?: string;
+  readonly draggable?: boolean;
   // From HTMLInputElement
   readonly type?: string;
   readonly autocomplete?: string;

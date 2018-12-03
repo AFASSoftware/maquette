@@ -37,8 +37,8 @@ describe('todomvc-maquette', function () {
   afterEach(function () {
     allPassed = allPassed && (this.currentTest.state === 'passed');
     if(pageLoaded) {
-      return browser.safeExecute('window.localStorage["todomvc-maquette"]=""');
       pageLoaded = false;
+      return browser.safeExecute('window.localStorage["todomvc-maquette"]=""');
     }
   });
 
@@ -117,6 +117,7 @@ describe('todomvc-maquette', function () {
       createStandardItems();
       return page
         .clickMarkAllCompletedCheckBox()
+        .waitForAnimationFrame()
         .assertItemsToBeCompleted([true, true, true]);
     });
 
@@ -124,7 +125,9 @@ describe('todomvc-maquette', function () {
       createStandardItems();
       return page
         .clickMarkAllCompletedCheckBox()
+        .waitForAnimationFrame()
         .clickMarkAllCompletedCheckBox()
+        .waitForAnimationFrame()
         .assertItemsToBeCompleted([false, false, false]);
     });
 

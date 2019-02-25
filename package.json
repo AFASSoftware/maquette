@@ -28,11 +28,7 @@
     "test": "tsa ci",
     "ci": "tsa ci && npm -s run dist && ts-node ./tools/check-file-size",
     "publish-website": "cd website && npm install --no-optional && node generate && npm run typedoc && firebase deploy",
-    "test-also-with-browser": "npm run dist && cd examples/todomvc && npm install --no-save bower && bower install && cd ../../browser-tests && npm install && npm test",
-    "precommit": "tsa pre-commit",
-    "prepush": "npm run dist && tsa pre-push",
-    "postcheckout": "tsa post-checkout || exit 0",
-    "postmerge": "tsa post-merge || exit 0"
+    "test-also-with-browser": "npm run dist && cd examples/todomvc && npm install --no-save bower && bower install && cd ../../browser-tests && npm install && npm test"
   },
   "license": "MIT",
   "tonicExampleFilename": "examples/tonic-example.js",
@@ -89,5 +85,13 @@
     "sinon": "7.2.4",
     "sinon-chai": "3.3.0",
     "typescript-assistant": "0.37.4"
+  },
+  "husky": {
+    "hooks": {
+      "post-checkout": "tsa post-checkout || exit 0",
+      "post-merge": "tsa post-merge || exit 0",
+      "pre-commit": "tsa pre-commit",
+      "pre-push": "npm run dist && tsa pre-push"
+    }
   }
 }

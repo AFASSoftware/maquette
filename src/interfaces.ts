@@ -136,7 +136,13 @@ export interface VNodeProperties {
    * @param properties - The properties passed to the [[h]] function.
    * @param children - The children that were created.
    */
-  afterCreate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties, children: VNode[]): void;
+  afterCreate?(
+    element: Element,
+    projectionOptions: ProjectionOptions,
+    vnodeSelector: string,
+    properties: VNodeProperties,
+    children: VNode[] | undefined
+  ): void;
   /**
    * Callback that is executed every time this node may have been updated. Child nodes and properties
    * have already been updated.
@@ -146,7 +152,13 @@ export interface VNodeProperties {
    * @param properties - The properties passed to the [[h]] function.
    * @param children - The children for this node.
    */
-  afterUpdate?(element: Element, projectionOptions: ProjectionOptions, vnodeSelector: string, properties: VNodeProperties, children: VNode[]): void;
+  afterUpdate?(
+    element: Element,
+    projectionOptions: ProjectionOptions,
+    vnodeSelector: string,
+    properties: VNodeProperties,
+    children: VNode[] | undefined
+  ): void;
 
   /**
    * Callback that is called when a node has been removed from the tree.

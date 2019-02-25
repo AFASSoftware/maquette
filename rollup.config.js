@@ -7,10 +7,10 @@ export default [
   {
     input: 'dist/index.js',
     output: {
+      name: 'maquette',
       file: pkg.browser,
       format: 'umd'
     },
-    moduleName: 'maquette',
     plugins: []
   },
   // CommonJS build for nodeJS

@@ -153,7 +153,7 @@ describe('Projector', () => {
     projector.append(parentElement as any, renderFunction);
 
     let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
-    let evt = { currentTarget: button, type: 'click' };
+    let evt = { currentTarget: button, type: 'click' } as object as MouseEvent;
 
     expect(global.requestAnimationFrame).not.to.be.called;
 
@@ -233,7 +233,7 @@ describe('Projector', () => {
 
       let div = parentElement.appendChild.lastCall.args[0] as HTMLElement;
       let button = div.firstChild.firstChild as HTMLElement;
-      let evt = { currentTarget: button, type: 'click' };
+      let evt = { currentTarget: button, type: 'click' } as object as MouseEvent;
 
       expect(eventHandler).to.have.not.been.called;
       button.onclick.apply(button, [evt]);

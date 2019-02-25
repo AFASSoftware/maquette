@@ -246,7 +246,7 @@ export let createDom = (
   let domNode: Node | undefined;
   let start = 0;
   let vnodeSelector = vnode.vnodeSelector;
-  let doc = parentNode.ownerDocument;
+  let doc = parentNode.ownerDocument!;
   if (vnodeSelector === '') {
     domNode = vnode.domNode = doc.createTextNode(vnode.text!);
     if (insertBefore !== undefined) {
@@ -473,7 +473,7 @@ updateDom = (previous, vnode, projectionOptions) => {
   let updated = false;
   if (vnode.vnodeSelector === '') {
     if (vnode.text !== previous.text) {
-      let newTextNode = domNode.ownerDocument.createTextNode(vnode.text!);
+      let newTextNode = domNode.ownerDocument!.createTextNode(vnode.text!);
       domNode.parentNode!.replaceChild(newTextNode, domNode);
       vnode.domNode = newTextNode;
       textUpdated = true;

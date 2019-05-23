@@ -302,7 +302,11 @@ let toggleClasses = (domNode: HTMLElement, classes: string | null | undefined, o
   if (!classes) {
     return;
   }
-  classes.split(' ').forEach(c => domNode.classList.toggle(c, on));
+  classes.split(' ').forEach(classToToggle => {
+    if (classToToggle) {
+      domNode.classList.toggle(classToToggle, on);
+    }
+  });
 };
 
 let updateProperties = (

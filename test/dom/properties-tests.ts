@@ -35,6 +35,17 @@ describe('dom', () => {
         expect(projection.domNode.outerHTML).to.equal('<div class="me too"></div>');
       });
 
+      it('is lenient towards extra spaces in class attribute', () => {
+        let projection = dom.create(h('div', { class: 'extra special ' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="extra special"></div>');
+        projection.update(h('div', { class: 'super  special' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="super special"></div>');
+        projection.update(h('div', { class: undefined }));
+        expect(projection.domNode.outerHTML).to.equal('<div class=""></div>');
+        projection.update(h('div', { class: ' me too' }));
+        expect(projection.domNode.outerHTML).to.equal('<div class="me too"></div>');
+      });
+
       it('allows classes and class to be combined', () => {
         let projection = dom.create(h('div', { classes: { extra: true }, class: 'special' }));
         expect(projection.domNode.outerHTML).to.equal('<div class="extra special"></div>');

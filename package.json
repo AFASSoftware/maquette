@@ -76,15 +76,15 @@
   },
   "devDependencies": {
     "@types/chai-as-promised": "7.1.0",
-    "@types/sinon": "7.0.6",
+    "@types/sinon": "7.0.11",
     "@types/sinon-chai": "3.2.2",
     "chai-as-promised": "7.1.1",
-    "jsdom": "13.2.0",
+    "jsdom": "15.1.0",
     "jsdom-global": "3.0.2",
-    "rollup": "1.2.3",
-    "sinon": "7.2.4",
+    "rollup": "1.12.3",
+    "sinon": "7.3.2",
     "sinon-chai": "3.3.0",
-    "typescript-assistant": "0.37.4"
+    "typescript-assistant": "0.39.4"
   },
   "husky": {
     "hooks": {

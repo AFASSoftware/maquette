@@ -7,7 +7,8 @@
     "noEmit": false,
     "declaration": true,
     "outDir": "../dist",
-    "rootDir": "."
+    "rootDir": ".",
+    "inlineSources": true
   },
   "include": [
     "./**/*.ts",

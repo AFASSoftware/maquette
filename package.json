@@ -17,7 +17,7 @@
   "module": "./dist/index.js",
   "main": "./dist/maquette.cjs.js",
   "browser": "./dist/maquette.umd.js",
-  "typings": "./dist/index.d.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "tsa clean && npm run dist",
     "assist": "tsa assist",

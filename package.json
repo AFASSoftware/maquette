@@ -75,16 +75,16 @@
     }
   },
   "devDependencies": {
-    "@types/chai-as-promised": "7.1.0",
-    "@types/sinon": "7.0.13",
-    "@types/sinon-chai": "3.2.2",
+    "@types/chai-as-promised": "7.1.2",
+    "@types/sinon": "7.5.1",
+    "@types/sinon-chai": "3.2.3",
     "chai-as-promised": "7.1.1",
-    "jsdom": "15.1.1",
+    "jsdom": "15.2.1",
     "jsdom-global": "3.0.2",
-    "rollup": "1.17.0",
-    "sinon": "7.3.2",
-    "sinon-chai": "3.3.0",
-    "typescript-assistant": "0.40.1"
+    "rollup": "1.27.14",
+    "sinon": "8.0.1",
+    "sinon-chai": "3.4.0",
+    "typescript-assistant": "0.40.12"
   },
   "husky": {
     "hooks": {

@@ -38,29 +38,29 @@ describe('h', () => {
   it('Should be very flexible when accepting arguments', () => {
     let vnode = h(
       'div', [
-        'text',
-        h('span', [
-          [
-            'in array'
-          ]
-        ]),
-        h('img', { src: 'x.png' }),
-        'text2',
-        undefined,
-        null,
+      'text',
+      h('span', [
         [
-          undefined,
-          h('button', ['click me']),
-          h('button', undefined, ['click me']),
-          h('p', undefined),
-          h('p', undefined, undefined),
-          h('p', [undefined, undefined]),
-          h('p', [null, null]),
-          h('p', [null]),
-          h('p', null),
-          h('p', {}, null)
+          'in array'
         ]
+      ]),
+      h('img', { src: 'x.png' }),
+      'text2',
+      undefined,
+      null,
+      [
+        undefined,
+        h('button', ['click me']),
+        h('button', undefined, ['click me']),
+        h('p', undefined),
+        h('p', undefined, undefined),
+        h('p', [undefined, undefined]),
+        h('p', [null, null]),
+        h('p', [null]),
+        h('p', null),
+        h('p', {}, null)
       ]
+    ]
     );
 
     expect(vnode.children).to.deep.equal([

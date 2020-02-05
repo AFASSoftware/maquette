@@ -11,6 +11,9 @@
  * The projector stops when [[stop]] is called or when an error is thrown during rendering.
  * It is possible to use `window.onerror` to handle these errors.
  * Instances of [[Projector]] can be created using [[createProjector]].
+ *
+ * If you need a customized projector, please check the maquette-advanced-projector project which provides a 
+ * versatile stand-in replacement.
  */
 import {
   EventHandlerInterceptor, ProjectorPerformanceLogger, Projection, ProjectionOptions, ProjectorOptions, VNode, VNodeProperties, Projector

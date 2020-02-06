@@ -12,7 +12,7 @@
  * It is possible to use `window.onerror` to handle these errors.
  * Instances of [[Projector]] can be created using [[createProjector]].
  *
- * If you need a customized projector, please check the maquette-advanced-projector project which provides a 
+ * If you need a customized projector, please check the maquette-advanced-projector project which provides a
  * versatile stand-in replacement.
  */
 import {

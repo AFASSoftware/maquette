@@ -388,7 +388,7 @@ export interface CalculationCache<Result> {
    * These objects are assumed to be immutable primitive values.
    * @param calculation - Function that takes zero arguments and returns an object (A [[VNode]] presumably) that can be cached.
    */
-  result(inputs: Object[], calculation: () => Result): Result;
+  result(inputs: unknown[], calculation: () => Result): Result;
 }
 
 /**

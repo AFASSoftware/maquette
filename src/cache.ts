@@ -8,7 +8,7 @@ import { CalculationCache } from './interfaces';
  * @param <Result> The type of the value that is cached.
  */
 export let createCache = <Result>(): CalculationCache<Result> => {
-  let cachedInputs: Object[] | undefined;
+  let cachedInputs: unknown[] | undefined;
   let cachedOutcome: Result | undefined;
 
   return {
@@ -17,7 +17,7 @@ export let createCache = <Result>(): CalculationCache<Result> => {
       cachedInputs = undefined;
     },
 
-    result: (inputs: Object[], calculation: () => Result) => {
+    result: (inputs: unknown[], calculation: () => Result) => {
       if (cachedInputs) {
         for (let i = 0; i < inputs.length; i++) {
           if (cachedInputs[i] !== inputs[i]) {

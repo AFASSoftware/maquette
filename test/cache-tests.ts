@@ -21,6 +21,19 @@ describe('Cache', () => {
     expect(calculate).to.have.callCount(2);
   });
 
+  it('can handle any inputs', () => {
+    let cache = createCache();
+    let calculate = sinon.stub().returns('calculation result');
+    let cacheKey1: boolean | string | null | undefined;
+    cache.result([cacheKey1, 1], calculate);
+    expect(calculate).to.have.callCount(1);
+    cache.result([cacheKey1, 1], calculate);
+    expect(calculate).to.have.callCount(1);
+    cacheKey1 = false;
+    cache.result([cacheKey1, 1], calculate);
+    expect(calculate).to.have.callCount(2);
+  });
+
   it('can be invalidated manually', () => {
     let cache = createCache();
     let calculate = sinon.stub().returns('calculation result');

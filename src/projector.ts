@@ -20,11 +20,11 @@ import {
 } from './interfaces';
 import { applyDefaultProjectionOptions, dom } from './dom';
 
-let createParentNodePath = (node: Node, rootNode: Element) => {
+let createParentNodePath = (node: Node | null, rootNode: Element) => {
   let parentNodePath: Node[] = [];
-  while (node !== rootNode) {
+  while (node && node !== rootNode) {
     parentNodePath.push(node);
-    node = node.parentNode!;
+    node = node.parentNode;
   }
   return parentNodePath;
 };

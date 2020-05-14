@@ -296,6 +296,39 @@ describe('Projector', () => {
       expect(buttonBlur).to.not.have.been.called;
     });
 
+    it('will not call event handlers on domNodes which are detached, like in exotic cases in Safari', () => {
+      let buttonVisible = true;
+      let buttonBlur = sinon.spy();
+      let eventHandler = () => {
+        buttonVisible = false;
+      };
+      let renderFunction = () => h('div', [
+        buttonVisible ? [
+          h('button', {
+            onblur: buttonBlur,
+            onclick: eventHandler
+          })
+        ] : []
+      ]);
+
+      let projector = createProjector({});
+      let parentElement = document.createElement('section');
+      projector.append(parentElement, renderFunction);
+      let div = parentElement.firstChild as HTMLElement;
+      let button = div.firstChild as HTMLButtonElement;
+      button.onclick({ currentTarget: button, type: 'click' } as any);
+      expect(buttonVisible).to.be.false;
+      projector.renderNow();
+      button.remove();
+
+      let detachedButton = {
+        onblur: button.onblur as Function,
+        parentNode: null as any
+      };
+      detachedButton.onblur({ currentTarget: detachedButton, type: 'blur' } as any);
+      expect(buttonBlur).to.not.have.been.called;
+    });
+
   });
 
   it('can detach a projection', () => {

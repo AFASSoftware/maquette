@@ -29,11 +29,17 @@ describe('dom', () => {
       expect(projection.domNode.outerHTML).to.equal('<div style=""></div>');
     });
 
-    it('should add styles', () => {
+    it('should add and keep styles', () => {
       let projection = dom.create(h('div', { styles: { height: undefined } }));
       projection.update(h('div', { styles: { height: '20px' } }));
       expect(projection.domNode.outerHTML).to.equal('<div style="height: 20px;"></div>');
       projection.update(h('div', { styles: { height: '20px' } }));
+      expect(projection.domNode.outerHTML).to.equal('<div style="height: 20px;"></div>');
+    });
+
+    it('can set CSS variables', () => {
+      let projection = dom.create(h('div', { styles: { '--primary-color': 'red' } }));
+      expect(projection.domNode.outerHTML).to.equal('<div style="--primary-color: red;"></div>');
     });
 
     it('should use the provided styleApplyer', () => {

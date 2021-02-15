@@ -223,6 +223,23 @@ describe('dom', () => {
       });
     });
 
+    it('allows passing functions to props', () => {
+      /* tslint:disable no-empty */
+      let someMethod = () => { };
+      /* tslint:enable no-empty */
+      let renderFunction = () => h('div', { nonEventFunctionProp: someMethod });
+      let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
+
+      interface FakeCustomElement extends HTMLElement {
+        /* tslint:disable prefer-method-signature */
+        nonEventFunctionProp: () => void;
+        /* tslint:enable prefer-method-signature */
+      }
+
+      let fakeCustomElement = (projection.domNode as FakeCustomElement);
+      expect(fakeCustomElement.nonEventFunctionProp).to.equal(someMethod);
+    });
+
     it('updates the value property', () => {
       let typedKeys = '';
       let handleInput = (evt: Event) => {

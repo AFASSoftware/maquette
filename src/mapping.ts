@@ -1,4 +1,4 @@
-import { Mapping } from './interfaces';
+import { Mapping } from "./interfaces";
 
 /**
  * Creates a {@link Mapping} instance that keeps an array of result objects synchronized with an array of source objects.
@@ -12,10 +12,11 @@ import { Mapping } from './interfaces';
  * @param updateResult   `function(source, target, index)` that updates a result to an updated source.
  */
 export let createMapping = <Source, Target>(
-  getSourceKey: (source: Source) => (string | number),
+  getSourceKey: (source: Source) => string | number,
   createResult: (source: Source, index: number) => Target,
-  updateResult: (source: Source, target: Target, index: number) => void): Mapping<Source, Target> => {
-  let keys = [] as Object[];
+  updateResult: (source: Source, target: Target, index: number) => void
+): Mapping<Source, Target> => {
+  let keys = [] as unknown[];
   let results = [] as Target[];
 
   return {
@@ -50,6 +51,6 @@ export let createMapping = <Source, Target>(
       }
       results.length = newSources.length;
       keys = newKeys;
-    }
+    },
   };
 };

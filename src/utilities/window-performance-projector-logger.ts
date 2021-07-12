@@ -1,4 +1,4 @@
-import { PerformanceLoggerEvent, ProjectorPerformanceLogger } from '../interfaces';
+import { PerformanceLoggerEvent, ProjectorPerformanceLogger } from "../interfaces";
 
 /**
  * A `ProjectorPerformanceLogger` that reports measurements to window.performance.measure
@@ -7,23 +7,26 @@ import { PerformanceLoggerEvent, ProjectorPerformanceLogger } from '../interface
  */
 export let windowPerformanceProjectorLogger: ProjectorPerformanceLogger;
 
-if (window.performance && window.performance.measure) {
+if ((window as any).performance && (window as any).performance.measure) {
   let performance = window.performance;
   let lastMark: PerformanceLoggerEvent | undefined;
-  windowPerformanceProjectorLogger = (eventType: PerformanceLoggerEvent, trigger: Event | undefined) => {
+  windowPerformanceProjectorLogger = (
+    eventType: PerformanceLoggerEvent,
+    trigger: Event | undefined
+  ) => {
     performance.mark(eventType);
     switch (eventType) {
-      case 'domEventProcessed':
-        performance.measure('eventHandler', 'domEvent', 'domEventProcessed');
+      case "domEventProcessed":
+        performance.measure("eventHandler", "domEvent", "domEventProcessed");
         break;
-      case 'renderDone':
-        performance.measure('renderCycle', 'renderStart', 'renderDone');
+      case "renderDone":
+        performance.measure("renderCycle", "renderStart", "renderDone");
         break;
-      case 'rendered':
-        performance.measure('render', lastMark, 'rendered');
+      case "rendered":
+        performance.measure("render", lastMark, "rendered");
         break;
-      case 'patched':
-        performance.measure('diff+patch', 'rendered', 'patched');
+      case "patched":
+        performance.measure("diff+patch", "rendered", "patched");
         break;
     }
     lastMark = eventType;

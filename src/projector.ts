@@ -1,3 +1,4 @@
+import { applyDefaultProjectionOptions, dom } from "./dom";
 /**
  * A projector is used to create the real DOM from the the virtual DOM and to keep it up-to-date afterwards.
  *
@@ -16,9 +17,16 @@
  * versatile stand-in replacement.
  */
 import {
-  EventHandlerInterceptor, ProjectorPerformanceLogger, Projection, ProjectionOptions, ProjectorOptions, VNode, VNodeProperties, Projector
-} from './interfaces';
-import { applyDefaultProjectionOptions, dom } from './dom';
+  EventHandler,
+  EventHandlerInterceptor,
+  Projection,
+  ProjectionOptions,
+  Projector,
+  ProjectorOptions,
+  ProjectorPerformanceLogger,
+  VNode,
+  VNodeProperties,
+} from "./interfaces";
 
 let createParentNodePath = (node: Node | null, rootNode: Element) => {
   let parentNodePath: Node[] = [];
@@ -30,7 +38,7 @@ let createParentNodePath = (node: Node | null, rootNode: Element) => {
 };
 
 let find: <T>(items: T[], predicate: (item: T) => boolean) => T | undefined;
-if (Array.prototype.find) {
+if ((Array.prototype as any).find) {
   find = (items, predicate) => items.find(predicate);
 } else {
   find = (items, predicate) => items.filter(predicate)[0];
@@ -38,8 +46,11 @@ if (Array.prototype.find) {
 
 let findVNodeByParentNodePath = (vnode: VNode, parentNodePath: Node[]): VNode | undefined => {
   let result: VNode | undefined = vnode;
-  parentNodePath.forEach(node => {
-    result = (result && result.children) ? find(result.children, child => child.domNode === node) : undefined;
+  parentNodePath.forEach((node) => {
+    result =
+      result && result.children
+        ? find(result.children, (child) => child.domNode === node)
+        : undefined;
   });
   return result;
 };
@@ -49,8 +60,15 @@ let createEventHandlerInterceptor = (
   getProjection: () => Projection | undefined,
   performanceLogger: ProjectorPerformanceLogger
 ): EventHandlerInterceptor => {
-  let modifiedEventHandler = function(this: Node, evt: Event) {
-    performanceLogger('domEvent', evt);
+  return (
+    propertyName: string,
+    eventHandler: EventHandler,
+    domNode: Node,
+    properties: VNodeProperties
+  ) => modifiedEventHandler;
+
+  function modifiedEventHandler(this: Node, evt: Event): boolean | undefined | void {
+    performanceLogger("domEvent", evt);
     let projection = getProjection()!;
     let parentNodePath = createParentNodePath(evt.currentTarget as Element, projection.domNode);
     parentNodePath.reverse();
@@ -60,14 +78,16 @@ let createEventHandlerInterceptor = (
 
     let result: any;
     if (matchingVNode) {
-      /* tslint:disable no-invalid-this */
-      result = matchingVNode.properties![`on${evt.type}`].apply(matchingVNode.properties!.bind || this, arguments);
-      /* tslint:enable no-invalid-this */
+      /* eslint-disable prefer-rest-params */
+      result = matchingVNode.properties![`on${evt.type}`].apply(
+        matchingVNode.properties!.bind || this,
+        arguments
+      );
+      /* eslint-enable prefer-rest-params */
     }
-    performanceLogger('domEventProcessed', evt);
+    performanceLogger("domEventProcessed", evt);
     return result;
-  };
-  return (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => modifiedEventHandler;
+  }
 };
 
 /**
@@ -96,7 +116,11 @@ export let createProjector = (projectorOptions?: ProjectorOptions): Projector =>
   ): void => {
     let projection: Projection | undefined;
     let getProjection = () => projection;
-    projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(projector, getProjection, performanceLogger);
+    projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(
+      projector,
+      getProjection,
+      performanceLogger
+    );
     projection = domFunction(node, renderFunction(), projectionOptions);
     projections.push(projection);
     renderFunctions.push(renderFunction);
@@ -108,14 +132,14 @@ export let createProjector = (projectorOptions?: ProjectorOptions): Projector =>
       return; // The last render threw an error, it should have been logged in the browser console.
     }
     renderCompleted = false;
-    performanceLogger('renderStart', undefined);
+    performanceLogger("renderStart", undefined);
     for (let i = 0; i < projections.length; i++) {
       let updatedVnode = renderFunctions[i]();
-      performanceLogger('rendered', undefined);
+      performanceLogger("rendered", undefined);
       projections[i].update(updatedVnode);
-      performanceLogger('patched', undefined);
+      performanceLogger("patched", undefined);
     }
-    performanceLogger('renderDone', undefined);
+    performanceLogger("renderDone", undefined);
     renderCompleted = true;
   };
 
@@ -163,9 +187,8 @@ export let createProjector = (projectorOptions?: ProjectorOptions): Projector =>
           return projections.splice(i, 1)[0];
         }
       }
-      throw new Error('renderFunction was not found');
-    }
-
+      throw new Error("renderFunction was not found");
+    },
   };
   return projector;
 };

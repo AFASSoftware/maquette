@@ -1,25 +1,27 @@
 /**
  * Contains simple low-level utility functions to manipulate the real DOM.
  */
-import { Projection, ProjectionOptions, VNode } from './interfaces';
-import { createDom, createProjection, extend, initPropertiesAndChildren } from './projection';
+import { Projection, ProjectionOptions, VNode } from "./interfaces";
+import { createDom, createProjection, extend, initPropertiesAndChildren } from "./projection";
 
 const DEFAULT_PROJECTION_OPTIONS: ProjectionOptions = {
   namespace: undefined,
   performanceLogger: () => undefined,
   eventHandlerInterceptor: undefined,
   styleApplyer: (domNode: HTMLElement, styleName: string, value: string) => {
-    if (styleName.charAt(0) === '-') {
+    if (styleName.charAt(0) === "-") {
       // CSS variables must be set using setProperty
       domNode.style.setProperty(styleName, value);
     } else {
       // properties like 'backgroundColor' must be set as a js-property
       (domNode.style as any)[styleName] = value;
     }
-  }
+  },
 };
 
-export let applyDefaultProjectionOptions = (projectorOptions?: ProjectionOptions) => {
+export let applyDefaultProjectionOptions = (
+  projectorOptions?: ProjectionOptions
+): ProjectionOptions => {
   return extend(DEFAULT_PROJECTION_OPTIONS, projectorOptions);
 };
 
@@ -35,7 +37,7 @@ export let dom = {
    */
   create: (vnode: VNode, projectionOptions?: ProjectionOptions): Projection => {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
-    createDom(vnode, document.createElement('div'), undefined, projectionOptions);
+    createDom(vnode, document.createElement("div"), undefined, projectionOptions);
     return createProjection(vnode, projectionOptions);
   },
 
@@ -48,7 +50,11 @@ export let dom = {
    * @param projectionOptions - Options to be used to create and update the [[Projection]].
    * @returns The [[Projection]] that was created.
    */
-  append: (parentNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection => {
+  append: (
+    parentNode: Element,
+    vnode: VNode,
+    projectionOptions?: ProjectionOptions
+  ): Projection => {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     createDom(vnode, parentNode, undefined, projectionOptions);
     return createProjection(vnode, projectionOptions);
@@ -63,7 +69,11 @@ export let dom = {
    * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
    * @returns The [[Projection]] that was created.
    */
-  insertBefore: (beforeNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection => {
+  insertBefore: (
+    beforeNode: Element,
+    vnode: VNode,
+    projectionOptions?: ProjectionOptions
+  ): Projection => {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
     createDom(vnode, beforeNode.parentNode!, beforeNode, projectionOptions);
     return createProjection(vnode, projectionOptions);
@@ -101,5 +111,5 @@ export let dom = {
     createDom(vnode, element.parentNode!, element, projectionOptions);
     element.parentNode!.removeChild(element);
     return createProjection(vnode, projectionOptions);
-  }
+  },
 };

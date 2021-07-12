@@ -100,7 +100,6 @@ export interface VNode {
  * For your convenience, all common attributes, properties and event handlers are listed here and are
  * type-checked when using Typescript.
  */
-/* tslint:disable member-ordering - we order by Element type here */
 export interface VNodeProperties {
   /**
    * The animation to perform when this node is added to an already existing parent.
@@ -108,7 +107,7 @@ export interface VNodeProperties {
    * @param element - Element that was just added to the DOM.
    * @param properties - The properties object that was supplied to the [[h]] method
    */
-  enterAnimation?: ((element: Element, properties?: VNodeProperties) => void);
+  enterAnimation?: (element: Element, properties?: VNodeProperties) => void;
   /**
    * The animation to perform when this node is removed while its parent remains.
    * @param element - Element that ought to be removed from to the DOM.
@@ -126,7 +125,11 @@ export interface VNodeProperties {
    * @param properties - The last properties object that was supplied to the [[h]] method
    * @param previousProperties - The previous properties object that was supplied to the [[h]] method
    */
-  updateAnimation?(element: Element, properties?: VNodeProperties, previousProperties?: VNodeProperties): void;
+  updateAnimation?(
+    element: Element,
+    properties?: VNodeProperties,
+    previousProperties?: VNodeProperties
+  ): void;
   /**
    * Callback that is executed after this node is added to the DOM. Child nodes and properties have
    * already been applied.
@@ -173,13 +176,13 @@ export interface VNodeProperties {
    *
    * When no [[key]] is present, this object is also used to uniquely identify a DOM node.
    */
-  readonly bind?: object;
+  readonly bind?: unknown;
   /**
    * Used to uniquely identify a DOM node among siblings.
    * A key is required when there are more children with the same selector and these children are added or removed dynamically.
    * NOTE: this does not have to be a string or number, a [[MaquetteComponent]] Object for instance is also common.
    */
-  readonly key?: Object;
+  readonly key?: unknown;
   /**
    * An object literal like `{important:true}` which allows css classes, like `important` to be added and removed
    * dynamically.
@@ -262,19 +265,18 @@ export interface VNodeProperties {
   /**
    * Do not use className, use class instead
    */
-  readonly className?: never | 'Hint: do not use `className`, use `class` instead';
+  readonly className?: never | "Hint: do not use `className`, use `class` instead";
 
   /**
    * Everything that is not explicitly listed (properties and attributes that are either uncommon or custom).
    */
   readonly [index: string]: any;
 }
-/* tslint:enable member-ordering */
 
 /**
  * Only needed for the definition of [[VNodeChild]].
  */
-export interface VNodeChildren extends Array<VNodeChild> { }
+export interface VNodeChildren extends Array<VNodeChild> {}
 /**
  * These are valid values for the children parameter of the [[h]] function.
  */
@@ -296,12 +298,29 @@ export interface Projection {
   getLastRender(): VNode;
 }
 
+export type EventHandler = (this: Node, event: Event) => boolean | undefined | void;
+
 /**
  * Options that influence how the DOM is rendered and updated.
  */
-export type EventHandlerInterceptor = (propertyName: string, eventHandler: Function, domNode: Node, properties: VNodeProperties) => Function | undefined;
-export type PerformanceLoggerEvent = 'domEvent' | 'domEventProcessed' | 'renderStart' | 'rendered' | 'patched' | 'renderDone';
-export type ProjectorPerformanceLogger = (eventType: PerformanceLoggerEvent, trigger: Event | undefined) => void;
+export type EventHandlerInterceptor = (
+  propertyName: string,
+  eventHandler: EventHandler,
+  domNode: Node,
+  properties: VNodeProperties
+) => undefined | EventHandler;
+
+export type PerformanceLoggerEvent =
+  | "domEvent"
+  | "domEventProcessed"
+  | "renderStart"
+  | "rendered"
+  | "patched"
+  | "renderDone";
+export type ProjectorPerformanceLogger = (
+  eventType: PerformanceLoggerEvent,
+  trigger: Event | undefined
+) => void;
 /**
  * Options that may be passed when creating the [[Projector]]
  */
@@ -447,7 +466,11 @@ export interface Dom {
    * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
    * @returns The [[Projection]] that was created.
    */
-  insertBefore(beforeNode: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection;
+  insertBefore(
+    beforeNode: Element,
+    vnode: VNode,
+    projectionOptions?: ProjectionOptions
+  ): Projection;
 
   /**
    * Merges a new DOM node which is generated from a [[VNode]] with an existing DOM Node.

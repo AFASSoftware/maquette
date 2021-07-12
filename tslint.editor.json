@@ -1,9 +1,0 @@
-{
-  /* You can use this file in your IDE for a better experience than when using tslint.json */
-  "extends" : "./tslint.json",
-  "rules": {
-    "no-trailing-whitespace": false,
-    "mocha-avoid-only": false,
-    "linebreak-style": false
-  }
-}

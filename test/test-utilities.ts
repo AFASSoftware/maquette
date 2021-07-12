@@ -1,14 +1,12 @@
-/* tslint:disable:no-require-imports no-unused-variable no-var-requires */
-
-import chai = require('chai');
-import chaiAsPromised = require('chai-as-promised');
+import chai = require("chai");
+import chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 let expect = chai.expect;
 
-import sinon = require('sinon');
-import sinonChai = require('sinon-chai');
+import sinon = require("sinon");
+import sinonChai = require("sinon-chai");
 chai.use(sinonChai);
 
-require('jsdom-global/register');
+require("jsdom-global/register");
 
 export { chai, expect, sinon };

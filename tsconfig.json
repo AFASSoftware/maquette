@@ -19,6 +19,7 @@
   "include": [
     "./typings/**/*.d.ts",
     "./tools/**/*.ts",
-    "./test/**/*.ts"
+    "./test/**/*.ts",
+    "./examples/**/*.ts"
   ]
 }

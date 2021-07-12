@@ -1,14 +1,12 @@
-/* tslint:disable function-name */
-
-import { VNode, VNodeChild, VNodeProperties } from './interfaces';
+import { VNode, VNodeChild, VNodeProperties } from "./interfaces";
 
 let toTextVNode = (data: string): VNode => {
   return {
-    vnodeSelector: '',
+    vnodeSelector: "",
     properties: undefined,
     children: undefined,
     text: data.toString(),
-    domNode: null
+    domNode: null,
   };
 };
 
@@ -19,7 +17,7 @@ let appendChildren = (parentSelector: string, insertions: VNodeChild[], main: VN
       appendChildren(parentSelector, item, main);
     } else {
       if (item !== null && item !== undefined && item !== false) {
-        if (typeof item === 'string') {
+        if (typeof item === "string") {
           item = toTextVNode(item);
         }
         main.push(item);
@@ -44,7 +42,11 @@ let appendChildren = (parentSelector: string, insertions: VNodeChild[], main: VN
  *
  * NOTE: There are {@link http://maquettejs.org/docs/rules.html|two basic rules} you should be aware of when updating the virtual DOM.
  */
-export function h(selector: string, properties?: VNodeProperties, children?: VNodeChild[] | null): VNode;
+export function h(
+  selector: string,
+  properties?: VNodeProperties,
+  children?: VNodeChild[] | null
+): VNode;
 /**
  * The `h` function is used to create a virtual DOM node.
  * This function is largely inspired by the mercuryjs and mithril frameworks.
@@ -62,19 +64,24 @@ export function h(selector: string, properties?: VNodeProperties, children?: VNo
  */
 export function h(selector: string, children: VNodeChild[]): VNode;
 
-export function h(selector: string, properties?: VNodeProperties, children?: VNodeChild[] | null): VNode {
+export function h(
+  selector: string,
+  properties?: VNodeProperties,
+  children?: VNodeChild[] | null
+): VNode {
   if (Array.isArray(properties)) {
     children = properties;
     properties = undefined;
   } else if (
-    (properties && (typeof properties === 'string' || properties.hasOwnProperty('vnodeSelector'))) ||
-    (children && (typeof children === 'string' || children.hasOwnProperty('vnodeSelector')))) {
-    throw new Error('h called with invalid arguments');
+    (properties && (typeof (properties as any) === "string" || properties.vnodeSelector)) ||
+    (children && (typeof (children as any) === "string" || (children as any).vnodeSelector))
+  ) {
+    throw new Error("h called with invalid arguments");
   }
   let text: string | undefined;
   let flattenedChildren: VNode[] | undefined;
   // Recognize a common special case where there is only a single text node
-  if (children && children.length === 1 && typeof children[0] === 'string') {
+  if (children && children.length === 1 && typeof children[0] === "string") {
     text = children[0];
   } else if (children) {
     flattenedChildren = [];
@@ -87,7 +94,7 @@ export function h(selector: string, properties?: VNodeProperties, children?: VNo
     vnodeSelector: selector,
     properties: properties,
     children: flattenedChildren,
-    text: (text === '') ? undefined : text,
-    domNode: null
+    text: text === "" ? undefined : text,
+    domNode: null,
   };
 }

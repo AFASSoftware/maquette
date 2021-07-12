@@ -1,5 +1,3 @@
-/* tslint:disable:no-namespace */
-
 declare interface Element {
   outerHTML: string;
 }
@@ -14,7 +12,10 @@ interface RequestIdleOptions {
 }
 
 declare interface Window {
-  requestIdleCallback(callback: (deadline: RequestIdleCallback) => any, options?: RequestIdleOptions): number;
+  requestIdleCallback(
+    callback: (deadline: RequestIdleCallback) => any,
+    options?: RequestIdleOptions
+  ): number;
 }
 
 declare namespace NodeJS {

@@ -1,7 +1,12 @@
-import { expect } from './test-utilities';
-import { createMapping } from '../src/index';
+import { createMapping } from "../src/index";
+import { expect } from "./test-utilities";
 
-let addAllPermutations = (results: number[][], result: number[], unusedNumbers: number[], numbersToAdd: number) => {
+let addAllPermutations = (
+  results: number[][],
+  result: number[],
+  unusedNumbers: number[],
+  numbersToAdd: number
+) => {
   if (numbersToAdd === 0) {
     results.push(result);
   }
@@ -35,7 +40,7 @@ let createTarget = (source: number) => {
   return {
     source: source,
     updateCount: 0,
-    alreadyPresent: undefined as boolean | undefined
+    alreadyPresent: undefined as boolean | undefined,
   };
 };
 
@@ -64,20 +69,20 @@ let checkNextMapping = (results: Target[], sources: number[], previousSources: n
   });
 };
 
-describe('Mapping', () => {
-  /* tslint:disable mocha-no-side-effect-code */
-  it('works correctly for all permutations of 4 items to every other permutation of 4 items', () => {
+describe("Mapping", () => {
+  it("works correctly for all permutations of 4 items to every other permutation of 4 items", () => {
     let permutations = createPermutations();
     for (let permutationI of permutations) {
       for (let permutationJ of permutations) {
-        let mapping = createMapping(key => key, createTarget, updateTarget);
+        let mapping = createMapping((key) => key, createTarget, updateTarget);
         mapping.map(permutationI);
         checkInitialMapping(mapping.results, permutationI);
-        mapping.results.forEach(target => { target.alreadyPresent = true; });
+        mapping.results.forEach((target) => {
+          target.alreadyPresent = true;
+        });
         mapping.map(permutationJ);
         checkNextMapping(mapping.results, permutationJ, permutationI);
       }
     }
   }).timeout(5000);
-
 });

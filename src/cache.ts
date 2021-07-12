@@ -1,4 +1,4 @@
-import { CalculationCache } from './interfaces';
+import { CalculationCache } from "./interfaces";
 
 /**
  * Creates a [[CalculationCache]] object, useful for caching [[VNode]] trees.
@@ -30,6 +30,6 @@ export let createCache = <Result>(): CalculationCache<Result> => {
         cachedInputs = inputs;
       }
       return cachedOutcome;
-    }
+    },
   };
 };

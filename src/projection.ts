@@ -1,11 +1,9 @@
 /**
  * Exports here are NOT re-exported to maquette
  */
-import { Projection, ProjectionOptions, VNode, VNodeProperties } from './interfaces';
+import { Projection, ProjectionOptions, VNode, VNodeProperties } from "./interfaces";
 
-/* tslint:disable no-http-string */
-const NAMESPACE_W3 = 'http://www.w3.org/';
-/* tslint:enable no-http-string */
+const NAMESPACE_W3 = "http://www.w3.org/";
 const NAMESPACE_SVG = `${NAMESPACE_W3}2000/svg`;
 const NAMESPACE_XLINK = `${NAMESPACE_W3}1999/xlink`;
 
@@ -37,14 +35,14 @@ let same = (vnode1: VNode, vnode2: VNode) => {
   return !vnode1.properties && !vnode2.properties;
 };
 
-let checkStyleValue = (styleValue: Object) => {
-  if (typeof styleValue !== 'string') {
-    throw new Error('Style values must be strings');
+let checkStyleValue = (styleValue: unknown) => {
+  if (typeof styleValue !== "string") {
+    throw new Error("Style values must be strings");
   }
 };
 
 let findIndexOfChild = (children: VNode[], sameAs: VNode, start: number) => {
-  if (sameAs.vnodeSelector !== '') {
+  if (sameAs.vnodeSelector !== "") {
     // Never scan for text-nodes
     for (let i = start; i < children.length; i++) {
       if (same(children[i], sameAs)) {
@@ -55,21 +53,33 @@ let findIndexOfChild = (children: VNode[], sameAs: VNode, start: number) => {
   return -1;
 };
 
-let checkDistinguishable = (childNodes: VNode[], indexToCheck: number, parentVNode: VNode, operation: string) => {
+let checkDistinguishable = (
+  childNodes: VNode[],
+  indexToCheck: number,
+  parentVNode: VNode,
+  operation: string
+) => {
   let childNode = childNodes[indexToCheck];
-  if (childNode.vnodeSelector === '') {
+  if (childNode.vnodeSelector === "") {
     return; // Text nodes need not be distinguishable
   }
   let properties = childNode.properties;
-  let key = properties ? (properties.key === undefined ? properties.bind : properties.key) : undefined;
-  if (!key) { // A key is just assumed to be unique
+  let key = properties
+    ? properties.key === undefined
+      ? properties.bind
+      : properties.key
+    : undefined;
+  if (!key) {
+    // A key is just assumed to be unique
     for (let i = 0; i < childNodes.length; i++) {
       if (i !== indexToCheck) {
         let node = childNodes[i];
         if (same(node, childNode)) {
-          throw new Error(`${parentVNode.vnodeSelector} had a ${childNode.vnodeSelector} child ${
-            operation === 'added' ? operation : 'removed'
-            }, but there is now more than one. You must add unique key properties to make them distinguishable.`);
+          throw new Error(
+            `${parentVNode.vnodeSelector} had a ${childNode.vnodeSelector} child ${
+              operation === "added" ? operation : "removed"
+            }, but there is now more than one. You must add unique key properties to make them distinguishable.`
+          );
         }
       }
     }
@@ -92,10 +102,9 @@ let visitRemovedNode = (node: VNode) => {
   (node.children || []).forEach(visitRemovedNode);
 
   if (node.properties && node.properties.afterRemoved) {
-    node.properties.afterRemoved.apply(
-      node.properties.bind || node.properties,
-      [<Element>node.domNode]
-    );
+    node.properties.afterRemoved.apply(node.properties.bind || node.properties, [
+      <Element>node.domNode,
+    ]);
   }
 };
 
@@ -111,7 +120,7 @@ let scheduleNodeRemoval = (vNode: VNode): void => {
 
   if (!requestedIdleCallback) {
     requestedIdleCallback = true;
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       window.requestIdleCallback(processPendingNodeRemovals, { timeout: 16 });
     } else {
       setTimeout(processPendingNodeRemovals, 16);
@@ -124,7 +133,7 @@ let nodeToRemove = (vNode: VNode) => {
   if (vNode.properties) {
     let exitAnimation = vNode.properties.exitAnimation;
     if (exitAnimation) {
-      (domNode as HTMLElement).style.pointerEvents = 'none';
+      (domNode as HTMLElement).style.pointerEvents = "none";
       let removeDomNode = () => {
         if (domNode.parentNode) {
           domNode.parentNode.removeChild(domNode);
@@ -141,7 +150,11 @@ let nodeToRemove = (vNode: VNode) => {
   }
 };
 
-let setProperties = (domNode: Node, properties: VNodeProperties | undefined, projectionOptions: ProjectionOptions) => {
+let setProperties = (
+  domNode: Node,
+  properties: VNodeProperties | undefined,
+  projectionOptions: ProjectionOptions
+) => {
   if (!properties) {
     return;
   }
@@ -151,11 +164,11 @@ let setProperties = (domNode: Node, properties: VNodeProperties | undefined, pro
   for (let i = 0; i < propCount; i++) {
     let propName = propNames[i];
     let propValue = properties[propName];
-    if (propName === 'className') {
+    if (propName === "className") {
       throw new Error('Property "className" is not supported, use "class".');
-    } else if (propName === 'class') {
+    } else if (propName === "class") {
       toggleClasses(domNode as HTMLElement, propValue as string, true);
-    } else if (propName === 'classes') {
+    } else if (propName === "classes") {
       // object with string keys and boolean values
       let classNames = Object.keys(propValue);
       let classNameCount = classNames.length;
@@ -165,7 +178,7 @@ let setProperties = (domNode: Node, properties: VNodeProperties | undefined, pro
           (domNode as Element).classList.add(className);
         }
       }
-    } else if (propName === 'styles') {
+    } else if (propName === "styles") {
       // object with string keys and string (!) values
       let styleNames = Object.keys(propValue);
       let styleCount = styleNames.length;
@@ -177,35 +190,34 @@ let setProperties = (domNode: Node, properties: VNodeProperties | undefined, pro
           projectionOptions.styleApplyer!(<HTMLElement>domNode, styleName, styleValue);
         }
       }
-    } else if (propName !== 'key' && propValue !== null && propValue !== undefined) {
+    } else if (propName !== "key" && propValue !== null && propValue !== undefined) {
       let type = typeof propValue;
-      if (type === 'function') {
-        if (propName.lastIndexOf('on', 0) === 0) { // lastIndexOf(,0)===0 -> startsWith
+      if (type === "function") {
+        if (propName.lastIndexOf("on", 0) === 0) {
+          // lastIndexOf(,0)===0 -> startsWith
           if (eventHandlerInterceptor) {
             propValue = eventHandlerInterceptor(propName, propValue, domNode, properties); // intercept eventhandlers
           }
-          if (propName === 'oninput') {
-            /* tslint:disable no-this-keyword no-invalid-this only-arrow-functions no-void-expression */
-            (function() {
+          if (propName === "oninput") {
+            (function () {
               // record the evt.target.value, because IE and Edge sometimes do a requestAnimationFrame between changing value and running oninput
               let oldPropValue = propValue;
-              propValue = function(this: HTMLElement, evt: Event) {
+              propValue = function (this: HTMLElement, evt: Event) {
                 oldPropValue.apply(this, [evt]);
-                (evt.target as any)['oninput-value'] = (evt.target as HTMLInputElement).value; // may be HTMLTextAreaElement as well
+                (evt.target as any)["oninput-value"] = (evt.target as HTMLInputElement).value; // may be HTMLTextAreaElement as well
               };
-            }());
-            /* tslint:enable */
+            })();
           }
         }
         (domNode as any)[propName] = propValue;
       } else if (projectionOptions.namespace === NAMESPACE_SVG) {
-        if (propName === 'href') {
+        if (propName === "href") {
           (domNode as Element).setAttributeNS(NAMESPACE_XLINK, propName, propValue);
         } else {
           // all SVG attributes are read-only in DOM, so...
           (domNode as Element).setAttribute(propName, propValue);
         }
-      } else if (type === 'string' && propName !== 'value' && propName !== 'innerHTML') {
+      } else if (type === "string" && propName !== "value" && propName !== "innerHTML") {
         (domNode as Element).setAttribute(propName, propValue);
       } else {
         (domNode as any)[propName] = propValue;
@@ -214,7 +226,11 @@ let setProperties = (domNode: Node, properties: VNodeProperties | undefined, pro
   }
 };
 
-let addChildren = (domNode: Node, children: VNode[] | undefined, projectionOptions: ProjectionOptions) => {
+let addChildren = (
+  domNode: Node,
+  children: VNode[] | undefined,
+  projectionOptions: ProjectionOptions
+) => {
   if (!children) {
     return;
   }
@@ -223,17 +239,24 @@ let addChildren = (domNode: Node, children: VNode[] | undefined, projectionOptio
   }
 };
 
-export let initPropertiesAndChildren = (domNode: Node, vnode: VNode, projectionOptions: ProjectionOptions) => {
+export let initPropertiesAndChildren = (
+  domNode: Node,
+  vnode: VNode,
+  projectionOptions: ProjectionOptions
+): void => {
   addChildren(domNode, vnode.children, projectionOptions); // children before properties, needed for value property of <select>.
   if (vnode.text) {
     domNode.textContent = vnode.text;
   }
   setProperties(domNode, vnode.properties, projectionOptions);
   if (vnode.properties && vnode.properties.afterCreate) {
-    vnode.properties.afterCreate.apply(
-      vnode.properties.bind || vnode.properties,
-      [domNode as Element, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children]
-    );
+    vnode.properties.afterCreate.apply(vnode.properties.bind || vnode.properties, [
+      domNode as Element,
+      projectionOptions,
+      vnode.vnodeSelector,
+      vnode.properties,
+      vnode.children,
+    ]);
   }
 };
 
@@ -247,7 +270,7 @@ export let createDom = (
   let start = 0;
   let vnodeSelector = vnode.vnodeSelector;
   let doc = parentNode.ownerDocument!;
-  if (vnodeSelector === '') {
+  if (vnodeSelector === "") {
     domNode = vnode.domNode = doc.createTextNode(vnode.text!);
     if (insertBefore !== undefined) {
       parentNode.insertBefore(domNode, insertBefore);
@@ -257,24 +280,26 @@ export let createDom = (
   } else {
     for (let i = 0; i <= vnodeSelector.length; ++i) {
       let c = vnodeSelector.charAt(i);
-      if (i === vnodeSelector.length || c === '.' || c === '#') {
+      if (i === vnodeSelector.length || c === "." || c === "#") {
         let type = vnodeSelector.charAt(start - 1);
         let found = vnodeSelector.slice(start, i);
-        if (type === '.') {
+        if (type === ".") {
           (domNode! as HTMLElement).classList.add(found);
-        } else if (type === '#') {
+        } else if (type === "#") {
           (domNode! as Element).id = found;
         } else {
-          if (found === 'svg') {
-            projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });
+          if (found === "svg") {
+            projectionOptions = extend(projectionOptions, {
+              namespace: NAMESPACE_SVG,
+            });
           }
           if (projectionOptions.namespace !== undefined) {
             domNode = vnode.domNode = doc.createElementNS(projectionOptions.namespace, found);
           } else {
-            domNode = vnode.domNode = (vnode.domNode || doc.createElement(found));
-            if (found === 'input' && vnode.properties && vnode.properties.type !== undefined) {
+            domNode = vnode.domNode = vnode.domNode || doc.createElement(found);
+            if (found === "input" && vnode.properties && vnode.properties.type !== undefined) {
               // IE8 and older don't support setting input type after the DOM Node has been added to the document
-              (domNode as Element).setAttribute('type', vnode.properties.type);
+              (domNode as Element).setAttribute("type", vnode.properties.type);
             }
           }
           if (insertBefore !== undefined) {
@@ -302,7 +327,7 @@ let toggleClasses = (domNode: HTMLElement, classes: string | null | undefined, o
   if (!classes) {
     return;
   }
-  classes.split(' ').forEach(classToToggle => {
+  classes.split(" ").forEach((classToToggle) => {
     if (classToToggle) {
       domNode.classList.toggle(classToToggle, on);
     }
@@ -310,7 +335,8 @@ let toggleClasses = (domNode: HTMLElement, classes: string | null | undefined, o
 };
 
 let updateProperties = (
-  domNode: Node, previousProperties: VNodeProperties | undefined,
+  domNode: Node,
+  previousProperties: VNodeProperties | undefined,
   properties: VNodeProperties | undefined,
   projectionOptions: ProjectionOptions
 ) => {
@@ -325,12 +351,12 @@ let updateProperties = (
     // assuming that properties will be nullified instead of missing is by design
     let propValue = properties[propName];
     let previousValue = previousProperties![propName];
-    if (propName === 'class') {
+    if (propName === "class") {
       if (previousValue !== propValue) {
         toggleClasses(domNode as HTMLElement, previousValue, false);
         toggleClasses(domNode as HTMLElement, propValue, true);
       }
-    } else if (propName === 'classes') {
+    } else if (propName === "classes") {
       let classList = (domNode as Element).classList;
       let classNames = Object.keys(propValue);
       let classNameCount = classNames.length;
@@ -348,7 +374,7 @@ let updateProperties = (
           classList.remove(className);
         }
       }
-    } else if (propName === 'styles') {
+    } else if (propName === "styles") {
       let styleNames = Object.keys(propValue);
       let styleCount = styleNames.length;
       for (let j = 0; j < styleCount; j++) {
@@ -363,46 +389,48 @@ let updateProperties = (
           checkStyleValue(newStyleValue);
           projectionOptions.styleApplyer!(domNode as HTMLElement, styleName, newStyleValue);
         } else {
-          projectionOptions.styleApplyer!(domNode as HTMLElement, styleName, '');
+          projectionOptions.styleApplyer!(domNode as HTMLElement, styleName, "");
         }
       }
     } else {
-      if (!propValue && typeof previousValue === 'string') {
-        propValue = '';
+      if (!propValue && typeof previousValue === "string") {
+        propValue = "";
       }
-      if (propName === 'value') { // value can be manipulated by the user directly and using event.preventDefault() is not an option
+      if (propName === "value") {
+        // value can be manipulated by the user directly and using event.preventDefault() is not an option
         let domValue = (domNode as any)[propName];
         if (
-          domValue !== propValue // The 'value' in the DOM tree !== newValue
-          && ((domNode as any)['oninput-value']
-            ? domValue === (domNode as any)['oninput-value'] // If the last reported value to 'oninput' does not match domValue, do nothing and wait for oninput
-            : propValue !== previousValue // Only update the value if the vdom changed
-          )
+          domValue !== propValue && // The 'value' in the DOM tree !== newValue
+          ((domNode as any)["oninput-value"]
+            ? domValue === (domNode as any)["oninput-value"] // If the last reported value to 'oninput' does not match domValue, do nothing and wait for oninput
+            : propValue !== previousValue) // Only update the value if the vdom changed
         ) {
           // The edge cases are described in the tests
           (domNode as any)[propName] = propValue; // Reset the value, even if the virtual DOM did not change
-          (domNode as any)['oninput-value'] = undefined;
+          (domNode as any)["oninput-value"] = undefined;
         } // else do not update the domNode, otherwise the cursor position would be changed
         if (propValue !== previousValue) {
           propertiesUpdated = true;
         }
       } else if (propValue !== previousValue) {
         let type = typeof propValue;
-        if (type !== 'function' || !projectionOptions.eventHandlerInterceptor) { // Function updates are expected to be handled by the EventHandlerInterceptor
+        if (type !== "function" || !projectionOptions.eventHandlerInterceptor) {
+          // Function updates are expected to be handled by the EventHandlerInterceptor
           if (projectionOptions.namespace === NAMESPACE_SVG) {
-            if (propName === 'href') {
+            if (propName === "href") {
               (domNode as Element).setAttributeNS(NAMESPACE_XLINK, propName, propValue);
             } else {
               // all SVG attributes are read-only in DOM, so...
               (domNode as Element).setAttribute(propName, propValue);
             }
-          } else if (type === 'string' && propName !== 'innerHTML') {
-            if (propName === 'role' && propValue === '') {
+          } else if (type === "string" && propName !== "innerHTML") {
+            if (propName === "role" && propValue === "") {
               (domNode as any).removeAttribute(propName);
             } else {
               (domNode as Element).setAttribute(propName, propValue);
             }
-          } else if ((domNode as any)[propName] !== propValue) { // Comparison is here for side-effects in Edge with scrollLeft and scrollTop
+          } else if ((domNode as any)[propName] !== propValue) {
+            // Comparison is here for side-effects in Edge with scrollLeft and scrollTop
             (domNode as any)[propName] = propValue;
           }
 
@@ -434,7 +462,7 @@ let updateChildren = (
   let i: number;
   let textUpdated = false;
   while (newIndex < newChildrenLength) {
-    let oldChild = (oldIndex < oldChildrenLength) ? oldChildren[oldIndex] : undefined;
+    let oldChild = oldIndex < oldChildrenLength ? oldChildren[oldIndex] : undefined;
     let newChild = newChildren[newIndex];
     if (oldChild !== undefined && same(oldChild, newChild)) {
       textUpdated = updateDom(oldChild, newChild, projectionOptions) || textUpdated;
@@ -445,15 +473,21 @@ let updateChildren = (
         // Remove preceding missing children
         for (i = oldIndex; i < findOldIndex; i++) {
           nodeToRemove(oldChildren[i]);
-          checkDistinguishable(oldChildren, i, vnode, 'removed');
+          checkDistinguishable(oldChildren, i, vnode, "removed");
         }
-        textUpdated = updateDom(oldChildren[findOldIndex], newChild, projectionOptions) || textUpdated;
+        textUpdated =
+          updateDom(oldChildren[findOldIndex], newChild, projectionOptions) || textUpdated;
         oldIndex = findOldIndex + 1;
       } else {
         // New child
-        createDom(newChild, domNode, (oldIndex < oldChildrenLength) ? oldChildren[oldIndex].domNode : undefined, projectionOptions);
+        createDom(
+          newChild,
+          domNode,
+          oldIndex < oldChildrenLength ? oldChildren[oldIndex].domNode : undefined,
+          projectionOptions
+        );
         nodeAdded(newChild);
-        checkDistinguishable(newChildren, newIndex, vnode, 'added');
+        checkDistinguishable(newChildren, newIndex, vnode, "added");
       }
     }
     newIndex++;
@@ -462,7 +496,7 @@ let updateChildren = (
     // Remove child fragments
     for (i = oldIndex; i < oldChildrenLength; i++) {
       nodeToRemove(oldChildren[i]);
-      checkDistinguishable(oldChildren, i, vnode, 'removed');
+      checkDistinguishable(oldChildren, i, vnode, "removed");
     }
   }
   return textUpdated;
@@ -475,7 +509,7 @@ updateDom = (previous, vnode, projectionOptions) => {
     return false; // By contract, VNode objects may not be modified anymore after passing them to maquette
   }
   let updated = false;
-  if (vnode.vnodeSelector === '') {
+  if (vnode.vnodeSelector === "") {
     if (vnode.text !== previous.text) {
       let newTextNode = domNode.ownerDocument!.createTextNode(vnode.text!);
       domNode.parentNode!.replaceChild(newTextNode, domNode);
@@ -485,8 +519,11 @@ updateDom = (previous, vnode, projectionOptions) => {
     }
     vnode.domNode = domNode;
   } else {
-    if (vnode.vnodeSelector.lastIndexOf('svg', 0) === 0) { // lastIndexOf(needle,0)===0 means StartsWith
-      projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });
+    if (vnode.vnodeSelector.lastIndexOf("svg", 0) === 0) {
+      // lastIndexOf(needle,0)===0 means StartsWith
+      projectionOptions = extend(projectionOptions, {
+        namespace: NAMESPACE_SVG,
+      });
     }
     if (previous.text !== vnode.text) {
       updated = true;
@@ -497,13 +534,20 @@ updateDom = (previous, vnode, projectionOptions) => {
       }
     }
     vnode.domNode = domNode;
-    updated = updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions) || updated;
-    updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
+    updated =
+      updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions) ||
+      updated;
+    updated =
+      updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) ||
+      updated;
     if (vnode.properties && vnode.properties.afterUpdate) {
-      vnode.properties.afterUpdate.apply(
-        vnode.properties.bind || vnode.properties,
-        [<Element>domNode, projectionOptions, vnode.vnodeSelector, vnode.properties, vnode.children]
-      );
+      vnode.properties.afterUpdate.apply(vnode.properties.bind || vnode.properties, [
+        <Element>domNode,
+        projectionOptions,
+        vnode.vnodeSelector,
+        vnode.properties,
+        vnode.children,
+      ]);
     }
   }
   if (updated && vnode.properties && vnode.properties.updateAnimation) {
@@ -517,12 +561,14 @@ export let createProjection = (vnode: VNode, projectionOptions: ProjectionOption
     getLastRender: () => vnode,
     update: (updatedVnode: VNode) => {
       if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
-        throw new Error('The selector for the root VNode may not be changed. (consider using dom.merge and add one extra level to the virtual DOM)');
+        throw new Error(
+          "The selector for the root VNode may not be changed. (consider using dom.merge and add one extra level to the virtual DOM)"
+        );
       }
       let previousVNode = vnode;
       vnode = updatedVnode;
       updateDom(previousVNode, updatedVnode, projectionOptions);
     },
-    domNode: <Element>vnode.domNode
+    domNode: <Element>vnode.domNode,
   };
 };

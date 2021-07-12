@@ -1,114 +1,116 @@
-import { expect, sinon } from '../test-utilities';
-import { dom, h } from '../../src/index';
+import { EventHandler, dom, h } from "../../src/index";
+import { expect, sinon } from "../test-utilities";
 
-let noopEventHandlerInterceptor = (propertyName: string, functionPropertyArgument: Function) => {
-  return function(this: Node) {
-    /* tslint:disable no-invalid-this */
-    return functionPropertyArgument.apply(this, arguments);
-    /* tslint:enable no-invalid-this */
+let noopEventHandlerInterceptor = (
+  propertyName: string,
+  functionPropertyArgument: EventHandler
+) => {
+  return function (this: Node) {
+    /* eslint-disable prefer-rest-params */
+    return functionPropertyArgument.apply(this, arguments as any);
+    /* eslint-enable prefer-rest-params */
   };
 };
 
-describe('dom', () => {
-  describe('properties', () => {
-    describe('classes', () => {
-      it('adds and removes classes', () => {
-        let projection = dom.create(h('div', { classes: { a: true, b: false } }));
+describe("dom", () => {
+  describe("properties", () => {
+    describe("classes", () => {
+      it("adds and removes classes", () => {
+        let projection = dom.create(h("div", { classes: { a: true, b: false } }));
         let div = projection.domNode as HTMLDivElement;
-        expect(div.className).to.equal('a');
+        expect(div.className).to.equal("a");
 
-        projection.update(h('div', { classes: { a: true, b: true } }));
-        expect(div.className).to.equal('a b');
+        projection.update(h("div", { classes: { a: true, b: true } }));
+        expect(div.className).to.equal("a b");
 
-        projection.update(h('div', { classes: { a: false, b: true } }));
-        expect(div.className).to.equal('b');
+        projection.update(h("div", { classes: { a: false, b: true } }));
+        expect(div.className).to.equal("b");
       });
 
-      it('allows a constant class to be applied to make JSX workable', () => {
-        let projection = dom.create(h('div', { class: 'extra special' }));
+      it("allows a constant class to be applied to make JSX workable", () => {
+        let projection = dom.create(h("div", { class: "extra special" }));
         expect(projection.domNode.outerHTML).to.equal('<div class="extra special"></div>');
-        projection.update(h('div', { class: 'super special' }));
+        projection.update(h("div", { class: "super special" }));
         expect(projection.domNode.outerHTML).to.equal('<div class="super special"></div>');
-        projection.update(h('div', { class: undefined }));
+        projection.update(h("div", { class: undefined }));
         expect(projection.domNode.outerHTML).to.equal('<div class=""></div>');
-        projection.update(h('div', { class: 'me too' }));
+        projection.update(h("div", { class: "me too" }));
         expect(projection.domNode.outerHTML).to.equal('<div class="me too"></div>');
       });
 
-      it('is lenient towards extra spaces in class attribute', () => {
-        let projection = dom.create(h('div', { class: 'extra special ' }));
+      it("is lenient towards extra spaces in class attribute", () => {
+        let projection = dom.create(h("div", { class: "extra special " }));
         expect(projection.domNode.outerHTML).to.equal('<div class="extra special"></div>');
-        projection.update(h('div', { class: 'super  special' }));
+        projection.update(h("div", { class: "super  special" }));
         expect(projection.domNode.outerHTML).to.equal('<div class="super special"></div>');
-        projection.update(h('div', { class: undefined }));
+        projection.update(h("div", { class: undefined }));
         expect(projection.domNode.outerHTML).to.equal('<div class=""></div>');
-        projection.update(h('div', { class: ' me too' }));
+        projection.update(h("div", { class: " me too" }));
         expect(projection.domNode.outerHTML).to.equal('<div class="me too"></div>');
       });
 
-      it('allows classes and class to be combined', () => {
-        let projection = dom.create(h('div', { classes: { extra: true }, class: 'special' }));
+      it("allows classes and class to be combined", () => {
+        let projection = dom.create(h("div", { classes: { extra: true }, class: "special" }));
         expect(projection.domNode.outerHTML).to.equal('<div class="extra special"></div>');
-        projection.update(h('div', { classes: { extra: true }, class: 'good' }));
+        projection.update(h("div", { classes: { extra: true }, class: "good" }));
         expect(projection.domNode.outerHTML).to.equal('<div class="extra good"></div>');
-        projection.update(h('div', { classes: { extra: false }, class: 'good' }));
+        projection.update(h("div", { classes: { extra: false }, class: "good" }));
         expect(projection.domNode.outerHTML).to.equal('<div class="good"></div>');
       });
 
-      it('can update class, even when class was initially empty', () => {
-        let projection = dom.create(h('div', { class: '' }));
-        expect(projection.domNode.outerHTML).to.equal('<div></div>');
-        projection.update(h('div', { class: 'good' }));
+      it("can update class, even when class was initially empty", () => {
+        let projection = dom.create(h("div", { class: "" }));
+        expect(projection.domNode.outerHTML).to.equal("<div></div>");
+        projection.update(h("div", { class: "good" }));
         expect(projection.domNode.outerHTML).to.equal('<div class="good"></div>');
-        projection.update(h('div', { class: undefined }));
+        projection.update(h("div", { class: undefined }));
         expect(projection.domNode.outerHTML).to.equal('<div class=""></div>');
       });
 
-      it('can update class, even when class was initially undefined', () => {
-        let projection = dom.create(h('div', { class: undefined }));
-        expect(projection.domNode.outerHTML).to.equal('<div></div>');
-        projection.update(h('div', { class: 'good' }));
+      it("can update class, even when class was initially undefined", () => {
+        let projection = dom.create(h("div", { class: undefined }));
+        expect(projection.domNode.outerHTML).to.equal("<div></div>");
+        projection.update(h("div", { class: "good" }));
         expect(projection.domNode.outerHTML).to.equal('<div class="good"></div>');
       });
 
-      it('helps to prevent mistakes when using className', () => {
+      it("helps to prevent mistakes when using className", () => {
         expect(() => {
-          dom.create(h('div', { className: 'special' } as any));
+          dom.create(h("div", { className: "special" } as any));
         }).to.throw(Error);
       });
-
     });
 
-    it('updates attributes', () => {
-      let projection = dom.create(h('a', { href: '#1' }));
+    it("updates attributes", () => {
+      let projection = dom.create(h("a", { href: "#1" }));
       let link = projection.domNode as HTMLLinkElement;
-      expect(link.getAttribute('href')).to.equal('#1');
+      expect(link.getAttribute("href")).to.equal("#1");
 
-      projection.update(h('a', { href: '#2' }));
-      expect(link.getAttribute('href')).to.equal('#2');
+      projection.update(h("a", { href: "#2" }));
+      expect(link.getAttribute("href")).to.equal("#2");
 
-      projection.update(h('a', { href: undefined }));
-      expect(link.getAttribute('href')).to.equal('');
+      projection.update(h("a", { href: undefined }));
+      expect(link.getAttribute("href")).to.equal("");
     });
 
-    it('can add an attribute that was initially undefined', () => {
-      let projection = dom.create(h('a', { href: undefined }));
+    it("can add an attribute that was initially undefined", () => {
+      let projection = dom.create(h("a", { href: undefined }));
       let link = projection.domNode as HTMLLinkElement;
-      expect(link.getAttribute('href')).to.be.null;
+      expect(link.getAttribute("href")).to.be.null;
 
-      projection.update(h('a', { href: '#2' }));
-      expect(link.getAttribute('href')).to.equal('#2');
+      projection.update(h("a", { href: "#2" }));
+      expect(link.getAttribute("href")).to.equal("#2");
     });
 
-    it('can remove disabled property when set to null or undefined', () => {
-      let projection = dom.create(h('a', { disabled: true }));
+    it("can remove disabled property when set to null or undefined", () => {
+      let projection = dom.create(h("a", { disabled: true }));
       let link = projection.domNode as HTMLLinkElement;
 
       expect(link.disabled).to.equal(true);
       // Unfortunately JSDom does not map the property value to the attribute as real browsers do
       // expect(link.getAttribute('disabled')).to.equal('');
 
-      projection.update(h('a', <any>{ disabled: null }));
+      projection.update(h("a", <any>{ disabled: null }));
 
       // What Chrome would do:
       // expect(link.disabled).to.equal(false);
@@ -118,209 +120,220 @@ describe('dom', () => {
       expect(link.disabled).to.be.null;
     });
 
-    it('updates properties', () => {
-      let projection = dom.create(h('a', { href: '#1', tabIndex: 1 }));
+    it("updates properties", () => {
+      let projection = dom.create(h("a", { href: "#1", tabIndex: 1 }));
       let link = projection.domNode as HTMLLinkElement;
       expect(link.tabIndex).to.equal(1);
 
-      projection.update(h('a', { href: '#1', tabIndex: 2 }));
+      projection.update(h("a", { href: "#1", tabIndex: 2 }));
       expect(link.tabIndex).to.equal(2);
 
-      projection.update(h('a', { href: '#1', tabIndex: undefined }));
+      projection.update(h("a", { href: "#1", tabIndex: undefined }));
       expect(link.tabIndex).to.equal(0);
     });
 
-    it('updates innerHTML', () => {
-      let projection = dom.create(h('p', { innerHTML: '<span>INNER</span>' }));
+    it("updates innerHTML", () => {
+      let projection = dom.create(h("p", { innerHTML: "<span>INNER</span>" }));
       let paragraph = projection.domNode as HTMLElement;
       expect(paragraph.childNodes).to.have.length(1);
-      expect(paragraph.firstChild.textContent).to.equal('INNER');
-      projection.update(h('p', { innerHTML: '<span>UPDATED</span>' }));
+      expect(paragraph.firstChild.textContent).to.equal("INNER");
+      projection.update(h("p", { innerHTML: "<span>UPDATED</span>" }));
       expect(paragraph.childNodes).to.have.length(1);
-      expect(paragraph.firstChild.textContent).to.equal('UPDATED');
+      expect(paragraph.firstChild.textContent).to.equal("UPDATED");
     });
 
-    it('does not mess up scrolling in Edge', () => {
-      let projection = dom.create(h('div', { scrollTop: 0 }));
+    it("does not mess up scrolling in Edge", () => {
+      let projection = dom.create(h("div", { scrollTop: 0 }));
       let div = projection.domNode as HTMLDivElement;
-      Object.defineProperty(div, 'scrollTop', {
+      Object.defineProperty(div, "scrollTop", {
         get: () => 1,
-        set: sinon.stub().throws('Setting scrollTop would mess up scrolling')
+        set: sinon.stub().throws("Setting scrollTop would mess up scrolling"),
       }); // meaning: div.scrollTop = 1;
-      projection.update(h('div', { scrollTop: 1 }));
+      projection.update(h("div", { scrollTop: 1 }));
     });
 
-    it('sets HTMLInputElement.type before the element is added to the DOM for IE8 and earlier', () => {
+    it("sets HTMLInputElement.type before the element is added to the DOM for IE8 and earlier", () => {
       let parentNode = {
         appendChild: sinon.spy((child: HTMLElement) => {
-          expect(child.getAttribute('type')).to.equal('file');
+          expect(child.getAttribute("type")).to.equal("file");
         }),
         ownerDocument: {
           createElement: sinon.spy((tag: string) => {
             return document.createElement(tag);
-          })
-        }
+          }),
+        },
       };
-      dom.append(<any>parentNode, h('input', { type: 'file' }));
+      dom.append(<any>parentNode, h("input", { type: "file" }));
       expect(parentNode.appendChild).to.have.been.called;
       expect(parentNode.ownerDocument.createElement).to.have.been.called;
     });
 
-    describe('event handlers', () => {
-      it('allows one to correct the value while being typed', () => {
+    describe("event handlers", () => {
+      it("allows one to correct the value while being typed", () => {
         // Here we are trying to trim the value to 2 characters
-        let typedKeys = '';
+        let typedKeys = "";
         let handleInput = (evt: Event) => {
           typedKeys = (evt.target as HTMLInputElement).value.substr(0, 2);
         };
-        let renderFunction = () => h('input', { value: typedKeys, oninput: handleInput });
-        let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
-        let inputElement = (projection.domNode as HTMLInputElement);
+        let renderFunction = () => h("input", { value: typedKeys, oninput: handleInput });
+        let projection = dom.create(renderFunction(), {
+          eventHandlerInterceptor: noopEventHandlerInterceptor,
+        });
+        let inputElement = projection.domNode as HTMLInputElement;
         expect(inputElement.value).to.equal(typedKeys);
 
         // No correction
-        inputElement.value = 'ab';
+        inputElement.value = "ab";
         inputElement.oninput({ target: inputElement } as any);
-        expect(typedKeys).to.equal('ab');
+        expect(typedKeys).to.equal("ab");
         projection.update(renderFunction());
-        expect(inputElement.value).to.equal('ab');
+        expect(inputElement.value).to.equal("ab");
 
         // Correction kicking in
-        inputElement.value = 'abc';
+        inputElement.value = "abc";
         inputElement.oninput({ target: inputElement } as any);
-        expect(typedKeys).to.equal('ab');
+        expect(typedKeys).to.equal("ab");
         projection.update(renderFunction());
-        expect(inputElement.value).to.equal('ab');
+        expect(inputElement.value).to.equal("ab");
       });
 
-      it('does not undo keystrokes, even if a browser runs an animationFrame between changing the value property and running oninput', () => {
+      it("does not undo keystrokes, even if a browser runs an animationFrame between changing the value property and running oninput", () => {
         // Crazy internet explorer behavior
-        let typedKeys = '';
+        let typedKeys = "";
         let handleInput = (evt: Event) => {
           typedKeys = (evt.target as HTMLInputElement).value;
         };
 
-        let renderFunction = () => h('input', { value: typedKeys, oninput: handleInput });
+        let renderFunction = () => h("input", { value: typedKeys, oninput: handleInput });
 
-        let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
-        let inputElement = (projection.domNode as HTMLInputElement);
+        let projection = dom.create(renderFunction(), {
+          eventHandlerInterceptor: noopEventHandlerInterceptor,
+        });
+        let inputElement = projection.domNode as HTMLInputElement;
         expect(inputElement.value).to.equal(typedKeys);
 
         // Normal behavior
-        inputElement.value = 'a';
+        inputElement.value = "a";
         inputElement.oninput({ target: inputElement } as any);
-        expect(typedKeys).to.equal('a');
+        expect(typedKeys).to.equal("a");
         projection.update(renderFunction());
 
         // Crazy behavior
-        inputElement.value = 'ab';
+        inputElement.value = "ab";
         projection.update(renderFunction()); // renderFunction still produces value:'a'
-        expect(typedKeys).to.equal('a');
-        expect(inputElement.value).to.equal('ab');
+        expect(typedKeys).to.equal("a");
+        expect(inputElement.value).to.equal("ab");
         inputElement.oninput({ target: inputElement } as any);
-        expect(typedKeys).to.equal('ab');
+        expect(typedKeys).to.equal("ab");
         projection.update(renderFunction());
       });
     });
 
-    it('allows passing functions to props', () => {
-      /* tslint:disable no-empty */
-      let someMethod = () => { };
-      /* tslint:enable no-empty */
-      let renderFunction = () => h('div', { nonEventFunctionProp: someMethod });
-      let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
+    it("allows passing functions to props", () => {
+      let someMethod = () => {
+        /* noop */
+      };
+      let renderFunction = () => h("div", { nonEventFunctionProp: someMethod });
+      let projection = dom.create(renderFunction(), {
+        eventHandlerInterceptor: noopEventHandlerInterceptor,
+      });
 
       interface FakeCustomElement extends HTMLElement {
-        /* tslint:disable prefer-method-signature */
         nonEventFunctionProp: () => void;
-        /* tslint:enable prefer-method-signature */
       }
 
-      let fakeCustomElement = (projection.domNode as FakeCustomElement);
+      let fakeCustomElement = projection.domNode as FakeCustomElement;
       expect(fakeCustomElement.nonEventFunctionProp).to.equal(someMethod);
     });
 
-    it('updates the value property', () => {
-      let typedKeys = '';
+    it("updates the value property", () => {
+      let typedKeys = "";
       let handleInput = (evt: Event) => {
         typedKeys = (evt.target as HTMLInputElement).value;
       };
 
-      let renderFunction = () => h('input', { value: typedKeys, oninput: handleInput });
-      let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
-      let inputElement = (projection.domNode as HTMLInputElement);
+      let renderFunction = () => h("input", { value: typedKeys, oninput: handleInput });
+      let projection = dom.create(renderFunction(), {
+        eventHandlerInterceptor: noopEventHandlerInterceptor,
+      });
+      let inputElement = projection.domNode as HTMLInputElement;
       expect(inputElement.value).to.equal(typedKeys);
-      typedKeys = 'value1';
+      typedKeys = "value1";
       projection.update(renderFunction());
       expect(inputElement.value).to.equal(typedKeys);
     });
 
-    it('does not clear a value that was set by a testing tool (like Ranorex) which manipulates input.value directly', () => {
-      let typedKeys = '';
+    it("does not clear a value that was set by a testing tool (like Ranorex) which manipulates input.value directly", () => {
+      let typedKeys = "";
       let handleInput = (evt: Event) => {
         typedKeys = (evt.target as HTMLInputElement).value;
       };
 
-      let renderFunction = () => h('input', { value: typedKeys, oninput: handleInput });
+      let renderFunction = () => h("input", { value: typedKeys, oninput: handleInput });
 
-      let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
-      let inputElement = (projection.domNode as HTMLInputElement);
+      let projection = dom.create(renderFunction(), {
+        eventHandlerInterceptor: noopEventHandlerInterceptor,
+      });
+      let inputElement = projection.domNode as HTMLInputElement;
       expect(inputElement.value).to.equal(typedKeys);
 
-      inputElement.value = 'value written by a testing tool without invoking the input event';
+      inputElement.value = "value written by a testing tool without invoking the input event";
 
       projection.update(renderFunction());
       expect(inputElement.value).not.to.equal(typedKeys); // no resetting should have taken place
     });
 
-    it('Can handle oninput event handlers which pro-actively change element.value to correct user input when typing faster than 60 keys per second', () => {
-      let model = '';
+    it("Can handle oninput event handlers which pro-actively change element.value to correct user input when typing faster than 60 keys per second", () => {
+      let model = "";
       let handleInput = (evt: Event) => {
         let element = evt.target as HTMLInputElement;
         model = element.value;
-        if (model.indexOf(',') > 0) {
-          model = model.replace(/,/g, '.');
+        if (model.indexOf(",") > 0) {
+          model = model.replace(/,/g, ".");
           element.value = model; // To allow a user to type faster than 60 keys per second
           // in reality, selectionStart would now also be reset
         }
       };
 
-      let renderFunction = () => h('input', { value: model, oninput: handleInput });
-      let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
+      let renderFunction = () => h("input", { value: model, oninput: handleInput });
+      let projection = dom.create(renderFunction(), {
+        eventHandlerInterceptor: noopEventHandlerInterceptor,
+      });
 
-      let inputElement = (projection.domNode as HTMLInputElement);
+      let inputElement = projection.domNode as HTMLInputElement;
       expect(inputElement.value).to.equal(model);
 
-      inputElement.value = '4';
+      inputElement.value = "4";
       inputElement.oninput({ target: inputElement } as any as Event);
       projection.update(renderFunction());
 
-      inputElement.value = '4,';
+      inputElement.value = "4,";
       inputElement.oninput({ target: inputElement } as any as Event);
       projection.update(renderFunction());
 
-      expect(inputElement.value).to.equal('4.');
+      expect(inputElement.value).to.equal("4.");
 
-      model = '';
+      model = "";
       projection.update(renderFunction());
 
-      expect(inputElement.value).to.equal('');
+      expect(inputElement.value).to.equal("");
     });
 
-    it('removes the attribute when a role property is set to undefined', () => {
-      let role: string | undefined = 'button';
-      let renderFunction = () => h('div', { role: role });
+    it("removes the attribute when a role property is set to undefined", () => {
+      let role: string | undefined = "button";
+      let renderFunction = () => h("div", { role: role });
 
-      let projection = dom.create(renderFunction(), { eventHandlerInterceptor: noopEventHandlerInterceptor });
+      let projection = dom.create(renderFunction(), {
+        eventHandlerInterceptor: noopEventHandlerInterceptor,
+      });
       let element = projection.domNode;
 
-      expect(element.attributes).to.have.property('role');
-      expect(element.getAttribute('role')).to.equal(role);
+      expect(element.attributes).to.have.property("role");
+      expect(element.getAttribute("role")).to.equal(role);
 
       role = undefined;
       projection.update(renderFunction());
-      expect(element.attributes).to.not.have.property('role');
+      expect(element.attributes).to.not.have.property("role");
     });
   });
-
 });

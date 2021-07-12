@@ -1,0 +1,6 @@
+﻿.idea
+.vscode
+build
+dist
+*.js
+*.md

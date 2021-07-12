@@ -4,9 +4,9 @@
  *
  * [[https://maquettejs.org/|To the maquette homepage]]
  */
-export * from './interfaces';
-export { dom } from './dom';
-export { h } from './h';
-export { createProjector } from './projector';
-export { createCache } from './cache';
-export { createMapping } from './mapping';
+export * from "./interfaces";
+export { dom } from "./dom";
+export { h } from "./h";
+export { createProjector } from "./projector";
+export { createCache } from "./cache";
+export { createMapping } from "./mapping";

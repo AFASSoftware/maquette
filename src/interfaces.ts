@@ -233,7 +233,7 @@ export interface VNodeProperties {
   onmouseout?(ev: MouseEvent): boolean | void;
   onmouseover?(ev: MouseEvent): boolean | void;
   onmouseup?(ev: MouseEvent): boolean | void;
-  onmousewheel?(ev: WheelEvent | MouseWheelEvent): boolean | void;
+  onmousewheel?(ev: WheelEvent): boolean | void;
   onscroll?(ev: UIEvent): boolean | void;
   onsubmit?(ev: Event): boolean | void;
   readonly spellcheck?: boolean;

@@ -8,7 +8,7 @@ describe("dom", () => {
         dom.create(h("div", { styles: { height: 20 } as any }));
         expect.fail();
       } catch (e) {
-        expect(e.message.indexOf("strings") >= 0).to.be.true;
+        expect((e as Error).message.indexOf("strings") >= 0).to.be.true;
       }
     });
 

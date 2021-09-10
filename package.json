@@ -19,6 +19,7 @@
   "browser": "./dist/maquette.umd.js",
   "types": "./dist/index.d.ts",
   "scripts": {
+    "prepare": "husky install",
     "prepublishOnly": "tsa clean && npm run dist",
     "assist": "tsa assist",
     "release": "tsa release",
@@ -77,30 +78,22 @@
   },
   "devDependencies": {
     "@types/chai-as-promised": "7.1.4",
-    "@types/node": "16.3.0",
+    "@types/node": "16.9.1",
     "@types/sinon": "10.0.2",
     "@types/sinon-chai": "3.2.5",
     "@types/sinonjs__fake-timers": "6.0.3",
     "chai-as-promised": "7.1.1",
-    "jsdom": "16.6.0",
+    "jsdom": "17.0.0",
     "jsdom-global": "3.0.2",
-    "rollup": "2.53.0",
-    "sinon": "11.1.1",
+    "rollup": "2.56.3",
+    "sinon": "11.1.2",
     "sinon-chai": "3.7.0",
-    "typescript-assistant": "^0.51.0"
+    "typescript-assistant": "0.52.0"
   },
   "importSort": {
     ".js, .jsx, .ts, .tsx": {
       "style": "module",
       "parser": "typescript"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "post-checkout": "tsa post-checkout || exit 0",
-      "post-merge": "tsa post-merge || exit 0",
-      "pre-commit": "tsa pre-commit",
-      "pre-push": "npm run dist && tsa pre-push"
     }
   }
 }

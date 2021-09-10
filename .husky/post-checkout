@@ -1,0 +1,4 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx --no-install tsa post-checkout --previous=$1 --new=$2 --branch=$3 || exit 0

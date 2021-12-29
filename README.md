@@ -1,6 +1,6 @@
 ![NpmLicense](https://img.shields.io/npm/l/maquette.svg)
 ![npmBundleSize](https://img.shields.io/bundlephobia/minzip/maquette.svg)
-[![CircleCI branch](https://img.shields.io/circleci/project/github/AFASSoftware/maquette/master.svg)](https://circleci.com/gh/AFASSoftware/maquette)
+![build](https://github.com/AFASSoftware/maquette/actions/workflows/node.js.yml/badge.svg)
 
 Maquette
 =========

@@ -275,12 +275,13 @@ export interface VNodeProperties {
 
 /**
  * Only needed for the definition of [[VNodeChild]].
+ * @deprecated use VNodeChild
  */
 export interface VNodeChildren extends Array<VNodeChild> {}
 /**
  * These are valid values for the children parameter of the [[h]] function.
  */
-export type VNodeChild = string | VNode | VNodeChildren | false | null | undefined;
+export type VNodeChild = string | VNode | Array<VNodeChild> | false | null | undefined;
 
 /**
  * Represents a [[VNode]] tree that has been rendered to a real DOM tree.

@@ -75,11 +75,15 @@ let checkDistinguishable = (
       if (i !== indexToCheck) {
         let node = childNodes[i];
         if (same(node, childNode)) {
-          throw new Error(
-            `${parentVNode.vnodeSelector} had a ${childNode.vnodeSelector} child ${
-              operation === "added" ? operation : "removed"
-            }, but there is now more than one. You must add unique key properties to make them distinguishable.`
-          );
+          throw {
+            error: new Error(
+              `${parentVNode.vnodeSelector} had a ${childNode.vnodeSelector} child ${
+                operation === "added" ? operation : "removed"
+              }, but there is now more than one. You must add unique key properties to make them distinguishable.`
+            ),
+            parentNode: parentVNode,
+            childNode,
+          };
         }
       }
     }

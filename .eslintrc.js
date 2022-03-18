@@ -51,6 +51,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'off',
 
     // Rules to be enabled:
+    '@typescript-eslint/no-unsafe-argument': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',

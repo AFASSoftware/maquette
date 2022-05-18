@@ -1,3 +1,4 @@
+import { VNodeProperties } from "../../dist";
 import { EventHandler, dom, h } from "../../src/index";
 import { expect, sinon } from "../test-utilities";
 
@@ -166,6 +167,31 @@ describe("dom", () => {
       dom.append(<any>parentNode, h("input", { type: "file" }));
       expect(parentNode.appendChild).to.have.been.called;
       expect(parentNode.ownerDocument.createElement).to.have.been.called;
+    });
+
+    describe("properties interceptor", () => {
+      it("allows to modify properties for all nodes with an interceptor function", () => {
+        function propertiesInterceptor(props: VNodeProperties) {
+          if (props.id && /[^a-zA-Z\d_-]/.test(props.id)) {
+            Object.assign(props, { id: props.id.replace(/[^a-zA-Z\d_-]/g, "-") });
+          }
+          return props;
+        }
+
+        let projection = dom.create(
+          h("div", { id: "Foo.Bar" }, [h("div", { id: "Foo.Bar.Baz" }), h("div", { id: "Great" })]),
+          { propertiesInterceptor }
+        );
+        let div = projection.domNode as HTMLDivElement;
+
+        expect(div.id).to.equal("Foo-Bar");
+
+        let children = projection
+          .getLastRender()
+          .children.map((n) => n.domNode) as HTMLDivElement[];
+        expect(children[0].id).to.equal("Foo-Bar-Baz");
+        expect(children[1].id).to.equal("Great");
+      });
     });
 
     describe("event handlers", () => {

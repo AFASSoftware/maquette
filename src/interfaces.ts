@@ -311,6 +311,10 @@ export type EventHandlerInterceptor = (
   properties: VNodeProperties
 ) => undefined | EventHandler;
 
+export interface PropertiesInterceptor {
+  (properties: VNodeProperties): VNodeProperties;
+}
+
 export type PerformanceLoggerEvent =
   | "domEvent"
   | "domEventProcessed"
@@ -360,6 +364,13 @@ export interface ProjectionOptions extends ProjectorOptions {
    * @returns                        The function that is to be placed on the DOM node as the event handler, instead of `eventHandler`.
    */
   eventHandlerInterceptor?: EventHandlerInterceptor;
+
+  /**
+   * May be used to intercept and modify properties before they are applied to the DOM.
+   *
+   * Used by the [[Projector]].
+   */
+  propertiesInterceptor?: PropertiesInterceptor;
 }
 
 /**

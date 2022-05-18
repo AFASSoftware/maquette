@@ -163,6 +163,12 @@ let setProperties = (
     return;
   }
   let eventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
+  let propertiesInterceptor = projectionOptions.propertiesInterceptor;
+
+  if (propertiesInterceptor) {
+    properties = propertiesInterceptor(properties);
+  }
+
   let propNames = Object.keys(properties);
   let propCount = propNames.length;
   for (let i = 0; i < propCount; i++) {

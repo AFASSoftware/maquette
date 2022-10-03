@@ -1,0 +1,12 @@
+require:
+  - ts-node/register/transpile-only
+exit: true
+recursive: true
+extension:
+  - ts
+ui: bdd
+allow-uncaught: false
+reporter: dot
+watch-files:
+  - "src/**/*.ts"
+  - "test/**/*.ts"

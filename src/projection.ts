@@ -275,11 +275,15 @@ export let createDom = (
   let vnodeSelector = vnode.vnodeSelector;
   let doc = parentNode.ownerDocument!;
   if (vnodeSelector === "") {
-    domNode = vnode.domNode = doc.createTextNode(vnode.text!);
-    if (insertBefore !== undefined) {
-      parentNode.insertBefore(domNode, insertBefore);
+    if (vnode.domNode) {
+      vnode.domNode.nodeValue = vnode.text!;
     } else {
-      parentNode.appendChild(domNode);
+      domNode = vnode.domNode = doc.createTextNode(vnode.text!);
+      if (insertBefore !== undefined) {
+        parentNode.insertBefore(domNode, insertBefore);
+      } else {
+        parentNode.appendChild(domNode);
+      }
     }
   } else {
     for (let i = 0; i <= vnodeSelector.length; ++i) {

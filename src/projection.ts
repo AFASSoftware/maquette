@@ -9,7 +9,7 @@ const NAMESPACE_XLINK = `${NAMESPACE_W3}1999/xlink`;
 
 let emptyArray = <VNode[]>[];
 
-export let extend = <T>(base: T, overrides: any): T => {
+export let extend = <T extends object>(base: T, overrides: any): T => {
   let result = {} as any;
   Object.keys(base).forEach((key) => {
     result[key] = (base as any)[key];

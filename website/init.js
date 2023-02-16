@@ -9,7 +9,6 @@ exports.init = (args) => {
   return Metalsmith(__dirname)
     .metadata({
       injectScript: args.injectScript || '',
-      googleAnalyticsKey: 'UA-58254103-1',
       maquetteVersion: require('../package.json').version,
       // defaults, can be overridden per page
       liveEditors: false,

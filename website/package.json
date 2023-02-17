@@ -12,7 +12,7 @@
     "serve": "node serve",
     "build": "node generate && npm run typedoc",
     "deploy": "npm run build && firebase deploy",
-    "typedoc": "typedoc --out ./build/website/typedoc --name maquette --readme none --excludePrivate --excludeExternals ../typings/extensions.d.ts ../src/interfaces.ts ../src/mapping.ts ../src/h.ts ../src/cache.ts ../src/projector.ts ../src/dom.ts ../src/utilities/window-performance-projector-logger.ts",
+    "typedoc": "typedoc --out ./build/website/typedoc --name maquette --readme none --excludePrivate --excludeExternals ../src/index.ts",
     "postcss": "postcss source/*.css --dir build/website/ --use precss"
   },
   "license": "MIT",

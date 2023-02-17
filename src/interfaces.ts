@@ -333,7 +333,7 @@ export interface ProjectorOptions {
 
   /**
    * May be used to add vendor prefixes when applying inline styles when needed.
-   * This function is called when [[styles]] is used.
+   * This function is called when {@link VNodeProperties#styles} is used.
    * This function should execute `domNode.style[styleName] = value` or do something smarter.
    *
    * @param domNode   The DOM Node that needs to receive the style
@@ -351,7 +351,7 @@ export interface ProjectionOptions extends ProjectorOptions {
   /**
    * May be used to intercept registration of event-handlers.
    *
-   * Used by the [[Projector]] to wrap eventHandler-calls to call [[scheduleRender]] as well.
+   * Used by the [[Projector]] to wrap eventHandler-calls to call {@link Projector#scheduleRender} as well.
    *
    * @param propertyName             The name of the property to be assigned, for example onclick
    * @param eventHandler             The function that was registered on the [[VNode]]

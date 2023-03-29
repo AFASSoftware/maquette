@@ -18,7 +18,6 @@ var okButton = {
     return h('button', ['ok']);
   }
 };
-
 var form = {
   render: function() {
     return h('div.form', [
@@ -27,7 +26,6 @@ var form = {
     ]);
   }
 };
-
 projector.append(domNode, form.render);
 <%- include('/partials/live-editor-end.ejs') -%>
 
@@ -35,27 +33,22 @@ Let us go one step further and create a function that can produce configurable b
 
 <%- include('/partials/live-editor-start.ejs') -%>
 var createButton = function(text, onClick) {
-
   function handleClick(evt) {
     evt.preventDefault();
     onClick();
   }
-
   return {
     render: function() {
       return h('button', { onclick: handleClick }, [text]);
     }
   };
 };
-
 var skewButton = createButton('skew', function() {
   domNode.style.transform = 'skewX(15deg)';
 });
-
 var straightButton = createButton('straight', function() {
   domNode.style.transform = '';
 });
-
 var form = {
   render: function() {
     return h('div.form', [
@@ -64,7 +57,6 @@ var form = {
     ]);
   }
 };
-
 projector.append(domNode, form.render);
 <%- include('/partials/live-editor-end.ejs') -%>
 
@@ -81,14 +73,11 @@ var createButton = function(text, onClick) {
     }
   };
 };
-
 var lastStep = false;
-
 var nextButton = createButton('Next', function() {
   lastStep = true;
 });
 var finishButton = createButton('Finish', function() {});
-
 var render = function() {
   return h('div.form', [
     h('textarea'),
@@ -99,7 +88,6 @@ var render = function() {
     ]
   ]);
 };
-
 projector.append(domNode, render);
 <%- include('/partials/live-editor-end.ejs') -%>
 
@@ -121,7 +109,6 @@ function createMyButton(text, onClick) {
     evt.preventDefault();
     onClick();
   };
-
   var myButton = {
     render: function() {
       return h('my-button', {key: myButton}, [
@@ -131,10 +118,8 @@ function createMyButton(text, onClick) {
   };
   return myButton;
 }
-
 // how to use the button component
 var button = createMyButton('click me', function(){ alert('clicked'); });
-
 projector.append(domNode, button.render);
 <%- include('/partials/live-editor-end.ejs') -%>
 

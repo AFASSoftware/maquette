@@ -31,7 +31,6 @@ The following live example demonstrates programmatic animations using velocity.j
 <%- include('/partials/live-editor-start.ejs') -%>
 var itemNrs = [1,2,3];
 var lastItemNr = 3;
-
 // Animations
 var itemEnter = function(domNode, properties) {
   var targetHeight = domNode.scrollHeight;
@@ -41,7 +40,6 @@ var itemEnter = function(domNode, properties) {
 var itemExit = function(domNode, removeDomNodeFunction, properties) {
   Velocity.animate(domNode, {height: 0}, 400, 'ease-out', removeDomNodeFunction);
 };
-
 // Event handlers
 var add = function(evt) {
   itemNrs.push(++lastItemNr);
@@ -49,7 +47,6 @@ var add = function(evt) {
 var remove = function(evt) {
   itemNrs.pop();
 };
-
 projector.append(domNode, function() {
   return h('div', [
     itemNrs.map(function(itemNr) {
@@ -97,10 +94,8 @@ The example below shows how this works.
 <%- include('/partials/live-editor-start.ejs') -%>
 var createEnterCssTransition = maquetteCssTransitions.createEnterCssTransition;
 var createExitCssTransition = maquetteCssTransitions.createExitCssTransition;
-
 var itemNrs = [1,2,3];
 var lastItemNr = 3;
-
 // Event handlers
 var add = function(evt) {
   itemNrs.push(++lastItemNr);
@@ -108,9 +103,7 @@ var add = function(evt) {
 var remove = function(evt) {
   itemNrs.pop();
 };
-
 var projector = maquette.createProjector({});
-
 projector.append(domNode, function() {
   return h('div', [
     itemNrs.map(function(itemNr) {

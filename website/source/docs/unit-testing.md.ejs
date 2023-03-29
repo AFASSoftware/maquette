@@ -18,7 +18,6 @@ function createMyButton(text, onClick) {
     evt.preventDefault();
     onClick();
   };
-
   var myButton = {
     render: function() {
       return h('my-button', {key: myButton}, [
@@ -52,17 +51,14 @@ describe('myButton', function() {
   var myButtonComponent; // We create a fresh instance of our component in the beforeEach
   var button = projector.query('button'); // A query which will find the button element inside the component
   var clickHandler = sinon.stub();
-
   beforeEach(function() {
     clickHandler.resetHistory();
     myButtonComponent = createMyButton('ButtonText', clickHandler);
     projector.initialize(myButtonComponent.render);
   });
-
   it('displays the configured text', function() {
     expect(button.textContent).to.equal('ButtonText');
   });
-
   it('calls the handler when clicked', function() {
     button.simulate.click();
     expect(clickHandler.callCount).to.equal(1);

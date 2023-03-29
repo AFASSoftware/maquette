@@ -25,19 +25,15 @@ var styles = {
   }
 };
 var showBox = true;
-
 function doSomething() {
   console.log('doing something');
 }
-
 function handleAfterCreateBox(element) {
   element.ownerDocument.addEventListener('mousemove', doSomething);
 }
-
 function handleAfterRemovedBox(element) {
   element.ownerDocument.removeEventListener('mousemove', doSomething);
 }
-
 function render() {
   return h('div', [
     h('button', { onclick: () => showBox = !showBox }, [
@@ -52,6 +48,5 @@ function render() {
       : undefined
   ]);
 }
-
 projector.append(domNode, render);
 <%- include('/partials/live-editor-end.ejs') -%>

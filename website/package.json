@@ -17,8 +17,8 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "ejs": "3.1.8",
-    "firebase-tools": "11.23.1",
+    "ejs": "3.1.9",
+    "firebase-tools": "11.26.0",
     "jstransformer-ejs": "0.2.0",
     "metalsmith": "2.5.1",
     "metalsmith-in-place": "4.2.0",
@@ -27,9 +27,10 @@
     "metalsmith-postcss": "4.2.0",
     "metalsmith-serve": "0.0.7",
     "metalsmith-watch": "1.0.3",
-    "postcss-cli": "10.1.0",
+    "postcss-cli": "^6.0.0",
     "precss": "3.1.2",
-    "typedoc": "0.23.25",
-    "typescript": "4.9.5"
+    "typedoc": "0.24.1",
+    "typescript": "4.9.5",
+    "postcss": "^6.0.0"
   }
 }

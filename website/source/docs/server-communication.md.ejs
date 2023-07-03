@@ -21,7 +21,6 @@ var load = function() {
     // Data has arrived asynchronously
     // We must now instruct the projector to update the DOM on the next frame
     projector.scheduleRender();
-
     result = xhr.responseText.length + ' bytes';
   });
   xhr.open('GET', '/index.html');

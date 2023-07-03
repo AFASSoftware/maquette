@@ -40,7 +40,7 @@ let appendChildren = (parentSelector: string, insertions: VNodeChild[], main: VN
  *
  * @returns           A VNode object, used to render a real DOM later.
  *
- * NOTE: There are {@link http://maquettejs.org/docs/rules.html|two basic rules} you should be aware of when updating the virtual DOM.
+ * NOTE: There are {@link http://maquettejs.org/docs/rules.html two basic rules} you should be aware of when updating the virtual DOM.
  */
 export function h(
   selector: string,
@@ -60,7 +60,7 @@ export function h(
  *
  * @returns           A VNode object, used to render a real DOM later.
  *
- * NOTE: There are {@link http://maquettejs.org/docs/rules.html|two basic rules} you should be aware of when updating the virtual DOM.
+ * NOTE: There are {@link http://maquettejs.org/docs/rules.html two basic rules} you should be aware of when updating the virtual DOM.
  */
 export function h(selector: string, children: VNodeChild[]): VNode;
 

@@ -103,7 +103,7 @@ export interface VNode {
 export interface VNodeProperties {
   /**
    * The animation to perform when this node is added to an already existing parent.
-   * {@link http://maquettejs.org/docs/animations.html|More about animations}.
+   * {@link http://maquettejs.org/docs/animations.html More about animations}.
    * @param element - Element that was just added to the DOM.
    * @param properties - The properties object that was supplied to the [[h]] method
    */
@@ -120,7 +120,7 @@ export interface VNodeProperties {
   /**
    * The animation to perform when the properties of this node change.
    * This also includes attributes, styles, css classes. This callback is also invoked when node contains only text and that text changes.
-   * {@link http://maquettejs.org/docs/animations.html|More about animations}.
+   * {@link http://maquettejs.org/docs/animations.html More about animations}.
    * @param element - Element that was modified in the DOM.
    * @param properties - The last properties object that was supplied to the [[h]] method
    * @param previousProperties - The previous properties object that was supplied to the [[h]] method
@@ -166,7 +166,7 @@ export interface VNodeProperties {
   /**
    * Callback that is called when a node has been removed from the tree.
    * The callback is called during idle state or after a timeout (fallback).
-   * {@link https://maquettejs.org/docs/dom-node-removal.html|More info}
+   * {@link https://maquettejs.org/docs/dom-node-removal.html More info}
    * @param element - The element that has been removed from the DOM.
    */
   afterRemoved?(element: Element): void;
@@ -368,7 +368,7 @@ export interface ProjectionOptions extends ProjectorOptions {
 
 /**
  * Keeps an array of result objects synchronized with an array of source objects.
- * See {@link http://maquettejs.org/docs/arrays.html|Working with arrays}.
+ * See {@link http://maquettejs.org/docs/arrays.html Working with arrays}.
  *
  * Mapping provides a [[map]] function that updates its [[results]].
  * The [[map]] function can be called multiple times and the results will get created, removed and updated accordingly.

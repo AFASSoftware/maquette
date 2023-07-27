@@ -240,6 +240,14 @@ export interface VNodeProperties {
   onmousewheel?(ev: WheelEvent): boolean | void;
   onscroll?(ev: UIEvent): boolean | void;
   onsubmit?(ev: Event): boolean | void;
+  onpointercancel?(ev:PointerEvent): boolean | void;
+  onpointerdown?(ev:PointerEvent): boolean | void;
+  onpointerenter?(ev:PointerEvent): boolean | void;
+  onpointerleave?(ev:PointerEvent): boolean | void;
+  onpointermove?(ev:PointerEvent): boolean | void;
+  onpointerout?(ev:PointerEvent): boolean | void;
+  onpointerover?(ev:PointerEvent): boolean | void;
+  onpointerup?(ev:PointerEvent): boolean | void;
   readonly spellcheck?: boolean;
   readonly tabIndex?: number;
   readonly disabled?: boolean;

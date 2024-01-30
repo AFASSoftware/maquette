@@ -277,6 +277,7 @@ export interface VNodeProperties {
   /**
    * Do not use className, use class instead
    */
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   readonly className?: never | "Hint: do not use `className`, use `class` instead";
 
   /**

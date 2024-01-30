@@ -7,7 +7,7 @@ import { CalculationCache } from "./interfaces";
  *
  * @param <Result> The type of the value that is cached.
  */
-export let createCache = <Result>(): CalculationCache<Result> => {
+export let createCache = <Result,>(): CalculationCache<Result> => {
   let cachedInputs: unknown[] | undefined;
   let cachedOutcome: Result | undefined;
 

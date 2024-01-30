@@ -2,6 +2,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "module": "es6",
+    "types": [],
     "strictNullChecks": true,
     "noEmitOnError": true,
     "noEmit": false,

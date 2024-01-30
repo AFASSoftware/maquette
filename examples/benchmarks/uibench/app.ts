@@ -163,6 +163,7 @@ uibench.init("Maquette", version);
 let main = createMain(null);
 
 document.addEventListener("DOMContentLoaded", () => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const container = document.querySelector("#App")!;
 
   let projection = dom.append(container, main.render(), {});

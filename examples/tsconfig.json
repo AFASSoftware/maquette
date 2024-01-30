@@ -5,6 +5,7 @@
       "es2015",
       "es6"
     ],
+    "types": [],
     "module": "es6",
     "noImplicitAny": true,
     "preserveConstEnums": true,

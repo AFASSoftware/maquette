@@ -1,5 +1,6 @@
 {
   "name": "maquette",
+  "version": "4.0.2",
   "description": "Minimalistic Virtual DOM implementation with support for animated transitions.",
   "homepage": "https://maquettejs.org/",
   "keywords": [
@@ -8,7 +9,6 @@
     "animation",
     "transitions"
   ],
-  "version": "4.0.1",
   "author": "Johan Gorter <johan@johangorter.com>",
   "repository": {
     "type": "git",

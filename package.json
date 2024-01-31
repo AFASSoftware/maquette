@@ -22,7 +22,7 @@
     "prepare": "husky install",
     "prepublishOnly": "tsa clean && npm run dist",
     "assist": "tsa assist",
-    "release": "tsa release",
+    "release": "echo 'You can make a release by updating the version number in package.json and push the changes'",
     "fix": "tsa fix",
     "fixall": "tsa fixall",
     "clean": "tsa clean",
@@ -89,7 +89,7 @@
     "rollup": "4.9.6",
     "sinon": "17.0.1",
     "sinon-chai": "3.7.0",
-    "typescript-assistant": "0.65.7"
+    "typescript-assistant": "0.66.9"
   },
   "importSort": {
     ".js, .jsx, .ts, .tsx": {

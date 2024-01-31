@@ -2,7 +2,7 @@ import * as path from "path";
 
 import { SinonStub } from "sinon";
 
-import { MaquetteComponent, Projector, createProjector, h } from "../src/index";
+import { MaquetteComponent, Projector, createProjector, h, dom } from "../src/index";
 import { expect, sinon } from "./test-utilities";
 
 describe("Projector", () => {
@@ -378,6 +378,26 @@ describe("Projector", () => {
 
       expect(handleClick).to.be.calledOn(button);
       expect(handleClick.lastCall.args[0].type).to.equal("click");
+    });
+
+    it("can add event handlers using on without an interceptor", () => {
+      let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+      let onClick = sinon.spy();
+      dom.append(parentElement as unknown as HTMLElement, h("button", { on: { click: onClick } }));
+      let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      button.dispatchEvent(new Event("click"));
+      expect(onClick).to.be.calledOnce;
+    });
+
+    it("can handle interceptors removing event handlers", () => {
+      let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+      let onClick = sinon.spy();
+      dom.append(parentElement as unknown as HTMLElement, h("button", { on: { click: onClick } }), {
+        eventHandlerInterceptor: () => undefined,
+      });
+      let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      button.dispatchEvent(new Event("click"));
+      expect(onClick).to.not.be.called;
     });
   });
 

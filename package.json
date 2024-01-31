@@ -27,6 +27,7 @@
     "fixall": "tsa fixall",
     "clean": "tsa clean",
     "dist": "tsc -p ./src/tsconfig.json && tsc -p ./examples/tsconfig.json && rollup -c --bundleConfigAsCjs && uglifyjs ./dist/maquette.umd.js -c unsafe=true,unsafe_comps=true,unsafe_math=true,passes=3 -m -o ./dist/maquette.umd.min.js",
+    "start": "npm -s run dist && npx http-server . -p 8080 -o",
     "test": "tsa ci",
     "ci": "tsa ci && npm -s run dist && ts-node ./tools/check-file-size",
     "publish-website": "cd website && npm install --no-optional --force && npm run deploy",

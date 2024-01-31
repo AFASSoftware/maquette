@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "lib": ["es2017", "dom"],
     "module": "es6",
     "types": [],
     "strictNullChecks": true,

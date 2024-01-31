@@ -350,6 +350,35 @@ describe("Projector", () => {
       } as any);
       expect(buttonBlur).to.not.have.been.called;
     });
+
+    it('will call event handlers that were registered using "on" instead of "on<eventname>"', () => {
+      let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+      let projector = createProjector({});
+      let handleClick = sinon.stub();
+      let renderFunction = () => h("button", { on: { click: handleClick } });
+      projector.append(parentElement as any, renderFunction);
+
+      let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      button.dispatchEvent(new Event("click"));
+
+      expect(handleClick).to.be.calledOn(button);
+      expect(handleClick.lastCall.args[0].type).to.equal("click");
+    });
+
+    it('will call event handlers that were registered using "on" with options', () => {
+      let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+      let projector = createProjector({});
+      let handleClick = sinon.stub();
+      let renderFunction = () =>
+        h("button", { on: { click: { listener: handleClick, options: { capture: true } } } });
+      projector.append(parentElement as any, renderFunction);
+
+      let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      button.dispatchEvent(new Event("click"));
+
+      expect(handleClick).to.be.calledOn(button);
+      expect(handleClick.lastCall.args[0].type).to.equal("click");
+    });
   });
 
   it("can detach a projection", () => {

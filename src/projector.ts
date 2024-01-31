@@ -79,10 +79,11 @@ let createEventHandlerInterceptor = (
     let result: any;
     if (matchingVNode) {
       /* eslint-disable prefer-rest-params */
-      result = matchingVNode.properties![`on${evt.type}`].apply(
-        matchingVNode.properties!.bind || this,
-        arguments
-      );
+      let listener =
+        matchingVNode.properties![`on${evt.type}`] ??
+        (matchingVNode.properties!.on![evt.type] as { listener: EventHandler }).listener ??
+        (matchingVNode.properties!.on![evt.type] as EventHandler);
+      result = listener.apply(matchingVNode.properties!.bind || this, arguments);
       /* eslint-enable prefer-rest-params */
     }
     performanceLogger("domEventProcessed", evt);

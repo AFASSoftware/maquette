@@ -1,0 +1,52 @@
+---
+layout: default.ejs
+title: Custom events
+liveEditors: true
+---
+
+### Custom events
+
+You can add event listeners like `onclick` and `onfocus` using maquette using the following notation.
+
+```javascript
+  h('div', { onclick: handleClick, onfocus: () => { focused = true; } }, ['Click me']);
+```
+
+But what if you are using custom elements that trigger events like `sl-expand` or `sl-collapse`?
+Since maquette 4.0 you can now use the following notation:
+
+```javascript
+  h('sl-tree', { on: { 'sl-expand': handleExpand, 'sl-collapse': handleCollapse } }, []);
+```
+
+The `on` notation also allows configuring event handlers to be passive or handle events during the capture phase.
+
+```javascript
+  h('div', { on: { scroll: { listener: handleScroll, options: { passive: true, capture: true } } } }, []);
+```
+
+### Example
+This example demonstrates how to use the `on` notation to listen to custom events.
+
+<%- include('/partials/live-editor-start.ejs') -%>
+var expandCount = 0;
+function render() {
+  return h('sl-tree', { on: { 'sl-expand': () => { expandCount++; } } }, [
+    h('sl-tree-item', [
+      `Tree expanded ${expandCount} times`,
+      h('sl-tree-item', [ 'leaf' ])
+    ])
+  ]);
+}
+projector.append(domNode, render);
+// loads the shoelace custom element library
+var cdn = 'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/';
+maquette.dom.append(document.body, h('script', {
+  type: 'module',
+  src: `${cdn}shoelace-autoloader.js`
+}));
+maquette.dom.append(document.body, h('link', {
+  rel: 'stylesheet',
+  href: `${cdn}themes/light.css`
+}));
+<%- include('/partials/live-editor-end.ejs') -%>

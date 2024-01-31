@@ -170,6 +170,7 @@ export interface VNodeProperties {
    * @param element - The element that has been removed from the DOM.
    */
   afterRemoved?(element: Element): void;
+
   /**
    * When specified, the event handlers will be invoked with 'this' pointing to the value.
    * This is useful when using the prototype/class based implementation of MaquetteComponents.
@@ -177,21 +178,44 @@ export interface VNodeProperties {
    * When no [[key]] is present, this object is also used to uniquely identify a DOM node.
    */
   readonly bind?: unknown;
+
   /**
    * Used to uniquely identify a DOM node among siblings.
    * A key is required when there are more children with the same selector and these children are added or removed dynamically.
    * NOTE: this does not have to be a string or number, a [[MaquetteComponent]] Object for instance is also common.
    */
   readonly key?: unknown;
+
+  /**
+   * An object containing event handlers to attach using addEventListener.
+   * Note that `projector.scheduleRender()` is called automatically when these event handlers are invoked.
+   */
+  readonly on?: {
+    [eventName: string]:
+      | EventHandler
+      | {
+          listener: EventHandler;
+          options: { capture?: boolean; passive?: boolean; once?: boolean };
+        };
+  };
+
+  /**
+   * An object containing event handlers to attach using addEventListener.
+   * Note that `projector.scheduleRender()` is called automatically when these event handlers are invoked.
+   */
+  readonly onCapture?: { [eventName: string]: EventHandler };
+
   /**
    * An object literal like `{important:true}` which allows css classes, like `important` to be added and removed
    * dynamically.
    */
   readonly classes?: { [index: string]: boolean | null | undefined };
+
   /**
    * An object literal like `{height:'100px'}` which allows styles to be changed dynamically. All values must be strings.
    */
   readonly styles?: Partial<CSSStyleDeclaration> | { [cssVariable: string]: string };
+
   /**
    * For custom elements
    */

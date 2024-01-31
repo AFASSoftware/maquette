@@ -1,7 +1,7 @@
 /**
  * Exports here are NOT re-exported to maquette
  */
-import { Projection, ProjectionOptions, VNode, VNodeProperties } from "./interfaces";
+import { EventHandler, Projection, ProjectionOptions, VNode, VNodeProperties } from "./interfaces";
 
 const NAMESPACE_W3 = "http://www.w3.org/";
 const NAMESPACE_SVG = `${NAMESPACE_W3}2000/svg`;
@@ -192,6 +192,22 @@ let setProperties = (
         if (styleValue) {
           checkStyleValue(styleValue);
           projectionOptions.styleApplyer!(<HTMLElement>domNode, styleName, styleValue);
+        }
+      }
+    } else if (propName === "on" && propValue) {
+      // object with string keys and function values
+      for (let [key, handler] of Object.entries(properties.on!)) {
+        let listener: EventHandler | undefined =
+          typeof handler === "function" ? handler : handler.listener;
+        if (eventHandlerInterceptor) {
+          listener = eventHandlerInterceptor(key, listener, domNode, properties);
+        }
+        if (listener) {
+          domNode.addEventListener(
+            key,
+            listener,
+            typeof handler === "function" ? undefined : handler.options
+          );
         }
       }
     } else if (propName !== "key" && propValue !== null && propValue !== undefined) {

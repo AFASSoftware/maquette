@@ -18,7 +18,7 @@
   "license": "MIT",
   "devDependencies": {
     "ejs": "3.1.9",
-    "firebase-tools": "11.26.0",
+    "firebase-tools": "13.1.0",
     "jstransformer-ejs": "0.2.0",
     "metalsmith": "2.5.1",
     "metalsmith-in-place": "4.2.0",

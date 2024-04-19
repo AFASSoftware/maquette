@@ -378,6 +378,12 @@ export interface ProjectorOptions {
    * @param value     The value of this style, for example `rotate(45deg)`.
    */
   styleApplyer?(domNode: HTMLElement, styleName: string, value: string): void;
+
+  /**
+   * Should the projector schedule a render after capturing an event?
+   * Default to true.
+   */
+  scheduleRenderAfterEvents?: boolean;
 }
 
 export interface ProjectionOptions extends ProjectorOptions {

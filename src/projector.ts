@@ -58,7 +58,7 @@ let findVNodeByParentNodePath = (vnode: VNode, parentNodePath: Node[]): VNode | 
 let createEventHandlerInterceptor = (
   projector: Projector,
   getProjection: () => Projection | undefined,
-  performanceLogger: ProjectorPerformanceLogger
+  projectionOptions: ProjectionOptions
 ): EventHandlerInterceptor => {
   return (
     propertyName: string,
@@ -68,13 +68,15 @@ let createEventHandlerInterceptor = (
   ) => modifiedEventHandler;
 
   function modifiedEventHandler(this: Node, evt: Event): boolean | undefined | void {
-    performanceLogger("domEvent", evt);
+    projectionOptions.performanceLogger!("domEvent", evt);
     let projection = getProjection()!;
     let parentNodePath = createParentNodePath(evt.currentTarget as Element, projection.domNode);
     parentNodePath.reverse();
     let matchingVNode = findVNodeByParentNodePath(projection.getLastRender(), parentNodePath);
 
-    projector.scheduleRender();
+    if (projectionOptions.scheduleRenderAfterEvents) {
+      projector.scheduleRender();
+    }
 
     let result: any;
     if (matchingVNode) {
@@ -86,7 +88,7 @@ let createEventHandlerInterceptor = (
       result = listener.apply(matchingVNode.properties!.bind || this, arguments);
       /* eslint-enable prefer-rest-params */
     }
-    performanceLogger("domEventProcessed", evt);
+    projectionOptions.performanceLogger!("domEventProcessed", evt);
     return result;
   }
 };
@@ -120,7 +122,7 @@ export let createProjector = (projectorOptions?: ProjectorOptions): Projector =>
     projectionOptions.eventHandlerInterceptor = createEventHandlerInterceptor(
       projector,
       getProjection,
-      performanceLogger
+      projectionOptions
     );
     projection = domFunction(node, renderFunction(), projectionOptions);
     projections.push(projection);

@@ -17,6 +17,7 @@ const DEFAULT_PROJECTION_OPTIONS: ProjectionOptions = {
       (domNode.style as any)[styleName] = value;
     }
   },
+  scheduleRenderAfterEvents: true,
 };
 
 export let applyDefaultProjectionOptions = (

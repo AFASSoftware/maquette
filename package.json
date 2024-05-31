@@ -79,17 +79,17 @@
   },
   "devDependencies": {
     "@types/chai-as-promised": "7.1.8",
-    "@types/node": "20.11.10",
+    "@types/node": "20.12.13",
     "@types/sinon": "17.0.3",
     "@types/sinon-chai": "3.2.12",
     "@types/sinonjs__fake-timers": "8.1.5",
-    "chai-as-promised": "7.1.1",
-    "jsdom": "24.0.0",
+    "chai-as-promised": "7.1.2",
+    "jsdom": "24.1.0",
     "jsdom-global": "3.0.2",
-    "rollup": "4.9.6",
-    "sinon": "17.0.1",
+    "rollup": "4.18.0",
+    "sinon": "18.0.0",
     "sinon-chai": "3.7.0",
-    "typescript-assistant": "0.66.9"
+    "typescript-assistant": "0.66.20"
   },
   "importSort": {
     ".js, .jsx, .ts, .tsx": {

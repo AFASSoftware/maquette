@@ -228,8 +228,8 @@ let setProperties = (
               };
             })();
           }
+          (domNode as any)[propName] = propValue;
         }
-        (domNode as any)[propName] = propValue;
       } else if (projectionOptions.namespace === NAMESPACE_SVG) {
         if (propName === "href") {
           (domNode as Element).setAttributeNS(NAMESPACE_XLINK, propName, propValue);

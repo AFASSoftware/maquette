@@ -229,7 +229,7 @@ describe("dom", () => {
       });
     });
 
-    it("allows passing functions to props", () => {
+    it("Does not allow passing functions to props since maquette 4.1", () => {
       let someMethod = () => {
         /* noop */
       };
@@ -243,7 +243,7 @@ describe("dom", () => {
       }
 
       let fakeCustomElement = projection.domNode as FakeCustomElement;
-      expect(fakeCustomElement.nonEventFunctionProp).to.equal(someMethod);
+      expect(fakeCustomElement.nonEventFunctionProp).to.be.undefined;
     });
 
     it("updates the value property", () => {

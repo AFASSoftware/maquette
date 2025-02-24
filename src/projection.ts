@@ -154,6 +154,19 @@ let nodeToRemove = (vNode: VNode) => {
   }
 };
 
+const vnodeOnlyProps = [
+  "afterCreate",
+  "afterUpdate",
+  "afterRemoved",
+  "enterAnimation",
+  "exitAnimation",
+  "updateAnimation",
+];
+
+function filterVNodeOnlyProps(name: string): boolean {
+  return !vnodeOnlyProps.includes(name);
+}
+
 let setProperties = (
   domNode: Node,
   properties: VNodeProperties | undefined,
@@ -163,7 +176,7 @@ let setProperties = (
     return;
   }
   let eventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
-  let propNames = Object.keys(properties);
+  let propNames = Object.keys(properties).filter(filterVNodeOnlyProps);
   let propCount = propNames.length;
   for (let i = 0; i < propCount; i++) {
     let propName = propNames[i];
@@ -228,8 +241,8 @@ let setProperties = (
               };
             })();
           }
-          (domNode as any)[propName] = propValue;
         }
+        (domNode as any)[propName] = propValue;
       } else if (projectionOptions.namespace === NAMESPACE_SVG) {
         if (propName === "href") {
           (domNode as Element).setAttributeNS(NAMESPACE_XLINK, propName, propValue);
@@ -372,7 +385,8 @@ let updateProperties = (
     return;
   }
   let propertiesUpdated = false;
-  let propNames = Object.keys(properties);
+
+  let propNames = Object.keys(properties).filter(filterVNodeOnlyProps);
   let propCount = propNames.length;
   for (let i = 0; i < propCount; i++) {
     let propName = propNames[i];

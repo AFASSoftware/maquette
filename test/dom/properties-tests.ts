@@ -169,34 +169,6 @@ describe("dom", () => {
     });
 
     describe("event handlers", () => {
-      it("allows one to correct the value while being typed", () => {
-        // Here we are trying to trim the value to 2 characters
-        let typedKeys = "";
-        let handleInput = (evt: Event) => {
-          typedKeys = (evt.target as HTMLInputElement).value.substr(0, 2);
-        };
-        let renderFunction = () => h("input", { value: typedKeys, oninput: handleInput });
-        let projection = dom.create(renderFunction(), {
-          eventHandlerInterceptor: noopEventHandlerInterceptor,
-        });
-        let inputElement = projection.domNode as HTMLInputElement;
-        expect(inputElement.value).to.equal(typedKeys);
-
-        // No correction
-        inputElement.value = "ab";
-        inputElement.oninput({ target: inputElement } as any);
-        expect(typedKeys).to.equal("ab");
-        projection.update(renderFunction());
-        expect(inputElement.value).to.equal("ab");
-
-        // Correction kicking in
-        inputElement.value = "abc";
-        inputElement.oninput({ target: inputElement } as any);
-        expect(typedKeys).to.equal("ab");
-        projection.update(renderFunction());
-        expect(inputElement.value).to.equal("ab");
-      });
-
       it("does not undo keystrokes, even if a browser runs an animationFrame between changing the value property and running oninput", () => {
         // Crazy internet explorer behavior
         let typedKeys = "";

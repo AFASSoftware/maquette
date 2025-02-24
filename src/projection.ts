@@ -231,16 +231,6 @@ let setProperties = (
           if (eventHandlerInterceptor) {
             propValue = eventHandlerInterceptor(propName, propValue, domNode, properties); // intercept eventhandlers
           }
-          if (propName === "oninput") {
-            (function () {
-              // record the evt.target.value, because IE and Edge sometimes do a requestAnimationFrame between changing value and running oninput
-              let oldPropValue = propValue;
-              propValue = function (this: HTMLElement, evt: Event) {
-                oldPropValue.apply(this, [evt]);
-                (evt.target as any)["oninput-value"] = (evt.target as HTMLInputElement).value; // may be HTMLTextAreaElement as well
-              };
-            })();
-          }
         }
         (domNode as any)[propName] = propValue;
       } else if (projectionOptions.namespace === NAMESPACE_SVG) {
@@ -443,13 +433,10 @@ let updateProperties = (
         let domValue = (domNode as any)[propName];
         if (
           domValue !== propValue && // The 'value' in the DOM tree !== newValue
-          ((domNode as any)["oninput-value"]
-            ? domValue === (domNode as any)["oninput-value"] // If the last reported value to 'oninput' does not match domValue, do nothing and wait for oninput
-            : propValue !== previousValue) // Only update the value if the vdom changed
+          propValue !== previousValue // Only update the value if the vdom changed
         ) {
           // The edge cases are described in the tests
           (domNode as any)[propName] = propValue; // Reset the value, even if the virtual DOM did not change
-          (domNode as any)["oninput-value"] = undefined;
         } // else do not update the domNode, otherwise the cursor position would be changed
         if (propValue !== previousValue) {
           propertiesUpdated = true;

@@ -229,7 +229,7 @@ describe("dom", () => {
       });
     });
 
-    it("Does not allow passing functions to props since maquette 4.1", () => {
+    it("allows passing functions to props", () => {
       let someMethod = () => {
         /* noop */
       };
@@ -243,7 +243,16 @@ describe("dom", () => {
       }
 
       let fakeCustomElement = projection.domNode as FakeCustomElement;
-      expect(fakeCustomElement.nonEventFunctionProp).to.be.undefined;
+      expect(fakeCustomElement.nonEventFunctionProp).to.equal(someMethod);
+    });
+
+    it("does not add Maquette lifecycle functions to the DOM node", () => {
+      let renderFunction = () => h("div", { afterCreate: () => {} });
+      let projection = dom.create(renderFunction(), {
+        eventHandlerInterceptor: noopEventHandlerInterceptor,
+      });
+      let div = projection.domNode as HTMLDivElement;
+      expect("afterCreate" in div).to.be.false;
     });
 
     it("updates the value property", () => {

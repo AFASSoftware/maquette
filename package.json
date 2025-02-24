@@ -1,6 +1,6 @@
 {
   "name": "maquette",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "Minimalistic Virtual DOM implementation with support for animated transitions.",
   "homepage": "https://maquettejs.org/",
   "keywords": [

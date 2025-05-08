@@ -360,7 +360,8 @@ let updateDom: (
   previous: VNode,
   vnode: VNode,
   projectionOptions: ProjectionOptions,
-  parentNode: Node
+  parentNode: Node,
+  oldChildren: VNode[]
 ) => boolean;
 
 /**
@@ -512,7 +513,8 @@ let updateChildren = (
     let oldChild = oldIndex < oldChildrenLength ? oldChildren[oldIndex] : undefined;
     let newChild = newChildren[newIndex];
     if (oldChild !== undefined && same(oldChild, newChild)) {
-      textUpdated = updateDom(oldChild, newChild, projectionOptions, domNode) || textUpdated;
+      textUpdated =
+        updateDom(oldChild, newChild, projectionOptions, domNode, oldChildren) || textUpdated;
       oldIndex++;
     } else {
       let findOldIndex = findIndexOfChild(oldChildren, newChild, oldIndex + 1);
@@ -523,7 +525,8 @@ let updateChildren = (
           checkDistinguishable(oldChildren, i, vnode, "removed");
         }
         textUpdated =
-          updateDom(oldChildren[findOldIndex], newChild, projectionOptions, domNode) || textUpdated;
+          updateDom(oldChildren[findOldIndex], newChild, projectionOptions, domNode, oldChildren) ||
+          textUpdated;
         oldIndex = findOldIndex + 1;
       } else {
         // New child
@@ -549,7 +552,7 @@ let updateChildren = (
   return textUpdated;
 };
 
-updateDom = (previous, vnode, projectionOptions, parentNode) => {
+updateDom = (previous, vnode, projectionOptions, parentNode, oldChildren) => {
   let domNode = previous.domNode!;
   let textUpdated = false;
   if (previous === vnode) {
@@ -559,7 +562,12 @@ updateDom = (previous, vnode, projectionOptions, parentNode) => {
   if (vnode.vnodeSelector === "") {
     if (vnode.text !== previous.text) {
       let newTextNode = domNode.ownerDocument!.createTextNode(vnode.text!);
-      parentNode.replaceChild(newTextNode, domNode);
+      try {
+        parentNode.replaceChild(newTextNode, domNode);
+      } catch (e) {
+        // Text nodes can be substituted by google translate
+        parentNode.replaceChild(newTextNode, parentNode.childNodes[oldChildren.indexOf(previous)]);
+      }
       vnode.domNode = newTextNode;
       textUpdated = true;
       return textUpdated;
@@ -612,10 +620,15 @@ export let createProjection = (vnode: VNode, projectionOptions: ProjectionOption
           "The selector for the root VNode may not be changed. (consider using dom.merge and add one extra level to the virtual DOM)"
         );
       }
-      let parentNode = vnode.domNode!.parentNode!;
       let previousVNode = vnode;
       vnode = updatedVnode;
-      updateDom(previousVNode, updatedVnode, projectionOptions, parentNode);
+      updateDom(
+        previousVNode,
+        updatedVnode,
+        projectionOptions,
+        previousVNode.domNode!.parentNode!,
+        [previousVNode]
+      );
     },
     domNode: <Element>vnode.domNode,
   };

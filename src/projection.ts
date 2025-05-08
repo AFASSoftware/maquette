@@ -356,7 +356,12 @@ export let createDom = (
   }
 };
 
-let updateDom: (previous: VNode, vnode: VNode, projectionOptions: ProjectionOptions) => boolean;
+let updateDom: (
+  previous: VNode,
+  vnode: VNode,
+  projectionOptions: ProjectionOptions,
+  parentNode: Node
+) => boolean;
 
 /**
  * Adds or removes classes from an Element
@@ -507,7 +512,7 @@ let updateChildren = (
     let oldChild = oldIndex < oldChildrenLength ? oldChildren[oldIndex] : undefined;
     let newChild = newChildren[newIndex];
     if (oldChild !== undefined && same(oldChild, newChild)) {
-      textUpdated = updateDom(oldChild, newChild, projectionOptions) || textUpdated;
+      textUpdated = updateDom(oldChild, newChild, projectionOptions, domNode) || textUpdated;
       oldIndex++;
     } else {
       let findOldIndex = findIndexOfChild(oldChildren, newChild, oldIndex + 1);
@@ -518,7 +523,7 @@ let updateChildren = (
           checkDistinguishable(oldChildren, i, vnode, "removed");
         }
         textUpdated =
-          updateDom(oldChildren[findOldIndex], newChild, projectionOptions) || textUpdated;
+          updateDom(oldChildren[findOldIndex], newChild, projectionOptions, domNode) || textUpdated;
         oldIndex = findOldIndex + 1;
       } else {
         // New child
@@ -544,7 +549,7 @@ let updateChildren = (
   return textUpdated;
 };
 
-updateDom = (previous, vnode, projectionOptions) => {
+updateDom = (previous, vnode, projectionOptions, parentNode) => {
   let domNode = previous.domNode!;
   let textUpdated = false;
   if (previous === vnode) {
@@ -554,7 +559,7 @@ updateDom = (previous, vnode, projectionOptions) => {
   if (vnode.vnodeSelector === "") {
     if (vnode.text !== previous.text) {
       let newTextNode = domNode.ownerDocument!.createTextNode(vnode.text!);
-      domNode.parentNode!.replaceChild(newTextNode, domNode);
+      parentNode.replaceChild(newTextNode, domNode);
       vnode.domNode = newTextNode;
       textUpdated = true;
       return textUpdated;
@@ -607,9 +612,10 @@ export let createProjection = (vnode: VNode, projectionOptions: ProjectionOption
           "The selector for the root VNode may not be changed. (consider using dom.merge and add one extra level to the virtual DOM)"
         );
       }
+      let parentNode = vnode.domNode!.parentNode!;
       let previousVNode = vnode;
       vnode = updatedVnode;
-      updateDom(previousVNode, updatedVnode, projectionOptions);
+      updateDom(previousVNode, updatedVnode, projectionOptions, parentNode);
     },
     domNode: <Element>vnode.domNode,
   };

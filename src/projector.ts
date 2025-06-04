@@ -1,6 +1,6 @@
 import { applyDefaultProjectionOptions, dom } from "./dom";
 /**
- * A projector is used to create the real DOM from the the virtual DOM and to keep it up-to-date afterwards.
+ * A projector is used to create the real DOM from the virtual DOM and to keep it up-to-date afterwards.
  *
  * You can call [[append]], [[merge]], [[insertBefore]] and [[replace]] to add the virtual DOM to the real DOM.
  * The `renderFunction` callbacks will be called to create the real DOM immediately.

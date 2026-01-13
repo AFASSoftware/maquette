@@ -87,7 +87,7 @@
     "chai-as-promised": "7.1.1",
     "jsdom": "24.0.0",
     "jsdom-global": "3.0.2",
-    "rollup": "4.9.6",
+    "rollup": "4.22.4",
     "sinon": "17.0.1",
     "sinon-chai": "3.7.0",
     "typescript-assistant": "0.66.9"

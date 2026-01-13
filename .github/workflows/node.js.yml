@@ -18,9 +18,9 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -28,13 +28,13 @@ jobs:
     - run: npm run ci
     - name: Publish to NPM if version in package.json has changed
       id: publish
-      uses: JS-DevTools/npm-publish@v3
+      uses: JS-DevTools/npm-publish@v4
       with:
         token: ${{ secrets.NPM_TOKEN }}
         provenance: true
     - name: Create tag
       if: steps.publish.outputs.type
-      uses: actions/github-script@v6
+      uses: actions/github-script@v8
       with:
         script: |
           github.rest.git.createRef({

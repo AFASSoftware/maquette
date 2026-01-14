@@ -53,22 +53,26 @@ jobs:
 
   browser-tests:
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.57.0-noble
     steps:
     - uses: actions/checkout@v4
-    - name: Install dependencies
-      run: npm ci
-    - name: Build maquette
-      run: npm run dist
-    - name: Install TodoMVC dependencies
-      working-directory: examples/todomvc
+    - name: Get Playwright version from package.json
+      id: playwright-version
       run: |
-        npm install --no-save bower
-        npx bower install
-    - name: Run Playwright tests
-      working-directory: browser-tests
-      run: npm test
+        PLAYWRIGHT_VERSION=$(node -p "require('./browser-tests/package.json').devDependencies['@playwright/test'].replace('^', '')")
+        echo "version=$PLAYWRIGHT_VERSION" >> $GITHUB_OUTPUT
+    - name: Run browser tests in Playwright container
+      uses: addnab/docker-run-action@v3
+      with:
+        image: mcr.microsoft.com/playwright:v${{ steps.playwright-version.outputs.version }}-noble
+        options: -v ${{ github.workspace }}:/work -w /work
+        run: |
+          npm ci
+          npm run dist
+          cd examples/todomvc
+          npm install --no-save bower
+          npx bower install --allow-root
+          cd ../../browser-tests
+          npm test
     - name: Upload Playwright report
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}

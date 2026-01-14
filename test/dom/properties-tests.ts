@@ -1,5 +1,5 @@
 import { EventHandler, dom, h } from "../../src/index";
-import { expect, describe, it, vi } from "../test-utilities";
+import { describe, expect, it, vi } from "../test-utilities";
 
 let noopEventHandlerInterceptor = (
   propertyName: string,

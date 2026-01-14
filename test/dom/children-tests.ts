@@ -1,5 +1,5 @@
 import { dom, h } from "../../src/index";
-import { expect, describe, it } from "../test-utilities";
+import { describe, expect, it } from "../test-utilities";
 
 describe("dom", () => {
   describe("children", () => {
@@ -146,7 +146,11 @@ describe("dom", () => {
 
     it("can distinguish between falsy keys when deleting", () => {
       let projection = dom.create(
-        h("div", [h("span", { key: 0 }), h("span", { key: false }), h("span", { key: null } as any)])
+        h("div", [
+          h("span", { key: 0 }),
+          h("span", { key: false }),
+          h("span", { key: null } as any),
+        ])
       );
 
       let div = projection.domNode as HTMLDivElement;

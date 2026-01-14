@@ -1,5 +1,5 @@
 import { ProjectorPerformanceLogger } from "../../src/interfaces";
-import { expect, describe, it, beforeEach, afterEach, vi } from "../test-utilities";
+import { afterEach, beforeEach, describe, expect, it, vi } from "../test-utilities";
 
 describe("windowPerformanceProjectorLogger", () => {
   let mockWindow: {

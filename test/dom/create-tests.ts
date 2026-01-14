@@ -1,5 +1,5 @@
 import { dom, h } from "../../src/index";
-import { expect, describe, it, vi } from "../test-utilities";
+import { describe, expect, it, vi } from "../test-utilities";
 
 describe("dom", () => {
   describe("create", () => {

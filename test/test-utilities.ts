@@ -1,4 +1,4 @@
-import { vi, expect } from "vitest";
+import { expect, vi } from "vitest";
 export { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 type MockFn = ReturnType<typeof vi.fn>;

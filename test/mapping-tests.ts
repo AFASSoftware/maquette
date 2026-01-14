@@ -1,5 +1,5 @@
 import { createMapping } from "../src/index";
-import { expect } from "./test-utilities";
+import { describe, expect, it } from "./test-utilities";
 
 let addAllPermutations = (
   results: number[][],
@@ -45,26 +45,26 @@ let createTarget = (source: number) => {
 };
 
 let updateTarget = (source: number, target: Target) => {
-  expect(source).to.equal(target.source);
+  expect(source).toBe(target.source);
   target.updateCount++;
 };
 
 let checkInitialMapping = (results: Target[], sources: number[]) => {
   results.forEach((target, index) => {
-    expect(target.source).to.equal(sources[index]);
-    expect(target.updateCount).to.equal(0);
+    expect(target.source).toBe(sources[index]);
+    expect(target.updateCount).toBe(0);
   });
 };
 
 let checkNextMapping = (results: Target[], sources: number[], previousSources: number[]) => {
   results.forEach((target, index) => {
-    expect(target.source).to.equal(sources[index]);
+    expect(target.source).toBe(sources[index]);
     if (previousSources.indexOf(target.source) >= 0) {
-      expect(target.alreadyPresent).to.be.true;
-      expect(target.updateCount).to.equal(1);
+      expect(target.alreadyPresent).toBe(true);
+      expect(target.updateCount).toBe(1);
     } else {
-      expect(target.alreadyPresent).to.be.undefined;
-      expect(target.updateCount).to.equal(0);
+      expect(target.alreadyPresent).toBeUndefined();
+      expect(target.updateCount).toBe(0);
     }
   });
 };
@@ -84,5 +84,5 @@ describe("Mapping", () => {
         checkNextMapping(mapping.results, permutationJ, permutationI);
       }
     }
-  }).timeout(5000);
+  }, 5000);
 });

@@ -1,64 +1,56 @@
-import * as path from "path";
-
-import { SinonSpy } from "sinon";
-
 import { ProjectorPerformanceLogger } from "../../src/interfaces";
-import { expect, sinon } from "../test-utilities";
+import { expect, describe, it, beforeEach, afterEach, vi } from "../test-utilities";
 
 describe("windowPerformanceProjectorLogger", () => {
-  /* eslint @typescript-eslint/no-var-requires: "off" */
-  let window: {
+  let mockWindow: {
     performance?: {
-      mark: SinonSpy; // (markName: string): void;
-      measure?: SinonSpy; // (measureName: string, startMarkName?: string, endMarkName?: string): void;
+      mark: ReturnType<typeof vi.fn>;
+      measure?: ReturnType<typeof vi.fn>;
     };
-  };
-
-  // For this to work, we need to reload the source file to clear the cached prefixes
-  let clearCachedRequires = () => {
-    let sourceFile = path.normalize(
-      path.join(__dirname, "../../src/utilities/window-performance-projector-logger.ts")
-    );
-    delete require.cache[sourceFile];
   };
 
   beforeEach(() => {
-    clearCachedRequires();
-    window = {
+    // Reset module cache to clear cached prefixes
+    vi.resetModules();
+
+    mockWindow = {
       performance: {
-        mark: sinon.spy(),
-        measure: sinon.spy(),
+        mark: vi.fn(),
+        measure: vi.fn(),
       },
     };
-    (global as any).window = window;
+    (global as any).window = mockWindow;
   });
-  let getLogger: () => ProjectorPerformanceLogger = () =>
-    require("../../src/utilities/window-performance-projector-logger.ts")
-      .windowPerformanceProjectorLogger;
+
   afterEach(() => {
     delete (global as any).window;
-    clearCachedRequires();
+    vi.resetModules();
   });
 
-  it("does not do anything if the browser does not have a performance API", () => {
-    delete window.performance.measure;
-    let logger = getLogger();
+  const getLogger = async (): Promise<ProjectorPerformanceLogger> => {
+    const module = await import("../../src/utilities/window-performance-projector-logger");
+    return module.windowPerformanceProjectorLogger;
+  };
+
+  it("does not do anything if the browser does not have a performance API", async () => {
+    delete mockWindow.performance.measure;
+    let logger = await getLogger();
     let event = {} as any;
     logger("domEvent", event);
     logger("domEventProcessed", event);
-    expect(window.performance.mark).to.not.have.been.called;
+    expect(mockWindow.performance.mark).not.toHaveBeenCalled();
   });
 
-  it("reports dom event processing time", () => {
-    let logger = getLogger();
+  it("reports dom event processing time", async () => {
+    let logger = await getLogger();
     let event = {} as any;
     logger("domEvent", event);
     logger("domEventProcessed", event);
-    expect(window.performance.measure).to.have.been.calledOnce;
+    expect(mockWindow.performance.measure).toHaveBeenCalledTimes(1);
   });
 
-  it("reports render, diff+patch and renderCycle processing time", () => {
-    let logger = getLogger();
+  it("reports render, diff+patch and renderCycle processing time", async () => {
+    let logger = await getLogger();
     logger("renderStart", undefined);
     logger("rendered", undefined);
     logger("patched", undefined);
@@ -66,8 +58,8 @@ describe("windowPerformanceProjectorLogger", () => {
     logger("rendered", undefined);
     logger("patched", undefined);
     logger("renderDone", undefined);
-    let calls = window.performance.measure.getCalls().map((call) => call.args);
-    expect(calls).to.deep.equal([
+    let calls = mockWindow.performance.measure.mock.calls.map((call) => call);
+    expect(calls).toEqual([
       ["render", "renderStart", "rendered"],
       ["diff+patch", "rendered", "patched"],
       ["render", "patched", "rendered"],

@@ -1,5 +1,5 @@
 import { VNode, h } from "../src/index";
-import { expect } from "./test-utilities";
+import { describe, expect, it } from "./test-utilities";
 
 describe("h", () => {
   let toTextVNode = (text: string): VNode => {
@@ -26,7 +26,7 @@ describe("h", () => {
       [[[["deep"], null], "here"]],
     ]);
 
-    expect(vnode.children).to.deep.equal([
+    expect(vnode.children).toEqual([
       toTextVNode("text"),
       toTextVNode("nested text"),
       h("span"),
@@ -58,7 +58,7 @@ describe("h", () => {
       ],
     ]);
 
-    expect(vnode.children).to.deep.equal([
+    expect(vnode.children).toEqual([
       toTextVNode("text"),
       h("span", ["in array", undefined]),
       h("img", { src: "x.png" }),
@@ -76,7 +76,7 @@ describe("h", () => {
   });
 
   it("Should render a string as text", () => {
-    expect(h("div", [["1"]])).to.deep.equal({
+    expect(h("div", [["1"]])).toEqual({
       vnodeSelector: "div",
       properties: undefined,
       text: undefined,
@@ -86,15 +86,15 @@ describe("h", () => {
   });
 
   it("Should throw a new error when passing a h function as vnodeproperties into a h function", () => {
-    expect(() => h("div", h("div"))).to.throw("h called with invalid arguments");
+    expect(() => h("div", h("div"))).toThrow("h called with invalid arguments");
   });
 
   it("Should throw a new error when passing a h function instead of a VNodeChild array", () => {
-    expect(() => h("div", {}, h("div") as any)).to.throw("h called with invalid arguments");
+    expect(() => h("div", {}, h("div") as any)).toThrow("h called with invalid arguments");
   });
 
   it("Should throw a new error when cal the h function with a string as second or third argument", () => {
-    expect(() => h("div", "div" as any)).to.throw("h called with invalid arguments");
-    expect(() => h("div", {} as any, "div" as any)).to.throw("h called with invalid arguments");
+    expect(() => h("div", "div" as any)).toThrow("h called with invalid arguments");
+    expect(() => h("div", {} as any, "div" as any)).toThrow("h called with invalid arguments");
   });
 });

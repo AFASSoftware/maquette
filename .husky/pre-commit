@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx --no-install tsa pre-commit
+npx eslint --max-warnings 0 src test tools

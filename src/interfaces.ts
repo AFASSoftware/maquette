@@ -314,6 +314,7 @@ export interface VNodeProperties {
  * Only needed for the definition of [[VNodeChild]].
  * @deprecated use VNodeChild
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface VNodeChildren extends Array<VNodeChild> {}
 /**
  * These are valid values for the children parameter of the [[h]] function.

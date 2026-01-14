@@ -1,15 +1,13 @@
-import { SinonStub } from "sinon";
-
 import { VNode, dom, h } from "../src";
 import { createDom, createProjection } from "../src/projection";
-import { expect, sinon } from "./test-utilities";
+import { beforeEach, describe, expect, it, vi } from "./test-utilities";
 
 describe("Projection", () => {
   describe("createDom", () => {
     let vnode: VNode;
     let parentNode: Node;
-    let createElement: SinonStub;
-    let createTextNode: SinonStub;
+    let createElement: ReturnType<typeof vi.fn>;
+    let createTextNode: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
       vnode = {
@@ -20,39 +18,39 @@ describe("Projection", () => {
         text: undefined,
       };
 
-      createTextNode = sinon.stub().returns({});
-      createElement = sinon.stub().returns({
+      createTextNode = vi.fn().mockReturnValue({});
+      createElement = vi.fn().mockReturnValue({
         setAttribute() {
           /* noop */
         },
       });
 
-      parentNode = <any>{
-        ownerDocument: <any>{
+      parentNode = {
+        ownerDocument: {
           createTextNode,
           createElement,
         },
-        insertBefore: sinon.stub(),
-        appendChild: sinon.stub(),
-      };
+        insertBefore: vi.fn(),
+        appendChild: vi.fn(),
+      } as any;
     });
 
     it("when creating a text node and the vnode already has a (cached) domNode re-use and update the domNode", () => {
-      let domNode = <any>{
+      let domNode = {
         nodeValue: "Bar",
-      };
+      } as any;
       Object.assign(vnode, { text: "Foo", domNode });
 
       createDom(vnode, parentNode, undefined, {});
 
-      expect(createTextNode).to.not.have.been.called;
-      expect(domNode.nodeValue).to.equal("Foo");
+      expect(createTextNode).not.toHaveBeenCalled();
+      expect(domNode.nodeValue).toBe("Foo");
     });
 
     it("uses the vnode.properties.is when constructing an element", () => {
       vnode = h("p", { is: "my-custom-element", id: "id1" });
       createDom(vnode, parentNode, undefined, {});
-      expect(createElement.lastCall.args).to.deep.equal(["p", { is: "my-custom-element" }]);
+      expect(createElement).toHaveBeenLastCalledWith("p", { is: "my-custom-element" });
     });
   });
 
@@ -74,7 +72,7 @@ describe("Projection", () => {
       let projection = createProjection(oldVNode, projectionOptions);
 
       let spanElement = projection.domNode as HTMLElement;
-      expect(spanElement.childNodes.length).to.equal(6);
+      expect(spanElement.childNodes.length).toBe(6);
 
       spanElement.replaceChild(wrapInFont("America"), spanElement.childNodes[0]);
       spanElement.replaceChild(wrapInFont("the Virgin"), spanElement.childNodes[2]);
@@ -88,11 +86,11 @@ describe("Projection", () => {
       ]);
 
       projection.update(newVNode);
-      expect(spanElement.childNodes.length).to.equal(4); // the last translated child is unfortunately not removed
+      expect(spanElement.childNodes.length).toBe(4); // the last translated child is unfortunately not removed
 
-      expect(spanElement.childNodes[0].nodeValue).to.equal("Amerikaanse Maagde");
-      expect(spanElement.childNodes[1].childNodes[0].nodeValue).to.equal("ne");
-      expect(spanElement.childNodes[2].nodeValue).to.equal("ilanden");
+      expect(spanElement.childNodes[0].nodeValue).toBe("Amerikaanse Maagde");
+      expect(spanElement.childNodes[1].childNodes[0].nodeValue).toBe("ne");
+      expect(spanElement.childNodes[2].nodeValue).toBe("ilanden");
 
       function wrapInFont(text: string) {
         return dom.create(

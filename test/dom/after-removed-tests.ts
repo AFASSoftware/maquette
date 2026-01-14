@@ -1,27 +1,29 @@
-import { SinonFakeTimers, SinonStub } from "sinon";
-
 import { dom, h } from "../../src";
-import { expect, sinon } from "../test-utilities";
+import { afterEach, beforeEach, describe, expect, it, vi } from "../test-utilities";
 
 describe("dom", () => {
   describe("afterRemoved", () => {
-    let requestIdleCallback: SinonStub;
-    let clock: SinonFakeTimers;
+    let requestIdleCallback: ReturnType<typeof vi.fn>;
+    let clock: { tick: (ms: number) => void; restore: () => void };
 
     beforeEach(() => {
-      requestIdleCallback = sinon.stub();
-      global.window = <any>{ requestIdleCallback };
-      clock = sinon.useFakeTimers();
+      requestIdleCallback = vi.fn();
+      (global as any).window = { requestIdleCallback };
+      vi.useFakeTimers();
+      clock = {
+        tick: (ms: number) => vi.advanceTimersByTime(ms),
+        restore: () => vi.useRealTimers(),
+      };
     });
 
     afterEach(() => {
-      delete global.window;
+      delete (global as any).window;
       clock.restore();
     });
 
     it("will call afterRemoved eventually on all nodes that are no longer in the DOM", () => {
-      let afterRemoved1 = sinon.spy();
-      let afterRemoved2 = sinon.spy();
+      let afterRemoved1 = vi.fn();
+      let afterRemoved2 = vi.fn();
 
       let projection = dom.create(
         h("div", [
@@ -34,17 +36,18 @@ describe("dom", () => {
       );
       projection.update(h("div", []));
 
-      expect(requestIdleCallback).to.have.been.calledOnce;
+      expect(requestIdleCallback).toHaveBeenCalledTimes(1);
 
-      requestIdleCallback.yield();
+      // Call the callback
+      requestIdleCallback.mock.calls[0][0]();
 
-      expect(afterRemoved1).to.have.been.called;
-      expect(afterRemoved2).to.have.been.called;
+      expect(afterRemoved1).toHaveBeenCalled();
+      expect(afterRemoved2).toHaveBeenCalled();
     });
 
     it("will request a single idle callback when multiple nodes are removed", () => {
-      let afterRemoved1 = sinon.spy();
-      let afterRemoved2 = sinon.spy();
+      let afterRemoved1 = vi.fn();
+      let afterRemoved2 = vi.fn();
       let projection = dom.create(
         h("div", [
           h("div.1", { afterRemoved: afterRemoved1 }),
@@ -53,54 +56,54 @@ describe("dom", () => {
       );
       projection.update(h("div", []));
 
-      expect(requestIdleCallback).to.have.been.calledOnce;
+      expect(requestIdleCallback).toHaveBeenCalledTimes(1);
 
-      requestIdleCallback.yield();
+      requestIdleCallback.mock.calls[0][0]();
 
-      expect(afterRemoved1).to.have.been.called;
-      expect(afterRemoved2).to.have.been.called;
+      expect(afterRemoved1).toHaveBeenCalled();
+      expect(afterRemoved2).toHaveBeenCalled();
     });
 
     it("will use setTimeout when requestIdleCallback is not available", () => {
       delete (global as any).window;
 
-      let afterRemoved = sinon.spy();
+      let afterRemoved = vi.fn();
       let projection = dom.create(h("div", [h("div", { afterRemoved })]));
 
       projection.update(h("div", []));
 
-      expect(afterRemoved).to.not.have.been.called;
+      expect(afterRemoved).not.toHaveBeenCalled();
       clock.tick(16);
-      expect(afterRemoved).to.have.been.called;
+      expect(afterRemoved).toHaveBeenCalled();
     });
 
     it("will be invoked with the removed dom node when a node has been removed from the tree", () => {
-      requestIdleCallback.yields();
+      requestIdleCallback.mockImplementation((cb: () => void) => cb());
 
-      let afterRemoved = sinon.spy();
+      let afterRemoved = vi.fn();
       let projection = dom.create(h("div", [h("div", { afterRemoved })]));
 
       let domNode = projection.domNode.children[0];
       projection.update(h("div", []));
 
-      expect(afterRemoved).to.have.been.calledWith(domNode);
+      expect(afterRemoved).toHaveBeenCalledWith(domNode);
     });
 
     it('will be invoked with "this" set to the value of the bind property', () => {
-      requestIdleCallback.yields();
+      requestIdleCallback.mockImplementation((cb: () => void) => cb());
 
-      let afterRemoved = sinon.spy();
-      let thisObject = sinon.spy();
+      let afterRemoved = vi.fn();
+      let thisObject = vi.fn();
       let projection = dom.create(h("div", [h("div", { afterRemoved, bind: thisObject })]));
       projection.update(h("div", []));
 
-      expect(afterRemoved).to.have.been.calledOn(thisObject);
+      expect(afterRemoved.mock.instances[0]).toBe(thisObject);
     });
 
     it("will be invoked when the exit animation is done", () => {
-      requestIdleCallback.yields();
+      requestIdleCallback.mockImplementation((cb: () => void) => cb());
 
-      let afterRemoved = sinon.spy();
+      let afterRemoved = vi.fn();
       let projection = dom.create(
         h("div", [
           h("div", {
@@ -111,7 +114,7 @@ describe("dom", () => {
       );
       projection.update(h("div", []));
 
-      expect(afterRemoved).to.have.been.called;
+      expect(afterRemoved).toHaveBeenCalled();
     });
   });
 });

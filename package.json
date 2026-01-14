@@ -34,7 +34,7 @@
     "dist": "tsc -p ./src/tsconfig.json && tsc -p ./examples/tsconfig.json && rollup -c --bundleConfigAsCjs && uglifyjs ./dist/maquette.umd.js -c unsafe=true,unsafe_comps=true,unsafe_math=true,passes=3 -m -o ./dist/maquette.umd.min.js",
     "start": "npm -s run dist && npx http-server . -p 8080 -o",
     "test": "vitest run",
-    "ci": "npm run lint && npm run test && npm -s run dist && node --import tsx ./tools/check-file-size.ts",
+    "ci": "npm run lint && npm run test -- --coverage && npm -s run dist && node --import tsx ./tools/check-file-size.ts",
     "publish-website": "cd website && npm install --no-optional --force && npm run deploy",
     "test-also-with-browser": "npm run dist && cd examples/todomvc && npm install --no-save bower && bower install && cd ../../browser-tests && npm install && npm test"
   },

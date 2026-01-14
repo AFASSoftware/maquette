@@ -2,16 +2,16 @@ import { applyDefaultProjectionOptions, dom } from "./dom";
 /**
  * A projector is used to create the real DOM from the virtual DOM and to keep it up-to-date afterwards.
  *
- * You can call [[append]], [[merge]], [[insertBefore]] and [[replace]] to add the virtual DOM to the real DOM.
+ * You can call {@link append}, {@link merge}, {@link insertBefore} and {@link replace} to add the virtual DOM to the real DOM.
  * The `renderFunction` callbacks will be called to create the real DOM immediately.
  * Afterwards, the `renderFunction` callbacks will be called again to update the DOM on the next animation-frame after:
  *
- *  - The Projector's [[scheduleRender]] function  was called
- *  - An event handler (like `onclick`) on a rendered [[VNode]] was called.
+ *  - The Projector's {@link scheduleRender} function  was called
+ *  - An event handler (like `onclick`) on a rendered {@link VNode} was called.
  *
- * The projector stops when [[stop]] is called or when an error is thrown during rendering.
+ * The projector stops when {@link stop} is called or when an error is thrown during rendering.
  * It is possible to use `window.onerror` to handle these errors.
- * Instances of [[Projector]] can be created using [[createProjector]].
+ * Instances of {@link Projector} can be created using {@link createProjector}.
  *
  * If you need a customized projector, please check the maquette-advanced-projector project which provides a
  * versatile stand-in replacement.
@@ -37,19 +37,12 @@ let createParentNodePath = (node: Node | null, rootNode: Element) => {
   return parentNodePath;
 };
 
-let find: <T>(items: T[], predicate: (item: T) => boolean) => T | undefined;
-if ((Array.prototype as any).find) {
-  find = (items, predicate) => items.find(predicate);
-} else {
-  find = (items, predicate) => items.filter(predicate)[0];
-}
-
 let findVNodeByParentNodePath = (vnode: VNode, parentNodePath: Node[]): VNode | undefined => {
   let result: VNode | undefined = vnode;
   parentNodePath.forEach((node) => {
     result =
       result && result.children
-        ? find(result.children, (child) => child.domNode === node)
+        ? result.children.find((child) => child.domNode === node)
         : undefined;
   });
   return result;
@@ -92,9 +85,9 @@ let createEventHandlerInterceptor = (
 };
 
 /**
- * Creates a [[Projector]] instance using the provided projectionOptions.
+ * Creates a {@link Projector} instance using the provided projectionOptions.
  *
- * For more information, see [[Projector]].
+ * For more information, see {@link Projector}.
  *
  * @param projectorOptions   Options that influence how the DOM is rendered and updated.
  */

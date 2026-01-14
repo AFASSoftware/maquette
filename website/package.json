@@ -12,7 +12,7 @@
     "serve": "node serve",
     "build": "node generate && npm run typedoc",
     "deploy": "npm run build && firebase deploy",
-    "typedoc": "typedoc --out ./build/website/typedoc --name maquette --readme none --excludePrivate --excludeExternals --gaID G-ZWRZMF29KD ../src/index.ts",
+    "typedoc": "typedoc --out ./build/website/typedoc --name maquette --readme none --excludePrivate --excludeExternals --tsconfig ../src/tsconfig.json --cleanOutputDir false ../src/index.ts",
     "postcss": "postcss source/*.css --dir build/website/ --use precss"
   },
   "license": "MIT",
@@ -29,8 +29,8 @@
     "metalsmith-watch": "1.0.3",
     "postcss-cli": "^6.0.0",
     "precss": "3.1.2",
-    "typedoc": "0.24.1",
-    "typescript": "4.9.5",
+    "typedoc": "0.28.5",
+    "typescript": "5.8.3",
     "postcss": "^6.0.0"
   }
 }

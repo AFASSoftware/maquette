@@ -1,5 +1,6 @@
-require:
-  - ts-node/register/transpile-only
+node-option:
+  - import=ts-node/register/transpile-only
+  - no-warnings
 exit: true
 recursive: true
 extension:

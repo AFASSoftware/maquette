@@ -1,5 +1,5 @@
 import { dom, h } from "../../src/index";
-import { expect } from "../test-utilities";
+import { describe, expect, it } from "../test-utilities";
 
 describe("dom", () => {
   describe("children", () => {
@@ -9,34 +9,34 @@ describe("dom", () => {
       );
 
       let div = projection.domNode as HTMLDivElement;
-      expect(div.children.length).to.equal(3);
+      expect(div.children.length).toBe(3);
       let firstSpan = div.children[0];
       let lastSpan = div.children[2];
 
       // Remove middle div
       projection.update(h("div", [h("span", { key: 1 }), h("span", { key: 3 })]));
 
-      expect(div.children.length).to.equal(2);
-      expect(div.children[0]).to.equal(firstSpan);
-      expect(div.children[1]).to.equal(lastSpan);
+      expect(div.children.length).toBe(2);
+      expect(div.children[0]).toBe(firstSpan);
+      expect(div.children[1]).toBe(lastSpan);
 
       // Remove first div
       projection.update(h("div", [h("span", { key: 3 })]));
 
-      expect(div.children.length).to.equal(1);
-      expect(div.children[0]).to.equal(lastSpan);
+      expect(div.children.length).toBe(1);
+      expect(div.children[0]).toBe(lastSpan);
 
       // Remove last div
       projection.update(h("div", []));
 
-      expect(div.children.length).to.equal(0);
+      expect(div.children.length).toBe(0);
     });
 
     it("can add childnodes", () => {
       let projection = dom.create(h("div", [h("span", { key: 2 }), h("span", { key: 4 })]));
 
       let div = projection.domNode as HTMLDivElement;
-      expect(div.children.length).to.equal(2);
+      expect(div.children.length).toBe(2);
       let firstSpan = div.children[0];
       let lastSpan = div.children[1];
 
@@ -50,20 +50,20 @@ describe("dom", () => {
         ])
       );
 
-      expect(div.children.length).to.equal(5);
-      expect(div.children[1]).to.equal(firstSpan);
-      expect(div.children[3]).to.equal(lastSpan);
+      expect(div.children.length).toBe(5);
+      expect(div.children[1]).toBe(firstSpan);
+      expect(div.children[3]).toBe(lastSpan);
     });
 
     it('uses "bind" instead of "key" when no "key" is present', () => {
       let projection = dom.create(h("div", [h("span", { bind: {} })]));
 
       let div = projection.domNode as HTMLDivElement;
-      expect(div.children.length).to.equal(1);
+      expect(div.children.length).toBe(1);
 
       projection.update(h("div", [h("span", { bind: {} }), h("span", { bind: {} })]));
 
-      expect(div.children.length).to.equal(2);
+      expect(div.children.length).toBe(2);
     });
 
     it("can distinguish between string keys when adding", () => {
@@ -72,7 +72,7 @@ describe("dom", () => {
       );
 
       let div = projection.domNode as HTMLDivElement;
-      expect(div.children.length).to.equal(2);
+      expect(div.children.length).toBe(2);
       let firstSpan = div.children[0];
       let secondSpan = div.children[1];
 
@@ -84,23 +84,23 @@ describe("dom", () => {
         ])
       );
 
-      expect(div.childNodes.length).to.equal(3);
-      expect(div.childNodes[0]).to.equal(firstSpan);
-      expect(div.childNodes[2]).to.equal(secondSpan);
+      expect(div.childNodes.length).toBe(3);
+      expect(div.childNodes[0]).toBe(firstSpan);
+      expect(div.childNodes[2]).toBe(secondSpan);
     });
 
     it("can distinguish between falsy keys when replacing", () => {
       let projection = dom.create(
         h("div", [
           h("span", { key: false }),
-          h("span", <any>{ key: null }),
+          h("span", { key: null } as any),
           h("span", { key: "" }),
           h("span", {}),
         ])
       );
 
       let div = projection.domNode as HTMLDivElement;
-      expect(div.children.length).to.equal(4);
+      expect(div.children.length).toBe(4);
       let firstSpan = div.children[0];
       let secondSpan = div.children[1];
       let thirdSpan = div.children[2];
@@ -108,19 +108,19 @@ describe("dom", () => {
 
       projection.update(h("div", [h("span", { key: 0 })]));
 
-      expect(div.children.length).to.equal(1);
+      expect(div.children.length).toBe(1);
       let newSpan = div.childNodes[0];
 
-      expect(newSpan).not.to.equal(firstSpan);
-      expect(newSpan).not.to.equal(secondSpan);
-      expect(newSpan).not.to.equal(thirdSpan);
-      expect(newSpan).not.to.equal(fourthSpan);
+      expect(newSpan).not.toBe(firstSpan);
+      expect(newSpan).not.toBe(secondSpan);
+      expect(newSpan).not.toBe(thirdSpan);
+      expect(newSpan).not.toBe(fourthSpan);
     });
 
     it("hides _false_ values to allow using && in render functions", () => {
       let showMore = false;
       let render = () => h("div", [h("div.summary"), showMore && h("div.rest")]);
-      expect(render().children).to.have.length(1);
+      expect(render().children).toHaveLength(1);
     });
 
     it("can distinguish between string keys when deleting", () => {
@@ -133,97 +133,101 @@ describe("dom", () => {
       );
 
       let div = projection.domNode as HTMLDivElement;
-      expect(div.children.length).to.equal(3);
+      expect(div.children.length).toBe(3);
       let firstSpan = div.children[0];
       let thirdSpan = div.children[2];
 
       projection.update(h("div", [h("span", { key: "one" }), h("span", { key: "three" })]));
 
-      expect(div.childNodes.length).to.equal(2);
-      expect(div.childNodes[0]).to.equal(firstSpan);
-      expect(div.childNodes[1]).to.equal(thirdSpan);
+      expect(div.childNodes.length).toBe(2);
+      expect(div.childNodes[0]).toBe(firstSpan);
+      expect(div.childNodes[1]).toBe(thirdSpan);
     });
 
     it("can distinguish between falsy keys when deleting", () => {
       let projection = dom.create(
-        h("div", [h("span", { key: 0 }), h("span", { key: false }), h("span", <any>{ key: null })])
+        h("div", [
+          h("span", { key: 0 }),
+          h("span", { key: false }),
+          h("span", { key: null } as any),
+        ])
       );
 
       let div = projection.domNode as HTMLDivElement;
-      expect(div.children.length).to.equal(3);
+      expect(div.children.length).toBe(3);
       let firstSpan = div.children[0];
       let thirdSpan = div.children[2];
 
-      projection.update(h("div", [h("span", { key: 0 }), h("span", <any>{ key: null })]));
+      projection.update(h("div", [h("span", { key: 0 }), h("span", { key: null } as any)]));
 
-      expect(div.childNodes.length).to.equal(2);
-      expect(div.childNodes[0]).to.equal(firstSpan);
-      expect(div.childNodes[1]).to.equal(thirdSpan);
+      expect(div.childNodes.length).toBe(2);
+      expect(div.childNodes[0]).toBe(firstSpan);
+      expect(div.childNodes[1]).toBe(thirdSpan);
     });
 
     it("does not reorder nodes based on keys", () => {
       let projection = dom.create(h("div", [h("span", { key: "a" }), h("span", { key: "b" })]));
 
       let div = projection.domNode as HTMLDivElement;
-      expect(div.children.length).to.equal(2);
+      expect(div.children.length).toBe(2);
       let firstSpan = div.children[0];
       let lastSpan = div.children[1];
 
       projection.update(h("div", [h("span", { key: "b" }), h("span", { key: "a" })]));
 
-      expect(div.childNodes.length).to.equal(2);
-      expect(div.childNodes[1]).to.not.equal(firstSpan);
-      expect(div.childNodes[0]).to.equal(lastSpan);
+      expect(div.childNodes.length).toBe(2);
+      expect(div.childNodes[1]).not.toBe(firstSpan);
+      expect(div.childNodes[0]).toBe(lastSpan);
     });
 
     it("can insert textnodes", () => {
       let projection = dom.create(h("div", [h("span", { key: 2 }), h("span", { key: 4 })]));
 
       let div = projection.domNode as HTMLDivElement;
-      expect(div.children.length).to.equal(2);
+      expect(div.children.length).toBe(2);
       let firstSpan = div.children[0];
       let lastSpan = div.children[1];
 
       projection.update(h("div", [h("span", { key: 2 }), "Text between", h("span", { key: 4 })]));
 
-      expect(div.childNodes.length).to.equal(3);
-      expect(div.childNodes[0]).to.equal(firstSpan);
-      expect(div.childNodes[2]).to.equal(lastSpan);
+      expect(div.childNodes.length).toBe(3);
+      expect(div.childNodes[0]).toBe(firstSpan);
+      expect(div.childNodes[2]).toBe(lastSpan);
     });
 
     it("can update single textnodes", () => {
       let projection = dom.create(h("span", [""]));
       let span = projection.domNode as HTMLSpanElement;
-      expect(span.childNodes.length).to.equal(0);
+      expect(span.childNodes.length).toBe(0);
 
       projection.update(h("span", [undefined]));
-      expect(span.childNodes.length).to.equal(0);
+      expect(span.childNodes.length).toBe(0);
 
       projection.update(h("span", ["f"]));
-      expect(span.childNodes.length).to.equal(1);
+      expect(span.childNodes.length).toBe(1);
 
       projection.update(h("span", [undefined]));
-      expect(span.childNodes.length).to.equal(0);
+      expect(span.childNodes.length).toBe(0);
 
       projection.update(h("span", [""]));
-      expect(span.childNodes.length).to.equal(0);
+      expect(span.childNodes.length).toBe(0);
 
       projection.update(h("span", [" "]));
-      expect(span.childNodes.length).to.equal(1);
+      expect(span.childNodes.length).toBe(1);
     });
 
     it("will throw an error when maquette is not sure which node is added", () => {
       let projection = dom.create(h("div", [h("span", ["a"]), h("span", ["c"])]));
       expect(() => {
         projection.update(h("div", [h("span", ["a"]), h("span", ["b"]), h("span", ["c"])]));
-      }).to.throw();
+      }).toThrow();
     });
 
     it("will throw an error when maquette is not sure which node is removed", () => {
       let projection = dom.create(h("div", [h("span", ["a"]), h("span", ["b"]), h("span", ["c"])]));
       expect(() => {
         projection.update(h("div", [h("span", ["a"]), h("span", ["c"])]));
-      }).to.throw();
+      }).toThrow();
     });
 
     it("allows a contentEditable tag to be altered", () => {
@@ -241,15 +245,15 @@ describe("dom", () => {
 
       // The user clears the value
       projection.domNode.removeChild(projection.domNode.firstChild);
-      handleInput(<any>{ currentTarget: projection.domNode });
+      handleInput({ currentTarget: projection.domNode } as any);
       projection.update(render());
 
       // The user enters a new value
       projection.domNode.innerHTML = "changed <i>value</i>";
-      handleInput(<any>{ currentTarget: projection.domNode });
+      handleInput({ currentTarget: projection.domNode } as any);
       projection.update(render());
 
-      expect(projection.domNode.innerHTML).to.equal("changed <i>value</i>");
+      expect(projection.domNode.innerHTML).toBe("changed <i>value</i>");
     });
 
     describe("svg", () => {
@@ -264,13 +268,13 @@ describe("dom", () => {
           ])
         );
         let svg = projection.domNode.firstChild as SVGElement;
-        expect(svg.namespaceURI).to.equal("http://www.w3.org/2000/svg");
+        expect(svg.namespaceURI).toBe("http://www.w3.org/2000/svg");
         let circle = svg.firstChild as SVGElement;
-        expect(circle.namespaceURI).to.equal("http://www.w3.org/2000/svg");
+        expect(circle.namespaceURI).toBe("http://www.w3.org/2000/svg");
         let image = svg.lastChild as SVGElement;
-        expect(image.attributes[0].namespaceURI).to.equal("http://www.w3.org/1999/xlink");
+        expect(image.attributes[0].namespaceURI).toBe("http://www.w3.org/1999/xlink");
         let span = projection.domNode.lastChild as SVGElement;
-        expect(span.namespaceURI).to.equal("http://www.w3.org/1999/xhtml");
+        expect(span.namespaceURI).toBe("http://www.w3.org/1999/xhtml");
 
         projection.update(
           h("div", [
@@ -289,7 +293,7 @@ describe("dom", () => {
         );
 
         let blueCircle = svg.firstChild as SVGElement;
-        expect(blueCircle.namespaceURI).to.equal("http://www.w3.org/2000/svg");
+        expect(blueCircle.namespaceURI).toBe("http://www.w3.org/2000/svg");
       });
 
       it("updates svg dom properties with numbers", () => {
@@ -303,11 +307,11 @@ describe("dom", () => {
         );
         let svg = projection.domNode.firstChild;
         let circle = svg.firstChild as SVGCircleElement;
-        expect(circle.getAttribute("cx")).to.equal("20");
-        expect(circle.getAttribute("fill")).to.equal("yellow");
+        expect(circle.getAttribute("cx")).toBe("20");
+        expect(circle.getAttribute("fill")).toBe("yellow");
         let rect = svg.lastChild as SVGRectElement;
-        expect(rect.getAttribute("height")).to.equal("60");
-        expect(rect.getAttribute("y")).to.equal("80");
+        expect(rect.getAttribute("height")).toBe("60");
+        expect(rect.getAttribute("y")).toBe("80");
 
         projection.update(
           h("div", [
@@ -317,7 +321,7 @@ describe("dom", () => {
             ]),
           ])
         );
-        expect(circle.getAttribute("cy")).to.equal("120");
+        expect(circle.getAttribute("cy")).toBe("120");
       });
     });
   });

@@ -1,73 +1,73 @@
 import { dom, h } from "../../src/index";
-import { expect, sinon } from "../test-utilities";
+import { describe, expect, it, vi } from "../test-utilities";
 
 describe("dom", () => {
   describe("animations", () => {
     describe("updateAnimation", () => {
       it("is invoked when a node contains only text and that text changes", () => {
-        let updateAnimation = sinon.spy();
+        let updateAnimation = vi.fn();
         let projection = dom.create(h("div", { updateAnimation }, ["text"]));
         projection.update(h("div", { updateAnimation }, ["text2"]));
-        expect(updateAnimation).to.have.been.calledOnce;
-        expect(projection.domNode.outerHTML).to.equal("<div>text2</div>");
+        expect(updateAnimation).toHaveBeenCalledTimes(1);
+        expect(projection.domNode.outerHTML).toBe("<div>text2</div>");
       });
 
       it("is invoked when a node contains text and other nodes and the text changes", () => {
-        let updateAnimation = sinon.spy();
+        let updateAnimation = vi.fn();
         let projection = dom.create(
           h("div", { updateAnimation }, ["textBefore", h("span"), "textAfter"])
         );
         projection.update(h("div", { updateAnimation }, ["textBefore", h("span"), "newTextAfter"]));
-        expect(updateAnimation).to.have.been.calledOnce;
-        updateAnimation.resetHistory();
+        expect(updateAnimation).toHaveBeenCalledTimes(1);
+        updateAnimation.mockClear();
 
         projection.update(h("div", { updateAnimation }, ["textBefore", h("span"), "newTextAfter"]));
-        expect(updateAnimation).to.not.have.been.called;
+        expect(updateAnimation).not.toHaveBeenCalled();
       });
 
       it("is invoked when a property changes", () => {
-        let updateAnimation = sinon.spy();
+        let updateAnimation = vi.fn();
         let projection = dom.create(h("a", { updateAnimation, href: "#1" }));
         projection.update(h("a", { updateAnimation, href: "#2" }));
-        expect(updateAnimation).to.have.been.calledWith(
+        expect(updateAnimation).toHaveBeenCalledWith(
           projection.domNode,
-          sinon.match({ href: "#2" }),
-          sinon.match({ href: "#1" })
+          expect.objectContaining({ href: "#2" }),
+          expect.objectContaining({ href: "#1" })
         );
       });
     });
 
     describe("enterAnimation", () => {
       it("is invoked when a new node is added to an existing parent node", () => {
-        let enterAnimation = sinon.spy();
+        let enterAnimation = vi.fn();
         let projection = dom.create(h("div", []));
 
         projection.update(h("div", [h("span", { enterAnimation })]));
 
-        expect(enterAnimation).to.have.been.calledWith(
+        expect(enterAnimation).toHaveBeenCalledWith(
           projection.domNode.childNodes[0],
-          sinon.match({})
+          expect.anything()
         );
       });
     });
 
     describe("exitAnimation", () => {
       it("is invoked when a node is removed from an existing parent node", () => {
-        let exitAnimation = sinon.spy();
+        let exitAnimation = vi.fn();
         let projection = dom.create(h("div", [h("span", { exitAnimation })]));
 
         projection.update(h("div", []));
 
-        expect(exitAnimation).to.have.been.calledWithExactly(
+        expect(exitAnimation).toHaveBeenCalledWith(
           projection.domNode.childNodes[0],
-          sinon.match({}),
-          sinon.match({})
+          expect.anything(),
+          expect.anything()
         );
 
-        expect(projection.domNode.childNodes).to.have.length(1);
-        exitAnimation.lastCall.callArg(1); // arg1: removeElement
-        expect(projection.domNode.childNodes).to.be.empty;
-        exitAnimation.lastCall.callArg(1); // arg1: removeElement
+        expect(projection.domNode.childNodes).toHaveLength(1);
+        exitAnimation.mock.calls[exitAnimation.mock.calls.length - 1][1](); // arg1: removeElement
+        expect(projection.domNode.childNodes).toHaveLength(0);
+        exitAnimation.mock.calls[exitAnimation.mock.calls.length - 1][1](); // arg1: removeElement
       });
     });
   });

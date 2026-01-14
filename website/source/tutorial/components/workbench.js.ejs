@@ -1,19 +1,19 @@
 window.createWorkbench = function (projector, tabs, objectives) {
-
-  if(typeof tabs === "string") {
+  if (typeof tabs === "string") {
     tabs = [
       { name: "saucer.html", url: "assets/saucer.html" },
       { name: "saucer.css", url: "assets/saucer.css" },
-      { name: "saucer.js", url: tabs }
+      { name: "saucer.js", url: tabs },
     ];
   }
 
   // constants
   var h = maquette.h;
-  var htmlStart = "<!doctype html><html><head><link href='assets/saucer.css' rel='stylesheet' />"
-    + "<script src='https://unpkg.com/maquette@<%-maquetteVersion-%>/dist/maquette.umd.js' crossorigin><"
-    + "/script><script src='https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js' crossorigin><"
-    + "/script><script>";
+  var htmlStart =
+    "<!doctype html><html><head><link href='assets/saucer.css' rel='stylesheet' />" +
+    "<script src='https://unpkg.com/maquette@<%-maquetteVersion-%>/dist/maquette.umd.js' crossorigin><" +
+    "/script><script src='https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js' crossorigin><" +
+    "/script><script>";
   var htmlEnd = "<" + "/script></head><body></body></html>";
 
   var scripts = [];
@@ -29,19 +29,20 @@ window.createWorkbench = function (projector, tabs, objectives) {
   var contentWindow;
   var currentTab = 2;
 
-  htmlStart = htmlStart
-    + "var lastError;"
-    + "window.onerror = function (msg, url, lineNumber, colNr, error) {"
-    + "  if (!lastError) {"
-    + "    lastError = { msg: msg, lineNumber: lineNumber };"
-    + "    setTimeout(function() {"
-    + "      var errorDiv = document.createElement(\"div\");"
-    + "      errorDiv.classList.add(\"javascript-error\");"
-    + "      errorDiv.appendChild(document.createTextNode(\"Javascript crash: \"+msg + (lineNumber > 1 ? (\" line number \"+lineNumber) : \"\")));"
-    + "      document.body.appendChild(errorDiv);"
-    + "    });"
-    + "  }"
-    + "};";
+  htmlStart =
+    htmlStart +
+    "var lastError;" +
+    "window.onerror = function (msg, url, lineNumber, colNr, error) {" +
+    "  if (!lastError) {" +
+    "    lastError = { msg: msg, lineNumber: lineNumber };" +
+    "    setTimeout(function() {" +
+    '      var errorDiv = document.createElement("div");' +
+    '      errorDiv.classList.add("javascript-error");' +
+    '      errorDiv.appendChild(document.createTextNode("Javascript crash: "+msg + (lineNumber > 1 ? (" line number "+lineNumber) : "")));' +
+    "      document.body.appendChild(errorDiv);" +
+    "    });" +
+    "  }" +
+    "};";
 
   var get = function (url, onComplete) {
     var request = new XMLHttpRequest();
@@ -60,38 +61,42 @@ window.createWorkbench = function (projector, tabs, objectives) {
       var test = new Function(text);
       parseError = null;
       return true;
-    } catch(e) {
+    } catch (e) {
       parseError = e.message;
       return false;
     }
   };
 
   var updateLastValidScript = function () {
-    if(!scriptsValid.some(function (valid) { return !valid; })) {
+    if (
+      !scriptsValid.some(function (valid) {
+        return !valid;
+      })
+    ) {
       lastValidScript = scripts.slice().reverse().join("");
     }
   };
 
   tabs.forEach(function (scriptTab, index) {
-    if(index < 2) {
+    if (index < 2) {
       return; // loaded after a delay
     }
     scripts[index - 2] = "";
     scriptsValid[index - 2] = false;
     var key = document.location.pathname + ":" + tabs[index].name;
     var script = window.localStorage[key];
-    if(script) {
+    if (script) {
       scripts[index - 2] = script;
       scriptsValid[index - 2] = isValidJavascript(script);
     }
     get(scriptTab.url, function (responseText) {
       pristineScripts[index - 2] = responseText;
-      if(!scripts[index - 2]) {
+      if (!scripts[index - 2]) {
         scripts[index - 2] = responseText;
         scriptsValid[index - 2] = true;
       }
       updateLastValidScript();
-      if(editor && currentTab === index) {
+      if (editor && currentTab === index) {
         editor.setValue(scripts[currentTab - 2], 0);
         editor.focus();
         editor.clearSelection();
@@ -116,10 +121,9 @@ window.createWorkbench = function (projector, tabs, objectives) {
         editor.clearSelection();
       }
     });
-
   }, 500);
 
-  var reportSceneUpdates = function() {
+  var reportSceneUpdates = function () {
     objectives.forEach(function (objective) {
       objective.onSceneUpdate(contentWindow);
     });
@@ -135,22 +139,13 @@ window.createWorkbench = function (projector, tabs, objectives) {
     console.log("IFrame onload fired");
     contentWindow = evt.target.contentWindow;
     iframeBodyObserver.disconnect();
-    iframeBodyObserver.observe(evt.target.contentWindow.document.body, { childList: true, attributes: true, characterData: true, subtree: true });
+    iframeBodyObserver.observe(evt.target.contentWindow.document.body, {
+      childList: true,
+      attributes: true,
+      characterData: true,
+      subtree: true,
+    });
     reportSceneUpdates();
-  };
-
-  var lastScrdoc;
-  var applySrcdoc = ("srcdoc" in document.createElement("iframe")) ? null : function (iframe, projectionOptions, selector, properties, children) {
-    if (properties.srcdoc !== lastScrdoc) {
-      // Polyfill for browsers who do not support the HTML5 srcdoc
-      var jsUrl = "javascript: window.frameElement.getAttribute('srcdoc');";
-      iframe.setAttribute("src", jsUrl);
-      if (iframe.contentWindow && iframe.contentWindow.document.body) {
-        iframe.contentWindow.document.body.innerHTML = "";
-        iframe.contentWindow.location = jsUrl;
-      }
-      lastScrdoc = properties.srcdoc;
-    }
   };
 
   var throttleValidateScript = function () {
@@ -193,7 +188,7 @@ window.createWorkbench = function (projector, tabs, objectives) {
   };
 
   var refreshEditor = function () {
-    switch(currentTab) {
+    switch (currentTab) {
       case 0:
         editor.setValue(htmlFile, 0);
         editor.getSession().setMode({ path: "ace/mode/html", v: new Date() });
@@ -205,7 +200,7 @@ window.createWorkbench = function (projector, tabs, objectives) {
         editor.setReadOnly(true);
         break;
       default:
-        editor.setValue(scripts[currentTab-2], 0);
+        editor.setValue(scripts[currentTab - 2], 0);
         editor.getSession().setMode({ path: "ace/mode/javascript", v: new Date() });
         editor.setReadOnly(false);
         editor.focus();
@@ -230,10 +225,10 @@ window.createWorkbench = function (projector, tabs, objectives) {
 
   var handleReset = function (evt) {
     evt.preventDefault();
-    for(var i = 0; i < pristineScripts.length; i++) {
+    for (var i = 0; i < pristineScripts.length; i++) {
       scripts[i] = pristineScripts[i];
       scriptsValid[i] = true;
-      if(currentTab - 2 === i) {
+      if (currentTab - 2 === i) {
         editor.setValue(scripts[i], 0);
         editor.clearSelection();
         editor.gotoLine(0);
@@ -244,18 +239,18 @@ window.createWorkbench = function (projector, tabs, objectives) {
   };
 
   var isPristine = function () {
-    for(var i = 0; i < pristineScripts.length; i++) {
-      if(scripts[i] !== pristineScripts[i]) {
+    for (var i = 0; i < pristineScripts.length; i++) {
+      if (scripts[i] !== pristineScripts[i]) {
         return false;
       }
-    };
+    }
     return true;
   };
 
   var workbench = {
-    allObjectivesAchieved : function () {
+    allObjectivesAchieved: function () {
       return objectives.every(function (objective) {
-         return objective.isAchieved();
+        return objective.isAchieved();
       });
     },
     getScript: function () {
@@ -270,43 +265,58 @@ window.createWorkbench = function (projector, tabs, objectives) {
           h("div.header", ["Objectives"]),
           objectives.map(function (objective, index) {
             var current = !currentObjectiveHad && !objective.isAchieved();
-            if(current) {
+            if (current) {
               currentObjectiveHad = true;
             }
-            return h("section.objective", { key: index, classes: {achieved: objective.isAchieved(), current: current, "future": !current && currentObjectiveHad} }, [
-              h("header", [
-                objective.isAchieved() ? h("span.result.achieved", ["\u2713"]) : [],
-                h("span", ["" + (index + 1) + ". " + objective.title])
-              ]),
-              (current || index === objectives.length-1) ? [
-                h("div.detail", [
-                  objective.render()
-                ])
-              ] : []
-            ]);
-          })
+            return h(
+              "section.objective",
+              {
+                key: index,
+                classes: {
+                  achieved: objective.isAchieved(),
+                  current: current,
+                  future: !current && currentObjectiveHad,
+                },
+              },
+              [
+                h("header", [
+                  objective.isAchieved() ? h("span.result.achieved", ["\u2713"]) : [],
+                  h("span", ["" + (index + 1) + ". " + objective.title]),
+                ]),
+                current || index === objectives.length - 1
+                  ? [h("div.detail", [objective.render()])]
+                  : [],
+              ]
+            );
+          }),
         ]),
         h("div.work-do", [
           h("div.input", [
             h("div.tabs", [
               tabs.map(function (scriptTab, index) {
-                return h("button.tab", { key: index+1, onclick: switchTo[index], classes: { active: currentTab === index } }, [scriptTab.name]);
+                return h(
+                  "button.tab",
+                  {
+                    key: index + 1,
+                    onclick: switchTo[index],
+                    classes: { active: currentTab === index },
+                  },
+                  [scriptTab.name]
+                );
               }),
-              h("button.reset", { onclick: handleReset, disabled: isPristine() }, ["Reset"])
+              h("button.reset", { onclick: handleReset, disabled: isPristine() }, ["Reset"]),
             ]),
             h("div.editor", { afterCreate: createEditor }),
-  //          h("div.parseError", [parseError])
+            //          h("div.parseError", [parseError])
           ]),
           h("div.result", [
             h("div.preview", [
-              lastValidScript ? [
-                h("iframe", { srcdoc: html, onload: iframeLoaded, afterCreate: applySrcdoc, afterUpdate: applySrcdoc })
-              ] : []
-            ])
-          ])
-        ])
+              lastValidScript ? [h("iframe", { srcdoc: html, onload: iframeLoaded })] : [],
+            ]),
+          ]),
+        ]),
       ]);
-    }
+    },
   };
 
   return workbench;

@@ -1,6 +1,11 @@
 /* eslint-disable no-console */
 import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
 import * as zlib from "zlib";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let input = fs.createReadStream(`${__dirname}/../dist/maquette.umd.min.js`);
 let stream = input.pipe(zlib.createGzip());

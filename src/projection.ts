@@ -75,15 +75,14 @@ let checkDistinguishable = (
       if (i !== indexToCheck) {
         let node = childNodes[i];
         if (same(node, childNode)) {
-          throw {
-            error: new Error(
+          throw Object.assign(
+            new Error(
               `${parentVNode.vnodeSelector} had a ${childNode.vnodeSelector} child ${
                 operation === "added" ? operation : "removed"
               }, but there is now more than one. You must add unique key properties to make them distinguishable.`
             ),
-            parentNode: parentVNode,
-            childNode,
-          };
+            { parentNode: parentVNode, childNode }
+          );
         }
       }
     }
@@ -551,7 +550,7 @@ updateDom = (previous, vnode, projectionOptions, parentNode, oldChildren) => {
       let newTextNode = domNode.ownerDocument!.createTextNode(vnode.text!);
       try {
         parentNode.replaceChild(newTextNode, domNode);
-      } catch (e) {
+      } catch {
         // Text nodes can be substituted by google translate
         parentNode.replaceChild(newTextNode, parentNode.childNodes[oldChildren.indexOf(previous)]);
       }

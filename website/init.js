@@ -18,7 +18,7 @@ exports.init = (args) => {
     })
     .source('source')
     .destination('./build/website')
-    .clean(true)
+    .clean(false)
     .use(inPlace({
       engineOptions: {
         root: __dirname

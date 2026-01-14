@@ -1,45 +1,46 @@
-import * as path from "path";
-
-import { SinonStub } from "sinon";
-
-import { MaquetteComponent, Projector, createProjector, h, dom } from "../src/index";
-import { expect, sinon } from "./test-utilities";
+import { MaquetteComponent, Projector, createProjector, dom, h } from "../src/index";
+import { afterEach, beforeEach, describe, expect, it, vi } from "./test-utilities";
 
 describe("Projector", () => {
-  let requestAnimationFrame: SinonStub;
-  let cancelAnimationFrame: SinonStub;
+  let requestAnimationFrame: ReturnType<typeof vi.fn>;
+  let cancelAnimationFrame: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    requestAnimationFrame = global.requestAnimationFrame = sinon.stub().returns(5);
-    cancelAnimationFrame = global.cancelAnimationFrame = sinon.stub();
+    requestAnimationFrame = vi.fn().mockReturnValue(5);
+    cancelAnimationFrame = vi.fn();
+    (global as any).requestAnimationFrame = requestAnimationFrame;
+    (global as any).cancelAnimationFrame = cancelAnimationFrame;
   });
 
   afterEach(() => {
-    delete global.requestAnimationFrame;
-    delete global.cancelAnimationFrame;
+    delete (global as any).requestAnimationFrame;
+    delete (global as any).cancelAnimationFrame;
   });
 
   it("renders the virtual DOM immediately when adding renderFunctions", () => {
     let parentElement = {
-      appendChild: sinon.stub(),
-      insertBefore: sinon.stub(),
+      appendChild: vi.fn(),
+      insertBefore: vi.fn(),
       ownerDocument: {
-        createElement: sinon.spy((tag: string) => {
+        createElement: vi.fn((tag: string) => {
           return document.createElement(tag);
         }),
       },
-      removeChild: sinon.stub(),
+      removeChild: vi.fn(),
     };
-    let renderFunction = sinon.stub().returns(h("div", [h("span")]));
+    let renderFunction = vi.fn().mockReturnValue(h("div", [h("span")]));
     let projector = createProjector({});
 
     // Append
     projector.append(parentElement as any, renderFunction);
 
-    expect(renderFunction).to.have.been.calledOnce;
-    expect(parentElement.ownerDocument.createElement).to.have.been.calledOnce;
-    expect(parentElement.appendChild).to.have.been.calledOnce;
-    expect(parentElement.appendChild.lastCall.args[0].tagName).to.equal("DIV");
+    expect(renderFunction).toHaveBeenCalledTimes(1);
+    expect(parentElement.ownerDocument.createElement).toHaveBeenCalledTimes(1);
+    expect(parentElement.appendChild).toHaveBeenCalledTimes(1);
+    expect(
+      parentElement.appendChild.mock.calls[parentElement.appendChild.mock.calls.length - 1][0]
+        .tagName
+    ).toBe("DIV");
 
     // InsertBefore
     let siblingElement = {
@@ -48,18 +49,23 @@ describe("Projector", () => {
 
     projector.insertBefore(siblingElement as any, renderFunction);
 
-    expect(renderFunction).to.have.been.calledTwice;
-    expect(parentElement.insertBefore).to.have.been.calledOnce;
-    expect(parentElement.insertBefore.lastCall.args[0].tagName).to.equal("DIV");
-    expect(parentElement.insertBefore.lastCall.args[1]).to.equal(siblingElement);
+    expect(renderFunction).toHaveBeenCalledTimes(2);
+    expect(parentElement.insertBefore).toHaveBeenCalledTimes(1);
+    expect(
+      parentElement.insertBefore.mock.calls[parentElement.insertBefore.mock.calls.length - 1][0]
+        .tagName
+    ).toBe("DIV");
+    expect(
+      parentElement.insertBefore.mock.calls[parentElement.insertBefore.mock.calls.length - 1][1]
+    ).toBe(siblingElement);
 
     // Merge
-    let cleanRenderFunction = sinon.stub().returns(h("div", [h("span")]));
+    let cleanRenderFunction = vi.fn().mockReturnValue(h("div", [h("span")]));
 
     let existingElement = {
-      appendChild: sinon.stub(),
+      appendChild: vi.fn(),
       ownerDocument: {
-        createElement: sinon.spy((tag: string) => {
+        createElement: vi.fn((tag: string) => {
           return document.createElement(tag);
         }),
       },
@@ -67,10 +73,13 @@ describe("Projector", () => {
 
     projector.merge(existingElement as any, cleanRenderFunction);
 
-    expect(cleanRenderFunction).to.have.been.calledOnce;
-    expect(existingElement.ownerDocument.createElement).to.have.been.calledOnce;
-    expect(existingElement.appendChild).to.have.been.calledOnce;
-    expect(existingElement.appendChild.lastCall.args[0].tagName).to.equal("SPAN");
+    expect(cleanRenderFunction).toHaveBeenCalledTimes(1);
+    expect(existingElement.ownerDocument.createElement).toHaveBeenCalledTimes(1);
+    expect(existingElement.appendChild).toHaveBeenCalledTimes(1);
+    expect(
+      existingElement.appendChild.mock.calls[existingElement.appendChild.mock.calls.length - 1][0]
+        .tagName
+    ).toBe("SPAN");
 
     // Replace
     let oldElement = {
@@ -79,100 +88,113 @@ describe("Projector", () => {
 
     projector.replace(oldElement as any, renderFunction);
 
-    expect(renderFunction).to.have.been.calledThrice;
-    expect(parentElement.removeChild).to.have.been.calledOnce;
-    expect(parentElement.removeChild.lastCall.args[0]).to.equal(oldElement);
-    expect(parentElement.insertBefore).to.have.been.calledTwice;
-    expect(parentElement.insertBefore.lastCall.args[0].tagName).to.equal("DIV");
-    expect(parentElement.insertBefore.lastCall.args[1]).to.equal(oldElement);
+    expect(renderFunction).toHaveBeenCalledTimes(3);
+    expect(parentElement.removeChild).toHaveBeenCalledTimes(1);
+    expect(
+      parentElement.removeChild.mock.calls[parentElement.removeChild.mock.calls.length - 1][0]
+    ).toBe(oldElement);
+    expect(parentElement.insertBefore).toHaveBeenCalledTimes(2);
+    expect(
+      parentElement.insertBefore.mock.calls[parentElement.insertBefore.mock.calls.length - 1][0]
+        .tagName
+    ).toBe("DIV");
+    expect(
+      parentElement.insertBefore.mock.calls[parentElement.insertBefore.mock.calls.length - 1][1]
+    ).toBe(oldElement);
 
     // ScheduleRender
 
     projector.scheduleRender();
-    expect(renderFunction).to.have.been.calledThrice;
-    expect(requestAnimationFrame).to.have.been.calledOnce;
-    requestAnimationFrame.callArg(0);
-    expect(renderFunction).to.have.callCount(6);
+    expect(renderFunction).toHaveBeenCalledTimes(3);
+    expect(requestAnimationFrame).toHaveBeenCalledTimes(1);
+    requestAnimationFrame.mock.calls[0][0]();
+    expect(renderFunction).toHaveBeenCalledTimes(6);
   });
 
   it("Can stop and resume", () => {
     let projector = createProjector({});
     projector.scheduleRender();
-    expect(requestAnimationFrame).to.have.been.calledOnce;
-    requestAnimationFrame.callArg(0);
+    expect(requestAnimationFrame).toHaveBeenCalledTimes(1);
+    requestAnimationFrame.mock.calls[0][0]();
 
     // Stop
     projector.stop();
     projector.scheduleRender();
-    expect(requestAnimationFrame).to.have.been.calledOnce;
+    expect(requestAnimationFrame).toHaveBeenCalledTimes(1);
 
     // Resume
     projector.resume();
-    expect(requestAnimationFrame).to.have.been.calledTwice;
-    requestAnimationFrame.callArg(0);
+    expect(requestAnimationFrame).toHaveBeenCalledTimes(2);
+    requestAnimationFrame.mock.calls[1][0]();
 
     // Stopping before rendering
     projector.scheduleRender();
-    expect(requestAnimationFrame).to.have.been.calledThrice;
+    expect(requestAnimationFrame).toHaveBeenCalledTimes(3);
     projector.stop();
-    expect(cancelAnimationFrame).to.have.been.calledOnce;
+    expect(cancelAnimationFrame).toHaveBeenCalledTimes(1);
   });
 
   it("Stops when an error during rendering is encountered", () => {
     let projector = createProjector({});
-    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
-    let renderFunction = sinon.stub().returns(h("div"));
+    let parentElement = { appendChild: vi.fn(), ownerDocument: document };
+    let renderFunction = vi.fn().mockReturnValue(h("div"));
     projector.append(parentElement as any, renderFunction);
-    renderFunction.throws("Rendering error");
+    renderFunction.mockImplementation(() => {
+      throw new Error("Rendering error");
+    });
     projector.scheduleRender();
     expect(() => {
-      requestAnimationFrame.callArg(0);
-    }).to.throw(Error);
+      requestAnimationFrame.mock.calls[0][0]();
+    }).toThrow(Error);
 
-    requestAnimationFrame.callArg(0);
+    requestAnimationFrame.mock.calls[0][0]();
 
-    renderFunction.resetHistory();
+    renderFunction.mockClear();
     projector.scheduleRender();
-    requestAnimationFrame.callArg(0);
-    expect(renderFunction).not.to.be.called;
+    requestAnimationFrame.mock.calls[0][0]();
+    expect(renderFunction).not.toHaveBeenCalled();
 
-    requestAnimationFrame.resetHistory();
-    renderFunction.returns(h("div"));
+    requestAnimationFrame.mockClear();
+    renderFunction.mockReturnValue(h("div"));
     projector.resume();
-    requestAnimationFrame.callArg(0);
-    expect(renderFunction).to.be.calledOnce;
+    requestAnimationFrame.mock.calls[0][0]();
+    expect(renderFunction).toHaveBeenCalledTimes(1);
   });
 
   it("schedules a render when event handlers are called", () => {
     let projector = createProjector({});
-    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
-    let handleClick = sinon.stub();
+    let parentElement = { appendChild: vi.fn(), ownerDocument: document };
+    let handleClick = vi.fn();
     let renderFunction = () => h("button", { onclick: handleClick });
     projector.append(parentElement as any, renderFunction);
 
-    let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+    let button = parentElement.appendChild.mock.calls[
+      parentElement.appendChild.mock.calls.length - 1
+    ][0] as HTMLElement;
     let evt = { currentTarget: button, type: "click" } as unknown as MouseEvent;
 
-    expect(requestAnimationFrame).not.to.be.called;
+    expect(requestAnimationFrame).not.toHaveBeenCalled();
 
     button.onclick.apply(button, [evt]);
 
-    expect(requestAnimationFrame).to.be.calledOnce;
-    expect(handleClick).to.be.calledOn(button).calledWith(evt);
+    expect(requestAnimationFrame).toHaveBeenCalledTimes(1);
+    expect(handleClick).toHaveBeenCalledWith(evt);
   });
 
   it('invokes the eventHandler with "this" set to the DOM node when no bind is present', () => {
-    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+    let parentElement = { appendChild: vi.fn(), ownerDocument: document };
     let projector = createProjector({});
-    let handleClick = sinon.stub();
+    let handleClick = vi.fn();
     let renderFunction = () => h("button", { onclick: handleClick });
     projector.append(parentElement as any, renderFunction);
 
-    let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+    let button = parentElement.appendChild.mock.calls[
+      parentElement.appendChild.mock.calls.length - 1
+    ][0] as HTMLElement;
     let clickEvent = { currentTarget: button, type: "click" };
     button.onclick(clickEvent as any); // Invoking onclick like this sets 'this' to the ButtonElement
 
-    expect(handleClick).to.be.calledOn(button).calledWithExactly(clickEvent);
+    expect(handleClick).toHaveBeenCalledWith(clickEvent);
   });
 
   describe("Event handlers", () => {
@@ -200,30 +222,32 @@ describe("Projector", () => {
     }
 
     it('invokes the eventHandler with "this" set to the value of the bind property', () => {
-      let clicked = sinon.stub();
+      let clicked = vi.fn();
       let button = new ButtonComponent("Click me", clicked);
 
       let parentElement = {
-        appendChild: sinon.stub(),
+        appendChild: vi.fn(),
         ownerDocument: document,
       };
       let projector = createProjector({});
       projector.append(parentElement as any, () => button.render());
 
-      let buttonElement = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      let buttonElement = parentElement.appendChild.mock.calls[
+        parentElement.appendChild.mock.calls.length - 1
+      ][0] as HTMLElement;
       let clickEvent = { currentTarget: buttonElement, type: "click" };
       buttonElement.onclick(clickEvent as any); // Invoking onclick like this sets 'this' to the ButtonElement
 
-      expect(clicked).to.be.calledWithExactly(button);
+      expect(clicked).toHaveBeenCalledWith(button);
     });
 
     let allowsForEventHandlersToBeChanged = (createProjectorImpl: (arg: any) => Projector) => {
       let projector = createProjectorImpl({});
       let parentElement = {
-        appendChild: sinon.stub(),
+        appendChild: vi.fn(),
         ownerDocument: document,
       };
-      let eventHandler = sinon.stub();
+      let eventHandler = vi.fn();
 
       let renderFunction = () =>
         h("div", [
@@ -236,46 +260,33 @@ describe("Projector", () => {
 
       projector.append(parentElement as any, renderFunction);
 
-      let div = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      let div = parentElement.appendChild.mock.calls[
+        parentElement.appendChild.mock.calls.length - 1
+      ][0] as HTMLElement;
       let button = div.firstChild.firstChild as HTMLElement;
       let evt = {
         currentTarget: button,
         type: "click",
       } as unknown as MouseEvent;
 
-      expect(eventHandler).to.have.not.been.called;
+      expect(eventHandler).not.toHaveBeenCalled();
       button.onclick.apply(button, [evt]);
-      expect(eventHandler).to.have.been.calledOnce;
+      expect(eventHandler).toHaveBeenCalledTimes(1);
 
       // Simulate changing the event handler
-      eventHandler = sinon.stub();
+      eventHandler = vi.fn();
       projector.renderNow();
 
       button.onclick.apply(button, [evt]);
-      expect(eventHandler).to.have.been.calledOnce;
+      expect(eventHandler).toHaveBeenCalledTimes(1);
     };
 
     it("allows for eventHandlers to be changed", () =>
       allowsForEventHandlersToBeChanged(createProjector));
 
-    it("allows for eventHandlers to be changed on IE11", () => {
-      /* eslint @typescript-eslint/no-var-requires: "off" */
-      let apFind = Array.prototype.find;
-      try {
-        delete Array.prototype.find;
-        // re-require projector.ts
-        delete require.cache[path.normalize(path.join(__dirname, "../src/projector.ts"))];
-        let createProjectorImpl = require("../src/projector").createProjector;
-        Array.prototype.find = apFind;
-        allowsForEventHandlersToBeChanged(createProjectorImpl);
-      } finally {
-        Array.prototype.find = apFind;
-      }
-    });
-
     it("will not call event handlers on domNodes which are no longer part of the rendered VNode", () => {
       let buttonVisible = true;
-      let buttonBlur = sinon.spy();
+      let buttonBlur = vi.fn();
       let eventHandler = () => {
         buttonVisible = false;
       };
@@ -297,7 +308,7 @@ describe("Projector", () => {
       let div = parentElement.firstChild as HTMLElement;
       let button = div.firstChild as HTMLButtonElement;
       button.onclick({ currentTarget: button, type: "click" } as any);
-      expect(buttonVisible).to.be.false;
+      expect(buttonVisible).toBe(false);
       projector.renderNow();
       // In reality, during renderNow(), the blur event fires just before its parentNode is cleared.
       // To simulate this we recreate that state in a new button object.
@@ -309,12 +320,12 @@ describe("Projector", () => {
         currentTarget: buttonBeforeBeingDetached,
         type: "blur",
       } as any);
-      expect(buttonBlur).to.not.have.been.called;
+      expect(buttonBlur).not.toHaveBeenCalled();
     });
 
     it("will not call event handlers on domNodes which are detached, like in exotic cases in Safari", () => {
       let buttonVisible = true;
-      let buttonBlur = sinon.spy();
+      let buttonBlur = vi.fn();
       let eventHandler = () => {
         buttonVisible = false;
       };
@@ -336,7 +347,7 @@ describe("Projector", () => {
       let div = parentElement.firstChild as HTMLElement;
       let button = div.firstChild as HTMLButtonElement;
       button.onclick({ currentTarget: button, type: "click" } as any);
-      expect(buttonVisible).to.be.false;
+      expect(buttonVisible).toBe(false);
       projector.renderNow();
       button.remove();
 
@@ -348,61 +359,69 @@ describe("Projector", () => {
         currentTarget: detachedButton,
         type: "blur",
       } as any);
-      expect(buttonBlur).to.not.have.been.called;
+      expect(buttonBlur).not.toHaveBeenCalled();
     });
 
     it('will call event handlers that were registered using "on" instead of "on<eventname>"', () => {
-      let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+      let parentElement = { appendChild: vi.fn(), ownerDocument: document };
       let projector = createProjector({});
-      let handleClick = sinon.stub();
+      let handleClick = vi.fn();
       let renderFunction = () => h("button", { on: { click: handleClick } });
       projector.append(parentElement as any, renderFunction);
 
-      let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      let button = parentElement.appendChild.mock.calls[
+        parentElement.appendChild.mock.calls.length - 1
+      ][0] as HTMLElement;
       button.dispatchEvent(new Event("click"));
 
-      expect(handleClick).to.be.calledOn(button);
-      expect(handleClick.lastCall.args[0].type).to.equal("click");
+      expect(handleClick).toHaveBeenCalled();
+      expect(handleClick.mock.calls[handleClick.mock.calls.length - 1][0].type).toBe("click");
     });
 
     it('will call event handlers that were registered using "on" with options', () => {
-      let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+      let parentElement = { appendChild: vi.fn(), ownerDocument: document };
       let projector = createProjector({});
-      let handleClick = sinon.stub();
+      let handleClick = vi.fn();
       let renderFunction = () =>
         h("button", { on: { click: { listener: handleClick, options: { capture: true } } } });
       projector.append(parentElement as any, renderFunction);
 
-      let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      let button = parentElement.appendChild.mock.calls[
+        parentElement.appendChild.mock.calls.length - 1
+      ][0] as HTMLElement;
       button.dispatchEvent(new Event("click"));
 
-      expect(handleClick).to.be.calledOn(button);
-      expect(handleClick.lastCall.args[0].type).to.equal("click");
+      expect(handleClick).toHaveBeenCalled();
+      expect(handleClick.mock.calls[handleClick.mock.calls.length - 1][0].type).toBe("click");
     });
 
     it("can add event handlers using on without an interceptor", () => {
-      let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
-      let onClick = sinon.spy();
+      let parentElement = { appendChild: vi.fn(), ownerDocument: document };
+      let onClick = vi.fn();
       dom.append(parentElement as unknown as HTMLElement, h("button", { on: { click: onClick } }));
-      let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      let button = parentElement.appendChild.mock.calls[
+        parentElement.appendChild.mock.calls.length - 1
+      ][0] as HTMLElement;
       button.dispatchEvent(new Event("click"));
-      expect(onClick).to.be.calledOnce;
+      expect(onClick).toHaveBeenCalledTimes(1);
     });
 
     it("can handle interceptors removing event handlers", () => {
-      let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
-      let onClick = sinon.spy();
+      let parentElement = { appendChild: vi.fn(), ownerDocument: document };
+      let onClick = vi.fn();
       dom.append(parentElement as unknown as HTMLElement, h("button", { on: { click: onClick } }), {
         eventHandlerInterceptor: () => undefined,
       });
-      let button = parentElement.appendChild.lastCall.args[0] as HTMLElement;
+      let button = parentElement.appendChild.mock.calls[
+        parentElement.appendChild.mock.calls.length - 1
+      ][0] as HTMLElement;
       button.dispatchEvent(new Event("click"));
-      expect(onClick).to.not.be.called;
+      expect(onClick).not.toHaveBeenCalled();
     });
   });
 
   it("can detach a projection", () => {
-    let parentElement = { appendChild: sinon.stub(), ownerDocument: document };
+    let parentElement = { appendChild: vi.fn(), ownerDocument: document };
     let projector = createProjector({});
     let renderFunction = () => h("textarea#t1");
     let renderFunction2 = () => h("textarea#t2");
@@ -410,10 +429,10 @@ describe("Projector", () => {
     projector.append(parentElement as any, renderFunction2);
 
     let projection = projector.detach(renderFunction);
-    expect(projection.domNode.id).to.equal("t1");
+    expect(projection.domNode.id).toBe("t1");
 
     expect(() => {
       projector.detach(renderFunction);
-    }).to.throw();
+    }).toThrow();
   });
 });

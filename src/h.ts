@@ -35,7 +35,7 @@ let appendChildren = (parentSelector: string, insertions: VNodeChild[], main: VN
  *                    It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
  * @param properties  An object literal containing properties that will be placed on the DOM node.
  * @param children    Virtual DOM nodes and strings to add as child nodes.
- *                    `children` may contain [[VNode]]s, `string`s, nested arrays, `null` and `undefined`.
+ *                    `children` may contain {@link VNode}s, `string`s, nested arrays, `null` and `undefined`.
  *                    Nested arrays are flattened, `null` and `undefined` are removed.
  *
  * @returns           A VNode object, used to render a real DOM later.
@@ -55,7 +55,7 @@ export function h(
  * @param selector    Contains the tagName, id and fixed css classnames in CSS selector format.
  *                    It is formatted as follows: `tagname.cssclass1.cssclass2#id`.
  * @param children    Virtual DOM nodes and strings to add as child nodes.
- *                    `children` may contain [[VNode]]s, `string`s, nested arrays, `null` and `undefined`.
+ *                    `children` may contain {@link VNode}s, `string`s, nested arrays, `null` and `undefined`.
  *                    Nested arrays are flattened, `null` and `undefined` are removed.
  *
  * @returns           A VNode object, used to render a real DOM later.

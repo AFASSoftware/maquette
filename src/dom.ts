@@ -27,13 +27,13 @@ export let applyDefaultProjectionOptions = (
 
 export let dom = {
   /**
-   * Creates a real DOM tree from `vnode`. The [[Projection]] object returned will contain the resulting DOM Node in
-   * its [[Projection.domNode|domNode]] property.
-   * This is a low-level method. Users will typically use a [[Projector]] instead.
-   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+   * Creates a real DOM tree from `vnode`. The {@link Projection} object returned will contain the resulting DOM Node in
+   * its {@link Projection.domNode | domNode} property.
+   * This is a low-level method. Users will typically use a {@link Projector} instead.
+   * @param vnode - The root of the virtual DOM tree that was created using the {@link h} function. NOTE: {@link VNode}
    * objects may only be rendered once.
    * @param projectionOptions - Options to be used to create and update the projection.
-   * @returns The [[Projection]] which also contains the DOM Node that was created.
+   * @returns The {@link Projection} which also contains the DOM Node that was created.
    */
   create: (vnode: VNode, projectionOptions?: ProjectionOptions): Projection => {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
@@ -42,13 +42,13 @@ export let dom = {
   },
 
   /**
-   * Appends a new child node to the DOM which is generated from a [[VNode]].
-   * This is a low-level method. Users will typically use a [[Projector]] instead.
+   * Appends a new child node to the DOM which is generated from a {@link VNode}.
+   * This is a low-level method. Users will typically use a {@link Projector} instead.
    * @param parentNode - The parent node for the new child node.
-   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+   * @param vnode - The root of the virtual DOM tree that was created using the {@link h} function. NOTE: {@link VNode}
    * objects may only be rendered once.
-   * @param projectionOptions - Options to be used to create and update the [[Projection]].
-   * @returns The [[Projection]] that was created.
+   * @param projectionOptions - Options to be used to create and update the {@link Projection}.
+   * @returns The {@link Projection} that was created.
    */
   append: (
     parentNode: Element,
@@ -61,13 +61,13 @@ export let dom = {
   },
 
   /**
-   * Inserts a new DOM node which is generated from a [[VNode]].
-   * This is a low-level method. Users wil typically use a [[Projector]] instead.
+   * Inserts a new DOM node which is generated from a {@link VNode}.
+   * This is a low-level method. Users wil typically use a {@link Projector} instead.
    * @param beforeNode - The node that the DOM Node is inserted before.
-   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function.
-   * NOTE: [[VNode]] objects may only be rendered once.
-   * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
-   * @returns The [[Projection]] that was created.
+   * @param vnode - The root of the virtual DOM tree that was created using the {@link h} function.
+   * NOTE: {@link VNode} objects may only be rendered once.
+   * @param projectionOptions - Options to be used to create and update the projection, see {@link createProjector}.
+   * @returns The {@link Projection} that was created.
    */
   insertBefore: (
     beforeNode: Element,
@@ -80,15 +80,15 @@ export let dom = {
   },
 
   /**
-   * Merges a new DOM node which is generated from a [[VNode]] with an existing DOM Node.
+   * Merges a new DOM node which is generated from a {@link VNode} with an existing DOM Node.
    * This means that the virtual DOM and the real DOM will have one overlapping element.
-   * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided.
-   * This is a low-level method. Users wil typically use a [[Projector]] instead.
+   * Therefore the selector for the root {@link VNode} will be ignored, but its properties and children will be applied to the Element provided.
+   * This is a low-level method. Users wil typically use a {@link Projector} instead.
    * @param element - The existing element to adopt as the root of the new virtual DOM. Existing attributes and child nodes are preserved.
-   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]] objects
+   * @param vnode - The root of the virtual DOM tree that was created using the {@link h} function. NOTE: {@link VNode} objects
    * may only be rendered once.
-   * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
-   * @returns The [[Projection]] that was created.
+   * @param projectionOptions - Options to be used to create and update the projection, see {@link createProjector}.
+   * @returns The {@link Projection} that was created.
    */
   merge: (element: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection => {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);
@@ -98,13 +98,13 @@ export let dom = {
   },
 
   /**
-   * Replaces an existing DOM node with a node generated from a [[VNode]].
-   * This is a low-level method. Users will typically use a [[Projector]] instead.
-   * @param element - The node for the [[VNode]] to replace.
-   * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+   * Replaces an existing DOM node with a node generated from a {@link VNode}.
+   * This is a low-level method. Users will typically use a {@link Projector} instead.
+   * @param element - The node for the {@link VNode} to replace.
+   * @param vnode - The root of the virtual DOM tree that was created using the {@link h} function. NOTE: {@link VNode}
    * objects may only be rendered once.
-   * @param projectionOptions - Options to be used to create and update the [[Projection]].
-   * @returns The [[Projection]] that was created.
+   * @param projectionOptions - Options to be used to create and update the {@link Projection}.
+   * @returns The {@link Projection} that was created.
    */
   replace: (element: Element, vnode: VNode, projectionOptions?: ProjectionOptions): Projection => {
     projectionOptions = applyDefaultProjectionOptions(projectionOptions);

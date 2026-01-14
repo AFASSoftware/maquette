@@ -5,7 +5,7 @@ import { Mapping } from "./interfaces";
  * See {@link http://maquettejs.org/docs/arrays.html Working with arrays}.
  *
  * @param <Source>       The type of source items. A database-record for instance.
- * @param <Target>       The type of target items. A [[MaquetteComponent]] for instance.
+ * @param <Target>       The type of target items. A {@link MaquetteComponent} for instance.
  * @param getSourceKey   `function(source)` that must return a key to identify each source object. The result must either be a string or a number.
  * @param createResult   `function(source, index)` that must create a new result object from a given source. This function is identical
  *                       to the `callback` argument in `Array.map(callback)`.

@@ -52,7 +52,7 @@ test.describe("TodoMVC - Maquette", () => {
     });
 
     test("should trim text input", async () => {
-      await todoPage.addTodo("   " + TODO_ITEM_ONE + "  ");
+      await todoPage.addTodo(`   ${TODO_ITEM_ONE}  `);
       await todoPage.assertTodos([TODO_ITEM_ONE]);
     });
 

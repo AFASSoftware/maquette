@@ -36,10 +36,24 @@ export class TodoPage {
   }
 
   /**
+   * Wait for one animation frame to allow maquette to render
+   */
+  async waitForAnimationFrame(): Promise<void> {
+    await this.page.evaluate(
+      () => new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)))
+    );
+  }
+
+  /**
    * Navigate to the TodoMVC application
    */
-  async goto() {
+  async goto(): Promise<void> {
     await this.page.goto("/examples/todomvc/index.html");
+    // Clear any existing data and reload for a fresh state
+    await this.page.evaluate(() => {
+      window.localStorage.removeItem("todomvc-maquette");
+    });
+    await this.page.reload();
     // Wait for the app to be ready
     await this.newTodoInput.waitFor();
   }
@@ -47,7 +61,7 @@ export class TodoPage {
   /**
    * Clear localStorage to reset application state
    */
-  async clearStorage() {
+  async clearStorage(): Promise<void> {
     await this.page.evaluate(() => {
       window.localStorage.setItem("todomvc-maquette", "");
     });
@@ -56,17 +70,17 @@ export class TodoPage {
   /**
    * Add a new todo item
    */
-  async addTodo(text: string) {
+  async addTodo(text: string): Promise<void> {
     await this.newTodoInput.fill(text);
     await this.newTodoInput.press("Enter");
-    // Wait for the UI to update
-    await this.page.waitForTimeout(50);
+    // Wait for maquette to render
+    await this.waitForAnimationFrame();
   }
 
   /**
    * Add multiple todo items
    */
-  async addTodos(...texts: string[]) {
+  async addTodos(...texts: string[]): Promise<void> {
     for (const text of texts) {
       await this.addTodo(text);
     }
@@ -82,23 +96,25 @@ export class TodoPage {
   /**
    * Toggle a todo item at the given index
    */
-  async toggleTodoAt(index: number) {
+  async toggleTodoAt(index: number): Promise<void> {
     await this.todoItems.nth(index).locator(".toggle").click();
-    await this.page.waitForTimeout(50);
+    // Wait for maquette to render
+    await this.waitForAnimationFrame();
   }
 
   /**
    * Double-click a todo item to edit it
    */
-  async doubleClickTodoAt(index: number) {
+  async doubleClickTodoAt(index: number): Promise<void> {
     await this.todoItems.nth(index).locator("label").dblclick();
-    await this.page.waitForTimeout(50);
+    // Wait for maquette to render
+    await this.waitForAnimationFrame();
   }
 
   /**
    * Edit the currently focused todo item
    */
-  async editTodo(text: string, options?: { submit?: "enter" | "escape" | "blur" }) {
+  async editTodo(text: string, options?: { submit?: "enter" | "escape" | "blur" }): Promise<void> {
     const editInput = this.todoList.locator("input.edit");
     await editInput.clear();
     await editInput.fill(text);
@@ -112,55 +128,62 @@ export class TodoPage {
       // Click somewhere else to blur
       await this.toggleAll.focus();
     }
-    await this.page.waitForTimeout(50);
+    // Wait for maquette to render
+    await this.waitForAnimationFrame();
   }
 
   /**
    * Click the "Mark all as completed" checkbox
    */
-  async toggleAll_click() {
+  async toggleAll_click(): Promise<void> {
     await this.toggleAll.click();
-    await this.page.waitForTimeout(50);
+    // Wait for maquette to render
+    await this.waitForAnimationFrame();
   }
 
   /**
    * Click the "Clear completed" button
    */
-  async clickClearCompleted() {
+  async clickClearCompleted(): Promise<void> {
     await this.clearCompletedButton.click();
-    await this.page.waitForTimeout(50);
+    // Wait for maquette to render
+    await this.waitForAnimationFrame();
   }
 
   /**
    * Filter by "All" items
    */
-  async filterAll() {
+  async filterAll(): Promise<void> {
     await this.filterLinks.nth(0).click();
-    await this.page.waitForTimeout(50);
+    // Wait for maquette to render
+    await this.waitForAnimationFrame();
   }
 
   /**
    * Filter by "Active" items
    */
-  async filterActive() {
+  async filterActive(): Promise<void> {
     await this.filterLinks.nth(1).click();
-    await this.page.waitForTimeout(50);
+    // Wait for maquette to render
+    await this.waitForAnimationFrame();
   }
 
   /**
    * Filter by "Completed" items
    */
-  async filterCompleted() {
+  async filterCompleted(): Promise<void> {
     await this.filterLinks.nth(2).click();
-    await this.page.waitForTimeout(50);
+    // Wait for maquette to render
+    await this.waitForAnimationFrame();
   }
 
   /**
    * Go back in browser history
    */
-  async goBack() {
+  async goBack(): Promise<void> {
     await this.page.goBack();
-    await this.page.waitForTimeout(50);
+    // Wait for maquette to render after navigation
+    await this.waitForAnimationFrame();
   }
 
   // ==================== Assertions ====================
@@ -168,28 +191,28 @@ export class TodoPage {
   /**
    * Assert the new todo input is focused
    */
-  async assertInputFocused() {
+  async assertInputFocused(): Promise<void> {
     await expect(this.newTodoInput).toBeFocused();
   }
 
   /**
    * Assert the todo items match the expected texts
    */
-  async assertTodos(expected: string[]) {
+  async assertTodos(expected: string[]): Promise<void> {
     await expect(this.todoItems.locator("label")).toHaveText(expected);
   }
 
   /**
    * Assert the new todo input is empty
    */
-  async assertInputEmpty() {
+  async assertInputEmpty(): Promise<void> {
     await expect(this.newTodoInput).toHaveValue("");
   }
 
   /**
    * Assert the main section visibility
    */
-  async assertMainSectionVisible(visible: boolean) {
+  async assertMainSectionVisible(visible: boolean): Promise<void> {
     if (visible) {
       await expect(this.mainSection).toBeVisible();
     } else {
@@ -200,7 +223,7 @@ export class TodoPage {
   /**
    * Assert the footer visibility
    */
-  async assertFooterVisible(visible: boolean) {
+  async assertFooterVisible(visible: boolean): Promise<void> {
     if (visible) {
       await expect(this.footer).toBeVisible();
     } else {
@@ -211,7 +234,7 @@ export class TodoPage {
   /**
    * Assert which items are completed
    */
-  async assertCompletedStates(expectedStates: boolean[]) {
+  async assertCompletedStates(expectedStates: boolean[]): Promise<void> {
     const count = await this.todoItems.count();
     expect(count).toBe(expectedStates.length);
 
@@ -228,7 +251,7 @@ export class TodoPage {
   /**
    * Assert the "mark all" checkbox is checked
    */
-  async assertToggleAllChecked(checked: boolean) {
+  async assertToggleAllChecked(checked: boolean): Promise<void> {
     if (checked) {
       await expect(this.toggleAll).toBeChecked();
     } else {
@@ -239,21 +262,21 @@ export class TodoPage {
   /**
    * Assert the todo count text
    */
-  async assertTodoCount(expected: string) {
+  async assertTodoCount(expected: string): Promise<void> {
     await expect(this.todoCount).toHaveText(expected);
   }
 
   /**
    * Assert the clear completed button text
    */
-  async assertClearCompletedText(expected: string) {
+  async assertClearCompletedText(expected: string): Promise<void> {
     await expect(this.clearCompletedButton).toHaveText(expected);
   }
 
   /**
    * Assert the clear completed button visibility
    */
-  async assertClearCompletedVisible(visible: boolean) {
+  async assertClearCompletedVisible(visible: boolean): Promise<void> {
     if (visible) {
       await expect(this.clearCompletedButton).toBeVisible();
     } else {
@@ -264,21 +287,21 @@ export class TodoPage {
   /**
    * Assert which filter is currently selected
    */
-  async assertFilterSelected(index: number) {
+  async assertFilterSelected(index: number): Promise<void> {
     await expect(this.filterLinks.nth(index)).toHaveClass("selected");
   }
 
   /**
    * Assert the toggle checkbox is hidden for item at index (during editing)
    */
-  async assertItemToggleHidden(index: number) {
+  async assertItemToggleHidden(index: number): Promise<void> {
     await expect(this.todoItems.nth(index).locator(".toggle")).toBeHidden();
   }
 
   /**
    * Assert the label is hidden for item at index (during editing)
    */
-  async assertItemLabelHidden(index: number) {
+  async assertItemLabelHidden(index: number): Promise<void> {
     await expect(this.todoItems.nth(index).locator("label")).toBeHidden();
   }
 }

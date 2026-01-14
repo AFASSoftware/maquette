@@ -3,6 +3,10 @@ build
 node_modules
 *.log
 
+# Playwright
+browser-tests/playwright-report/
+browser-tests/test-results/
+
 # useful file for debugging a mocha unit test from cloud9, file contents: var Mocha = require("mocha");var mocha = new Mocha();mocha.addFile("test/createDom");mocha.run();
 sandbox.js
 

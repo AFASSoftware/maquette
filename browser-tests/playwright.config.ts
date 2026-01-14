@@ -8,8 +8,13 @@ export default defineConfig({
   // Test files location
   testDir: "./tests",
 
-  // Timeout for each test - 10s on CI, 3s locally
-  timeout: process.env.CI ? 10000 : 3000,
+  // Timeout for each test - 60 seconds
+  timeout: 60000,
+
+  // Timeout for selectors/assertions - 3s locally, 10s on CI
+  expect: {
+    timeout: process.env.CI ? 10000 : 3000,
+  },
 
   // Run tests in files in parallel
   fullyParallel: true,
@@ -31,6 +36,9 @@ export default defineConfig({
     // Base URL for all tests - points to local dev server
     // Using 127.0.0.1 instead of localhost to avoid IPv6 resolution issues
     baseURL: "http://127.0.0.1:8080",
+
+    // Timeout for actions (click, fill, etc.) - 3s locally, 10s on CI
+    actionTimeout: process.env.CI ? 10000 : 3000,
 
     // Collect trace when retrying the failed test
     trace: "on-first-retry",

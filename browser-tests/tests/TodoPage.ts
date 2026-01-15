@@ -36,11 +36,14 @@ export class TodoPage {
   }
 
   /**
-   * Wait for one animation frame to allow maquette to render
+   * Wait for two animation frames to allow maquette to render
    */
   async waitForAnimationFrame(): Promise<void> {
     await this.page.evaluate(
-      () => new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)))
+      () =>
+        new Promise((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve(undefined)))
+        )
     );
   }
 
@@ -72,8 +75,13 @@ export class TodoPage {
    */
   async addTodo(text: string): Promise<void> {
     await this.newTodoInput.fill(text);
+    // Wait for maquette to render the filled value before pressing Enter.
+    // This is important because maquette only updates the DOM value if it
+    // differs from the previous render. Without this wait, the Enter keypress
+    // could happen before maquette renders, causing it to skip the DOM update.
+    await this.waitForAnimationFrame();
     await this.newTodoInput.press("Enter");
-    // Wait for maquette to render
+    // Wait for maquette to render after clearing
     await this.waitForAnimationFrame();
   }
 

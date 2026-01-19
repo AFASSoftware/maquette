@@ -154,7 +154,6 @@ let nodeToRemove = (vNode: VNode) => {
 };
 
 const vnodeOnlyProps = [
-  "on",
   "afterCreate",
   "afterUpdate",
   "afterRemoved",

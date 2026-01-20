@@ -154,6 +154,7 @@ let nodeToRemove = (vNode: VNode) => {
 };
 
 const vnodeOnlyProps = [
+  "on",
   "afterCreate",
   "afterUpdate",
   "afterRemoved",
@@ -206,22 +207,6 @@ let setProperties = (
           projectionOptions.styleApplyer!(<HTMLElement>domNode, styleName, styleValue);
         }
       }
-    } else if (propName === "on" && propValue) {
-      // object with string keys and function values
-      for (let [key, handler] of Object.entries(properties.on!)) {
-        let listener: EventHandler | undefined =
-          typeof handler === "function" ? handler : handler.listener;
-        if (eventHandlerInterceptor) {
-          listener = eventHandlerInterceptor(key, listener, domNode, properties);
-        }
-        if (listener) {
-          domNode.addEventListener(
-            key,
-            listener,
-            typeof handler === "function" ? undefined : handler.options
-          );
-        }
-      }
     } else if (propName !== "key" && propValue !== null && propValue !== undefined) {
       let type = typeof propValue;
       if (type === "function") {
@@ -243,6 +228,23 @@ let setProperties = (
         (domNode as Element).setAttribute(propName, propValue);
       } else {
         (domNode as any)[propName] = propValue;
+      }
+    }
+  }
+  if (properties.on) {
+    // object with string keys and function values
+    for (let [key, handler] of Object.entries(properties.on)) {
+      let listener: EventHandler | undefined =
+        typeof handler === "function" ? handler : handler.listener;
+      if (eventHandlerInterceptor) {
+        listener = eventHandlerInterceptor(key, listener, domNode, properties);
+      }
+      if (listener) {
+        domNode.addEventListener(
+          key,
+          listener,
+          typeof handler === "function" ? undefined : handler.options
+        );
       }
     }
   }

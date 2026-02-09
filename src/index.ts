@@ -6,7 +6,7 @@
  * interactive web applications. To get started, use {@link createProjector} to create a projector
  * that manages the rendering lifecycle, and use the {@link h} function to create virtual DOM nodes.
  *
- * {@link https://maquettejs.org/ | ← Back to the maquette homepage}
+ * {@link https://maquette.js.org/ | ← Back to the maquette homepage}
  * @module
  */
 export { createCache } from "./cache";

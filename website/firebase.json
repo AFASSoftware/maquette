@@ -5,6 +5,13 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "redirects": [
+      {
+        "source": "/:path*",
+        "destination": "https://maquette.js.org/:path",
+        "type": 301
+      }
     ]
   }
 }

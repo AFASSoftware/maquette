@@ -11,6 +11,6 @@ Compared to other virtual DOM implementations, maquette has the following advant
 
 * It is very lightweight (3.7Kb gzipped)
 * It allows changes to be animated
-* It makes your frontend [easy to unit-test](https://maquettejs.org/docs/unit-testing.html)
+* It makes your frontend [easy to unit-test](https://maquette.js.org/docs/unit-testing.html)
 
-Visit the [website](https://maquettejs.org) for more information.
+Visit the [website](https://maquette.js.org) for more information.

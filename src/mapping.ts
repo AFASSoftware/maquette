@@ -2,7 +2,7 @@ import { Mapping } from "./interfaces";
 
 /**
  * Creates a {@link Mapping} instance that keeps an array of result objects synchronized with an array of source objects.
- * See {@link http://maquettejs.org/docs/arrays.html Working with arrays}.
+ * See {@link https://maquette.js.org/docs/arrays.html Working with arrays}.
  *
  * @param <Source>       The type of source items. A database-record for instance.
  * @param <Target>       The type of target items. A {@link MaquetteComponent} for instance.

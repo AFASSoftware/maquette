@@ -8,6 +8,11 @@
     ],
     "redirects": [
       {
+        "source": "/",
+        "destination": "https://maquette.js.org/",
+        "type": 301
+      },
+      {
         "source": "/:path*",
         "destination": "https://maquette.js.org/:path",
         "type": 301

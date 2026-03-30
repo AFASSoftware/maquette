@@ -78,7 +78,7 @@ jobs:
       working-directory: browser-tests
       run: npm test
     - name: Upload Playwright report
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: ${{ !cancelled() }}
       with:
         name: playwright-report

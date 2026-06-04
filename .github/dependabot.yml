@@ -8,6 +8,8 @@ updates:
       day: 'monday'
       time: '04:00'
     open-pull-requests-limit: 1
+    cooldown:
+      default-days: 7
     groups:
       npm-dependencies:
         patterns:
@@ -29,6 +31,8 @@ updates:
       day: 'monday'
       time: '04:00'
     open-pull-requests-limit: 1
+    cooldown:
+      default-days: 7
     groups:
       github-actions:
         patterns:

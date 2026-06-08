@@ -110,7 +110,7 @@ describe("dom", () => {
       // Unfortunately JSDom does not map the property value to the attribute as real browsers do
       // expect(link.getAttribute('disabled')).toBe('');
 
-      projection.update(h("a", { disabled: null } as any));
+      projection.update(h("a", { disabled: null }));
 
       // What Chrome would do:
       // expect(link.disabled).toBe(false);

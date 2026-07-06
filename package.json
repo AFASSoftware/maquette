@@ -29,7 +29,8 @@
       "import": "./dist/index.js",
       "require": "./dist/maquette.cjs"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
   },
   "scripts": {
     "prepare": "husky",

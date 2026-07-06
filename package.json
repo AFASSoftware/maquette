@@ -19,9 +19,18 @@
     "url": "https://github.com/AFASSoftware/maquette"
   },
   "module": "./dist/index.js",
-  "main": "./dist/maquette.cjs.js",
+  "main": "./dist/maquette.cjs",
   "browser": "./dist/maquette.umd.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "browser": "./dist/maquette.umd.js",
+      "import": "./dist/index.js",
+      "require": "./dist/maquette.cjs"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "prepare": "husky",
     "prepublishOnly": "npm run clean && npm run dist",

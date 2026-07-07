@@ -8,7 +8,7 @@ export default [
     input: 'dist/index.js',
     output: {
       name: 'maquette',
-      file: pkg.browser,
+      file: pkg.exports['.'].browser,
       format: 'umd'
     },
     plugins: []

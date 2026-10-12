@@ -1,7 +1,8 @@
 {
   "name": "maquette",
-  "version": "4.1.5",
+  "version": "4.1.6",
   "type": "module",
+  "sideEffects": false,
   "description": "Minimalistic Virtual DOM implementation with support for animated transitions.",
   "workspaces": [
     "browser-tests"
@@ -22,10 +23,14 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "browser": "./dist/maquette.umd.js",
-      "import": "./dist/index.js",
-      "require": "./dist/maquette.cjs"
+      "import": {
+        "types": "./dist/maquette.d.mts",
+        "default": "./dist/maquette.mjs"
+      },
+      "require": {
+        "types": "./dist/maquette.d.cts",
+        "default": "./dist/maquette.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -41,13 +46,15 @@
     "dist": "tsc -p ./src/tsconfig.json && tsc -p ./examples/tsconfig.json && rollup -c --bundleConfigAsCjs && uglifyjs ./dist/maquette.umd.js -c unsafe=true,unsafe_comps=true,unsafe_math=true,passes=3 -m -o ./dist/maquette.umd.min.js",
     "start": "npm -s run dist && npx http-server . -p 8080 -o",
     "test": "vitest run",
-    "ci": "npm run lint && npm run test -- --coverage && npm -s run dist && node --import tsx ./tools/check-file-size.ts",
+    "check-package": "attw --pack . && node --import tsx ./tools/check-package-loads.ts",
+    "ci": "npm run lint && npm run test -- --coverage && npm -s run dist && node --import tsx ./tools/check-file-size.ts && npm run check-package",
     "publish-website": "cd website && npm install --no-optional --force && npm run deploy",
     "test-also-with-browser": "npm run dist && cd examples/todomvc && npm install --no-save bower && bower install && cd ../../browser-tests && npm install && npm test"
   },
   "license": "MIT",
   "tonicExampleFilename": "examples/tonic-example.js",
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/js": "^9.39.2",
     "@types/node": "^25.0.8",
     "@types/sinonjs__fake-timers": "15.0.1",
@@ -59,6 +66,7 @@
     "prettier": "^3.7.4",
     "rimraf": "^6.1.2",
     "rollup": "4.60.4",
+    "rollup-plugin-dts": "^6.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.53.0",
